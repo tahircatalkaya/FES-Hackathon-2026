@@ -17,7 +17,7 @@ Die Basis-URL lautet `https://app-foodsharing-hackathon.azurewebsites.net`. Die 
 
 ## Vytal API
 
-Die externe Integrationsdokumentation findet ihr im [Vytal API Dev Guide – Integration without Vytal account requirement](https://vytal-col.notion.site/Dev-Guide-Integration-without-Vytal-account-requirement-16022b6fddc3801b9d0ecb268a90093b).
+Die externe Integrationsdokumentation findet ihr im [Vytal x FES Hackathon – Technical Documentation](https://app.notion.com/p/vytal-col/Vytal-x-FES-Hackathon-Technical-Documentation-57622b6fddc3821ba7a00156eb4aa4ee).
 
 ## Beispieldaten des Verkehrsverbunds
 
