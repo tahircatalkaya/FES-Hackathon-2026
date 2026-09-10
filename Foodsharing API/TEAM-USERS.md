@@ -36,7 +36,8 @@ curl -H "X-API-Key: $KEY" -H "X-User-ID: $USER2_ID" "$BASE/users/me"
 ```
 
 Die Auswahl gilt für `/users/me`, `/users/me/approve`, `/users/me/pickups`, das
-Anbieten von Körben, Anfragen, Anfrage-Statusänderungen und Abholungen.
+Anbieten von Körben, Anfragen, Anfrage-Statusänderungen und Abholungen,
+auch `POST /businesses/{business_id}/pickups`.
 Berechtigungen beziehen sich auf den ausgewählten Nutzer: Ein Korb von User 1
 ist für User 2 ein fremder Korb, auch bei identischem Team-Key.
 
@@ -69,6 +70,10 @@ den jeweiligen Request aus. Beispielbody für die Standardschwelle drei:
 Die Antwort enthält direkt einen `VerificationState`, ohne umgebenden
 `verification`-Block. `trial_pickups_required` enthält die erforderliche
 Probeabholungszahl; dieses Feld ist über die API nicht editierbar.
+In der Sandbox wird das Erfüllen der Einführungsabholungen hier über
+`trial_pickups_completed` simuliert. Körbe und Fairteiler sind ohne Verifikation
+zugänglich und erhöhen diesen Zähler nicht. Für Geschäftsrettungen muss
+`may_pick_up_from_business` beziehungsweise `is_verified` true sein.
 
 `PATCH /users/{user_id}` und `PATCH /users/me` erlauben zusätzlich Name,
 Beitrittszeitpunkt und regulären Abholzähler. Beispiel:
@@ -106,16 +111,16 @@ können sich nach folgenden Regeln ändern:
   `verified_at`, auch `null`, hat Vorrang vor dieser Automatik.
 - Ein PATCH nur mit `verified_at` erhält `is_verified`. Reine Änderungen von Name,
   Beitrittszeit oder regulärem Zähler lösen ebenfalls keine Neuberechnung aus.
-- Eine spätere Freigabe, ein weiterer PATCH mit Verifikationseingaben oder eine
-  Probeabholung berechnet die Verifikation wieder regulär.
+- Eine spätere Freigabe oder ein weiterer PATCH mit Verifikationseingaben
+  berechnet die Verifikation wieder regulär.
 
 Damit sind auch widersprüchliche Testzustände möglich. Bei `is_verified: true`
-gilt der Nutzer unabhängig von Quiz und Probeabholzähler als abholberechtigt.
+gilt der Nutzer unabhängig von Quiz und Probeabholzähler als für Geschäftsrettungen berechtigt.
 Das Antwortfeld `may_earn_rewards` entspricht diesem Flag; es löst keine
 Belohnungsvergabe aus.
 
 **Zähleränderungen verändern keine Abholhistorie.** Sie erzeugen und löschen keine
-Ereignisse. Spätere Abholungen erhöhen den passenden gesetzten Zähler; bei dessen
+Ereignisse. Spätere Abholungen erhöhen den regulären Zähler `pickups_completed`; bei dessen
 Maximum wird eine neue Abholung mit `409` abgelehnt. Die tatsächlichen Ereignisse
 stehen unter `/users/me/pickups` für die jeweilige Nutzerauswahl.
 

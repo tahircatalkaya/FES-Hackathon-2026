@@ -1,6 +1,6 @@
 # API-Guide
 
-Technische Referenz zur API-Version **2.3.0**. Datenmodell: [SCHEMA.md](SCHEMA.md).
+Technische Referenz zur API-Version **2.4.0**. Datenmodell: [SCHEMA.md](SCHEMA.md).
 Verfügbare Daten: [DATABASE.md](DATABASE.md). Testnutzer: [TEAM-USERS.md](TEAM-USERS.md).
 
 **Basis-URL:** `https://app-foodsharing-hackathon.azurewebsites.net`
@@ -54,74 +54,58 @@ Team beschränkt. Körbe sind teamübergreifend lesbar, einschließlich
 
 ## 3. Verifikation und Abholberechtigung
 
-Im regulären Ablauf gilt:
+Körbe und Fairteiler können alle Teamnutzer ohne Quiz oder Verifikation abholen.
+Nur Geschäftsrettungen erfordern `is_verified: true`.
 
-| Status | Bedingung | Abholung |
-|--------|-----------|----------|
-| `quiz_pending` | Nicht verifiziert, Quiz nicht bestanden | gesperrt |
-| `trial_pending` | Quiz bestanden, Probeabholzähler unter der Schwelle | als Probeabholung erlaubt |
-| `approval_pending` | Quiz bestanden, Schwelle erreicht, `is_verified` ist false | gesperrt |
-| `verified` | `is_verified` ist true | als reguläre Abholung erlaubt |
+| Status | Geschäftsrettung |
+|--------|------------------|
+| `quiz_pending` | `403`, `quiz_not_passed` |
+| `trial_pending` | `403`, `trial_pickups_incomplete` |
+| `approval_pending` | `403`, `awaiting_approval` |
+| `verified` | erlaubt |
 
-`verification.status` wird bei jeder Antwort ermittelt. Ein gesetztes `is_verified`
-hat dabei Vorrang vor den übrigen Flags. Normalerweise berechnet die API diesen
-Wert aus Quiz, Probeabholungen und Freigabe; Test-PATCHes können ihn überschreiben.
+Der reguläre Verifikationsablauf besteht aus Quiz, Einführungsabholungen und Freigabe.
+Die API simuliert diese Schritte: `quiz_passed`, `trial_pickups_completed` und
+`mentor_approved` können mit `PATCH /users/{user_id}/verification` gesetzt werden.
+Die erforderliche Anzahl steht in `trial_pickups_required` (Default drei).
+`POST /users/me/approve` setzt die Freigabe und berechnet die Verifikation neu.
+Ein explizites `is_verified` hat bei Test-PATCHes weiterhin Vorrang.
 
-Die Schwelle steht in `trial_pickups_required` innerhalb eines
-`VerificationState` (bei Nutzerantworten unter `verification`); Default ist drei.
-Die API führt kein Quiz durch, sondern speichert das Flag `quiz_passed`.
+Neue Korb- und Fairteiler-Abholungen zählen **nicht** als Einführungsabholungen.
+Alle neuen Abholungen, auch Geschäftsrettungen, haben `was_trial: false` und erhöhen
+`pickups_completed`. Vorhandene historische Trial-Markierungen und Zähler werden
+bei der Umstellung nicht verändert. Testzähler können weiterhin unabhängig von der
+Historie bearbeitet werden.
 
-`POST /users/me/approve` setzt die simulierte Freigabe und berechnet die
-Verifikation neu. Die Freigabe kann auch vor Quiz oder Probeabholungen erfolgen.
-Wiederholte Aufrufe erhalten einen bereits gesetzten Freigabezeitstempel. Bei
-vorhandener Freigabe kann die letzte nötige Probeabholung direkt verifizieren.
+`may_pick_up` ist für Körbe/Fairteiler immer true. `may_pick_up_from_business`
+entspricht `is_verified`. Das bestehende Feld `may_earn_rewards` entspricht ebenfalls
+`is_verified`; es berechnet oder vergibt keine Belohnung.
 
-Die bereitgestellten Testzustände sind in [TEAM-USERS.md](TEAM-USERS.md) beschrieben.
-Der aktuelle Stand ist über `GET /users/me` abrufbar. Beispiel für einen Nutzer,
-der bereits genügend Probeabholungen hat und noch Quiz und Freigabe benötigt (Bash):
+### Geschäftsrettung ausprobieren (Bash)
 
 ```bash
 BASE=https://app-foodsharing-hackathon.azurewebsites.net
 KEY=team_01_...
+curl -H "X-API-Key: $KEY" "$BASE/users"
+curl -H "X-API-Key: $KEY" "$BASE/businesses"
 
-curl -H "X-API-Key: $KEY" "$BASE/users/me"
+USER_ID=31  # Tatsächliche ID aus GET /users
+BUSINESS_ID=1  # Tatsächliche ID aus GET /businesses
 curl -X PATCH -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
-     -d '{"quiz_passed": true}' "$BASE/users/me"
-curl -X POST -H "X-API-Key: $KEY" "$BASE/users/me/approve"
+  -d '{"quiz_passed":true,"trial_pickups_completed":3,"mentor_approved":true}' \
+  "$BASE/users/$USER_ID/verification"
+curl -X POST -H "X-API-Key: $KEY" -H "X-User-ID: $USER_ID" \
+  "$BASE/businesses/$BUSINESS_ID/pickups"
+curl -H "X-API-Key: $KEY" -H "X-User-ID: $USER_ID" "$BASE/users/me/pickups"
 ```
 
-`may_pick_up` bezeichnet die aktuelle Abholberechtigung. Das bestehende Feld
-`may_earn_rewards` entspricht `is_verified`; die API berechnet oder vergibt keine
-Belohnungen. `was_trial` hält für jedes Ereignis fest, ob der Nutzer beim Abschluss
-noch nicht verifiziert war. Spätere Statusänderungen ändern dieses Feld nicht.
-
-### Strukturierte Verifikationsfehler
-
-Bei einer eigenen, durch die Verifikation gesperrten Abholung enthält `detail` den
-Fehlercode, eine Nachricht und den vollständigen Verifikationszustand. Beispielauszug:
-
-```json
-{
-  "detail": {
-    "error": "quiz_not_passed",
-    "message": "You must pass the Onlinetest before you can pick up food.",
-    "verification": {
-      "status": "quiz_pending",
-      "is_verified": false,
-      "trial_pickups_completed": 0,
-      "trial_pickups_required": 3,
-      "may_pick_up": false,
-      "next_step": "Pass the Onlinetest: PATCH /users/me with {\"quiz_passed\": true}"
-    }
-  }
-}
-```
-
-Die Fehlercodes sind `quiz_not_passed` und `awaiting_approval`; der nächste Schritt
-steht unter `detail.verification.next_step`. Bestätigt der Anbieter für einen
-anderen Nutzer, erhält er bei fehlender Abholberechtigung nur eine allgemeine
-`403`-Nachricht, ohne dessen Verifikationsdaten. Auch Berechtigungsfehler können
-`403` liefern und haben dann keinen solchen Verifikationsblock.
+Geschäfte sind fiktive Demo-Standorte, keine realen foodsharing-Kooperationspartner.
+Die Sandbox bildet keine Warenbestände oder Abholtermine ab. Der POST benötigt
+keinen Body; jeder erfolgreiche Aufruf erfasst eine separate Rettung (`201`).
+Die aktuelle Verifikation wird unter einer Nutzersperre erneut geprüft; bei
+fehlender Verifikation folgt `403` mit `detail.error`, `detail.message` und dem
+eigenen `detail.verification`. Ein unbekanntes Geschäft ergibt für einen
+verifizierten Nutzer `404`.
 
 ## 4. Endpunkte und Parameter
 
@@ -152,11 +136,13 @@ kein Distanzfilter angewendet. Mit Koordinaten ist die Antwort nach Distanz sort
 | `POST` | `/users/me/approve` | Simulierte Freigabe speichern und Verifikation berechnen |
 | `GET` | `/users/me/pickups` | Historie des ausgewählten Nutzers |
 | `GET` | `/pickups/sample` | Pseudonymisierte Abholungen von Nutzern ohne Team |
-| `POST` | `/pickups` | Abholung erfassen; Erfolg: `201` |
+| `POST` | `/pickups` | Korb/Fairteiler ohne Verifikation abholen; Erfolg: `201` |
+| `GET` | `/businesses` | Fiktive Demo-Geschäfte, nach ID sortiert |
+| `POST` | `/businesses/{business_id}/pickups` | Geschäftsrettung nur mit Verifikation; Erfolg: `201` |
 | `GET` | `/baskets/nearby` | Freie, noch nicht abgelaufene Körbe im Umkreis |
 | `GET` | `/baskets/{basket_id}` | Korb einschließlich Anfrageübersicht |
 | `POST` | `/baskets` | Korb anbieten, ohne Verifikation; Erfolg: `201` |
-| `POST` | `/baskets/{basket_id}/requests` | Korb reservieren, aktuelle Abholberechtigung nötig; Erfolg: `201` |
+| `POST` | `/baskets/{basket_id}/requests` | Korb ohne Verifikation reservieren; Erfolg: `201` |
 | `PATCH` | `/baskets/{basket_id}/requests/{requester_id}/status` | Anfrage-Status ändern |
 
 Die Korbsuche erfordert `lat` und `lon`; `distance_km` hat Default 5, Minimum 0,1
@@ -178,7 +164,7 @@ einem abgeschlossenen, abgelehnten oder stornierten Versuch.
 
 ## 5. Aufrufbeispiele für Abholungen
 
-Die Beispiele setzen einen gemäß Abschnitt 3 abholberechtigten Nutzer voraus.
+Für die folgenden Korb- und Fairteiler-Beispiele reicht ein gültiger Team-Key.
 `BASE` und `KEY` entsprechen den dort definierten Bash-Variablen.
 
 ```bash
@@ -222,7 +208,7 @@ vorliegt; bei bereits erreichtem Ablauf wird der Korb dabei auf `expired` gesetz
 
 `rejected`, `cancelled` und `picked_up` sind Endzustände. Weitere Änderungen ergeben
 `409`. Auch ein wiederholtes `accepted` ergibt `409`. Beim Abholabschluss werden
-die aktuelle Berechtigung des Abholers, die Reservierung und die Ablaufzeit geprüft.
+die Reservierung und die Ablaufzeit geprüft; eine Verifikation ist nicht erforderlich.
 Eine separate Annahme vor `picked_up` ist nicht nötig.
 
 Die direkte Korb-Abholung schließt eine eigene offene Anfrage mit ab. Eigene Körbe
@@ -248,21 +234,22 @@ allgemeine Fehlerreihenfolge für andere Endpunkte oder alle Abschlussprüfungen
 | Identifikation | `id` der Abholung, keine `user_id` | `person`-Pseudonym, keine Abholungs- oder Nutzer-ID |
 | `limit` | Default 100, 1–500 | Default 200, 1–1000 |
 | `offset` | Default 0, mindestens 0 | Default 0, mindestens 0 |
-| Quellenfilter | keiner | `source=basket` oder `source=food_share_point` |
+| Quellenfilter | keiner | `source=basket`, `source=food_share_point` oder `source=business` |
 | Sortierung | Neueste Abholung zuerst; bei gleichem Zeitpunkt höhere Abholungs-ID zuerst | ebenso |
 
 Die gemeinsamen fachlichen Felder sind:
 
 | Feld | Bedeutung |
 |------|-----------|
-| `source` | `basket` oder `food_share_point` |
+| `source` | `basket`, `food_share_point` oder `business` |
 | `picked_up_at` | Zeitpunkt der erfassten Abholung |
-| `was_trial` | Verifikationsstatus zum Abschluss: true bei Probeabholung |
+| `was_trial` | Historische Trial-Markierung; bei allen neuen Rettungen false |
 | `food_share_point_id`, `food_share_point_name` | Fairteiler-Quelle, sonst `null` |
+| `business_id`, `business_name` | Geschäftsquelle, sonst `null` |
 | `basket_id`, `basket_title`, `basket_created_at`, `basket_expires_at`, `food_types` | Korb-Quelle, sonst `null` |
 | `lat`, `lon` | Koordinaten der Quelle |
 
-Quellangaben werden beim Lesen aus Korb beziehungsweise Fairteiler ergänzt.
+Quellangaben werden beim Lesen aus Korb, Fairteiler oder Geschäft ergänzt.
 Das Sample ersetzt das Feld `id` der persönlichen Historie durch `person`.
 Pseudonyme wie `person_001` bleiben innerhalb eines unveränderten Bestands an
 Beispielpersonen über Seiten und Quellenfilter hinweg gleich. Sie sind keine
@@ -278,7 +265,7 @@ stehen in [DATABASE.md](DATABASE.md).
 |--------|--------------------|
 | `400` | Eigenen Korb anfragen oder abholen |
 | `401` | `X-API-Key` fehlt, ist unbekannt oder deaktiviert |
-| `403` | Akteur darf den Status nicht setzen oder Abholberechtigung fehlt |
+| `403` | Akteur darf den Status nicht setzen oder Geschäftsverifikation fehlt |
 | `404` | Ressource nicht vorhanden oder Zielnutzer gehört nicht zum eigenen Team |
 | `409` | Korb nicht verfügbar, Anfrage bereits vorhanden/geschlossen oder betroffener Zähler bei 2.147.483.647 |
 | `422` | Ungültige Parameter oder Body-Felder; bei PATCH auch unzulässiges `null` |

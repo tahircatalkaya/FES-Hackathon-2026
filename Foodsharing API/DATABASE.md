@@ -1,7 +1,7 @@
 # Verfügbare Daten
 
 Die API enthält Teamnutzer, Essenskörbe, Abholanfragen, Abholhistorien und
-Fairteiler-Standorte. Nutzer, Angebote und Abholungen sind fiktive Testdaten.
+Fairteiler-Standorte und fiktive Geschäfte. Nutzer, Angebote und Abholungen sind fiktive Testdaten.
 Die Standortdaten beziehen sich auf Fairteiler und Abgabestellen in Frankfurt am Main.
 
 Feldnamen und Datentypen: [SCHEMA.md](SCHEMA.md).
@@ -11,6 +11,7 @@ Endpunkte und Parameter: [API-GUIDE.md](API-GUIDE.md).
 
 | Daten | Endpunkt | Sichtbarkeit |
 |-------|----------|--------------|
+| Demo-Geschäfte | `GET /businesses` | Alle gültigen Team-Keys |
 | Zwei eigene Testnutzer | `GET /users` | Eigenes Team |
 | Aktuell ausgewählter Nutzer | `GET /users/me` | Eigenes Team |
 | Verifikationszustand | `GET /users/{user_id}/verification` | Eigenes Team |
@@ -31,7 +32,10 @@ kann leer sein oder bereits gutgeschriebene Probeabholungen enthalten.
 
 Die Antwort enthält eine `id` für jede Abholung. `was_trial: true` kennzeichnet
 eine Probeabholung, `was_trial: false` eine reguläre Abholung. Spätere Änderungen
-der Verifikation schreiben diesen Wert nicht um.
+der Verifikation schreiben diesen Wert nicht um. Neue Rettungen aller drei Quellen
+haben `was_trial: false`; sie erhöhen ausschließlich den regulären Zähler.
+Neue Seeds erzeugen keine Fairteiler-Ereignisse für simuliertes Trial-Guthaben.
+Ältere Trial-Einträge bleiben bei Migration und Neustarts erhalten.
 
 `pickups_completed` und `trial_pickups_completed` im Nutzerprofil sind unabhängig
 editierbare Testzähler. Sie können deshalb von der Anzahl der Historieneinträge
@@ -47,7 +51,8 @@ ausgeschlossen, auch wenn ein Teamnutzer keinen eigenen API-Key hat.
 Die fachlichen Felder entsprechen der persönlichen Historie. Statt einer
 Abholungs-`id` steht im Sample jedoch `person`, zum Beispiel `person_007`.
 Eine `user_id` ist in keiner der beiden Antworten enthalten. Die IDs der
-zugehörigen Körbe oder Fairteiler bleiben sichtbar.
+zugehörigen Körbe, Fairteiler oder Geschäfte bleiben sichtbar. Der Filter
+`source=business` zeigt Geschäftsrettungen; er kann beim Beispieldatensatz leer sein.
 
 Ein `person`-Wert bleibt bei unverändertem Bestand an Beispielpersonen über
 Seiten und Quellenfilter hinweg gleich. Er ist kein für `/users/{user_id}` oder
@@ -94,6 +99,15 @@ Ohne Koordinaten liefert `GET /food-share-points` die Standorte nach Name sortie
 Mit `lat` und `lon` werden Standorte innerhalb von `distance_km` nach Entfernung
 sortiert. Die Antwort enthält dann die berechnete `distance_km`; ohne
 Umkreissuche ist dieses Feld `null`.
+
+## Demo-Geschäfte
+
+Drei ausdrücklich fiktive Geschäfte in Frankfurt stehen in `GET /businesses`.
+Die Migration ergänzt sie auch in bestehenden Datenbanken und erhält bestehende
+Team-Schlüssel, Zustände und Historien. Geschäftsrettungen erscheinen mit
+`source: business`, `business_id`, `business_name` und Koordinaten in der Historie.
+Es gibt keine Warenbestände oder Terminbuchung; jeder erfolgreiche POST ist ein
+eigenes Ereignis und setzt Verifikation voraus.
 
 ## Körbe und Anfragen
 

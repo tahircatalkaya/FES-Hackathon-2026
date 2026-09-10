@@ -19,7 +19,7 @@ eine Zeitzone erforderlich, zum Beispiel `2026-09-08T09:00:00Z` oder
 | Teamnutzer | Handelt über den gemeinsamen Team-Key und optional `X-User-ID` |
 | Korb | Angebot eines Nutzers; kann von einem anderen Nutzer angefragt oder abgeholt werden |
 | Abholanfrage | Verbindet einen Anfragenden mit einem Korb |
-| Abholung | Abgeschlossenes Ereignis an genau einer Quelle: Korb oder Fairteiler |
+| Abholung | Abgeschlossenes Ereignis an genau einer Quelle: Korb, Fairteiler oder Geschäft |
 | Fairteiler | Standort, an dem mehrere Abholungen erfasst werden können |
 
 ## Nutzer (UserMeResponse)
@@ -59,7 +59,8 @@ In Nutzerantworten steht dieses Objekt unter `verification`.
 | `mentor_approved` | boolean | Simulierte Freigabe liegt vor |
 | `mentor_approved_at` | Zeitstempel oder null | Zeitpunkt der Freigabe |
 | `verified_at` | Zeitstempel oder null | Zeitpunkt der Verifikation |
-| `may_pick_up` | boolean | Aktuell zum Abholen berechtigt |
+| `may_pick_up` | boolean | Körbe/Fairteiler abholen; für alle Teamnutzer true |
+| `may_pick_up_from_business` | boolean | Geschäftsrettung erlaubt; entspricht `is_verified` |
 | `may_earn_rewards` | boolean | Entspricht `is_verified`; löst keine Belohnungsvergabe aus |
 | `next_step` | string | Beschreibung des nächsten Schritts im Verifikationsablauf |
 
@@ -148,14 +149,14 @@ des Anfragenden, nicht die ID der Anfrage. Die Antwort enthält:
 | `status` | string | Neuer Status |
 | `updated_at` | Zeitstempel | Zeitpunkt des Statuswechsels |
 | `pickup_id` | integer oder null | ID der bei `picked_up` erfassten Abholung; sonst `null` |
-| `was_trial` | boolean | Bei Abschluss true für eine Probeabholung; ohne Abschluss false |
+| `was_trial` | boolean | Bei neuen Korbabschlüssen immer false |
 
 Die erlaubten Übergänge und Akteure stehen im
 [API-Guide](API-GUIDE.md#6-berechtigungen-bei-statuswechseln).
 
 ## Abholungen (PickupResponse und SamplePickupResponse)
 
-`POST /pickups` liefert `PickupResponse`.
+`POST /pickups` und `POST /businesses/{business_id}/pickups` liefern `PickupResponse`.
 `GET /users/me/pickups` liefert eine Liste dieser Objekte;
 `GET /pickups/sample` eine Liste von `SamplePickupResponse`.
 
@@ -163,11 +164,13 @@ Die erlaubten Übergänge und Akteure stehen im
 |------|-----|-----------|
 | `id` | integer | Abholungs-ID; nur in `PickupResponse` |
 | `person` | string | Pseudonym der Beispielperson; nur in `SamplePickupResponse` |
-| `source` | string | `basket` oder `food_share_point` |
+| `source` | string | `basket`, `food_share_point` oder `business` |
 | `picked_up_at` | Zeitstempel | Zeitpunkt der Abholung |
-| `was_trial` | boolean | True, wenn der Nutzer beim Abschluss noch nicht verifiziert war |
+| `was_trial` | boolean | Historische Trial-Markierung; alle neuen Rettungen haben false |
 | `food_share_point_id` | integer oder null | ID der Fairteiler-Quelle |
 | `food_share_point_name` | string oder null | Name der Fairteiler-Quelle |
+| `business_id` | integer oder null | ID der Geschäftsquelle |
+| `business_name` | string oder null | Name der Geschäftsquelle |
 | `basket_id` | integer oder null | ID der Korb-Quelle |
 | `basket_title` | string oder null | Titel des Quellkorbs |
 | `basket_created_at` | Zeitstempel oder null | Zeitpunkt des Korbangebots |
@@ -176,8 +179,8 @@ Die erlaubten Übergänge und Akteure stehen im
 | `lat` | number oder null | Breitengrad der Quelle |
 | `lon` | number oder null | Längengrad der Quelle |
 
-Bei Fairteiler-Abholungen sind die Korb-Felder einschließlich `food_types` leer
-(`null`); bei Korb-Abholungen die Fairteiler-Felder. Die Antworten enthalten keine
+Felder anderer Quellen sind `null`; bei Geschäftsrettungen sind beispielsweise
+Korb- und Fairteiler-Felder einschließlich `food_types` leer. Die Antworten enthalten keine
 `user_id`. Im Sample ersetzt `person` die Abholungs-`id`.
 
 ### Abholung erfassen (PickupCreate)
@@ -214,6 +217,13 @@ Antwort von `GET /food-share-points/{food_share_point_id}`;
 | `opening_hours` | string oder null | Öffnungszeiten, falls vorhanden |
 | `region_id` | integer | Kennung der Standortregion |
 | `distance_km` | number oder null | Entfernung zum Suchpunkt; ohne Umkreissuche `null` |
+
+## Geschäft (BusinessResponse)
+
+`GET /businesses` liefert eine Liste fiktiver Demo-Geschäfte mit `id` (integer),
+`name` (string), `lat` und `lon` (number). Der Katalog benötigt einen Team-Key,
+aber keine Verifikation. `POST /businesses/{business_id}/pickups` benötigt einen
+verifizierten ausgewählten Nutzer und keinen Body.
 
 ## Dienststatus
 
