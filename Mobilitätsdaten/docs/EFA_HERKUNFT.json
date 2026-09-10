@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "csv_file": "BeispielDataSetEFA.csv",
+  "csv_encoding": "UTF-8",
+  "csv_delimiter": ";",
+  "generated_on": "2026-09-10",
+  "row_number_convention": "Inclusive physical CSV lines; header is line 1",
+  "original": {
+    "source": "Verkehrsverbund",
+    "archive_file": "docs/BeispielDataSetEFA_original.csv",
+    "sha256_original_file": "f60e851fc58fb7b15f9f449bf20f850dd1f84185c3a0eb1bd5eb135ed2ea9dfa",
+    "row_count_before_filter": 50,
+    "filter": "s_gem == Frankfurt am Main AND z_gem == Frankfurt am Main",
+    "retained_row_count": 27,
+    "excluded_row_count": 23,
+    "retained_source_csv_lines": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      50,
+      51
+    ],
+    "csv_line_start": 2,
+    "csv_line_end": 28,
+    "retained_values_unchanged": true
+  },
+  "synthetic": {
+    "source": "synthetic_hackathon",
+    "measured": false,
+    "date": "2025-09-15",
+    "timezone": "Europe/Berlin",
+    "row_count": 5672,
+    "csv_line_start": 29,
+    "csv_line_end": 5700,
+    "profile_file": "tagesgang_avg.csv",
+    "profile_sha256": "b189662f839df783e2d612c438c8965b55645a047ca0f87a177844e5fa1b2322",
+    "profile_daily_total": 567200,
+    "scale_factor": 0.01,
+    "profile_applies_to": [
+      "request_timestamp",
+      "log_timestamp"
+    ],
+    "hourly_counts": [
+      {
+        "hour": 0,
+        "source_requests": 6400,
+        "synthetic_requests": 64
+      },
+      {
+        "hour": 1,
+        "source_requests": 4000,
+        "synthetic_requests": 40
+      },
+      {
+        "hour": 2,
+        "source_requests": 2100,
+        "synthetic_requests": 21
+      },
+      {
+        "hour": 3,
+        "source_requests": 900,
+        "synthetic_requests": 9
+      },
+      {
+        "hour": 4,
+        "source_requests": 3500,
+        "synthetic_requests": 35
+      },
+      {
+        "hour": 5,
+        "source_requests": 9800,
+        "synthetic_requests": 98
+      },
+      {
+        "hour": 6,
+        "source_requests": 21600,
+        "synthetic_requests": 216
+      },
+      {
+        "hour": 7,
+        "source_requests": 41100,
+        "synthetic_requests": 411
+      },
+      {
+        "hour": 8,
+        "source_requests": 35700,
+        "synthetic_requests": 357
+      },
+      {
+        "hour": 9,
+        "source_requests": 26800,
+        "synthetic_requests": 268
+      },
+      {
+        "hour": 10,
+        "source_requests": 22000,
+        "synthetic_requests": 220
+      },
+      {
+        "hour": 11,
+        "source_requests": 22000,
+        "synthetic_requests": 220
+      },
+      {
+        "hour": 12,
+        "source_requests": 26300,
+        "synthetic_requests": 263
+      },
+      {
+        "hour": 13,
+        "source_requests": 33100,
+        "synthetic_requests": 331
+      },
+      {
+        "hour": 14,
+        "source_requests": 32800,
+        "synthetic_requests": 328
+      },
+      {
+        "hour": 15,
+        "source_requests": 37700,
+        "synthetic_requests": 377
+      },
+      {
+        "hour": 16,
+        "source_requests": 43900,
+        "synthetic_requests": 439
+      },
+      {
+        "hour": 17,
+        "source_requests": 48000,
+        "synthetic_requests": 480
+      },
+      {
+        "hour": 18,
+        "source_requests": 40300,
+        "synthetic_requests": 403
+      },
+      {
+        "hour": 19,
+        "source_requests": 28800,
+        "synthetic_requests": 288
+      },
+      {
+        "hour": 20,
+        "source_requests": 23900,
+        "synthetic_requests": 239
+      },
+      {
+        "hour": 21,
+        "source_requests": 21600,
+        "synthetic_requests": 216
+      },
+      {
+        "hour": 22,
+        "source_requests": 20000,
+        "synthetic_requests": 200
+      },
+      {
+        "hour": 23,
+        "source_requests": 14900,
+        "synthetic_requests": 149
+      }
+    ],
+    "coordinate_source": "haltestellen_avg.csv",
+    "coordinate_source_sha256": "38c30ec76a7707ac994665f8832ba02812b7c751f3aa578de79571e077de7b7a",
+    "coordinate_format": "Decimal degrees with decimal point, as supplied in haltestellen_avg.csv",
+    "hafas_id_source": "Original EFA rows, matched by station name; Ffm Hauptbahnhof normalized to Frankfurt (Main) Hauptbahnhof",
+    "station_count": 19,
+    "stations": [
+      {
+        "name": "Frankfurt (Main) Hauptwache",
+        "id": "3000001",
+        "longitude": "8.678782",
+        "latitude": "50.113973"
+      },
+      {
+        "name": "Frankfurt (Main) Hauptbahnhof",
+        "id": "3000010",
+        "longitude": "8.663031",
+        "latitude": "50.106732"
+      },
+      {
+        "name": "Frankfurt (Main) Taunusanlage",
+        "id": "3000011",
+        "longitude": "8.669053",
+        "latitude": "50.1132"
+      },
+      {
+        "name": "Frankfurt (Main) Habsburgerallee",
+        "id": "3000520",
+        "longitude": "8.708382",
+        "latitude": "50.117369"
+      },
+      {
+        "name": "Frankfurt (Main) Südbahnhof",
+        "id": "3000912",
+        "longitude": "8.685723",
+        "latitude": "50.099451"
+      },
+      {
+        "name": "Frankfurt (Main) Bockenheimer Warte",
+        "id": "3001201",
+        "longitude": "8.652258",
+        "latitude": "50.120236"
+      },
+      {
+        "name": "Frankfurt (Main) Westbahnhof",
+        "id": "3001204",
+        "longitude": "8.639773",
+        "latitude": "50.119228"
+      },
+      {
+        "name": "Frankfurt (Main) Fischstein",
+        "id": "3001223",
+        "longitude": "8.624876",
+        "latitude": "50.129337"
+      },
+      {
+        "name": "Frankfurt (Main) Hausener Weg",
+        "id": "3001225",
+        "longitude": "8.619649",
+        "latitude": "50.131431"
+      },
+      {
+        "name": "Frankfurt (Main) Fliederweg",
+        "id": "3001421",
+        "longitude": "8.67332",
+        "latitude": "50.166599"
+      },
+      {
+        "name": "Frankfurt (Main) Freiligrathstraße",
+        "id": "3001516",
+        "longitude": "8.710097",
+        "latitude": "50.122141"
+      },
+      {
+        "name": "Frankfurt (Main) Parlamentsplatz",
+        "id": "3001520",
+        "longitude": "8.713403",
+        "latitude": "50.12001"
+      },
+      {
+        "name": "Frankfurt (Main) Gwinnerstraße",
+        "id": "3001527",
+        "longitude": "8.741179",
+        "latitude": "50.133765"
+      },
+      {
+        "name": "Frankfurt (Main) Seckbacher Landstraße",
+        "id": "3001545",
+        "longitude": "8.711774",
+        "latitude": "50.133963"
+      },
+      {
+        "name": "Frankfurt (Main) Alt-Fechenheim",
+        "id": "3001546",
+        "longitude": "8.767689",
+        "latitude": "50.128319"
+      },
+      {
+        "name": "Frankfurt (Main) Rheinlandstraße",
+        "id": "3001905",
+        "longitude": "8.581258",
+        "latitude": "50.082422"
+      },
+      {
+        "name": "Frankfurt (Main) Rauenthaler Weg",
+        "id": "3001923",
+        "longitude": "8.570848",
+        "latitude": "50.084162"
+      },
+      {
+        "name": "Frankfurt (Main) Neu-Zeilsheim",
+        "id": "3002197",
+        "longitude": "8.492588",
+        "latitude": "50.097446"
+      },
+      {
+        "name": "Frankfurt (Main) Konstablerwache",
+        "id": "51009",
+        "longitude": "8.687704",
+        "latitude": "50.114475"
+      }
+    ],
+    "od_sampling": "Uniform independent station selection, conditioned on distinct origin and destination; not calibrated to observed OD demand",
+    "random_generator": "32-bit LCG: state = (1664525 * state + 1013904223) modulo 2^32",
+    "random_seed": 20260910,
+    "timestamp_generation": "Each hour is split into count non-overlapping integer-second intervals; one pseudo-random second per interval",
+    "timestamp_semantics": "request_timestamp is simulated query time; log_timestamp is identical (immediate logging)",
+    "diff_time_definition": "(request_timestamp - log_timestamp) in minutes, always 0; simulation convention only"
+  },
+  "sha256_output_file": "067ffdddd73c5272e80dff3620bfce3170360ed57ff5614b8a6cf19ee1da14eb"
+}

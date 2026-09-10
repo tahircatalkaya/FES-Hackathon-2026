@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "csv_file": "BeispielAFZ.csv",
+  "csv_encoding": "cp1252",
+  "csv_delimiter": ";",
+  "row_number_convention": "csv_line_start/end are inclusive physical lines, header is line 1",
+  "generated_on": "2026-09-09",
+  "source_gtfs_file": "GTFS_gefiltert_Frankfurt+30km.7z",
+  "source_gtfs_sha256": "f10b2160561f7c0f650856ee0ac9d040ae0cadcfe1c074c0ba07d0f39851a7d9",
+  "original": {
+    "source": "Verkehrsverbund",
+    "csv_line_start": 2,
+    "csv_line_end": 101,
+    "row_count": 100,
+    "trip_count": 4,
+    "date": "2024-04-30",
+    "line": "U7",
+    "sha256_original_file": "7b265f1e0649efd5e3c5c3d77d4296fcd04e5f83e99ffa9aae0042f44fd71e11"
+  },
+  "synthetic": {
+    "source": "synthetic_hackathon",
+    "date": "2025-09-15",
+    "timezone": "Europe/Berlin",
+    "measured": false,
+    "csv_line_start": 102,
+    "csv_line_end": 1043,
+    "row_count": 942,
+    "trip_count": 48,
+    "lines": [
+      "U1",
+      "U2",
+      "U3",
+      "U4",
+      "U5",
+      "U6",
+      "U8",
+      "U9"
+    ],
+    "scheduled_fields_source": "Supplied GTFS timetable for 2025-09-15: stop sequences, planned times, line names and endpoints.",
+    "simulated_fields": [
+      "Ri",
+      "Hst (synthetic stop identifiers)",
+      "PlaetzeIst",
+      "StehplaetzeIst",
+      "SitzplaetzeIst",
+      "second AnZeit",
+      "second AbZeit",
+      "Einsteiger",
+      "Aussteiger",
+      "Besetzung",
+      "Auslastung"
+    ],
+    "capacity_values": [
+      184,
+      368
+    ],
+    "notes": "Passenger counts, occupancy, capacities and actual times are simulated scenarios, not measured demand or verified train formations. Hst=0 denotes an operational marker in both source blocks."
+  },
+  "total_row_count": 1042,
+  "total_trip_count": 52,
+  "csv_sha256": "66478a1a223ae32b79e7dfd63cb2cfd3273253358d97f5e6b9518d4ddc36c10e"
+}
