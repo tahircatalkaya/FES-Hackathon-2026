@@ -1,0 +1,1043 @@
+Datum;Tag;Linie;Ri;AbZeit;FahrtAbHstName;AnZeit;FahrtAnHstName;PlaetzeIst;StehplaetzeIst;SitzplaetzeIst;AnZeit Soll;AbZeit Soll;AnZeit;AbZeit;HstName(Fpl);Hst;Einsteiger;Aussteiger;Besetzung;Auslastung
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:51;05:51;05:51:00;05:51:00;einfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:51;05:51;05:51:00;05:51:00;Enkheim;1537;0;0;0;0,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:52;05:52;05:45:07;05:50:22;Hessen-Center;1536;10,9;0;10,9;3,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:54;05:54;05:53:25;05:53:25;Kruppstraße;1535;0;0;10,9;3,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:55;05:55;05:54:57;05:56:27;Gwinnerstraße;1527;12,9;0;23,8;6,50%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:57;05:57;05:57:50;05:58:05;Schäfflestraße;1525;8,9;0;32,7;8,90%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;05:58;05:58;06:01:00;06:01:11;Johanna-Tesch-Platz;1524;5,9;0;38,6;10,50%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:00;06:00;06:02:33;06:02:43;Eissporthalle/Festplatz;1522;3;0;41,6;11,30%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:01;06:01;06:03:40;06:03:51;Parlamentsplatz;1520;4;0;45,6;12,40%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:02;06:02;06:04:41;06:04:53;Habsburgerallee;520;4;0;49,6;13,50%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:04;06:04;06:06:03;06:06:15;Zoo;511;2;4;47,6;12,90%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:05;06:05;06:07:54;06:08:15;Konstablerwache;510;12,9;21,2;39,3;10,70%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:07;06:07;06:09:09;06:09:25;Hauptwache;1;6;22,2;23,1;6,30%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:08;06:08;06:10:55;06:11:06;Alte Oper;201;1;4;20,1;5,50%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:10;06:10;06:12:17;06:12:30;Westend;206;1;7,1;14;3,80%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:11;06:11;06:13:35;06:13:46;Bockenheimer Warte;1201;2;5;11;3,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:12;06:12;06:14:29;06:14:29;Leipziger Straße;1203;0;0;11;3,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:14;06:14;06:15:55;06:16:05;Kirchplatz;1234;0;2;9;2,40%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:15;06:15;06:17:27;06:17:37;Industriehof;1222;0;1;8;2,20%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:16;06:16;06:18:48;06:18:48;Fischstein;1223;0;0;8;2,20%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:18;06:18;06:21:10;06:21:21;Hausener Weg;1225;0;1;7;1,90%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:20;06:20;06:22:32;06:22:43;Stephan-Heise-Straße;1226;0;1;6;1,60%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:21;06:21;06:23:43;06:23:43;Friedhof Westhausen;1227;0;0;6;1,60%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:23;06:23;06:25:45;06:30:28;Heerstraße;1229;0;6;0;0,00%
+30.04.2024;Di;U7;2;05:51;Enkheim;06:23;Heerstraße;368;272;96;06:23;06:23;06:23:00;06:23:00;ausfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:22;06:22;06:22:00;06:22:00;einfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:22;06:22;06:22:00;06:22:00;Heerstraße;1229;0;0;0;0,00%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:23;06:23;06:19:16;06:24:47;Friedhof Westhausen;1227;5;0;5;2,70%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:24;06:24;06:26:07;06:26:07;Stephan-Heise-Straße;1226;0;0;5;2,70%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:26;06:26;06:26:56;06:27:08;Hausener Weg;1225;5;0;10;5,40%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:27;06:27;06:28:25;06:28:36;Fischstein;1223;0;2;8;4,30%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:29;06:29;06:29:46;06:30:02;Industriehof;1222;6;1;13;7,10%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:30;06:30;06:31:29;06:31:42;Kirchplatz;1234;1;1;13;7,10%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:31;06:31;06:32:51;06:33:04;Leipziger Straße;1203;3;0;16;8,70%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:32;06:32;06:34:05;06:34:19;Bockenheimer Warte;1201;4;3;17;9,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:34;06:34;06:35:23;06:35:34;Westend;206;0;2;15;8,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:35;06:35;06:36:44;06:36:44;Alte Oper;201;0;0;15;8,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:36;06:36;06:37:55;06:38:25;Hauptwache;1;10;8;17;9,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:38;06:38;06:39:20;06:39:38;Konstablerwache;510;7;7;17;9,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:39;06:39;06:40:34;06:40:34;Zoo;511;0;0;17;9,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:41;06:41;06:42:28;06:42:43;Habsburgerallee;520;1;4;14;7,60%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:42;06:42;06:43:37;06:43:37;Parlamentsplatz;1520;0;0;14;7,60%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:43;06:45;06:44:31;06:44:31;Eissporthalle/Festplatz;1522;0;0;14;7,60%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:47;06:47;06:46:20;06:46:32;Johanna-Tesch-Platz;1524;1;1;14;7,60%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:48;06:48;06:48:12;06:48:22;Schäfflestraße;1525;1;0;15;8,20%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:50;06:50;06:49:48;06:50:02;Gwinnerstraße;1527;0;5;10;5,40%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:51;06:51;06:51:05;06:51:17;Kruppstraße;1535;0;4;6;3,30%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:52;06:52;06:52:45;06:52:55;Hessen-Center;1536;0;1;5;2,70%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:54;06:54;06:54:31;06:58:27;Enkheim;1537;0;5;0;0,00%
+30.04.2024;Di;U7;1;06:22;Heerstraße;06:54;Enkheim;184;136;48;06:54;06:54;06:54:00;06:54:00;ausfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:34;06:34;06:34:00;06:34:00;einfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:34;06:34;06:25:45;06:30:28;Heerstraße;1229;2;0;2;0,50%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:35;06:35;06:32:01;06:35:47;Friedhof Westhausen;1227;6,9;1;7,9;2,10%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:36;06:36;06:36:25;06:36:39;Stephan-Heise-Straße;1226;4;0;11,9;3,20%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:38;06:38;06:38:04;06:38:15;Hausener Weg;1225;8,9;0;20,8;5,70%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:39;06:39;06:39:39;06:39:51;Fischstein;1223;2;0;22,8;6,20%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:41;06:41;06:41:05;06:41:17;Industriehof;1222;2;0;24,8;6,70%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:42;06:42;06:42:44;06:42:54;Kirchplatz;1234;7,9;0;32,7;8,90%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:43;06:43;06:43:59;06:44:11;Leipziger Straße;1203;8,9;0;41,6;11,30%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:44;06:44;06:45:19;06:45:32;Bockenheimer Warte;1201;6;3;44,6;12,10%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:46;06:46;06:46:31;06:46:45;Westend;206;3;1;46,6;12,70%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:47;06:47;06:47:54;06:48:06;Alte Oper;201;1;3;44,6;12,10%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:48;06:48;06:49:09;06:49:23;Hauptwache;1;6;24,2;26,4;7,20%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:50;06:50;06:50:20;06:50:37;Konstablerwache;510;16,9;9,1;34,2;9,30%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:51;06:51;06:52:18;06:52:29;Zoo;511;2;3;33,2;9,00%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:53;06:53;06:53:32;06:53:42;Habsburgerallee;520;2;4;31,2;8,50%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:54;06:54;06:54:35;06:54:45;Parlamentsplatz;1520;0;1;30,2;8,20%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:55;06:55;06:55:45;06:55:56;Eissporthalle/Festplatz;1522;1;0;31,2;8,50%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:57;06:57;06:57:11;06:57:31;Johanna-Tesch-Platz;1524;2;5;28,2;7,70%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;06:58;06:58;06:59:03;06:59:14;Schäfflestraße;1525;0;3;25,2;6,80%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;07:00;07:00;07:00:55;07:01:07;Gwinnerstraße;1527;0;8,1;17,1;4,60%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;07:01;07:01;07:01:57;07:02:08;Kruppstraße;1535;0;4;13,1;3,60%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;07:02;07:02;07:03:43;07:03:53;Hessen-Center;1536;0;5;8,1;2,20%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;07:04;07:04;07:06:19;07:09:09;Enkheim;1537;0;8,1;0;0,00%
+30.04.2024;Di;U7;1;06:34;Heerstraße;07:04;Enkheim;368;272;96;07:04;07:04;07:04:00;07:04:00;ausfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:02;07:02;07:02:00;07:02:00;einfahrend;0;0;0;0;0,00%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:02;07:02;06:59:19;07:00:15;Enkheim;1537;4,3;0;4,3;2,30%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:03;07:03;07:04:34;07:04:45;Hessen-Center;1536;4,3;0;8,6;4,70%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:05;07:05;07:05:35;07:05:35;Kruppstraße;1535;0;0;8,6;4,70%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:06;07:06;07:06:01;07:07:30;Gwinnerstraße;1527;17,4;0,9;25,1;13,60%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:08;07:08;07:09:10;07:09:24;Schäfflestraße;1525;4,4;0;29,5;16,00%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:09;07:09;07:10:59;07:11:10;Johanna-Tesch-Platz;1524;1,1;0;30,6;16,60%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:11;07:11;07:12:27;07:12:39;Eissporthalle/Festplatz;1522;5,4;0;36;19,60%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:12;07:12;07:13:37;07:13:48;Parlamentsplatz;1520;3,3;0;39,3;21,40%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:13;07:13;07:14:42;07:14:56;Habsburgerallee;520;4,4;0;43,7;23,80%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:15;07:15;07:16:03;07:16:19;Zoo;511;7,6;1,8;49,5;26,90%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:16;07:16;07:17:40;07:18:03;Konstablerwache;510;8,7;29,6;28,6;15,50%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:18;07:18;07:19:07;07:19:25;Hauptwache;1;9,8;14,8;23,6;12,80%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:19;07:19;07:20:50;07:21:03;Alte Oper;201;1,1;1,8;22,9;12,40%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:21;07:21;07:22:06;07:22:17;Westend;206;1,1;1,8;22,2;12,10%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:22;07:22;07:23:22;07:23:35;Bockenheimer Warte;1201;0;3,7;18,5;10,10%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:23;07:23;07:24:32;07:24:44;Leipziger Straße;1203;3,3;1,9;19,9;10,80%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:25;07:25;07:25:48;07:26:03;Kirchplatz;1234;3,3;2,8;20,4;11,10%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:26;07:26;07:27:22;07:27:38;Industriehof;1222;3,3;2,8;20,9;11,40%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:27;07:27;07:30:07;07:30:07;Fischstein;1223;0;0;20,9;11,40%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:29;07:29;07:31:23;07:31:35;Hausener Weg;1225;0;3,7;17,2;9,30%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:31;07:31;07:32:41;07:32:58;Stephan-Heise-Straße;1226;2,2;5,5;13,9;7,60%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:32;07:32;07:33:47;07:33:58;Friedhof Westhausen;1227;0;1,9;12;6,50%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:34;07:34;07:36:27;07:36:57;Heerstraße;1229;0;12;0;0,00%
+30.04.2024;Di;U7;2;07:02;Enkheim;07:34;Heerstraße;184;136;48;07:34;07:34;07:34:00;07:34:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:04;07:04;07:04:52;07:04:52;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:04;07:04;07:04:52;07:05:10;Ginnheim Mitte;synthetic:de:06412:1309:7:1;26;0;26;7,07%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:05;07:05;07:06:05;07:06:20;Ginnheim/Niddapark;synthetic:de:06412:1378:2:2;21;3;44;11,96%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:06;07:06;07:07:24;07:07:33;Römerstadt;synthetic:de:06412:1366:2:2;32;7;69;18,75%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:08;07:08;07:09:47;07:09:58;Nordwestzentrum;synthetic:de:06412:1322:22:2;34;9;94;25,54%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:09;07:09;07:11:02;07:11:16;Heddernheimer Landstraße;synthetic:de:06412:1320:2:2;25;18;101;27,45%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:11;07:11;07:13:02;07:13:14;Zeilweg;synthetic:de:06412:1318:2:2;20;27;94;25,54%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:13;07:13;07:14:50;07:15:10;Heddernheim;synthetic:de:06412:1317:22:3;26;28;92;25,00%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:15;07:15;07:16:46;07:17:00;Weißer Stein;synthetic:de:06412:1312:22:2;26;16;102;27,72%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:16;07:16;07:17:48;07:18:04;Lindenbaum;synthetic:de:06412:1311:2:2;30;21;111;30,16%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:17;07:17;07:18:52;07:19:03;Hügelstraße;synthetic:de:06412:1304:2:2;34;13;132;35,87%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:18;07:18;07:19:51;07:19:58;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;30;21;141;38,32%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:20;07:20;07:21:40;07:21:52;Dornbusch;synthetic:de:06412:1301:22:22;35;33;143;38,86%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:22;07:22;07:23:50;07:24:00;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;32;18;157;42,66%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:23;07:23;07:24:50;07:25:03;Holzhausenstraße;synthetic:de:06412:403:4:4;30;38;149;40,49%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:24;07:24;07:25:51;07:26:00;Grüneburgweg;synthetic:de:06412:402:2:2;31;21;159;43,21%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:25;07:25;07:26:48;07:27:03;Eschenheimer Tor;synthetic:de:06412:401:2:2;34;56;137;37,23%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:26;07:26;07:27:51;07:27:57;Hauptwache;synthetic:de:06412:1:22:4;51;40;148;40,22%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:27;07:27;07:29:03;07:29:10;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;44;32;160;43,48%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:29;07:29;07:30:55;07:31:01;Schweizer Platz;synthetic:de:06412:921:1:2;20;38;142;38,59%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:31;07:31;07:33:03;07:33:03;Südbahnhof;synthetic:de:06412:912:7:11;0;142;0;0,00%
+15.09.2025;Mo;U1;1;07:04;Ginnheim Mitte;07:31;Südbahnhof;368;272;96;07:31;07:31;07:33:03;07:33:03;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:04;12:04;12:05:19;12:05:19;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:04;12:04;12:05:19;12:05:32;Ginnheim Mitte;synthetic:de:06412:1309:7:1;9;0;9;4,89%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:05;12:05;12:06:48;12:06:58;Ginnheim/Niddapark;synthetic:de:06412:1378:2:2;8;1;16;8,70%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:06;12:06;12:07:46;12:08:00;Römerstadt;synthetic:de:06412:1366:2:2;12;5;23;12,50%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:08;12:08;12:10:04;12:10:12;Nordwestzentrum;synthetic:de:06412:1322:22:2;13;7;29;15,76%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:09;12:09;12:11:00;12:11:15;Heddernheimer Landstraße;synthetic:de:06412:1320:2:2;5;8;26;14,13%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:11;12:11;12:13:24;12:13:30;Zeilweg;synthetic:de:06412:1318:2:2;8;9;25;13,59%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:13;12:13;12:15:10;12:15:28;Heddernheim;synthetic:de:06412:1317:22:3;6;6;25;13,59%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:15;12:15;12:17:36;12:17:50;Weißer Stein;synthetic:de:06412:1312:22:2;7;7;25;13,59%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:16;12:16;12:18:38;12:18:55;Lindenbaum;synthetic:de:06412:1311:2:2;5;8;22;11,96%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:17;12:17;12:19:57;12:20:05;Hügelstraße;synthetic:de:06412:1304:2:2;3;4;21;11,41%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:18;12:18;12:20:53;12:21:00;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;3;2;22;11,96%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:20;12:20;12:22:51;12:23:11;Dornbusch;synthetic:de:06412:1301:22:22;7;3;26;14,13%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:22;12:22;12:25:21;12:25:40;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;8;8;26;14,13%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:23;12:23;12:26:28;12:26:37;Holzhausenstraße;synthetic:de:06412:403:4:4;14;5;35;19,02%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:24;12:24;12:27:47;12:27:55;Grüneburgweg;synthetic:de:06412:402:2:2;8;4;39;21,20%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:25;12:25;12:28:58;12:29:18;Eschenheimer Tor;synthetic:de:06412:401:2:2;12;11;40;21,74%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:26;12:26;12:30:18;12:30:29;Hauptwache;synthetic:de:06412:1:22:4;15;12;43;23,37%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:27;12:27;12:31:17;12:31:27;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;8;7;44;23,91%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:29;12:29;12:33:28;12:33:48;Schweizer Platz;synthetic:de:06412:921:1:2;15;11;48;26,09%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:31;12:31;12:35:47;12:35:47;Südbahnhof;synthetic:de:06412:912:7:11;0;48;0;0,00%
+15.09.2025;Mo;U1;1;12:04;Ginnheim Mitte;12:31;Südbahnhof;184;136;48;12:31;12:31;12:35:47;12:35:47;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:04;17:04;17:06:01;17:06:01;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:04;17:04;17:06:01;17:06:18;Ginnheim Mitte;synthetic:de:06412:1309:7:1;32;0;32;8,70%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:05;17:05;17:07:15;17:07:33;Ginnheim/Niddapark;synthetic:de:06412:1378:2:2;18;12;38;10,33%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:06;17:06;17:08:21;17:08:28;Römerstadt;synthetic:de:06412:1366:2:2;32;10;60;16,30%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:08;17:08;17:10:21;17:10:28;Nordwestzentrum;synthetic:de:06412:1322:22:2;25;22;63;17,12%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:09;17:09;17:11:49;17:11:56;Heddernheimer Landstraße;synthetic:de:06412:1320:2:2;26;13;76;20,65%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:11;17:11;17:14:13;17:14:22;Zeilweg;synthetic:de:06412:1318:2:2;23;16;83;22,55%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:13;17:13;17:16:38;17:16:47;Heddernheim;synthetic:de:06412:1317:22:3;25;17;91;24,73%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:15;17:15;17:18:23;17:18:33;Weißer Stein;synthetic:de:06412:1312:22:2;34;36;89;24,18%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:16;17:16;17:19:21;17:19:27;Lindenbaum;synthetic:de:06412:1311:2:2;34;21;102;27,72%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:17;17:17;17:20:19;17:20:37;Hügelstraße;synthetic:de:06412:1304:2:2;25;33;94;25,54%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:18;17:18;17:21:34;17:21:51;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;32;15;111;30,16%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:20;17:20;17:23:58;17:24:18;Dornbusch;synthetic:de:06412:1301:22:22;21;25;107;29,08%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:22;17:22;17:25:54;17:26:08;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;39;12;134;36,41%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:23;17:23;17:27:11;17:27:31;Holzhausenstraße;synthetic:de:06412:403:4:4;45;21;158;42,93%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:24;17:24;17:28:19;17:28:39;Grüneburgweg;synthetic:de:06412:402:2:2;23;61;120;32,61%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:25;17:25;17:29:27;17:29:45;Eschenheimer Tor;synthetic:de:06412:401:2:2;24;27;117;31,79%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:26;17:26;17:30:33;17:30:40;Hauptwache;synthetic:de:06412:1:22:4;47;25;139;37,77%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:27;17:27;17:31:52;17:32:03;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;37;35;141;38,32%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:29;17:29;17:33:56;17:34:16;Schweizer Platz;synthetic:de:06412:921:1:2;28;23;146;39,67%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:31;17:31;17:36:00;17:36:00;Südbahnhof;synthetic:de:06412:912:7:11;0;146;0;0,00%
+15.09.2025;Mo;U1;1;17:04;Ginnheim Mitte;17:31;Südbahnhof;368;272;96;17:31;17:31;17:36:00;17:36:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:07;07:07;07:08:45;07:08:45;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:07;07:07;07:08:45;07:09:05;Südbahnhof;synthetic:de:06412:912:7:10;26;0;26;7,07%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:08;07:08;07:09:53;07:10:01;Schweizer Platz;synthetic:de:06412:921:1:1;28;5;49;13,32%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:09;07:09;07:10:54;07:11:01;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;20;12;57;15,49%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:11;07:11;07:12:37;07:12:44;Hauptwache;synthetic:de:06412:1:21:3;34;12;79;21,47%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:12;07:12;07:14:02;07:14:15;Eschenheimer Tor;synthetic:de:06412:401:1:1;37;22;94;25,54%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:13;07:13;07:15:10;07:15:24;Grüneburgweg;synthetic:de:06412:402:1:1;26;19;101;27,45%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:14;07:14;07:16:38;07:16:49;Holzhausenstraße;synthetic:de:06412:403:3:3;25;27;99;26,90%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:15;07:15;07:17:37;07:17:47;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;38;21;116;31,52%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:16;07:16;07:18:35;07:18:52;Dornbusch;synthetic:de:06412:1301:21:21;27;43;100;27,17%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:18;07:18;07:20:59;07:21:12;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;31;13;118;32,07%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:19;07:19;07:22:09;07:22:14;Hügelstraße;synthetic:de:06412:1304:1:1;18;36;100;27,17%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:20;07:20;07:23:03;07:23:21;Lindenbaum;synthetic:de:06412:1311:1:1;28;33;95;25,82%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:22;07:22;07:25:02;07:25:22;Weißer Stein;synthetic:de:06412:1312:21:1;21;31;85;23,10%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:24;07:24;07:26:58;07:27:14;Heddernheim;synthetic:de:06412:1317:23:2;35;21;99;26,90%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:25;07:25;07:28:19;07:28:33;Zeilweg;synthetic:de:06412:1318:1:1;39;13;125;33,97%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:27;07:27;07:30:25;07:30:31;Heddernheimer Landstraße;synthetic:de:06412:1320:1:1;27;39;113;30,71%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:28;07:28;07:31:54;07:32:09;Nordwestzentrum;synthetic:de:06412:1322:21:1;15;34;94;25,54%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:29;07:29;07:32:57;07:33:14;Römerstadt;synthetic:de:06412:1366:1:1;28;16;106;28,80%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:31;07:31;07:35:06;07:35:24;Ginnheim/Niddapark;synthetic:de:06412:1378:1:1;39;29;116;31,52%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:33;07:33;07:37:29;07:37:29;Ginnheim Mitte;synthetic:de:06412:1309:7:1;0;116;0;0,00%
+15.09.2025;Mo;U1;2;07:07;Südbahnhof;07:33;Ginnheim Mitte;368;272;96;07:33;07:33;07:37:29;07:37:29;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:07;12:07;12:07:29;12:07:29;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:07;12:07;12:07:29;12:07:48;Südbahnhof;synthetic:de:06412:912:7:10;13;0;13;7,07%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:08;12:08;12:08:36;12:08:45;Schweizer Platz;synthetic:de:06412:921:1:1;7;2;18;9,78%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:09;12:09;12:09:33;12:09:39;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;7;3;22;11,96%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:11;12:11;12:11:31;12:11:39;Hauptwache;synthetic:de:06412:1:21:3;8;3;27;14,67%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:12;12:12;12:12:27;12:12:43;Eschenheimer Tor;synthetic:de:06412:401:1:1;11;3;35;19,02%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:13;12:13;12:13:37;12:13:56;Grüneburgweg;synthetic:de:06412:402:1:1;9;6;38;20,65%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:14;12:14;12:14:44;12:14:59;Holzhausenstraße;synthetic:de:06412:403:3:3;9;5;42;22,83%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:15;12:15;12:16:11;12:16:27;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;8;4;46;25,00%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:16;12:16;12:17:34;12:17:50;Dornbusch;synthetic:de:06412:1301:21:21;3;6;43;23,37%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:18;12:18;12:19:30;12:19:45;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;6;9;40;21,74%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:19;12:19;12:20:33;12:20:50;Hügelstraße;synthetic:de:06412:1304:1:1;11;12;39;21,20%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:20;12:20;12:21:38;12:21:49;Lindenbaum;synthetic:de:06412:1311:1:1;8;10;37;20,11%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:22;12:22;12:23:44;12:23:58;Weißer Stein;synthetic:de:06412:1312:21:1;9;9;37;20,11%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:24;12:24;12:26:11;12:26:18;Heddernheim;synthetic:de:06412:1317:23:2;7;14;30;16,30%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:25;12:25;12:27:38;12:27:56;Zeilweg;synthetic:de:06412:1318:1:1;2;11;21;11,41%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:27;12:27;12:29:37;12:29:56;Heddernheimer Landstraße;synthetic:de:06412:1320:1:1;7;3;25;13,59%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:28;12:28;12:30:44;12:31:03;Nordwestzentrum;synthetic:de:06412:1322:21:1;5;10;20;10,87%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:29;12:29;12:32:13;12:32:30;Römerstadt;synthetic:de:06412:1366:1:1;13;7;26;14,13%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:31;12:31;12:34:17;12:34:27;Ginnheim/Niddapark;synthetic:de:06412:1378:1:1;6;7;25;13,59%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:33;12:33;12:36:34;12:36:34;Ginnheim Mitte;synthetic:de:06412:1309:7:1;0;25;0;0,00%
+15.09.2025;Mo;U1;2;12:07;Südbahnhof;12:33;Ginnheim Mitte;184;136;48;12:33;12:33;12:36:34;12:36:34;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:07;17:07;17:09:00;17:09:00;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:07;17:07;17:09:00;17:09:06;Südbahnhof;synthetic:de:06412:912:7:10;40;0;40;10,87%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:08;17:08;17:10:07;17:10:17;Schweizer Platz;synthetic:de:06412:921:1:1;25;8;57;15,49%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:09;17:09;17:11:31;17:11:44;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;28;19;66;17,93%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:11;17:11;17:13:40;17:13:47;Hauptwache;synthetic:de:06412:1:21:3;26;12;80;21,74%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:12;17:12;17:15:04;17:15:23;Eschenheimer Tor;synthetic:de:06412:401:1:1;32;15;97;26,36%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:13;17:13;17:16:31;17:16:41;Grüneburgweg;synthetic:de:06412:402:1:1;26;35;88;23,91%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:14;17:14;17:17:42;17:17:51;Holzhausenstraße;synthetic:de:06412:403:3:3;26;35;79;21,47%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:15;17:15;17:18:39;17:18:48;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;29;31;77;20,92%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:16;17:16;17:19:36;17:19:51;Dornbusch;synthetic:de:06412:1301:21:21;34;27;84;22,83%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:18;17:18;17:21:57;17:22:10;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;36;14;106;28,80%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:19;17:19;17:23:09;17:23:16;Hügelstraße;synthetic:de:06412:1304:1:1;26;28;104;28,26%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:20;17:20;17:24:38;17:24:49;Lindenbaum;synthetic:de:06412:1311:1:1;25;41;88;23,91%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:22;17:22;17:26:29;17:26:42;Weißer Stein;synthetic:de:06412:1312:21:1;28;34;82;22,28%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:24;17:24;17:28:22;17:28:33;Heddernheim;synthetic:de:06412:1317:23:2;16;10;88;23,91%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:25;17:25;17:29:29;17:29:40;Zeilweg;synthetic:de:06412:1318:1:1;40;11;117;31,79%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:27;17:27;17:31:16;17:31:36;Heddernheimer Landstraße;synthetic:de:06412:1320:1:1;20;30;107;29,08%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:28;17:28;17:32:34;17:32:41;Nordwestzentrum;synthetic:de:06412:1322:21:1;37;39;105;28,53%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:29;17:29;17:33:58;17:34:05;Römerstadt;synthetic:de:06412:1366:1:1;30;41;94;25,54%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:31;17:31;17:36:00;17:36:16;Ginnheim/Niddapark;synthetic:de:06412:1378:1:1;42;21;115;31,25%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:33;17:33;17:37:52;17:37:52;Ginnheim Mitte;synthetic:de:06412:1309:7:1;0;115;0;0,00%
+15.09.2025;Mo;U1;2;17:07;Südbahnhof;17:33;Ginnheim Mitte;368;272;96;17:33;17:33;17:37:52;17:37:52;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:04;07:04;07:04:40;07:04:40;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:04;07:04;07:04:40;07:04:45;Bad Homburg v.d.H.-Gonzenheim (U);synthetic:de:06434:4397:3:3;28;0;28;7,61%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:05;07:05;07:05:33;07:05:45;Bad Homburg v.d.H.-Ober-Eschbach (U);synthetic:de:06434:2312:1:1;19;8;39;10,60%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:08;07:08;07:08:32;07:08:42;Nieder-Eschbach;synthetic:de:06412:2398:2:2;38;5;72;19,57%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:11;07:11;07:11:47;07:12:01;Bonames Mitte;synthetic:de:06412:1352:2:2;36;27;81;22,01%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:12;07:12;07:13:16;07:13:29;Kalbach;synthetic:de:06412:1351:2:2;26;26;81;22,01%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:15;07:15;07:16:44;07:16:57;Riedwiese/Mertonviertel;synthetic:de:06412:1349:2:2;31;13;99;26,90%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:16;07:16;07:17:57;07:18:15;Sandelmühle;synthetic:de:06412:1348:2:2;32;39;92;25,00%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:18;07:18;07:20:10;07:20:22;Heddernheim;synthetic:de:06412:1317:22:3;39;23;108;29,35%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:20;07:20;07:21:58;07:22:06;Weißer Stein;synthetic:de:06412:1312:22:2;28;16;120;32,61%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:21;07:21;07:22:54;07:23:11;Lindenbaum;synthetic:de:06412:1311:2:2;20;27;113;30,71%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:22;07:22;07:23:59;07:24:12;Hügelstraße;synthetic:de:06412:1304:2:2;20;17;116;31,52%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:23;07:23;07:25:00;07:25:09;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;36;12;140;38,04%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:25;07:25;07:26:51;07:27:01;Dornbusch;synthetic:de:06412:1301:22:22;30;51;119;32,34%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:27;07:27;07:28:37;07:28:44;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;22;34;107;29,08%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:28;07:28;07:29:42;07:29:49;Holzhausenstraße;synthetic:de:06412:403:4:4;16;24;99;26,90%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:29;07:29;07:30:55;07:31:09;Grüneburgweg;synthetic:de:06412:402:2:2;20;34;85;23,10%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:30;07:30;07:31:57;07:32:17;Eschenheimer Tor;synthetic:de:06412:401:2:2;38;18;105;28,53%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:31;07:31;07:33:17;07:33:30;Hauptwache;synthetic:de:06412:1:22:4;34;21;118;32,07%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:32;07:32;07:34:23;07:34:32;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;28;35;111;30,16%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:34;07:34;07:36:23;07:36:38;Schweizer Platz;synthetic:de:06412:921:1:2;22;22;111;30,16%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:36;07:36;07:38:21;07:38:21;Südbahnhof;synthetic:de:06412:912:7:11;0;111;0;0,00%
+15.09.2025;Mo;U2;1;07:04;Bad Homburg v.d.H.-Gonzenheim (U);07:36;Südbahnhof;368;272;96;07:36;07:36;07:38:21;07:38:21;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:04;12:04;12:05:57;12:05:57;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:04;12:04;12:05:57;12:06:12;Bad Homburg v.d.H.-Gonzenheim (U);synthetic:de:06434:4397:3:3;4;0;4;2,17%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:05;12:05;12:07:23;12:07:43;Bad Homburg v.d.H.-Ober-Eschbach (U);synthetic:de:06434:2312:1:1;7;1;10;5,43%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:08;12:08;12:10:44;12:10:59;Nieder-Eschbach;synthetic:de:06412:2398:2:2;7;4;13;7,07%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:11;12:11;12:13:47;12:14:05;Bonames Mitte;synthetic:de:06412:1352:2:2;5;2;16;8,70%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:12;12:12;12:14:53;12:15:10;Kalbach;synthetic:de:06412:1351:2:2;7;3;20;10,87%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:15;12:15;12:18:11;12:18:30;Riedwiese/Mertonviertel;synthetic:de:06412:1349:2:2;8;3;25;13,59%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:16;12:16;12:19:18;12:19:23;Sandelmühle;synthetic:de:06412:1348:2:2;5;8;22;11,96%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:18;12:18;12:21:31;12:21:44;Heddernheim;synthetic:de:06412:1317:22:3;17;8;31;16,85%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:20;12:20;12:23:54;12:24:11;Weißer Stein;synthetic:de:06412:1312:22:2;9;4;36;19,57%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:21;12:21;12:25:17;12:25:27;Lindenbaum;synthetic:de:06412:1311:2:2;9;4;41;22,28%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:22;12:22;12:26:15;12:26:35;Hügelstraße;synthetic:de:06412:1304:2:2;6;11;36;19,57%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:23;12:23;12:27:23;12:27:36;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;11;4;43;23,37%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:25;12:25;12:29:51;12:30:02;Dornbusch;synthetic:de:06412:1301:22:22;12;10;45;24,46%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:27;12:27;12:31:49;12:32:05;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;2;5;42;22,83%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:28;12:28;12:32:53;12:33:11;Holzhausenstraße;synthetic:de:06412:403:4:4;3;15;30;16,30%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:29;12:29;12:34:00;12:34:15;Grüneburgweg;synthetic:de:06412:402:2:2;4;4;30;16,30%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:30;12:30;12:35:03;12:35:13;Eschenheimer Tor;synthetic:de:06412:401:2:2;8;9;29;15,76%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:31;12:31;12:36:01;12:36:14;Hauptwache;synthetic:de:06412:1:22:4;14;8;35;19,02%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:32;12:32;12:37:02;12:37:22;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;3;6;32;17,39%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:34;12:34;12:38:58;12:39:15;Schweizer Platz;synthetic:de:06412:921:1:2;6;3;35;19,02%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:36;12:36;12:41:00;12:41:00;Südbahnhof;synthetic:de:06412:912:7:11;0;35;0;0,00%
+15.09.2025;Mo;U2;1;12:04;Bad Homburg v.d.H.-Gonzenheim (U);12:36;Südbahnhof;184;136;48;12:36;12:36;12:41:00;12:41:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:04;17:04;17:04:30;17:04:30;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:04;17:04;17:04:30;17:04:46;Bad Homburg v.d.H.-Gonzenheim (U);synthetic:de:06434:4397:3:3;26;0;26;7,07%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:05;17:05;17:05:56;17:06:09;Bad Homburg v.d.H.-Ober-Eschbach (U);synthetic:de:06434:2312:1:1;17;7;36;9,78%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:08;17:08;17:09:17;17:09:27;Nieder-Eschbach;synthetic:de:06412:2398:2:2;34;4;66;17,93%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:11;17:11;17:12:25;17:12:33;Bonames Mitte;synthetic:de:06412:1352:2:2;21;9;78;21,20%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:12;17:12;17:13:21;17:13:33;Kalbach;synthetic:de:06412:1351:2:2;26;10;94;25,54%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:15;17:15;17:16:18;17:16:32;Riedwiese/Mertonviertel;synthetic:de:06412:1349:2:2;24;31;87;23,64%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:16;17:16;17:17:20;17:17:36;Sandelmühle;synthetic:de:06412:1348:2:2;17;25;79;21,47%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:18;17:18;17:19:43;17:19:57;Heddernheim;synthetic:de:06412:1317:22:3;30;29;80;21,74%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:20;17:20;17:22:02;17:22:20;Weißer Stein;synthetic:de:06412:1312:22:2;34;31;83;22,55%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:21;17:21;17:23:08;17:23:23;Lindenbaum;synthetic:de:06412:1311:2:2;33;28;88;23,91%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:22;17:22;17:24:27;17:24:35;Hügelstraße;synthetic:de:06412:1304:2:2;41;34;95;25,82%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:23;17:23;17:25:50;17:25:58;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;32;19;108;29,35%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:25;17:25;17:28:00;17:28:17;Dornbusch;synthetic:de:06412:1301:22:22;32;24;116;31,52%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:27;17:27;17:30:11;17:30:19;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;29;23;122;33,15%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:28;17:28;17:31:35;17:31:45;Holzhausenstraße;synthetic:de:06412:403:4:4;21;29;114;30,98%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:29;17:29;17:32:39;17:32:55;Grüneburgweg;synthetic:de:06412:402:2:2;39;16;137;37,23%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:30;17:30;17:33:46;17:34:06;Eschenheimer Tor;synthetic:de:06412:401:2:2;29;34;132;35,87%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:31;17:31;17:34:54;17:35:07;Hauptwache;synthetic:de:06412:1:22:4;38;47;123;33,42%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:32;17:32;17:36:13;17:36:33;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;38;16;145;39,40%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:34;17:34;17:38:12;17:38:19;Schweizer Platz;synthetic:de:06412:921:1:2;36;54;127;34,51%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:36;17:36;17:40:07;17:40:07;Südbahnhof;synthetic:de:06412:912:7:11;0;127;0;0,00%
+15.09.2025;Mo;U2;1;17:04;Bad Homburg v.d.H.-Gonzenheim (U);17:36;Südbahnhof;368;272;96;17:36;17:36;17:40:07;17:40:07;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:02;07:02;07:03:54;07:03:54;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:02;07:02;07:03:54;07:04:08;Südbahnhof;synthetic:de:06412:912:7:10;30;0;30;8,15%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:03;07:03;07:05:12;07:05:32;Schweizer Platz;synthetic:de:06412:921:1:1;28;9;49;13,32%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:04;07:04;07:06:20;07:06:35;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;21;9;61;16,58%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:06;07:06;07:08:11;07:08:23;Hauptwache;synthetic:de:06412:1:21:3;30;9;82;22,28%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:07;07:07;07:09:35;07:09:50;Eschenheimer Tor;synthetic:de:06412:401:1:1;36;27;91;24,73%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:08;07:08;07:10:50;07:10:58;Grüneburgweg;synthetic:de:06412:402:1:1;28;32;87;23,64%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:09;07:09;07:11:55;07:12:05;Holzhausenstraße;synthetic:de:06412:403:3:3;34;33;88;23,91%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:10;07:10;07:12:53;07:13:03;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;43;33;98;26,63%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:11;07:11;07:13:54;07:14:02;Dornbusch;synthetic:de:06412:1301:21:21;14;35;77;20,92%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:13;07:13;07:16:10;07:16:21;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;17;9;85;23,10%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:14;07:14;07:17:34;07:17:47;Hügelstraße;synthetic:de:06412:1304:1:1;33;21;97;26,36%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:15;07:15;07:18:40;07:18:54;Lindenbaum;synthetic:de:06412:1311:1:1;36;36;97;26,36%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:17;07:17;07:20:38;07:20:50;Weißer Stein;synthetic:de:06412:1312:21:1;24;19;102;27,72%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:19;07:19;07:22:38;07:22:50;Heddernheim;synthetic:de:06412:1317:23:2;28;14;116;31,52%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:20;07:20;07:23:40;07:23:50;Sandelmühle;synthetic:de:06412:1348:1:1;48;29;135;36,68%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:22;07:22;07:26:08;07:26:16;Riedwiese/Mertonviertel;synthetic:de:06412:1349:1:1;17;26;126;34,24%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:24;07:24;07:28:07;07:28:15;Kalbach;synthetic:de:06412:1351:1:1;37;30;133;36,14%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:25;07:25;07:29:15;07:29:29;Bonames Mitte;synthetic:de:06412:1352:1:1;23;26;130;35,33%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:28;07:28;07:32:14;07:32:20;Nieder-Eschbach;synthetic:de:06412:2398:1:1;22;46;106;28,80%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:31;07:31;07:35:23;07:35:37;Bad Homburg v.d.H.-Ober-Eschbach (U);synthetic:de:06434:2312:2:2;33;18;121;32,88%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:33;07:33;07:37:29;07:37:29;Bad Homburg v.d.H.-Gonzenheim (U);synthetic:de:06434:4397:3:3;0;121;0;0,00%
+15.09.2025;Mo;U2;2;07:02;Südbahnhof;07:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;07:33;07:33;07:37:29;07:37:29;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:02;12:02;12:02:02;12:02:02;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:02;12:02;12:02:02;12:02:20;Südbahnhof;synthetic:de:06412:912:7:10;9;0;9;4,89%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:03;12:03;12:03:29;12:03:38;Schweizer Platz;synthetic:de:06412:921:1:1;9;3;15;8,15%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:04;12:04;12:04:26;12:04:39;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;7;3;19;10,33%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:06;12:06;12:06:37;12:06:46;Hauptwache;synthetic:de:06412:1:21:3;11;7;23;12,50%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:07;12:07;12:07:49;12:07:55;Eschenheimer Tor;synthetic:de:06412:401:1:1;9;3;29;15,76%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:08;12:08;12:08:43;12:09:02;Grüneburgweg;synthetic:de:06412:402:1:1;11;7;33;17,93%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:09;12:09;12:09:50;12:10:02;Holzhausenstraße;synthetic:de:06412:403:3:3;6;8;31;16,85%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:10;12:10;12:10:50;12:11:00;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;15;8;38;20,65%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:11;12:11;12:12:20;12:12:39;Dornbusch;synthetic:de:06412:1301:21:21;10;7;41;22,28%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:13;12:13;12:14:49;12:14:55;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;10;11;40;21,74%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:14;12:14;12:16:05;12:16:15;Hügelstraße;synthetic:de:06412:1304:1:1;6;7;39;21,20%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:15;12:15;12:17:03;12:17:15;Lindenbaum;synthetic:de:06412:1311:1:1;5;8;36;19,57%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:17;12:17;12:19:29;12:19:34;Weißer Stein;synthetic:de:06412:1312:21:1;13;13;36;19,57%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:19;12:19;12:21:28;12:21:45;Heddernheim;synthetic:de:06412:1317:23:2;11;9;38;20,65%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:20;12:20;12:22:33;12:22:45;Sandelmühle;synthetic:de:06412:1348:1:1;0;13;25;13,59%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:22;12:22;12:24:59;12:25:05;Riedwiese/Mertonviertel;synthetic:de:06412:1349:1:1;6;5;26;14,13%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:24;12:24;12:27:17;12:27:36;Kalbach;synthetic:de:06412:1351:1:1;6;4;28;15,22%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:25;12:25;12:28:40;12:28:55;Bonames Mitte;synthetic:de:06412:1352:1:1;8;5;31;16,85%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:28;12:28;12:31:20;12:31:39;Nieder-Eschbach;synthetic:de:06412:2398:1:1;5;10;26;14,13%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:31;12:31;12:34:12;12:34:19;Bad Homburg v.d.H.-Ober-Eschbach (U);synthetic:de:06434:2312:2:2;3;3;26;14,13%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:33;12:33;12:36:04;12:36:04;Bad Homburg v.d.H.-Gonzenheim (U);synthetic:de:06434:4397:3:3;0;26;0;0,00%
+15.09.2025;Mo;U2;2;12:02;Südbahnhof;12:33;Bad Homburg v.d.H.-Gonzenheim (U);184;136;48;12:33;12:33;12:36:04;12:36:04;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:02;17:02;17:04:01;17:04:01;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:02;17:02;17:04:01;17:04:17;Südbahnhof;synthetic:de:06412:912:7:10;47;0;47;12,77%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:03;17:03;17:05:09;17:05:25;Schweizer Platz;synthetic:de:06412:921:1:1;39;8;78;21,20%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:04;17:04;17:06:34;17:06:42;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;15;22;71;19,29%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:06;17:06;17:08:44;17:08:51;Hauptwache;synthetic:de:06412:1:21:3;51;12;110;29,89%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:07;17:07;17:10:14;17:10:25;Eschenheimer Tor;synthetic:de:06412:401:1:1;25;28;107;29,08%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:08;17:08;17:11:25;17:11:45;Grüneburgweg;synthetic:de:06412:402:1:1;27;38;96;26,09%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:09;17:09;17:12:33;17:12:47;Holzhausenstraße;synthetic:de:06412:403:3:3;23;23;96;26,09%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:10;17:10;17:13:35;17:13:49;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;25;33;88;23,91%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:11;17:11;17:14:37;17:14:52;Dornbusch;synthetic:de:06412:1301:21:21;25;33;80;21,74%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:13;17:13;17:16:28;17:16:48;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;32;18;94;25,54%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:14;17:14;17:17:36;17:17:44;Hügelstraße;synthetic:de:06412:1304:1:1;34;23;105;28,53%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:15;17:15;17:18:32;17:18:46;Lindenbaum;synthetic:de:06412:1311:1:1;39;16;128;34,78%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:17;17:17;17:21:00;17:21:15;Weißer Stein;synthetic:de:06412:1312:21:1;17;40;105;28,53%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:19;17:19;17:23:10;17:23:29;Heddernheim;synthetic:de:06412:1317:23:2;20;31;94;25,54%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:20;17:20;17:24:17;17:24:33;Sandelmühle;synthetic:de:06412:1348:1:1;32;11;115;31,25%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:22;17:22;17:26:20;17:26:32;Riedwiese/Mertonviertel;synthetic:de:06412:1349:1:1;28;28;115;31,25%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:24;17:24;17:28:12;17:28:29;Kalbach;synthetic:de:06412:1351:1:1;34;28;121;32,88%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:25;17:25;17:29:17;17:29:29;Bonames Mitte;synthetic:de:06412:1352:1:1;30;26;125;33,97%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:28;17:28;17:32:20;17:32:35;Nieder-Eschbach;synthetic:de:06412:2398:1:1;38;44;119;32,34%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:31;17:31;17:35:11;17:35:23;Bad Homburg v.d.H.-Ober-Eschbach (U);synthetic:de:06434:2312:2:2;40;36;123;33,42%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:33;17:33;17:37:27;17:37:27;Bad Homburg v.d.H.-Gonzenheim (U);synthetic:de:06434:4397:3:3;0;123;0;0,00%
+15.09.2025;Mo;U2;2;17:02;Südbahnhof;17:33;Bad Homburg v.d.H.-Gonzenheim (U);368;272;96;17:33;17:33;17:37:27;17:37:27;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:05;07:05;07:05:16;07:05:16;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:05;07:05;07:05:16;07:05:31;Oberursel (Taunus)-Hohemark;synthetic:de:06434:559:1:1;10;0;10;2,72%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:06;07:06;07:06:19;07:06:33;Oberursel (Taunus) Waldlust;synthetic:de:06434:2310:1:1;30;3;37;10,05%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:07;07:07;07:07:24;07:07:30;Oberursel (Taunus) Rosengärtchen;synthetic:de:06434:1931:1:1;33;5;65;17,66%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:08;07:08;07:08:35;07:08:53;Oberursel (Taunus) Kupferhammer;synthetic:de:06434:2309:1:1;15;23;57;15,49%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:09;07:09;07:10:04;07:10:19;Oberursel (Taunus) Glöcknerwiese;synthetic:de:06434:2308:1:1;29;6;80;21,74%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:11;07:11;07:12:17;07:12:37;Oberursel (Taunus) Lahnstraße;synthetic:de:06434:2324:1:1;17;13;84;22,83%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:13;07:13;07:14:45;07:14:57;Oberursel (Taunus) Altstadt;synthetic:de:06434:1513:2:2;19;14;89;24,18%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:14;07:14;07:15:45;07:15:55;Oberursel (Taunus) Stadtmitte;synthetic:de:06434:2304;27;24;92;25,00%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:16;07:18;07:17:55;07:19:55;Oberursel (Taunus) Bahnhof;synthetic:de:06434:2303:7:7;28;29;91;24,73%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:20;07:20;07:22:06;07:22:22;Oberursel (Taunus)-Bommersheim;synthetic:de:06434:2302:1:1;33;34;90;24,46%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:22;07:22;07:24:13;07:24:20;Oberursel (Taunus)-Weißkirchen Ost;synthetic:de:06434:2301:5:5;40;13;117;31,79%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:25;07:25;07:27:24;07:27:35;Niederursel;synthetic:de:06412:2399:2:2;18;32;103;27,99%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:26;07:26;07:28:49;07:29:09;Wiesenau;synthetic:de:06412:1319:2:2;15;20;98;26,63%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:28;07:28;07:30:45;07:30:50;Zeilweg;synthetic:de:06412:1318:2:2;33;37;94;25,54%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:30;07:30;07:32:29;07:32:36;Heddernheim;synthetic:de:06412:1317:22:3;14;21;87;23,64%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:32;07:32;07:34:28;07:34:38;Weißer Stein;synthetic:de:06412:1312:22:2;29;10;106;28,80%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:33;07:33;07:35:39;07:35:44;Lindenbaum;synthetic:de:06412:1311:2:2;17;17;106;28,80%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:34;07:34;07:36:58;07:37:12;Hügelstraße;synthetic:de:06412:1304:2:2;23;35;94;25,54%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:35;07:35;07:38:00;07:38:11;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;15;34;75;20,38%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:37;07:37;07:39:50;07:39:57;Dornbusch;synthetic:de:06412:1301:22:22;17;26;66;17,93%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:39;07:39;07:41:42;07:41:57;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;18;17;67;18,21%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:40;07:40;07:42:48;07:42:55;Holzhausenstraße;synthetic:de:06412:403:4:4;20;11;76;20,65%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:41;07:41;07:44:15;07:44:23;Grüneburgweg;synthetic:de:06412:402:2:2;34;23;87;23,64%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:42;07:42;07:45:11;07:45:22;Eschenheimer Tor;synthetic:de:06412:401:2:2;15;14;88;23,91%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:43;07:43;07:46:10;07:46:15;Hauptwache;synthetic:de:06412:1:22:4;54;13;129;35,05%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:44;07:44;07:47:32;07:47:44;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;23;35;117;31,79%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:46;07:46;07:49:20;07:49:32;Schweizer Platz;synthetic:de:06412:921:1:2;40;19;138;37,50%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:48;07:48;07:51:16;07:51:16;Südbahnhof;synthetic:de:06412:912:7:11;0;138;0;0,00%
+15.09.2025;Mo;U3;1;07:05;Oberursel (Taunus)-Hohemark;07:48;Südbahnhof;368;272;96;07:48;07:48;07:51:16;07:51:16;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:05;12:05;12:05:34;12:05:34;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:05;12:05;12:05:34;12:05:53;Oberursel (Taunus)-Hohemark;synthetic:de:06434:559:1:1;8;0;8;4,35%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:06;12:06;12:07:02;12:07:14;Oberursel (Taunus) Waldlust;synthetic:de:06434:2310:1:1;6;1;13;7,07%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:07;12:07;12:08:12;12:08:30;Oberursel (Taunus) Rosengärtchen;synthetic:de:06434:1931:1:1;15;2;26;14,13%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:08;12:08;12:09:18;12:09:27;Oberursel (Taunus) Kupferhammer;synthetic:de:06434:2309:1:1;6;9;23;12,50%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:09;12:09;12:10:15;12:10:25;Oberursel (Taunus) Glöcknerwiese;synthetic:de:06434:2308:1:1;3;9;17;9,24%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:11;12:11;12:12:19;12:12:31;Oberursel (Taunus) Lahnstraße;synthetic:de:06434:2324:1:1;7;4;20;10,87%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:13;12:13;12:14:46;12:15:06;Oberursel (Taunus) Altstadt;synthetic:de:06434:1513:2:2;12;3;29;15,76%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:14;12:14;12:16:13;12:16:20;Oberursel (Taunus) Stadtmitte;synthetic:de:06434:2304;8;8;29;15,76%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:16;12:18;12:18:31;12:20:31;Oberursel (Taunus) Bahnhof;synthetic:de:06434:2303:7:7;10;6;33;17,93%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:20;12:20;12:22:43;12:22:48;Oberursel (Taunus)-Bommersheim;synthetic:de:06434:2302:1:1;10;4;39;21,20%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:22;12:22;12:24:28;12:24:35;Oberursel (Taunus)-Weißkirchen Ost;synthetic:de:06434:2301:5:5;7;13;33;17,93%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:25;12:25;12:27:31;12:27:43;Niederursel;synthetic:de:06412:2399:2:2;7;5;35;19,02%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:26;12:26;12:28:31;12:28:51;Wiesenau;synthetic:de:06412:1319:2:2;16;6;45;24,46%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:28;12:28;12:30:27;12:30:43;Zeilweg;synthetic:de:06412:1318:2:2;4;13;36;19,57%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:30;12:30;12:32:20;12:32:30;Heddernheim;synthetic:de:06412:1317:22:3;3;10;29;15,76%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:32;12:32;12:34:29;12:34:39;Weißer Stein;synthetic:de:06412:1312:22:2;12;4;37;20,11%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:33;12:33;12:35:56;12:36:08;Lindenbaum;synthetic:de:06412:1311:2:2;16;4;49;26,63%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:34;12:34;12:36:56;12:37:10;Hügelstraße;synthetic:de:06412:1304:2:2;10;19;40;21,74%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:35;12:35;12:37:58;12:38:09;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;16;16;40;21,74%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:37;12:37;12:40:08;12:40:21;Dornbusch;synthetic:de:06412:1301:22:22;7;9;38;20,65%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:39;12:39;12:41:57;12:42:06;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;12;11;39;21,20%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:40;12:40;12:43:27;12:43:45;Holzhausenstraße;synthetic:de:06412:403:4:4;11;4;46;25,00%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:41;12:41;12:44:37;12:44:47;Grüneburgweg;synthetic:de:06412:402:2:2;9;14;41;22,28%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:42;12:42;12:45:45;12:46:04;Eschenheimer Tor;synthetic:de:06412:401:2:2;12;6;47;25,54%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:43;12:43;12:46:57;12:47:12;Hauptwache;synthetic:de:06412:1:22:4;11;5;53;28,80%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:44;12:44;12:48:09;12:48:19;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;5;7;51;27,72%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:46;12:46;12:49:55;12:50:13;Schweizer Platz;synthetic:de:06412:921:1:2;4;19;36;19,57%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:48;12:48;12:51:49;12:51:49;Südbahnhof;synthetic:de:06412:912:7:11;0;36;0;0,00%
+15.09.2025;Mo;U3;1;12:05;Oberursel (Taunus)-Hohemark;12:48;Südbahnhof;184;136;48;12:48;12:48;12:51:49;12:51:49;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:05;17:05;17:05:39;17:05:39;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:05;17:05;17:05:39;17:05:54;Oberursel (Taunus)-Hohemark;synthetic:de:06434:559:1:1;30;0;30;8,15%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:06;17:06;17:06:51;17:07:10;Oberursel (Taunus) Waldlust;synthetic:de:06434:2310:1:1;17;11;36;9,78%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:07;17:07;17:07:58;17:08:03;Oberursel (Taunus) Rosengärtchen;synthetic:de:06434:1931:1:1;26;6;56;15,22%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:08;17:08;17:09:21;17:09:38;Oberursel (Taunus) Kupferhammer;synthetic:de:06434:2309:1:1;20;13;63;17,12%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:09;17:09;17:10:26;17:10:38;Oberursel (Taunus) Glöcknerwiese;synthetic:de:06434:2308:1:1;19;7;75;20,38%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:11;17:11;17:12:16;17:12:21;Oberursel (Taunus) Lahnstraße;synthetic:de:06434:2324:1:1;26;25;76;20,65%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:13;17:13;17:14:44;17:14:49;Oberursel (Taunus) Altstadt;synthetic:de:06434:1513:2:2;27;10;93;25,27%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:14;17:14;17:15:37;17:15:55;Oberursel (Taunus) Stadtmitte;synthetic:de:06434:2304;32;16;109;29,62%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:16;17:18;17:17:31;17:19:25;Oberursel (Taunus) Bahnhof;synthetic:de:06434:2303:7:7;23;32;100;27,17%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:20;17:20;17:21:41;17:21:55;Oberursel (Taunus)-Bommersheim;synthetic:de:06434:2302:1:1;26;33;93;25,27%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:22;17:22;17:23:52;17:24:08;Oberursel (Taunus)-Weißkirchen Ost;synthetic:de:06434:2301:5:5;19;17;95;25,82%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:25;17:25;17:26:53;17:27:04;Niederursel;synthetic:de:06412:2399:2:2;27;23;99;26,90%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:26;17:26;17:27:52;17:28:11;Wiesenau;synthetic:de:06412:1319:2:2;18;17;100;27,17%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:28;17:28;17:30:22;17:30:27;Zeilweg;synthetic:de:06412:1318:2:2;20;26;94;25,54%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:30;17:30;17:32:16;17:32:24;Heddernheim;synthetic:de:06412:1317:22:3;23;32;85;23,10%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:32;17:32;17:34:33;17:34:40;Weißer Stein;synthetic:de:06412:1312:22:2;25;23;87;23,64%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:33;17:33;17:35:37;17:35:54;Lindenbaum;synthetic:de:06412:1311:2:2;30;34;83;22,55%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:34;17:34;17:36:42;17:36:59;Hügelstraße;synthetic:de:06412:1304:2:2;27;32;78;21,20%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:35;17:35;17:37:52;17:38:04;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;26;30;74;20,11%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:37;17:37;17:39:40;17:39:59;Dornbusch;synthetic:de:06412:1301:22:22;27;13;88;23,91%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:39;17:39;17:41:51;17:42:03;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;28;31;85;23,10%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:40;17:40;17:43:11;17:43:25;Holzhausenstraße;synthetic:de:06412:403:4:4;21;11;95;25,82%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:41;17:41;17:44:37;17:44:42;Grüneburgweg;synthetic:de:06412:402:2:2;15;25;85;23,10%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:42;17:42;17:45:53;17:46:12;Eschenheimer Tor;synthetic:de:06412:401:2:2;33;12;106;28,80%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:43;17:43;17:47:02;17:47:07;Hauptwache;synthetic:de:06412:1:22:4;45;29;122;33,15%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:44;17:44;17:47:55;17:48:09;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;25;27;120;32,61%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:46;17:46;17:49:52;17:50:11;Schweizer Platz;synthetic:de:06412:921:1:2;32;16;136;36,96%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:48;17:48;17:51:59;17:51:59;Südbahnhof;synthetic:de:06412:912:7:11;0;136;0;0,00%
+15.09.2025;Mo;U3;1;17:05;Oberursel (Taunus)-Hohemark;17:48;Südbahnhof;368;272;96;17:48;17:48;17:51:59;17:51:59;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:00;07:00;07:02:13;07:02:13;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:00;07:00;07:02:13;07:02:23;Südbahnhof;synthetic:de:06412:912:7:10;33;0;33;8,97%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:01;07:01;07:03:11;07:03:20;Schweizer Platz;synthetic:de:06412:921:1:1;31;6;58;15,76%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:02;07:02;07:04:37;07:04:51;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;22;6;74;20,11%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:04;07:04;07:07:05;07:07:25;Hauptwache;synthetic:de:06412:1:21:3;65;15;124;33,70%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:05;07:05;07:08:13;07:08:23;Eschenheimer Tor;synthetic:de:06412:401:1:1;35;18;141;38,32%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:06;07:06;07:09:11;07:09:18;Grüneburgweg;synthetic:de:06412:402:1:1;18;56;103;27,99%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:07;07:07;07:10:31;07:10:51;Holzhausenstraße;synthetic:de:06412:403:3:3;24;12;115;31,25%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:08;07:08;07:12:01;07:12:14;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;21;12;124;33,70%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:09;07:09;07:13:13;07:13:23;Dornbusch;synthetic:de:06412:1301:21:21;31;27;128;34,78%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:11;07:11;07:15:35;07:15:50;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;37;40;125;33,97%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:12;07:12;07:16:38;07:16:46;Hügelstraße;synthetic:de:06412:1304:1:1;19;44;100;27,17%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:13;07:13;07:18:00;07:18:07;Lindenbaum;synthetic:de:06412:1311:1:1;28;11;117;31,79%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:15;07:15;07:19:44;07:19:50;Weißer Stein;synthetic:de:06412:1312:21:1;11;22;106;28,80%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:17;07:17;07:21:27;07:21:45;Heddernheim;synthetic:de:06412:1317:23:2;23;13;116;31,52%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:18;07:18;07:22:33;07:22:38;Zeilweg;synthetic:de:06412:1318:1:1;49;19;146;39,67%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:20;07:20;07:24:44;07:24:58;Wiesenau;synthetic:de:06412:1319:1:1;25;51;120;32,61%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:22;07:22;07:27:00;07:27:11;Niederursel;synthetic:de:06412:2399:1:1;24;46;98;26,63%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:25;07:25;07:30:00;07:30:11;Oberursel (Taunus)-Weißkirchen Ost;synthetic:de:06434:2301:6:6;31;24;105;28,53%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:27;07:27;07:32:00;07:32:19;Oberursel (Taunus)-Bommersheim;synthetic:de:06434:2302:2:2;21;34;92;25,00%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:29;07:30;07:34:00;07:35:00;Oberursel (Taunus) Bahnhof;synthetic:de:06434:2303:8:8;26;32;86;23,37%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:31;07:31;07:35:51;07:35:56;Oberursel (Taunus) Stadtmitte;synthetic:de:06434:2304;40;31;95;25,82%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:33;07:33;07:37:37;07:37:56;Oberursel (Taunus) Altstadt;synthetic:de:06434:1513:1:1;37;21;111;30,16%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:34;07:34;07:38:58;07:39:12;Oberursel (Taunus) Lahnstraße;synthetic:de:06434:2324:2:2;37;40;108;29,35%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:36;07:36;07:40:59;07:41:09;Oberursel (Taunus) Glöcknerwiese;synthetic:de:06434:2308:2:2;25;13;120;32,61%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:38;07:38;07:43:00;07:43:07;Oberursel (Taunus) Kupferhammer;synthetic:de:06434:2309:1:2;35;25;130;35,33%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:39;07:39;07:44:00;07:44:07;Oberursel (Taunus) Rosengärtchen;synthetic:de:06434:1931:1:1;17;41;106;28,80%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:40;07:40;07:44:55;07:45:09;Oberursel (Taunus) Waldlust;synthetic:de:06434:2310:1:1;25;19;112;30,43%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:42;07:42;07:46:45;07:46:45;Oberursel (Taunus)-Hohemark;synthetic:de:06434:559:1:1;0;112;0;0,00%
+15.09.2025;Mo;U3;2;07:00;Südbahnhof;07:42;Oberursel (Taunus)-Hohemark;368;272;96;07:42;07:42;07:46:45;07:46:45;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:00;12:00;12:00:49;12:00:49;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:00;12:00;12:00:49;12:00:55;Südbahnhof;synthetic:de:06412:912:7:10;9;0;9;4,89%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:01;12:01;12:02:00;12:02:11;Schweizer Platz;synthetic:de:06412:921:1:1;5;1;13;7,07%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:02;12:02;12:03:22;12:03:41;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;12;4;21;11,41%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:04;12:04;12:05:24;12:05:30;Hauptwache;synthetic:de:06412:1:21:3;12;3;30;16,30%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:05;12:05;12:06:18;12:06:29;Eschenheimer Tor;synthetic:de:06412:401:1:1;10;11;29;15,76%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:06;12:06;12:07:17;12:07:24;Grüneburgweg;synthetic:de:06412:402:1:1;8;9;28;15,22%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:07;12:07;12:08:37;12:08:56;Holzhausenstraße;synthetic:de:06412:403:3:3;12;4;36;19,57%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:08;12:08;12:09:44;12:09:56;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;3;9;30;16,30%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:09;12:09;12:10:44;12:10:51;Dornbusch;synthetic:de:06412:1301:21:21;8;8;30;16,30%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:11;12:11;12:12:51;12:12:57;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;7;8;29;15,76%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:12;12:12;12:14:18;12:14:35;Hügelstraße;synthetic:de:06412:1304:1:1;6;11;24;13,04%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:13;12:13;12:15:23;12:15:43;Lindenbaum;synthetic:de:06412:1311:1:1;9;3;30;16,30%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:15;12:15;12:17:19;12:17:24;Weißer Stein;synthetic:de:06412:1312:21:1;6;4;32;17,39%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:17;12:17;12:19:04;12:19:17;Heddernheim;synthetic:de:06412:1317:23:2;10;8;34;18,48%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:18;12:18;12:20:05;12:20:15;Zeilweg;synthetic:de:06412:1318:1:1;9;8;35;19,02%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:20;12:20;12:22:14;12:22:20;Wiesenau;synthetic:de:06412:1319:1:1;9;4;40;21,74%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:22;12:22;12:24:15;12:24:23;Niederursel;synthetic:de:06412:2399:1:1;16;11;45;24,46%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:25;12:25;12:27:16;12:27:27;Oberursel (Taunus)-Weißkirchen Ost;synthetic:de:06434:2301:6:6;10;14;41;22,28%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:27;12:27;12:29:42;12:29:51;Oberursel (Taunus)-Bommersheim;synthetic:de:06434:2302:2:2;17;15;43;23,37%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:29;12:30;12:32:06;12:33:06;Oberursel (Taunus) Bahnhof;synthetic:de:06434:2303:8:8;4;16;31;16,85%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:31;12:31;12:33:54;12:34:01;Oberursel (Taunus) Stadtmitte;synthetic:de:06434:2304;8;3;36;19,57%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:33;12:33;12:35:48;12:35:55;Oberursel (Taunus) Altstadt;synthetic:de:06434:1513:1:1;4;5;35;19,02%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:34;12:34;12:37:04;12:37:14;Oberursel (Taunus) Lahnstraße;synthetic:de:06434:2324:2:2;2;4;33;17,93%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:36;12:36;12:39:14;12:39:29;Oberursel (Taunus) Glöcknerwiese;synthetic:de:06434:2308:2:2;8;9;32;17,39%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:38;12:38;12:41:21;12:41:36;Oberursel (Taunus) Kupferhammer;synthetic:de:06434:2309:1:2;3;7;28;15,22%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:39;12:39;12:42:24;12:42:40;Oberursel (Taunus) Rosengärtchen;synthetic:de:06434:1931:1:1;12;11;29;15,76%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:40;12:40;12:43:31;12:43:51;Oberursel (Taunus) Waldlust;synthetic:de:06434:2310:1:1;6;5;30;16,30%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:42;12:42;12:45:45;12:45:45;Oberursel (Taunus)-Hohemark;synthetic:de:06434:559:1:1;0;30;0;0,00%
+15.09.2025;Mo;U3;2;12:00;Südbahnhof;12:42;Oberursel (Taunus)-Hohemark;184;136;48;12:42;12:42;12:45:45;12:45:45;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:00;17:00;17:00:50;17:00:50;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:00;17:00;17:00:50;17:00:58;Südbahnhof;synthetic:de:06412:912:7:10;41;0;41;11,14%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:01;17:01;17:02:17;17:02:27;Schweizer Platz;synthetic:de:06412:921:1:1;22;14;49;13,32%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:02;17:02;17:03:34;17:03:40;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;22;5;66;17,93%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:04;17:04;17:05:53;17:06:00;Hauptwache;synthetic:de:06412:1:21:3;48;11;103;27,99%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:05;17:05;17:06:56;17:07:09;Eschenheimer Tor;synthetic:de:06412:401:1:1;34;26;111;30,16%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:06;17:06;17:07:57;17:08:04;Grüneburgweg;synthetic:de:06412:402:1:1;31;34;108;29,35%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:07;17:07;17:09:06;17:09:20;Holzhausenstraße;synthetic:de:06412:403:3:3;35;25;118;32,07%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:08;17:08;17:10:08;17:10:21;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;19;22;115;31,25%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:09;17:09;17:11:09;17:11:19;Dornbusch;synthetic:de:06412:1301:21:21;31;38;108;29,35%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:11;17:11;17:13:39;17:13:52;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;35;26;117;31,79%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:12;17:12;17:14:45;17:14:59;Hügelstraße;synthetic:de:06412:1304:1:1;20;38;99;26,90%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:13;17:13;17:15:47;17:16:05;Lindenbaum;synthetic:de:06412:1311:1:1;35;11;123;33,42%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:15;17:15;17:18:12;17:18:17;Weißer Stein;synthetic:de:06412:1312:21:1;15;45;93;25,27%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:17;17:17;17:20:33;17:20:40;Heddernheim;synthetic:de:06412:1317:23:2;21;16;98;26,63%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:18;17:18;17:21:34;17:21:47;Zeilweg;synthetic:de:06412:1318:1:1;22;18;102;27,72%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:20;17:20;17:23:23;17:23:28;Wiesenau;synthetic:de:06412:1319:1:1;32;29;105;28,53%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:22;17:22;17:25:15;17:25:21;Niederursel;synthetic:de:06412:2399:1:1;39;33;111;30,16%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:25;17:25;17:28:28;17:28:48;Oberursel (Taunus)-Weißkirchen Ost;synthetic:de:06434:2301:6:6;37;43;105;28,53%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:27;17:27;17:30:40;17:30:56;Oberursel (Taunus)-Bommersheim;synthetic:de:06434:2302:2:2;30;32;103;27,99%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:29;17:30;17:32:50;17:33:50;Oberursel (Taunus) Bahnhof;synthetic:de:06434:2303:8:8;30;27;106;28,80%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:31;17:31;17:34:38;17:34:47;Oberursel (Taunus) Stadtmitte;synthetic:de:06434:2304;31;30;107;29,08%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:33;17:33;17:36:45;17:36:54;Oberursel (Taunus) Altstadt;synthetic:de:06434:1513:1:1;23;20;110;29,89%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:34;17:34;17:37:42;17:38:00;Oberursel (Taunus) Lahnstraße;synthetic:de:06434:2324:2:2;19;32;97;26,36%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:36;17:36;17:39:54;17:40:00;Oberursel (Taunus) Glöcknerwiese;synthetic:de:06434:2308:2:2;29;22;104;28,26%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:38;17:38;17:41:40;17:41:52;Oberursel (Taunus) Kupferhammer;synthetic:de:06434:2309:1:2;49;20;133;36,14%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:39;17:39;17:42:41;17:42:49;Oberursel (Taunus) Rosengärtchen;synthetic:de:06434:1931:1:1;29;24;138;37,50%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:40;17:40;17:43:50;17:44:03;Oberursel (Taunus) Waldlust;synthetic:de:06434:2310:1:1;19;52;105;28,53%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:42;17:42;17:45:59;17:45:59;Oberursel (Taunus)-Hohemark;synthetic:de:06434:559:1:1;0;105;0;0,00%
+15.09.2025;Mo;U3;2;17:00;Südbahnhof;17:42;Oberursel (Taunus)-Hohemark;368;272;96;17:42;17:42;17:45:59;17:45:59;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:07;07:07;07:07:22;07:07:22;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:07;07:07;07:07:22;07:07:37;Bockenheimer Warte;synthetic:de:06412:1201:1:1;28;0;28;7,61%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:08;07:08;07:08:51;07:09:04;Festhalle/Messe;synthetic:de:06412:210:21:1;27;11;44;11,96%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:10;07:10;07:10:40;07:10:48;Hauptbahnhof;synthetic:de:06412:10:6:31;55;14;85;23,10%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:11;07:11;07:11:36;07:11:47;Willy-Brandt-Platz;synthetic:de:06412:4:23:3;33;25;93;25,27%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:12;07:12;07:12:46;07:12:58;Dom/Römer;synthetic:de:06412:3:21:1;40;13;120;32,61%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:14;07:14;07:14:41;07:14:59;Konstablerwache;synthetic:de:06412:510:5:5;31;33;118;32,07%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:16;07:16;07:16:35;07:16:49;Merianplatz;synthetic:de:06412:512:1:1;21;21;118;32,07%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:17;07:17;07:17:37;07:17:49;Höhenstraße;synthetic:de:06412:502:21:1;21;15;124;33,70%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:18;07:18;07:19:04;07:19:22;Bornheim Mitte;synthetic:de:06412:1507:1:1;16;19;121;32,88%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:19;07:19;07:20:21;07:20:32;Seckbacher Landstraße;synthetic:de:06412:1545:1:1;21;45;97;26,36%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:25;07:25;07:26:28;07:26:43;Schäfflestraße;synthetic:de:06412:1525:21:21;31;13;115;31,25%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:27;07:27;07:28:25;07:28:41;Gwinnerstraße;synthetic:de:06412:1527:21:1;37;27;125;33,97%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:28;07:28;07:29:29;07:29:39;Kruppstraße;synthetic:de:06412:1535:2:2;34;24;135;36,68%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:29;07:29;07:30:27;07:30:44;Hessen-Center;synthetic:de:06412:1536:2:2;25;49;111;30,16%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:31;07:31;07:32:28;07:32:28;Enkheim;synthetic:de:06412:1537:1:1;0;111;0;0,00%
+15.09.2025;Mo;U4;1;07:07;Bockenheimer Warte;07:31;Enkheim;368;272;96;07:31;07:31;07:32:28;07:32:28;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:07;12:07;12:07:32;12:07:32;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:07;12:07;12:07:32;12:07:38;Bockenheimer Warte;synthetic:de:06412:1201:1:1;17;0;17;9,24%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:08;12:08;12:08:49;12:09:08;Festhalle/Messe;synthetic:de:06412:210:21:1;6;6;17;9,24%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:10;12:10;12:10:44;12:10:49;Hauptbahnhof;synthetic:de:06412:10:6:31;15;4;28;15,22%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:11;12:11;12:11:37;12:11:52;Willy-Brandt-Platz;synthetic:de:06412:4:23:3;6;11;23;12,50%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:12;12:12;12:13:06;12:13:14;Dom/Römer;synthetic:de:06412:3:21:1;7;6;24;13,04%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:14;12:14;12:15:15;12:15:22;Konstablerwache;synthetic:de:06412:510:5:5;19;4;39;21,20%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:16;12:16;12:17:05;12:17:21;Merianplatz;synthetic:de:06412:512:1:1;6;12;33;17,93%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:17;12:17;12:18:09;12:18:29;Höhenstraße;synthetic:de:06412:502:21:1;3;7;29;15,76%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:18;12:18;12:19:17;12:19:29;Bornheim Mitte;synthetic:de:06412:1507:1:1;14;11;32;17,39%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:19;12:19;12:20:17;12:20:26;Seckbacher Landstraße;synthetic:de:06412:1545:1:1;8;4;36;19,57%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:25;12:25;12:26:19;12:26:37;Schäfflestraße;synthetic:de:06412:1525:21:21;15;10;41;22,28%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:27;12:27;12:28:16;12:28:34;Gwinnerstraße;synthetic:de:06412:1527:21:1;2;5;38;20,65%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:28;12:28;12:29:22;12:29:32;Kruppstraße;synthetic:de:06412:1535:2:2;9;10;37;20,11%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:29;12:29;12:30:39;12:30:53;Hessen-Center;synthetic:de:06412:1536:2:2;8;10;35;19,02%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:31;12:31;12:32:44;12:32:44;Enkheim;synthetic:de:06412:1537:1:1;0;35;0;0,00%
+15.09.2025;Mo;U4;1;12:07;Bockenheimer Warte;12:31;Enkheim;184;136;48;12:31;12:31;12:32:44;12:32:44;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:07;17:07;17:09:41;17:09:41;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:07;17:07;17:09:41;17:09:53;Bockenheimer Warte;synthetic:de:06412:1201:1:1;41;0;41;11,14%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:08;17:08;17:10:56;17:11:14;Festhalle/Messe;synthetic:de:06412:210:21:1;16;7;50;13,59%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:10;17:10;17:12:50;17:12:58;Hauptbahnhof;synthetic:de:06412:10:6:31;57;11;96;26,09%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:11;17:11;17:13:51;17:14:06;Willy-Brandt-Platz;synthetic:de:06412:4:23:3;28;17;107;29,08%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:12;17:12;17:14:54;17:15:08;Dom/Römer;synthetic:de:06412:3:21:1;30;40;97;26,36%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:14;17:14;17:16:50;17:17:10;Konstablerwache;synthetic:de:06412:510:5:5;40;29;108;29,35%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:16;17:16;17:18:46;17:18:54;Merianplatz;synthetic:de:06412:512:1:1;20;39;89;24,18%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:17;17:17;17:19:42;17:19:49;Höhenstraße;synthetic:de:06412:502:21:1;26;16;99;26,90%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:18;17:18;17:21:08;17:21:28;Bornheim Mitte;synthetic:de:06412:1507:1:1;36;21;114;30,98%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:19;17:19;17:22:16;17:22:32;Seckbacher Landstraße;synthetic:de:06412:1545:1:1;26;45;95;25,82%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:25;17:25;17:28:07;17:28:16;Schäfflestraße;synthetic:de:06412:1525:21:21;18;32;81;22,01%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:27;17:27;17:30:35;17:30:44;Gwinnerstraße;synthetic:de:06412:1527:21:1;44;12;113;30,71%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:28;17:28;17:31:33;17:31:49;Kruppstraße;synthetic:de:06412:1535:2:2;28;17;124;33,70%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:29;17:29;17:32:37;17:32:56;Hessen-Center;synthetic:de:06412:1536:2:2;42;46;120;32,61%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:31;17:31;17:34:36;17:34:36;Enkheim;synthetic:de:06412:1537:1:1;0;120;0;0,00%
+15.09.2025;Mo;U4;1;17:07;Bockenheimer Warte;17:31;Enkheim;368;272;96;17:31;17:31;17:34:36;17:34:36;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:14;07:14;07:17:06;07:17:06;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:14;07:14;07:17:06;07:17:13;Enkheim;synthetic:de:06412:1537:1:1;27;0;27;7,34%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:15;07:15;07:18:25;07:18:42;Hessen-Center;synthetic:de:06412:1536:1:1;20;5;42;11,41%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:17;07:17;07:20:20;07:20:39;Kruppstraße;synthetic:de:06412:1535:1:1;23;5;60;16,30%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:18;07:18;07:21:32;07:21:49;Gwinnerstraße;synthetic:de:06412:1527:22:2;32;7;85;23,10%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:20;07:20;07:23:25;07:23:45;Schäfflestraße;synthetic:de:06412:1525:22:22;39;23;101;27,45%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:25;07:25;07:28:38;07:28:56;Seckbacher Landstraße;synthetic:de:06412:1545:1:2;21;30;92;25,00%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:26;07:26;07:29:44;07:30:02;Bornheim Mitte;synthetic:de:06412:1507:2:2;17;35;74;20,11%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:27;07:27;07:30:58;07:31:16;Höhenstraße;synthetic:de:06412:502:22:2;26;12;88;23,91%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:29;07:29;07:33:16;07:33:30;Merianplatz;synthetic:de:06412:512:2:2;16;25;79;21,47%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:31;07:31;07:35:13;07:35:20;Konstablerwache;synthetic:de:06412:510:6:7;17;17;79;21,47%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:32;07:32;07:36:33;07:36:48;Dom/Römer;synthetic:de:06412:3:21:2;43;23;99;26,90%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:33;07:33;07:38:00;07:38:15;Willy-Brandt-Platz;synthetic:de:06412:4:24:4;42;38;103;27,99%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:35;07:35;07:39:54;07:40:09;Hauptbahnhof;synthetic:de:06412:10:5:35;51;20;134;36,41%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:36;07:36;07:40:57;07:41:17;Festhalle/Messe;synthetic:de:06412:210:21:2;31;44;121;32,88%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:38;07:38;07:43:00;07:43:00;Bockenheimer Warte;synthetic:de:06412:1201:1:2;0;121;0;0,00%
+15.09.2025;Mo;U4;2;07:14;Enkheim;07:38;Bockenheimer Warte;368;272;96;07:38;07:38;07:43:00;07:43:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:14;12:14;12:14:30;12:14:30;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:14;12:14;12:14:30;12:14:36;Enkheim;synthetic:de:06412:1537:1:1;10;0;10;5,43%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:15;12:15;12:15:47;12:15:59;Hessen-Center;synthetic:de:06412:1536:1:1;8;4;14;7,61%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:17;12:17;12:18:02;12:18:12;Kruppstraße;synthetic:de:06412:1535:1:1;6;5;15;8,15%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:18;12:18;12:19:00;12:19:14;Gwinnerstraße;synthetic:de:06412:1527:22:2;9;6;18;9,78%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:20;12:20;12:20:52;12:21:00;Schäfflestraße;synthetic:de:06412:1525:22:22;3;3;18;9,78%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:25;12:25;12:25:41;12:26:00;Seckbacher Landstraße;synthetic:de:06412:1545:1:2;8;5;21;11,41%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:26;12:26;12:26:48;12:27:05;Bornheim Mitte;synthetic:de:06412:1507:2:2;12;7;26;14,13%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:27;12:27;12:28:04;12:28:18;Höhenstraße;synthetic:de:06412:502:22:2;16;4;38;20,65%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:29;12:29;12:29:54;12:30:14;Merianplatz;synthetic:de:06412:512:2:2;6;4;40;21,74%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:31;12:31;12:31:50;12:32:02;Konstablerwache;synthetic:de:06412:510:6:7;10;11;39;21,20%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:32;12:32;12:32:50;12:32:59;Dom/Römer;synthetic:de:06412:3:21:2;7;15;31;16,85%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:33;12:33;12:33:49;12:33:58;Willy-Brandt-Platz;synthetic:de:06412:4:24:4;7;5;33;17,93%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:35;12:35;12:36:13;12:36:26;Hauptbahnhof;synthetic:de:06412:10:5:35;13;7;39;21,20%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:36;12:36;12:37:14;12:37:28;Festhalle/Messe;synthetic:de:06412:210:21:2;9;6;42;22,83%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:38;12:38;12:39:11;12:39:11;Bockenheimer Warte;synthetic:de:06412:1201:1:2;0;42;0;0,00%
+15.09.2025;Mo;U4;2;12:14;Enkheim;12:38;Bockenheimer Warte;184;136;48;12:38;12:38;12:39:11;12:39:11;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:14;17:14;17:16:00;17:16:00;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:14;17:14;17:16:00;17:16:20;Enkheim;synthetic:de:06412:1537:1:1;23;0;23;6,25%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:15;17:15;17:17:17;17:17:26;Hessen-Center;synthetic:de:06412:1536:1:1;29;6;46;12,50%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:17;17:17;17:19:06;17:19:26;Kruppstraße;synthetic:de:06412:1535:1:1;15;16;45;12,23%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:18;17:18;17:20:14;17:20:28;Gwinnerstraße;synthetic:de:06412:1527:22:2;24;5;64;17,39%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:20;17:20;17:22:17;17:22:37;Schäfflestraße;synthetic:de:06412:1525:22:22;18;11;71;19,29%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:25;17:25;17:26:59;17:27:04;Seckbacher Landstraße;synthetic:de:06412:1545:1:2;31;17;85;23,10%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:26;17:26;17:28:18;17:28:23;Bornheim Mitte;synthetic:de:06412:1507:2:2;19;19;85;23,10%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:27;17:27;17:29:36;17:29:48;Höhenstraße;synthetic:de:06412:502:22:2;34;9;110;29,89%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:29;17:29;17:32:02;17:32:07;Merianplatz;synthetic:de:06412:512:2:2;24;19;115;31,25%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:31;17:31;17:34:12;17:34:24;Konstablerwache;synthetic:de:06412:510:6:7;49;32;132;35,87%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:32;17:32;17:35:39;17:35:51;Dom/Römer;synthetic:de:06412:3:21:2;30;21;141;38,32%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:33;17:33;17:36:43;17:36:54;Willy-Brandt-Platz;synthetic:de:06412:4:24:4;30;47;124;33,70%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:35;17:35;17:38:53;17:39:00;Hauptbahnhof;synthetic:de:06412:10:5:35;27;14;137;37,23%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:36;17:36;17:40:06;17:40:11;Festhalle/Messe;synthetic:de:06412:210:21:2;22;26;133;36,14%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:38;17:38;17:41:49;17:41:49;Bockenheimer Warte;synthetic:de:06412:1201:1:2;0;133;0;0,00%
+15.09.2025;Mo;U4;2;17:14;Enkheim;17:38;Bockenheimer Warte;368;272;96;17:38;17:38;17:41:49;17:41:49;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:03;07:03;07:03:12;07:03:12;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:03;07:03;07:03:12;07:03:22;Hauptbahnhof;synthetic:de:06412:10:6:36;30;0;30;8,15%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:04;07:04;07:04:10;07:04:19;Willy-Brandt-Platz;synthetic:de:06412:4:23:3;28;7;51;13,86%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:05;07:05;07:05:30;07:05:44;Dom/Römer;synthetic:de:06412:3:21:1;25;10;66;17,93%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:07;07:07;07:07:24;07:07:40;Konstablerwache;synthetic:de:06412:510:5:5;39;20;85;23,10%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:09;07:09;07:09:16;07:09:27;Musterschule;synthetic:de:06412:416:1:1;12;16;81;22,01%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:11;07:11;07:11:19;07:11:37;Glauburgstraße;synthetic:de:06412:419:1:1;24;27;78;21,20%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:13;07:13;07:13:27;07:13:35;Deutsche Nationalbibliothek;synthetic:de:06412:420:6:6;24;15;87;23,64%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:15;07:15;07:15:42;07:15:58;Hauptfriedhof;synthetic:de:06412:1401:2:2;17;12;92;25,00%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:18;07:18;07:18:26;07:18:46;Marbachweg/Sozialzentrum;synthetic:de:06412:1413:2:2;32;24;100;27,17%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:19;07:19;07:19:46;07:20:04;Feuerwehrstraße;synthetic:de:06412:1406:21:1;28;11;117;31,79%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:21;07:21;07:22:16;07:22:25;Theobald-Ziegler-Straße;synthetic:de:06412:1405:21:1;20;30;107;29,08%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:22;07:22;07:23:13;07:23:29;Ronneburgstraße;synthetic:de:06412:1444:21:1;36;30;113;30,71%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:23;07:23;07:24:28;07:24:47;Sigmund-Freud-Straße;synthetic:de:06412:1445:2:2;19;45;87;23,64%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:25;07:25;07:26:34;07:26:34;Preungesheim;synthetic:de:06412:1446:1:1;0;87;0;0,00%
+15.09.2025;Mo;U5;1;07:03;Hauptbahnhof;07:25;Preungesheim;368;272;96;07:25;07:25;07:26:34;07:26:34;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:07;12:07;12:07:00;12:07:00;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:07;12:07;12:07:00;12:07:11;Hauptbahnhof;synthetic:de:06412:10:6:36;12;0;12;6,52%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:08;12:08;12:08:10;12:08:30;Willy-Brandt-Platz;synthetic:de:06412:4:23:3;8;2;18;9,78%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:09;12:09;12:09:18;12:09:30;Dom/Römer;synthetic:de:06412:3:21:1;7;4;21;11,41%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:11;12:11;12:11:30;12:11:42;Konstablerwache;synthetic:de:06412:510:5:5;14;2;33;17,93%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:13;12:13;12:13:43;12:14:00;Musterschule;synthetic:de:06412:416:1:1;7;10;30;16,30%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:15;12:15;12:15:55;12:16:13;Glauburgstraße;synthetic:de:06412:419:1:1;9;10;29;15,76%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:17;12:17;12:18:08;12:18:16;Deutsche Nationalbibliothek;synthetic:de:06412:420:6:6;7;4;32;17,39%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:19;12:19;12:20:29;12:20:47;Hauptfriedhof;synthetic:de:06412:1401:2:2;3;4;31;16,85%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:21;12:21;12:22:50;12:23:09;Marbachweg/Sozialzentrum;synthetic:de:06412:1413:2:2;9;3;37;20,11%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:22;12:22;12:23:57;12:24:08;Feuerwehrstraße;synthetic:de:06412:1406:21:1;11;9;39;21,20%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:24;12:24;12:26:15;12:26:26;Theobald-Ziegler-Straße;synthetic:de:06412:1405:21:1;14;14;39;21,20%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:25;12:25;12:27:34;12:27:42;Ronneburgstraße;synthetic:de:06412:1444:21:1;9;15;33;17,93%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:26;12:26;12:28:55;12:29:12;Sigmund-Freud-Straße;synthetic:de:06412:1445:2:2;9;8;34;18,48%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:28;12:28;12:31:23;12:31:23;Preungesheim;synthetic:de:06412:1446:1:1;0;34;0;0,00%
+15.09.2025;Mo;U5;1;12:07;Hauptbahnhof;12:28;Preungesheim;184;136;48;12:28;12:28;12:31:23;12:31:23;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:03;17:03;17:04:47;17:04:47;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:03;17:03;17:04:47;17:05:03;Hauptbahnhof;synthetic:de:06412:10:6:36;33;0;33;8,97%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:04;17:04;17:06:03;17:06:18;Willy-Brandt-Platz;synthetic:de:06412:4:23:3;38;8;63;17,12%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:05;17:05;17:07:16;17:07:35;Dom/Römer;synthetic:de:06412:3:21:1;18;22;59;16,03%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:07;17:07;17:09:11;17:09:23;Konstablerwache;synthetic:de:06412:510:5:5;32;16;75;20,38%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:09;17:09;17:11:07;17:11:24;Musterschule;synthetic:de:06412:416:1:1;35;19;91;24,73%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:11;17:11;17:13:16;17:13:36;Glauburgstraße;synthetic:de:06412:419:1:1;37;17;111;30,16%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:13;17:13;17:15:28;17:15:48;Deutsche Nationalbibliothek;synthetic:de:06412:420:6:6;28;18;121;32,88%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:15;17:15;17:17:47;17:17:55;Hauptfriedhof;synthetic:de:06412:1401:2:2;21;25;117;31,79%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:18;17:18;17:20:40;17:20:51;Marbachweg/Sozialzentrum;synthetic:de:06412:1413:2:2;21;30;108;29,35%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:19;17:19;17:21:49;17:21:56;Feuerwehrstraße;synthetic:de:06412:1406:21:1;18;28;98;26,63%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:21;17:21;17:23:37;17:23:51;Theobald-Ziegler-Straße;synthetic:de:06412:1405:21:1;32;18;112;30,43%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:22;17:22;17:24:47;17:25:00;Ronneburgstraße;synthetic:de:06412:1444:21:1;19;15;116;31,52%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:23;17:23;17:25:49;17:26:01;Sigmund-Freud-Straße;synthetic:de:06412:1445:2:2;46;44;118;32,07%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:25;17:25;17:27:37;17:27:37;Preungesheim;synthetic:de:06412:1446:1:1;0;118;0;0,00%
+15.09.2025;Mo;U5;1;17:03;Hauptbahnhof;17:25;Preungesheim;368;272;96;17:25;17:25;17:27:37;17:27:37;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:01;07:01;07:03:42;07:03:42;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:01;07:01;07:03:42;07:04:02;Preungesheim;synthetic:de:06412:1446:1:1;29;0;29;7,88%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:02;07:02;07:04:52;07:05:02;Sigmund-Freud-Straße;synthetic:de:06412:1445:1:1;23;9;43;11,68%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:03;07:03;07:05:50;07:05:55;Ronneburgstraße;synthetic:de:06412:1444:22:2;31;12;62;16,85%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:04;07:04;07:07:17;07:07:35;Theobald-Ziegler-Straße;synthetic:de:06412:1405:2:2;25;14;73;19,84%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:05;07:05;07:08:23;07:08:43;Feuerwehrstraße;synthetic:de:06412:1406:22:2;33;28;78;21,20%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:07;07:07;07:10:43;07:10:52;Marbachweg/Sozialzentrum;synthetic:de:06412:1413:1:1;23;23;78;21,20%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:10;07:10;07:13:56;07:14:04;Hauptfriedhof;synthetic:de:06412:1401:1:1;23;28;73;19,84%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:12;07:12;07:15:40;07:15:55;Deutsche Nationalbibliothek;synthetic:de:06412:420:5:5;34;25;82;22,28%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:14;07:14;07:17:52;07:18:07;Glauburgstraße;synthetic:de:06412:419:2:2;23;19;86;23,37%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:15;07:15;07:19:17;07:19:33;Musterschule;synthetic:de:06412:416:2:2;27;17;96;26,09%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:18;07:18;07:22:17;07:22:26;Konstablerwache;synthetic:de:06412:510:6:6;29;32;93;25,27%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:19;07:19;07:23:17;07:23:23;Dom/Römer;synthetic:de:06412:3:21:2;21;36;78;21,20%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:20;07:20;07:24:11;07:24:20;Willy-Brandt-Platz;synthetic:de:06412:4:24:4;10;11;77;20,92%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:22;07:22;07:26:04;07:26:04;Hauptbahnhof;synthetic:de:06412:10:5:35;0;77;0;0,00%
+15.09.2025;Mo;U5;2;07:01;Preungesheim;07:22;Hauptbahnhof;368;272;96;07:22;07:22;07:26:04;07:26:04;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:04;12:04;12:04:43;12:04:43;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:04;12:04;12:04:43;12:05:03;Preungesheim;synthetic:de:06412:1446:1:1;9;0;9;4,89%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:05;12:05;12:05:51;12:06:01;Sigmund-Freud-Straße;synthetic:de:06412:1445:1:1;6;2;13;7,07%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:06;12:06;12:07:13;12:07:29;Ronneburgstraße;synthetic:de:06412:1444:22:2;9;3;19;10,33%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:07;12:07;12:08:32;12:08:41;Theobald-Ziegler-Straße;synthetic:de:06412:1405:2:2;4;2;21;11,41%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:08;12:08;12:09:35;12:09:48;Feuerwehrstraße;synthetic:de:06412:1406:22:2;10;8;23;12,50%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:10;12:10;12:11:24;12:11:35;Marbachweg/Sozialzentrum;synthetic:de:06412:1413:1:1;4;4;23;12,50%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:12;12:12;12:13:48;12:13:58;Hauptfriedhof;synthetic:de:06412:1401:1:1;3;9;17;9,24%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:14;12:14;12:16:10;12:16:23;Deutsche Nationalbibliothek;synthetic:de:06412:420:5:5;5;6;16;8,70%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:16;12:16;12:18:30;12:18:38;Glauburgstraße;synthetic:de:06412:419:2:2;5;6;15;8,15%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:17;12:17;12:19:26;12:19:37;Musterschule;synthetic:de:06412:416:2:2;11;2;24;13,04%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:20;12:20;12:22:25;12:22:45;Konstablerwache;synthetic:de:06412:510:6:6;16;6;34;18,48%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:21;12:21;12:23:33;12:23:51;Dom/Römer;synthetic:de:06412:3:21:2;13;12;35;19,02%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:22;12:22;12:24:55;12:25:02;Willy-Brandt-Platz;synthetic:de:06412:4:24:4;15;8;42;22,83%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:24;12:24;12:27:10;12:27:10;Hauptbahnhof;synthetic:de:06412:10:5:35;0;42;0;0,00%
+15.09.2025;Mo;U5;2;12:04;Preungesheim;12:24;Hauptbahnhof;184;136;48;12:24;12:24;12:27:10;12:27:10;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:01;17:01;17:03:23;17:03:23;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:01;17:01;17:03:23;17:03:29;Preungesheim;synthetic:de:06412:1446:1:1;39;0;39;10,60%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:02;17:02;17:04:33;17:04:48;Sigmund-Freud-Straße;synthetic:de:06412:1445:1:1;28;8;59;16,03%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:03;17:03;17:05:36;17:05:48;Ronneburgstraße;synthetic:de:06412:1444:22:2;36;16;79;21,47%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:04;17:04;17:07:04;17:07:16;Theobald-Ziegler-Straße;synthetic:de:06412:1405:2:2;20;15;84;22,83%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:05;17:05;17:08:04;17:08:17;Feuerwehrstraße;synthetic:de:06412:1406:22:2;33;25;92;25,00%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:07;17:07;17:10:08;17:10:25;Marbachweg/Sozialzentrum;synthetic:de:06412:1413:1:1;24;25;91;24,73%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:10;17:10;17:13:37;17:13:51;Hauptfriedhof;synthetic:de:06412:1401:1:1;37;33;95;25,82%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:12;17:12;17:16:02;17:16:21;Deutsche Nationalbibliothek;synthetic:de:06412:420:5:5;26;22;99;26,90%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:14;17:14;17:18:30;17:18:39;Glauburgstraße;synthetic:de:06412:419:2:2;36;27;108;29,35%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:15;17:15;17:19:39;17:19:49;Musterschule;synthetic:de:06412:416:2:2;38;40;106;28,80%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:18;17:18;17:22:35;17:22:42;Konstablerwache;synthetic:de:06412:510:6:6;59;21;144;39,13%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:19;17:19;17:23:40;17:23:58;Dom/Römer;synthetic:de:06412:3:21:2;34;40;138;37,50%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:20;17:20;17:25:00;17:25:16;Willy-Brandt-Platz;synthetic:de:06412:4:24:4;28;47;119;32,34%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:22;17:22;17:27:00;17:27:00;Hauptbahnhof;synthetic:de:06412:10:5:35;0;119;0;0,00%
+15.09.2025;Mo;U5;2;17:01;Preungesheim;17:22;Hauptbahnhof;368;272;96;17:22;17:22;17:27:00;17:27:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:02;07:02;07:05:02;07:05:02;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:02;07:02;07:05:02;07:05:12;Hausen;synthetic:de:06412:1224:1:1;31;0;31;8,42%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:04;07:04;07:07:16;07:07:23;Große Nelkenstraße;synthetic:de:06412:1236:2:2;38;3;66;17,93%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:06;07:06;07:08:59;07:09:09;Industriehof;synthetic:de:06412:1222:1:2;24;18;72;19,57%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:07;07:07;07:10:18;07:10:23;Kirchplatz;synthetic:de:06412:1234:21:1;21;23;70;19,02%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:08;07:08;07:11:30;07:11:41;Leipziger Straße;synthetic:de:06412:1203:22:2;31;25;76;20,65%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:09;07:09;07:12:57;07:13:09;Bockenheimer Warte;synthetic:de:06412:1201:4:3;52;12;116;31,52%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:11;07:11;07:15:27;07:15:43;Westend;synthetic:de:06412:206:1:2;36;18;134;36,41%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:12;07:12;07:16:40;07:16:49;Alte Oper;synthetic:de:06412:201:1:2;23;43;114;30,98%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:13;07:13;07:17:38;07:17:50;Hauptwache;synthetic:de:06412:1:23:5;45;12;147;39,95%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:15;07:15;07:19:31;07:19:43;Konstablerwache;synthetic:de:06412:510:2:2;54;44;157;42,66%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:16;07:16;07:20:52;07:21:08;Zoo;synthetic:de:06412:511:1:1;14;44;127;34,51%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:19;07:19;07:23:43;07:23:43;Ostbahnhof;synthetic:de:06412:526:21:3;0;127;0;0,00%
+15.09.2025;Mo;U6;1;07:02;Hausen;07:19;Ostbahnhof;368;272;96;07:19;07:19;07:23:43;07:23:43;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:02;12:02;12:02:46;12:02:46;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:02;12:02;12:02:46;12:03:04;Hausen;synthetic:de:06412:1224:1:1;13;0;13;7,07%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:04;12:04;12:04:52;12:05:04;Große Nelkenstraße;synthetic:de:06412:1236:2:2;4;4;13;7,07%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:06;12:06;12:06:40;12:06:45;Industriehof;synthetic:de:06412:1222:1:2;5;5;13;7,07%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:07;12:07;12:08:01;12:08:19;Kirchplatz;synthetic:de:06412:1234:21:1;6;3;16;8,70%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:08;12:08;12:09:07;12:09:18;Leipziger Straße;synthetic:de:06412:1203:22:2;10;3;23;12,50%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:09;12:09;12:10:29;12:10:47;Bockenheimer Warte;synthetic:de:06412:1201:4:3;15;3;35;19,02%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:11;12:11;12:12:57;12:13:04;Westend;synthetic:de:06412:206:1:2;12;6;41;22,28%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:12;12:12;12:14:27;12:14:47;Alte Oper;synthetic:de:06412:201:1:2;3;10;34;18,48%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:13;12:13;12:15:55;12:16:11;Hauptwache;synthetic:de:06412:1:23:5;11;7;38;20,65%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:15;12:15;12:18:07;12:18:20;Konstablerwache;synthetic:de:06412:510:2:2;15;11;42;22,83%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:16;12:16;12:19:33;12:19:48;Zoo;synthetic:de:06412:511:1:1;10;11;41;22,28%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:19;12:19;12:22:36;12:22:36;Ostbahnhof;synthetic:de:06412:526:21:3;0;41;0;0,00%
+15.09.2025;Mo;U6;1;12:02;Hausen;12:19;Ostbahnhof;184;136;48;12:19;12:19;12:22:36;12:22:36;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:02;17:02;17:02:16;17:02:16;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:02;17:02;17:02:16;17:02:26;Hausen;synthetic:de:06412:1224:1:1;25;0;25;6,79%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:04;17:04;17:04:02;17:04:18;Große Nelkenstraße;synthetic:de:06412:1236:2:2;22;6;41;11,14%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:06;17:06;17:06:00;17:06:06;Industriehof;synthetic:de:06412:1222:1:2;28;9;60;16,30%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:07;17:07;17:07:30;17:07:37;Kirchplatz;synthetic:de:06412:1234:21:1;20;23;57;15,49%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:08;17:08;17:08:25;17:08:33;Leipziger Straße;synthetic:de:06412:1203:22:2;23;19;61;16,58%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:09;17:09;17:09:39;17:09:45;Bockenheimer Warte;synthetic:de:06412:1201:4:3;46;8;99;26,90%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:11;17:11;17:11:32;17:11:37;Westend;synthetic:de:06412:206:1:2;19;12;106;28,80%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:12;17:12;17:12:59;17:13:15;Alte Oper;synthetic:de:06412:201:1:2;18;28;96;26,09%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:13;17:13;17:14:08;17:14:17;Hauptwache;synthetic:de:06412:1:23:5;55;31;120;32,61%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:15;17:15;17:16:27;17:16:34;Konstablerwache;synthetic:de:06412:510:2:2;30;43;107;29,08%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:16;17:16;17:17:32;17:17:38;Zoo;synthetic:de:06412:511:1:1;36;32;111;30,16%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:19;17:19;17:20:54;17:20:54;Ostbahnhof;synthetic:de:06412:526:21:3;0;111;0;0,00%
+15.09.2025;Mo;U6;1;17:02;Hausen;17:19;Ostbahnhof;368;272;96;17:19;17:19;17:20:54;17:20:54;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:09;07:09;07:09:27;07:09:27;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:09;07:09;07:09:27;07:09:43;Ostbahnhof;synthetic:de:06412:526:21:3;19;0;19;5,16%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:10;07:10;07:10:40;07:10:56;Zoo;synthetic:de:06412:511:2:9;19;3;35;9,51%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:11;07:11;07:12:02;07:12:22;Konstablerwache;synthetic:de:06412:510:1:4;41;10;66;17,93%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:13;07:13;07:14:25;07:14:43;Hauptwache;synthetic:de:06412:1:24:6;41;9;98;26,63%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:14;07:14;07:15:31;07:15:39;Alte Oper;synthetic:de:06412:201:1:1;39;10;127;34,51%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:16;07:16;07:17:15;07:17:21;Westend;synthetic:de:06412:206:1:1;31;35;123;33,42%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:17;07:17;07:18:20;07:18:32;Bockenheimer Warte;synthetic:de:06412:1201:4:4;31;48;106;28,80%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:18;07:18;07:19:50;07:20:07;Leipziger Straße;synthetic:de:06412:1203:21:1;23;40;89;24,18%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:20;07:20;07:22:20;07:22:36;Kirchplatz;synthetic:de:06412:1234:21:2;31;13;107;29,08%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:21;07:21;07:23:24;07:23:42;Industriehof;synthetic:de:06412:1222:2:1;28;30;105;28,53%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:22;07:22;07:24:34;07:24:49;Große Nelkenstraße;synthetic:de:06412:1236:1:1;21;11;115;31,25%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:25;07:25;07:27:21;07:27:21;Hausen;synthetic:de:06412:1224:1:1;0;115;0;0,00%
+15.09.2025;Mo;U6;2;07:09;Ostbahnhof;07:25;Hausen;368;272;96;07:25;07:25;07:27:21;07:27:21;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:09;12:09;12:10:47;12:10:47;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:09;12:09;12:10:47;12:10:58;Ostbahnhof;synthetic:de:06412:526:21:3;7;0;7;3,80%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:10;12:10;12:11:46;12:12:00;Zoo;synthetic:de:06412:511:2:9;10;2;15;8,15%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:11;12:11;12:12:48;12:13:06;Konstablerwache;synthetic:de:06412:510:1:4;14;3;26;14,13%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:13;12:13;12:15:06;12:15:23;Hauptwache;synthetic:de:06412:1:24:6;10;10;26;14,13%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:14;12:14;12:16:11;12:16:21;Alte Oper;synthetic:de:06412:201:1:1;11;9;28;15,22%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:16;12:16;12:18:38;12:18:55;Westend;synthetic:de:06412:206:1:1;6;6;28;15,22%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:17;12:17;12:19:57;12:20:05;Bockenheimer Warte;synthetic:de:06412:1201:4:4;14;9;33;17,93%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:18;12:18;12:20:53;12:21:08;Leipziger Straße;synthetic:de:06412:1203:21:1;7;12;28;15,22%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:20;12:20;12:23:01;12:23:18;Kirchplatz;synthetic:de:06412:1234:21:2;5;11;22;11,96%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:21;12:21;12:24:15;12:24:23;Industriehof;synthetic:de:06412:1222:2:1;9;7;24;13,04%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:22;12:22;12:25:11;12:25:20;Große Nelkenstraße;synthetic:de:06412:1236:1:1;8;3;29;15,76%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:25;12:25;12:28:06;12:28:06;Hausen;synthetic:de:06412:1224:1:1;0;29;0;0,00%
+15.09.2025;Mo;U6;2;12:09;Ostbahnhof;12:25;Hausen;184;136;48;12:25;12:25;12:28:06;12:28:06;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:09;17:09;17:10:23;17:10:23;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:09;17:09;17:10:23;17:10:31;Ostbahnhof;synthetic:de:06412:526:21:3;23;0;23;6,25%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:10;17:10;17:11:30;17:11:48;Zoo;synthetic:de:06412:511:2:9;35;2;56;15,22%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:11;17:11;17:12:54;17:13:13;Konstablerwache;synthetic:de:06412:510:1:4;31;10;77;20,92%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:13;17:13;17:14:50;17:15:03;Hauptwache;synthetic:de:06412:1:24:6;26;17;86;23,37%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:14;17:14;17:15:58;17:16:05;Alte Oper;synthetic:de:06412:201:1:1;17;30;73;19,84%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:16;17:16;17:18:08;17:18:19;Westend;synthetic:de:06412:206:1:1;27;9;91;24,73%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:17;17:17;17:19:07;17:19:13;Bockenheimer Warte;synthetic:de:06412:1201:4:4;36;35;92;25,00%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:18;17:18;17:20:20;17:20:36;Leipziger Straße;synthetic:de:06412:1203:21:1;41;20;113;30,71%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:20;17:20;17:22:44;17:22:49;Kirchplatz;synthetic:de:06412:1234:21:2;24;43;94;25,54%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:21;17:21;17:24:05;17:24:12;Industriehof;synthetic:de:06412:1222:2:1;35;15;114;30,98%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:22;17:22;17:25:00;17:25:11;Große Nelkenstraße;synthetic:de:06412:1236:1:1;42;27;129;35,05%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:25;17:25;17:27:42;17:27:42;Hausen;synthetic:de:06412:1224:1:1;0;129;0;0,00%
+15.09.2025;Mo;U6;2;17:09;Ostbahnhof;17:25;Hausen;368;272;96;17:25;17:25;17:27:42;17:27:42;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:01;07:01;07:02:06;07:02:06;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:01;07:01;07:02:06;07:02:16;Riedberg;synthetic:de:06412:1985:1:1;29;0;29;7,88%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:02;07:02;07:03:33;07:03:53;Uni Campus Riedberg;synthetic:de:06412:60765:3:3;22;11;40;10,87%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:05;07:05;07:06:18;07:06:31;Niederursel;synthetic:de:06412:2399:2:2;39;7;72;19,57%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:06;07:06;07:07:38;07:07:52;Wiesenau;synthetic:de:06412:1319:2:2;25;21;76;20,65%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:08;07:08;07:09:50;07:09:59;Zeilweg;synthetic:de:06412:1318:2:2;33;20;89;24,18%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:10;07:10;07:12:09;07:12:25;Heddernheim;synthetic:de:06412:1317:22:3;19;23;85;23,10%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:12;07:12;07:14:05;07:14:13;Weißer Stein;synthetic:de:06412:1312:22:2;30;30;85;23,10%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:13;07:13;07:15:01;07:15:19;Lindenbaum;synthetic:de:06412:1311:2:2;30;21;94;25,54%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:14;07:14;07:16:29;07:16:48;Hügelstraße;synthetic:de:06412:1304:2:2;41;28;107;29,08%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:15;07:15;07:17:36;07:17:56;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;24;40;91;24,73%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:17;07:17;07:19:32;07:19:51;Dornbusch;synthetic:de:06412:1301:22:22;26;32;85;23,10%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:19;07:19;07:21:40;07:21:50;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;33;14;104;28,26%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:20;07:20;07:22:38;07:22:56;Holzhausenstraße;synthetic:de:06412:403:4:4;36;25;115;31,25%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:21;07:21;07:23:44;07:23:51;Grüneburgweg;synthetic:de:06412:402:2:2;31;46;100;27,17%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:22;07:22;07:24:46;07:24:52;Eschenheimer Tor;synthetic:de:06412:401:2:2;25;28;97;26,36%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:23;07:23;07:25:40;07:25:56;Hauptwache;synthetic:de:06412:1:22:4;51;22;126;34,24%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:24;07:24;07:26:51;07:26:58;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;35;21;140;38,04%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:26;07:26;07:28:48;07:29:07;Schweizer Platz;synthetic:de:06412:921:1:2;32;43;129;35,05%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:28;07:28;07:31:08;07:31:08;Südbahnhof;synthetic:de:06412:912:7:11;0;129;0;0,00%
+15.09.2025;Mo;U8;1;07:01;Riedberg;07:28;Südbahnhof;368;272;96;07:28;07:28;07:31:08;07:31:08;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:01;12:01;12:01:43;12:01:43;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:01;12:01;12:01:43;12:01:54;Riedberg;synthetic:de:06412:1985:1:1;9;0;9;4,89%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:02;12:02;12:02:42;12:02:59;Uni Campus Riedberg;synthetic:de:06412:60765:3:3;8;3;14;7,61%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:05;12:05;12:05:31;12:05:50;Niederursel;synthetic:de:06412:2399:2:2;5;4;15;8,15%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:06;12:06;12:06:54;12:07:01;Wiesenau;synthetic:de:06412:1319:2:2;14;2;27;14,67%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:08;12:08;12:08:51;12:09:00;Zeilweg;synthetic:de:06412:1318:2:2;7;9;25;13,59%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:10;12:10;12:11:13;12:11:22;Heddernheim;synthetic:de:06412:1317:22:3;7;3;29;15,76%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:12;12:12;12:13:43;12:13:55;Weißer Stein;synthetic:de:06412:1312:22:2;13;7;35;19,02%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:13;12:13;12:14:43;12:15:01;Lindenbaum;synthetic:de:06412:1311:2:2;10;4;41;22,28%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:14;12:14;12:15:49;12:16:02;Hügelstraße;synthetic:de:06412:1304:2:2;7;11;37;20,11%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:15;12:15;12:16:53;12:17:03;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;12;10;39;21,20%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:17;12:17;12:18:57;12:19:07;Dornbusch;synthetic:de:06412:1301:22:22;2;9;32;17,39%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:19;12:19;12:21:17;12:21:33;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;6;5;33;17,93%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:20;12:20;12:22:21;12:22:36;Holzhausenstraße;synthetic:de:06412:403:4:4;7;10;30;16,30%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:21;12:21;12:23:39;12:23:52;Grüneburgweg;synthetic:de:06412:402:2:2;4;7;27;14,67%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:22;12:22;12:24:58;12:25:18;Eschenheimer Tor;synthetic:de:06412:401:2:2;7;7;27;14,67%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:23;12:23;12:26:23;12:26:31;Hauptwache;synthetic:de:06412:1:22:4;13;6;34;18,48%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:24;12:24;12:27:19;12:27:35;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;7;7;34;18,48%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:26;12:26;12:29:34;12:29:48;Schweizer Platz;synthetic:de:06412:921:1:2;11;8;37;20,11%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:28;12:28;12:31:37;12:31:37;Südbahnhof;synthetic:de:06412:912:7:11;0;37;0;0,00%
+15.09.2025;Mo;U8;1;12:01;Riedberg;12:28;Südbahnhof;184;136;48;12:28;12:28;12:31:37;12:31:37;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:01;17:01;17:03:17;17:03:17;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:01;17:01;17:03:17;17:03:23;Riedberg;synthetic:de:06412:1985:1:1;30;0;30;8,15%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:02;17:02;17:04:28;17:04:44;Uni Campus Riedberg;synthetic:de:06412:60765:3:3;14;4;40;10,87%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:05;17:05;17:07:57;17:08:17;Niederursel;synthetic:de:06412:2399:2:2;40;14;66;17,93%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:06;17:06;17:09:21;17:09:35;Wiesenau;synthetic:de:06412:1319:2:2;26;12;80;21,74%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:08;17:08;17:11:19;17:11:35;Zeilweg;synthetic:de:06412:1318:2:2;32;15;97;26,36%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:10;17:10;17:13:37;17:13:49;Heddernheim;synthetic:de:06412:1317:22:3;27;18;106;28,80%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:12;17:12;17:15:42;17:15:48;Weißer Stein;synthetic:de:06412:1312:22:2;14;22;98;26,63%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:13;17:13;17:17:04;17:17:22;Lindenbaum;synthetic:de:06412:1311:2:2;32;13;117;31,79%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:14;17:14;17:18:10;17:18:28;Hügelstraße;synthetic:de:06412:1304:2:2;35;37;115;31,25%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:15;17:15;17:19:16;17:19:36;Fritz-Tarnow-Straße;synthetic:de:06412:1303:2:2;37;25;127;34,51%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:17;17:17;17:21:35;17:21:49;Dornbusch;synthetic:de:06412:1301:22:22;45;28;144;39,13%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:19;17:19;17:24:00;17:24:10;Miquel-/Adickesallee;synthetic:de:06412:404:6:5;27;16;155;42,12%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:20;17:20;17:25:00;17:25:14;Holzhausenstraße;synthetic:de:06412:403:4:4;20;58;117;31,79%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:21;17:21;17:26:02;17:26:22;Grüneburgweg;synthetic:de:06412:402:2:2;44;12;149;40,49%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:22;17:22;17:27:10;17:27:19;Eschenheimer Tor;synthetic:de:06412:401:2:2;30;42;137;37,23%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:23;17:23;17:28:07;17:28:25;Hauptwache;synthetic:de:06412:1:22:4;33;51;119;32,34%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:24;17:24;17:29:13;17:29:21;Willy-Brandt-Platz;synthetic:de:06412:4:22:2;36;39;116;31,52%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:26;17:26;17:31:00;17:31:10;Schweizer Platz;synthetic:de:06412:921:1:2;25;45;96;26,09%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:28;17:28;17:33:00;17:33:00;Südbahnhof;synthetic:de:06412:912:7:11;0;96;0;0,00%
+15.09.2025;Mo;U8;1;17:01;Riedberg;17:28;Südbahnhof;368;272;96;17:28;17:28;17:33:00;17:33:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:05;07:05;07:06:23;07:06:23;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:05;07:05;07:06:23;07:06:39;Südbahnhof;synthetic:de:06412:912:7:10;27;0;27;7,34%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:06;07:06;07:07:47;07:07:53;Schweizer Platz;synthetic:de:06412:921:1:1;29;4;52;14,13%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:07;07:07;07:09:14;07:09:30;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;24;12;64;17,39%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:09;07:09;07:11:43;07:11:52;Hauptwache;synthetic:de:06412:1:21:3;32;14;82;22,28%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:10;07:10;07:12:44;07:13:03;Eschenheimer Tor;synthetic:de:06412:401:1:1;23;26;79;21,47%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:11;07:11;07:13:51;07:14:04;Grüneburgweg;synthetic:de:06412:402:1:1;34;31;82;22,28%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:12;07:12;07:15:21;07:15:36;Holzhausenstraße;synthetic:de:06412:403:3:3;26;18;90;24,46%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:13;07:13;07:16:24;07:16:30;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;20;32;78;21,20%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:14;07:14;07:17:47;07:18:05;Dornbusch;synthetic:de:06412:1301:21:21;38;31;85;23,10%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:16;07:16;07:20:07;07:20:17;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;29;33;81;22,01%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:17;07:17;07:21:35;07:21:42;Hügelstraße;synthetic:de:06412:1304:1:1;29;30;80;21,74%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:18;07:18;07:23:00;07:23:13;Lindenbaum;synthetic:de:06412:1311:1:1;34;31;83;22,55%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:20;07:20;07:24:58;07:25:17;Weißer Stein;synthetic:de:06412:1312:21:1;17;25;75;20,38%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:22;07:22;07:26:53;07:26:58;Heddernheim;synthetic:de:06412:1317:23:2;33;21;87;23,64%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:23;07:23;07:27:46;07:28:02;Zeilweg;synthetic:de:06412:1318:1:1;33;15;105;28,53%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:25;07:25;07:30:00;07:30:08;Wiesenau;synthetic:de:06412:1319:1:1;25;34;96;26,09%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:27;07:27;07:32:00;07:32:15;Niederursel;synthetic:de:06412:2399:1:1;27;14;109;29,62%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:29;07:29;07:34:00;07:34:11;Uni Campus Riedberg;synthetic:de:06412:60765:4:4;30;38;101;27,45%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:31;07:31;07:36:00;07:36:00;Riedberg;synthetic:de:06412:1985:2:2;0;101;0;0,00%
+15.09.2025;Mo;U8;2;07:05;Südbahnhof;07:31;Riedberg;368;272;96;07:31;07:31;07:36:00;07:36:00;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:05;12:05;12:05:16;12:05:16;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:05;12:05;12:05:16;12:05:30;Südbahnhof;synthetic:de:06412:912:7:10;15;0;15;8,15%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:06;12:06;12:06:23;12:06:29;Schweizer Platz;synthetic:de:06412:921:1:1;5;4;16;8,70%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:07;12:07;12:07:38;12:07:48;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;8;3;21;11,41%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:09;12:09;12:10:01;12:10:21;Hauptwache;synthetic:de:06412:1:21:3;16;5;32;17,39%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:10;12:10;12:11:09;12:11:23;Eschenheimer Tor;synthetic:de:06412:401:1:1;11;7;36;19,57%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:11;12:11;12:12:12;12:12:25;Grüneburgweg;synthetic:de:06412:402:1:1;15;11;40;21,74%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:12;12:12;12:13:25;12:13:44;Holzhausenstraße;synthetic:de:06412:403:3:3;10;8;42;22,83%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:13;12:13;12:14:32;12:14:44;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;8;17;33;17,93%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:14;12:14;12:15:54;12:16:11;Dornbusch;synthetic:de:06412:1301:21:21;11;8;36;19,57%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:16;12:16;12:17:55;12:18:08;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;10;8;38;20,65%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:17;12:17;12:19:21;12:19:38;Hügelstraße;synthetic:de:06412:1304:1:1;2;7;33;17,93%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:18;12:18;12:20:26;12:20:45;Lindenbaum;synthetic:de:06412:1311:1:1;11;4;40;21,74%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:20;12:20;12:22:42;12:22:51;Weißer Stein;synthetic:de:06412:1312:21:1;9;11;38;20,65%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:22;12:22;12:24:36;12:24:53;Heddernheim;synthetic:de:06412:1317:23:2;8;5;41;22,28%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:23;12:23;12:25:54;12:26:07;Zeilweg;synthetic:de:06412:1318:1:1;11;8;44;23,91%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:25;12:25;12:27:46;12:27:51;Wiesenau;synthetic:de:06412:1319:1:1;11;15;40;21,74%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:27;12:27;12:30:06;12:30:25;Niederursel;synthetic:de:06412:2399:1:1;4;10;34;18,48%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:29;12:29;12:32:01;12:32:09;Uni Campus Riedberg;synthetic:de:06412:60765:4:4;8;12;30;16,30%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:31;12:31;12:34:09;12:34:09;Riedberg;synthetic:de:06412:1985:2:2;0;30;0;0,00%
+15.09.2025;Mo;U8;2;12:05;Südbahnhof;12:31;Riedberg;184;136;48;12:31;12:31;12:34:09;12:34:09;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:05;17:05;17:07:13;17:07:13;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:05;17:05;17:07:13;17:07:26;Südbahnhof;synthetic:de:06412:912:7:10;31;0;31;8,42%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:06;17:06;17:08:20;17:08:34;Schweizer Platz;synthetic:de:06412:921:1:1;18;12;37;10,05%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:07;17:07;17:09:45;17:09:56;Willy-Brandt-Platz;synthetic:de:06412:4:21:1;29;8;58;15,76%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:09;17:09;17:12:05;17:12:23;Hauptwache;synthetic:de:06412:1:21:3;43;13;88;23,91%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:10;17:10;17:13:22;17:13:36;Eschenheimer Tor;synthetic:de:06412:401:1:1;38;28;98;26,63%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:11;17:11;17:14:24;17:14:38;Grüneburgweg;synthetic:de:06412:402:1:1;29;38;89;24,18%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:12;17:12;17:15:44;17:15:51;Holzhausenstraße;synthetic:de:06412:403:3:3;33;30;92;25,00%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:13;17:13;17:16:39;17:16:59;Miquel-/Adickesallee;synthetic:de:06412:404:5:1;44;13;123;33,42%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:14;17:14;17:17:47;17:18:03;Dornbusch;synthetic:de:06412:1301:21:21;26;34;115;31,25%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:16;17:16;17:19:39;17:19:55;Fritz-Tarnow-Straße;synthetic:de:06412:1303:1:1;18;22;111;30,16%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:17;17:17;17:20:43;17:20:58;Hügelstraße;synthetic:de:06412:1304:1:1;27;29;109;29,62%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:18;17:18;17:21:46;17:21:51;Lindenbaum;synthetic:de:06412:1311:1:1;23;26;106;28,80%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:20;17:20;17:23:59;17:24:18;Weißer Stein;synthetic:de:06412:1312:21:1;15;23;98;26,63%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:22;17:22;17:25:54;17:26:14;Heddernheim;synthetic:de:06412:1317:23:2;33;28;103;27,99%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:23;17:23;17:27:06;17:27:13;Zeilweg;synthetic:de:06412:1318:1:1;22;34;91;24,73%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:25;17:25;17:29:17;17:29:23;Wiesenau;synthetic:de:06412:1319:1:1;21;25;87;23,64%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:27;17:27;17:31:25;17:31:35;Niederursel;synthetic:de:06412:2399:1:1;29;30;86;23,37%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:29;17:29;17:33:41;17:33:55;Uni Campus Riedberg;synthetic:de:06412:60765:4:4;35;30;91;24,73%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:31;17:31;17:35:43;17:35:43;Riedberg;synthetic:de:06412:1985:2:2;0;91;0;0,00%
+15.09.2025;Mo;U8;2;17:05;Südbahnhof;17:31;Riedberg;368;272;96;17:31;17:31;17:35:43;17:35:43;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:05;07:05;07:05:17;07:05:17;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:05;07:05;07:05:17;07:05:36;Nieder-Eschbach;synthetic:de:06412:2398:2:2;31;0;31;8,42%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:08;07:08;07:08:07;07:08:13;Bonames Mitte;synthetic:de:06412:1352:2:2;29;4;56;15,22%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:09;07:09;07:09:15;07:09:22;Kalbach;synthetic:de:06412:1351:2:2;24;14;66;17,93%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:13;07:13;07:13:38;07:13:56;Riedberg;synthetic:de:06412:1985:1:1;39;10;95;25,82%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:14;07:14;07:15:06;07:15:24;Uni Campus Riedberg;synthetic:de:06412:60765:3:3;30;30;95;25,82%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:17;07:17;07:18:16;07:18:33;Niederursel;synthetic:de:06412:2399:2:2;31;32;94;25,54%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:18;07:18;07:19:31;07:19:47;Wiesenau;synthetic:de:06412:1319:2:2;26;21;99;26,90%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:20;07:20;07:21:26;07:21:33;Heddernheimer Landstraße;synthetic:de:06412:1320:1:1;21;39;81;22,01%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:21;07:21;07:22:21;07:22:34;Nordwestzentrum;synthetic:de:06412:1322:21:1;15;22;74;20,11%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:22;07:22;07:23:22;07:23:36;Römerstadt;synthetic:de:06412:1366:1:1;31;21;84;22,83%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:24;07:24;07:25:47;07:26:04;Ginnheim/Niddapark;synthetic:de:06412:1378:1:1;35;12;107;29,08%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:26;07:26;07:27:57;07:27:57;Ginnheim Mitte;synthetic:de:06412:1309:7:1;0;107;0;0,00%
+15.09.2025;Mo;U9;1;07:05;Nieder-Eschbach;07:26;Ginnheim Mitte;368;272;96;07:26;07:26;07:27:57;07:27:57;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:05;12:05;12:05:00;12:05:00;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:05;12:05;12:05:00;12:05:14;Nieder-Eschbach;synthetic:de:06412:2398:2:2;12;0;12;6,52%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:08;12:08;12:08:16;12:08:23;Bonames Mitte;synthetic:de:06412:1352:2:2;4;2;14;7,61%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:09;12:09;12:09:27;12:09:37;Kalbach;synthetic:de:06412:1351:2:2;10;4;20;10,87%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:13;12:13;12:13:40;12:13:59;Riedberg;synthetic:de:06412:1985:1:1;5;4;21;11,41%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:14;12:14;12:14:47;12:14:57;Uni Campus Riedberg;synthetic:de:06412:60765:3:3;5;7;19;10,33%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:17;12:17;12:18:08;12:18:19;Niederursel;synthetic:de:06412:2399:2:2;9;5;23;12,50%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:18;12:18;12:19:07;12:19:23;Wiesenau;synthetic:de:06412:1319:2:2;8;7;24;13,04%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:20;12:20;12:21:18;12:21:30;Heddernheimer Landstraße;synthetic:de:06412:1320:1:1;2;6;20;10,87%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:21;12:21;12:22:27;12:22:32;Nordwestzentrum;synthetic:de:06412:1322:21:1;5;5;20;10,87%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:22;12:22;12:23:46;12:23:56;Römerstadt;synthetic:de:06412:1366:1:1;11;4;27;14,67%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:24;12:24;12:25:43;12:25:56;Ginnheim/Niddapark;synthetic:de:06412:1378:1:1;6;4;29;15,76%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:26;12:26;12:27:49;12:27:49;Ginnheim Mitte;synthetic:de:06412:1309:7:1;0;29;0;0,00%
+15.09.2025;Mo;U9;1;12:05;Nieder-Eschbach;12:26;Ginnheim Mitte;184;136;48;12:26;12:26;12:27:49;12:27:49;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:05;17:05;17:06:44;17:06:44;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:05;17:05;17:06:44;17:06:55;Nieder-Eschbach;synthetic:de:06412:2398:2:2;22;0;22;5,98%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:08;17:08;17:10:01;17:10:13;Bonames Mitte;synthetic:de:06412:1352:2:2;29;7;44;11,96%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:09;17:09;17:11:26;17:11:38;Kalbach;synthetic:de:06412:1351:2:2;23;10;57;15,49%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:13;17:13;17:15:47;17:16:05;Riedberg;synthetic:de:06412:1985:1:1;41;21;77;20,92%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:14;17:14;17:16:53;17:17:13;Uni Campus Riedberg;synthetic:de:06412:60765:3:3;18;22;73;19,84%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:17;17:17;17:19:52;17:20:10;Niederursel;synthetic:de:06412:2399:2:2;19;14;78;21,20%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:18;17:18;17:20:58;17:21:07;Wiesenau;synthetic:de:06412:1319:2:2;26;20;84;22,83%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:20;17:20;17:23:28;17:23:40;Heddernheimer Landstraße;synthetic:de:06412:1320:1:1;14;33;65;17,66%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:21;17:21;17:24:52;17:25:06;Nordwestzentrum;synthetic:de:06412:1322:21:1;35;9;91;24,73%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:22;17:22;17:25:55;17:26:06;Römerstadt;synthetic:de:06412:1366:1:1;29;23;97;26,36%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:24;17:24;17:27:42;17:27:56;Ginnheim/Niddapark;synthetic:de:06412:1378:1:1;34;12;119;32,34%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:26;17:26;17:29:32;17:29:32;Ginnheim Mitte;synthetic:de:06412:1309:7:1;0;119;0;0,00%
+15.09.2025;Mo;U9;1;17:05;Nieder-Eschbach;17:26;Ginnheim Mitte;368;272;96;17:26;17:26;17:29:32;17:29:32;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:06;07:06;07:08:50;07:08:50;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:06;07:06;07:08:50;07:09:06;Ginnheim Mitte;synthetic:de:06412:1309:7:1;28;0;28;7,61%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:07;07:07;07:10:18;07:10:33;Ginnheim/Niddapark;synthetic:de:06412:1378:2:2;26;9;45;12,23%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:08;07:08;07:11:21;07:11:27;Römerstadt;synthetic:de:06412:1366:2:2;17;6;56;15,22%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:10;07:10;07:13:43;07:13:53;Nordwestzentrum;synthetic:de:06412:1322:22:2;18;20;54;14,67%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:11;07:11;07:14:48;07:15:03;Heddernheimer Landstraße;synthetic:de:06412:1320:2:2;24;6;72;19,57%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:12;07:12;07:15:51;07:16:02;Wiesenau;synthetic:de:06412:1319:1:1;23;17;78;21,20%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:14;07:14;07:17:47;07:17:57;Niederursel;synthetic:de:06412:2399:1:1;25;15;88;23,91%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:16;07:16;07:19:35;07:19:53;Uni Campus Riedberg;synthetic:de:06412:60765:4:4;25;28;85;23,10%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:18;07:18;07:21:29;07:21:46;Riedberg;synthetic:de:06412:1985:2:2;23;14;94;25,54%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:21;07:21;07:24:35;07:24:44;Kalbach;synthetic:de:06412:1351:1:1;18;17;95;25,82%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:22;07:22;07:25:33;07:25:53;Bonames Mitte;synthetic:de:06412:1352:1:1;16;29;82;22,28%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:25;07:25;07:28:41;07:28:41;Nieder-Eschbach;synthetic:de:06412:2398:1:1;0;82;0;0,00%
+15.09.2025;Mo;U9;2;07:06;Ginnheim Mitte;07:25;Nieder-Eschbach;368;272;96;07:25;07:25;07:28:41;07:28:41;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:06;12:06;12:07:39;12:07:39;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:06;12:06;12:07:39;12:07:55;Ginnheim Mitte;synthetic:de:06412:1309:7:1;9;0;9;4,89%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:07;12:07;12:08:49;12:08:54;Ginnheim/Niddapark;synthetic:de:06412:1378:2:2;8;3;14;7,61%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:08;12:08;12:09:54;12:09:59;Römerstadt;synthetic:de:06412:1366:2:2;8;2;20;10,87%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:10;12:10;12:12:07;12:12:21;Nordwestzentrum;synthetic:de:06412:1322:22:2;4;4;20;10,87%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:11;12:11;12:13:28;12:13:45;Heddernheimer Landstraße;synthetic:de:06412:1320:2:2;2;7;15;8,15%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:12;12:12;12:14:33;12:14:38;Wiesenau;synthetic:de:06412:1319:1:1;11;4;22;11,96%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:14;12:14;12:17:02;12:17:17;Niederursel;synthetic:de:06412:2399:1:1;7;8;21;11,41%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:16;12:16;12:18:53;12:19:12;Uni Campus Riedberg;synthetic:de:06412:60765:4:4;6;4;23;12,50%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:18;12:18;12:20:48;12:20:54;Riedberg;synthetic:de:06412:1985:2:2;9;4;28;15,22%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:21;12:21;12:23:30;12:23:48;Kalbach;synthetic:de:06412:1351:1:1;13;10;31;16,85%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:22;12:22;12:24:36;12:24:45;Bonames Mitte;synthetic:de:06412:1352:1:1;7;12;26;14,13%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:25;12:25;12:27:42;12:27:42;Nieder-Eschbach;synthetic:de:06412:2398:1:1;0;26;0;0,00%
+15.09.2025;Mo;U9;2;12:06;Ginnheim Mitte;12:25;Nieder-Eschbach;184;136;48;12:25;12:25;12:27:42;12:27:42;ausfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:06;17:06;17:06:49;17:06:49;einfahrend;0;0;0;0;0,00%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:06;17:06;17:06:49;17:07:04;Ginnheim Mitte;synthetic:de:06412:1309:7:1;22;0;22;5,98%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:07;17:07;17:07:52;17:08:09;Ginnheim/Niddapark;synthetic:de:06412:1378:2:2;41;3;60;16,30%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:08;17:08;17:08:57;17:09:09;Römerstadt;synthetic:de:06412:1366:2:2;25;6;79;21,47%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:10;17:10;17:11:17;17:11:26;Nordwestzentrum;synthetic:de:06412:1322:22:2;22;17;84;22,83%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:11;17:11;17:12:14;17:12:26;Heddernheimer Landstraße;synthetic:de:06412:1320:2:2;32;16;100;27,17%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:12;17:12;17:13:14;17:13:28;Wiesenau;synthetic:de:06412:1319:1:1;32;23;109;29,62%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:14;17:14;17:15:04;17:15:14;Niederursel;synthetic:de:06412:2399:1:1;20;35;94;25,54%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:16;17:16;17:17:03;17:17:18;Uni Campus Riedberg;synthetic:de:06412:60765:4:4;31;26;99;26,90%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:18;17:18;17:19:01;17:19:12;Riedberg;synthetic:de:06412:1985:2:2;26;22;103;27,99%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:21;17:21;17:22:02;17:22:20;Kalbach;synthetic:de:06412:1351:1:1;21;38;86;23,37%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:22;17:22;17:23:17;17:23:31;Bonames Mitte;synthetic:de:06412:1352:1:1;22;9;99;26,90%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:25;17:25;17:26:47;17:26:47;Nieder-Eschbach;synthetic:de:06412:2398:1:1;0;99;0;0,00%
+15.09.2025;Mo;U9;2;17:06;Ginnheim Mitte;17:25;Nieder-Eschbach;368;272;96;17:25;17:25;17:26:47;17:26:47;ausfahrend;0;0;0;0;0,00%
