@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Platform, Text, View } from 'react-native';
+import { Image, Platform, Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import QRCode from 'react-native-qrcode-svg';
@@ -14,6 +14,8 @@ import { useUI } from '@/store/ui';
 import { useLocation } from '@/hooks/useLocation';
 import { hav } from '@/api/foodsharing';
 import { fmtDist } from '@/api/opportunities';
+import { openRoute } from '@/api/route';
+import { Ionicons } from '@expo/vector-icons';
 
 const col = CONTEXT.clean.color;
 
@@ -65,7 +67,7 @@ export default function CleanupScreen() {
       </View>
       <Row style={{ marginTop: 12, justifyContent: 'space-between' }}>
         <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{new Date(cu.start).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}–{new Date(cu.end).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text>
-        <Tag label={`${cu.participants + (joined ? 1 : 0)} dabei`} color={col} />
+        <Row style={{ gap: 8 }}><Tag label={`${cu.participants + (joined ? 1 : 0)} dabei`} color={col} /><Pressable onPress={() => openRoute(cu.lat, cu.lon, cu.title)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999 }}><Ionicons name="navigate" size={15} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Route</Text></Pressable></Row>
       </Row>
       <Text style={[T.body, { marginTop: 6 }]}>{cu.description}</Text>
       <Text style={T.small}>Material: {cu.material} · {fmtDist(dist)} entfernt · {inFence ? 'du bist im Aktionsgebiet' : 'außerhalb des Gebiets'}</Text>
@@ -107,7 +109,7 @@ export default function CleanupScreen() {
               <Text style={T.h3}>3 · FES bestätigt die Abholung</Text>
               <Text style={T.small}>FES stellt Material und holt die Säcke ab. Diese Abholung ist der Nachweis, der den Multiplikator auf 1,0 hebt. Ohne FES bleibt es bei 0,4.</Text>
               <Row style={{ marginTop: 10, gap: 8 }}>
-                <Button label={fesConfirmed ? 'FES: 38 Säcke abgeholt ✓' : 'FES-Bestätigung (Demo)'} color={fesConfirmed ? C.success : col} variant={fesConfirmed ? 'solid' : 'soft'} onPress={() => { setFes(true); haptic('success'); }} style={{ flex: 1, paddingVertical: 10 }} />
+                <Button label={fesConfirmed ? 'FES: Säcke abgeholt ✓' : 'FES-Abholung bestätigen'} color={fesConfirmed ? C.success : col} variant={fesConfirmed ? 'solid' : 'soft'} onPress={() => { setFes(true); haptic('success'); }} style={{ flex: 1, paddingVertical: 10 }} />
               </Row>
             </Card>
           </Appear>

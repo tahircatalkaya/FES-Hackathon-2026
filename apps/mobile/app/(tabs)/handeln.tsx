@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import { Appear, Card, Ring, Row, SectionTitle, T, Tag, haptic } from '@/components/ui';
@@ -14,7 +15,7 @@ import { CHAPTERS } from '@/data/mock';
 export default function Act() {
   const router = useRouter();
   const t = useT();
-  const { ledger, name, chameleonName, quizDone, containers, reservations, spent } = useStore();
+  const { ledger, name, chameleonName, quizDone, containers, reservations, itemReservations } = useStore();
   const { setCtx, mood } = useUI();
   const wk = weekStats(ledger);
   const st = chameleonStage(ledger);
@@ -22,6 +23,7 @@ export default function Act() {
   useEffect(() => { setCtx('home'); }, []);
   const openContainers = containers.filter((c) => !c.returnedAt);
   const openRes = reservations.filter((r) => r.status === 'pending' || r.status === 'accepted');
+  const openItems = itemReservations.filter((r) => r.expiresAt > Date.now());
   const nextQuiz = CHAPTERS.find((c) => !quizDone.includes(c.id));
   const todayPts = ledger.filter((l) => new Date(l.at).toDateString() === new Date().toDateString()).reduce((a, l) => a + l.points, 0);
 
@@ -69,7 +71,7 @@ export default function Act() {
       </Appear>
 
       {/* Offene Dinge */}
-      {(openContainers.length > 0 || openRes.length > 0) && (
+      {(openContainers.length > 0 || openRes.length > 0 || openItems.length > 0) && (
         <Appear delay={120}>
           <View style={{ marginTop: S.md, gap: 8 }}>
             {openContainers.map((c) => {
@@ -82,6 +84,13 @@ export default function Act() {
                 </Card>
               );
             })}
+            {openItems.map((r) => (
+              <Card key={r.id} onPress={() => router.push(r.href as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.food }}>
+                <Ionicons name="bookmark" size={24} color={C.food} />
+                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.item} · {r.placeTitle}</Text><Text style={T.small}>Reserviert bis {new Date(r.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text></View>
+                <Text style={{ color: C.food, fontWeight: '800' }}>›</Text>
+              </Card>
+            ))}
             {openRes.map((r) => (
               <Card key={r.basketId} onPress={() => router.push(`/korb/${r.basketId}` as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.food }}>
                 <Text style={{ fontSize: 24 }}>🧺</Text>
@@ -94,11 +103,11 @@ export default function Act() {
       )}
 
       <View style={{ flexDirection: 'row', gap: 10, marginTop: S.md }}>
-        {[{ e: '▣', l: 'Scannen', h: '/scan', c: C.ink }, { e: '📡', l: 'Fahrt', h: '/fahrt', c: C.mobility }, { e: '🗺️', l: 'Karte', h: '/(tabs)', c: C.food }].map((q, i) => (
+        {[{ e: 'radio', l: 'NFC-Tap', h: '/fahrt?nfc=1', c: C.mobility }, { e: 'scan', l: 'Scannen', h: '/scan', c: C.ink }, { e: 'map', l: 'Karte', h: '/(tabs)', c: C.food }].map((q, i) => (
           <Appear key={q.l} delay={100 + i * 40} style={{ flex: 1 }}>
             <Card onPress={() => router.push(q.h as any)} style={{ alignItems: 'center', paddingVertical: 14, backgroundColor: q.c }}>
-              <Text style={{ fontSize: 24 }}>{q.e}</Text>
-              <Text style={{ color: '#fff', fontWeight: '800', marginTop: 4 }}>{q.l}</Text>
+              <Ionicons name={q.e as any} size={26} color="#fff" />
+              <Text style={{ color: '#fff', fontWeight: '800', marginTop: 6 }}>{q.l}</Text>
             </Card>
           </Appear>
         ))}

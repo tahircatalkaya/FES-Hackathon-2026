@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { openRoute } from '@/api/route';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Map from '@/components/Map';
 import Chameleon from '@/components/Chameleon';
@@ -36,7 +38,7 @@ export default function Reuse() {
     const c = returnContainer(code, Date.now());
     if (!c) return;
     // Der Store bestätigt die Rückgabe (POST /api/3/Container/ContainerReturn, Store-JWT). Wir werten das Event genau einmal je transactionId.
-    const a = addAward({ type: 'reuse.return', partner: 'vytal', status: 'bestätigt', key: `vytal:return:${c.txId}`, at: Date.now(), title: `Rückgabe ${c.kind === 'cup' ? 'Becher' : 'Schale'} ${c.code}`, meta: { containers: 1, source: 'api (Store-Bestätigung)', evidence: [`Ausleihe ${new Date(c.borrowedAt).toLocaleString('de-DE')} bei ${c.storeName}`, `Rückgabe bestätigt durch ${store?.name ?? 'Vytal-Partner'}`, `Transaktion ${c.txId} nur einmal wertbar`] } });
+    const a = addAward({ type: 'reuse.return', partner: 'vytal', status: 'bestätigt', key: `vytal:return:${c.txId}`, at: Date.now(), title: `Rückgabe ${c.kind === 'cup' ? 'Becher' : 'Schale'} ${c.code}`, meta: { containers: 1, source: 'store', evidence: [`Ausleihe ${new Date(c.borrowedAt).toLocaleString('de-DE')} bei ${c.storeName}`, `Rückgabe bestätigt durch ${store?.name ?? 'Vytal-Partner'}`, `Transaktion ${c.txId} nur einmal wertbar`] } });
     showToast(a);
     if (Date.now() - c.borrowedAt < 48 * 3600e3) {
       setTimeout(() => showToast(addAward({ type: 'reuse.return_fast', partner: 'vytal', status: 'bestätigt', key: `vytal:fast:${c.txId}`, at: Date.now(), title: 'Schnelle Rückgabe unter 48 h', meta: { source: 'api', evidence: ['Schneller Umlauf, mehr Nutzungen je Behälter'] } })), 4500);
@@ -50,7 +52,7 @@ export default function Reuse() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Smart Mehrweg" subtitle={`mit Vytal · ${source === 'api' ? 'Live-Store-Suche' : 'Store-Snapshot vom 11.09.'}`} color={col} />
+      <Header title="Smart Mehrweg" subtitle="mit Vytal" color={col} />
       <Appear>
         <Card style={{ backgroundColor: col }}>
           <Row>
@@ -82,7 +84,7 @@ export default function Reuse() {
                     </View>
                   </Row>
                   <View style={{ marginTop: 10 }}><Button label="Rückgabe am Store bestätigen" color={col} onPress={() => doReturn(c.code)} style={{ paddingVertical: 12 }} /></View>
-                  <Text style={[T.small, { marginTop: 6 }]}>Produktiv: Der Store scannt und meldet die Rückgabe (Store-JWT). Die App wertet nur die Bestätigung.</Text>
+                  <Text style={[T.small, { marginTop: 6 }]}>Der Store bestätigt die Rückgabe, du bekommst die Punkte sofort.</Text>
                 </Card>
               </Appear>
             );
@@ -103,7 +105,7 @@ export default function Reuse() {
             <Row>
               <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: CONTEXT.reuse.soft, alignItems: 'center', justifyContent: 'center' }}><Text>{s.type === 'RESTAURANT' ? '🍽️' : s.type === 'SELF_OPERATED_CANTEEN' ? '🏢' : '🏪'}</Text></View>
               <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{s.name}</Text><Text style={T.small}>{s.address} · {fmtDist((s.distance_km ?? 0) * 1000)}</Text></View>
-              <Tag label={source === 'api' ? 'API' : 'Snapshot'} color={source === 'api' ? C.success : C.community} />
+              <Pressable onPress={() => openRoute(s.lat, s.lon, s.name)} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: col + '18', alignItems: 'center', justifyContent: 'center' }}><Ionicons name="navigate" size={18} color={col} /></Pressable>
             </Row>
             {s.id === sel && (
               <View style={{ marginTop: 10 }}>
@@ -117,11 +119,6 @@ export default function Reuse() {
           </Card>
         ))}
       </View>
-      <Card style={{ marginTop: S.xl }}>
-        <Text style={T.label}>Nachweis-Logik</Text>
-        <Text style={[T.body, { marginTop: 6 }]}>Ausleihe: Behälter-Code (Container/CheckCode) → Ausleihe (Containers/Checkout) mit stabiler transactionId.{'\n'}Rückgabe: bestätigt der Store (Container/ContainerReturn). Die App meldet <Text style={{ fontWeight: '800' }}>jede bestätigte Rückgabe genau einmal</Text> an die Reward-Logik. Ein zweiter Abschluss mit derselben transactionId ergibt 0 Punkte.</Text>
-        <Row style={{ marginTop: 8, gap: 6 }}><StatusBadge status="bestätigt" small /><Text style={T.small}>×1,0 · 30 Punkte · +10 unter 48 h</Text></Row>
-      </Card>
     </Screen>
   );
 }

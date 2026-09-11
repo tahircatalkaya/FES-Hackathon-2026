@@ -6,6 +6,7 @@ import Svg, { Rect, Text as SText } from 'react-native-svg';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import Globe from '@/components/Globe';
+import ScopeToggle from '@/components/ScopeToggle';
 import { Appear, Card, Counter, Divider, Ring, Row, SectionTitle, Stat, StatusBadge, T, Tag } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore, totalImpact, weekStats, chameleonStage } from '@/store';
@@ -35,8 +36,8 @@ export default function Impact() {
 
   return (
     <Screen>
-      <Text style={T.label}>{name ? `${name}s` : 'Dein'} Beitrag</Text>
-      <Text style={[T.h1, { marginTop: 4 }]}>{t('impact.title')}</Text>
+      <ScopeToggle active="me" color={col} />
+      <Text style={[T.h1]}>{t('impact.title')}</Text>
 
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg, overflow: 'hidden', backgroundColor: C.ink }}>
@@ -145,11 +146,11 @@ export default function Impact() {
         </Card>
       </Appear>
 
-      <SectionTitle title="Frankfurt diese Woche" action="Gemeinsam ›" onAction={() => router.push('/gemeinsam')} />
+      <SectionTitle title="Frankfurt diese Woche" action="Mehr ›" onAction={() => router.replace('/gemeinsam')} />
       <Appear delay={280}>
         <Card style={{ alignItems: 'center' }}>
           <Globe km={Math.round(FRANKFURT_GOAL.weekSoFarKg * 6.5 + total.km)} color={col} />
-          <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Gemeinsame nachhaltige Strecke aller {FRANKFURT_GOAL.participants.toLocaleString('de-DE')} Teilnehmenden (aggregiert, k ≥ 5, Demo-Daten). Dein Anteil: {total.km.toFixed(1)} km.</Text>
+          <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Gemeinsame nachhaltige Strecke aller {FRANKFURT_GOAL.participants.toLocaleString('de-DE')} Teilnehmenden . Dein Anteil: {total.km.toFixed(1)} km.</Text>
         </Card>
       </Appear>
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Ionicons } from '@expo/vector-icons';
 import { Screen, Header } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import { Button, Card, T, Tag, Row, haptic, StatusBadge } from '@/components/ui';
@@ -17,11 +18,11 @@ import { hav } from '@/api/foodsharing';
 
 type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'litter';
 const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTEXT; hint: string }> = {
-  ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code enthält Linie und Fahrzeugnummer. Er hebt den Nachweis auf „bestätigt“, wenn er zur erkannten Fahrt passt.' },
-  bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Registrierter Behälter = fester Ort, an dem etwas endet. 5 Punkte, max. 3 am Tag, 60 min Cooldown je Behälter.' },
-  peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Zwei Personen bestätigen sich gegenseitig vor Ort. Aus der Ferne nicht fälschbar.' },
-  vytal: { title: 'Vytal-Behälter', sub: 'Code auf Schale oder Becher', ctx: 'reuse', hint: 'Ausleihe erfassen. Die Rückgabe bestätigt später der Store, genau einmal.' },
-  litter: { title: 'Müll aufgehoben', sub: 'Danke, ohne Punkte', ctx: 'clean', hint: 'Ein einzelnes Müllstück ist nicht prüfbar, deshalb gibt es keine Punkte. Anerkennung schon.' },
+  ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Volle Punkte.' },
+  bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 5 Punkte, bis zu dreimal am Tag.' },
+  peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Ihr bestätigt euch gegenseitig vor Ort.' },
+  vytal: { title: 'Vytal-Behälter', sub: 'Code auf Schale oder Becher', ctx: 'reuse', hint: 'Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte.' },
+  litter: { title: 'Müll aufgehoben', sub: 'Danke, ohne Punkte', ctx: 'clean', hint: 'Dafür gibt es keine Punkte, aber ein Dankeschön von Kai.' },
 };
 
 export default function Scan() {
@@ -34,20 +35,20 @@ function Chooser() {
   const router = useRouter();
   const { setCtx } = useUI();
   useEffect(() => { setCtx('home'); }, []);
-  const items: { mode: Mode; emoji: string; t: string; s: string }[] = [
-    { mode: 'ride', emoji: '🚇', t: 'Bus & Bahn', s: 'Tag oder QR im Fahrzeug' },
-    { mode: 'vytal', emoji: '🥡', t: 'Mehrweg-Schale', s: 'Code auf der Schale' },
-    { mode: 'bin', emoji: '🗑️', t: 'FES-Behälter', s: 'Aufkleber am Papierkorb' },
-    { mode: 'peer', emoji: '🤝', t: 'Clean-up-Partner', s: 'Code vom anderen Handy' },
-    { mode: 'litter', emoji: '🫶', t: 'Müll aufgehoben', s: 'Danke sagen, ohne Punkte' },
+  const items: { mode: Mode; icon: string; t: string; s: string; href?: string }[] = [
+    { mode: 'ride', icon: 'train', t: 'Bus & Bahn', s: 'NFC-Tag im Fahrzeug antippen', href: '/fahrt?nfc=1' },
+    { mode: 'vytal', icon: 'cafe', t: 'Mehrweg-Schale', s: 'Code auf der Schale scannen' },
+    { mode: 'bin', icon: 'trash', t: 'FES-Behälter', s: 'Aufkleber am Papierkorb antippen' },
+    { mode: 'peer', icon: 'people', t: 'Clean-up-Partner', s: 'Code vom anderen Handy scannen' },
+    { mode: 'litter', icon: 'heart', t: 'Müll aufgehoben', s: 'Danke sagen' },
   ];
   return (
     <Screen tabBar={false}>
       <Header title="Scannen" subtitle="Was hast du vor dir?" />
       <View style={{ gap: 10 }}>
         {items.map((it, i) => (
-          <Card key={it.mode} onPress={() => router.replace(`/scan?mode=${it.mode}`)} style={{ flexDirection: 'row', alignItems: 'center', gap: 14, borderLeftWidth: 5, borderLeftColor: CONTEXT[TITLES[it.mode].ctx].color }}>
-            <Text style={{ fontSize: 30 }}>{it.emoji}</Text>
+          <Card key={it.mode} onPress={() => router.replace((it.href ?? `/scan?mode=${it.mode}`) as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+            <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: CONTEXT[TITLES[it.mode].ctx].color, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={it.icon as any} size={26} color="#fff" /></View>
             <View style={{ flex: 1 }}><Text style={T.h3}>{it.t}</Text><Text style={T.small}>{it.s}</Text></View>
             <Text style={{ color: C.muted, fontWeight: '900', fontSize: 18 }}>›</Text>
           </Card>
@@ -124,7 +125,7 @@ function ScanInner() {
         </Card>
       )}
       <Card style={{ marginTop: 14 }}>
-        <Text style={T.label}>Warum so</Text>
+        <Text style={T.label}>Gut zu wissen</Text>
         <Text style={[T.body, { marginTop: 4 }]}>{cfg.hint}</Text>
       </Card>
       {!done && mode !== 'litter' && (

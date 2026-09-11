@@ -8,10 +8,11 @@ import type { Lang } from '@/i18n';
 
 export interface Container { code: string; storeId: string; storeName: string; borrowedAt: number; returnedAt?: number; txId: string; kind: 'bowl' | 'cup' }
 export interface Reservation { basketId: number; title: string; at: number; expiresAt: number; status: 'pending' | 'accepted' | 'picked_up' | 'cancelled' | 'expired'; addressRevealed?: string }
-export interface ShelfReport { pointId: number; at: number; fill: 'leer' | 'wenig' | 'mittel' | 'voll'; categories: string[]; photo?: string }
+export interface ShelfReport { pointId: number; at: number; fill: 'leer' | 'wenig' | 'mittel' | 'voll'; categories: string[]; photo?: string; items?: { name: string; qty: string; cat: string; grams: number }[] }
 export interface CleanReport { id: string; at: number; kind: string; lat: number; lon: number; ticket: string; status: 'eingegangen' | 'in Bearbeitung' | 'erledigt'; photo?: string }
 export interface Notice { id: string; at: number; title: string; body: string; ctx: string; read?: boolean }
 export interface Friend { id: string; name: string; emoji: string; activeDays: number; goal: number; district: string }
+export interface ItemReservation { id: string; placeId: string; placeTitle: string; item: string; qty: string; at: number; expiresAt: number; kind: 'fairteiler' | 'verteilung'; href: string }
 export interface Redemption { id: string; at: number; title: string; cost: number }
 
 interface State {
@@ -27,6 +28,7 @@ interface State {
   redemptions: Redemption[];
   containers: Container[];
   reservations: Reservation[];
+  itemReservations: ItemReservation[];
   shelfReports: ShelfReport[];
   cleanReports: CleanReport[];
   joinedCleanups: string[];
@@ -47,6 +49,8 @@ interface State {
   returnContainer: (code: string, returnedAt: number) => Container | undefined;
   addReservation: (r: Reservation) => void;
   updateReservation: (id: number, patch: Partial<Reservation>) => void;
+  reserveItem: (r: Omit<ItemReservation, 'id' | 'at'>) => void;
+  releaseItem: (id: string) => void;
   addShelfReport: (r: ShelfReport) => void;
   addCleanReport: (r: CleanReport) => void;
   joinCleanup: (id: string) => void;
@@ -81,6 +85,7 @@ const initial = {
   redemptions: [] as Redemption[],
   containers: [] as Container[],
   reservations: [] as Reservation[],
+  itemReservations: [] as ItemReservation[],
   shelfReports: [] as ShelfReport[],
   cleanReports: [] as CleanReport[],
   joinedCleanups: [] as string[],
@@ -130,6 +135,8 @@ export const useStore = create<State>()(
       },
       addReservation: (r) => set({ reservations: [r, ...get().reservations] }),
       updateReservation: (id, patch) => set({ reservations: get().reservations.map((r) => (r.basketId === id ? { ...r, ...patch } : r)) }),
+      reserveItem: (r) => set({ itemReservations: [{ ...r, id: `${Date.now()}-${Math.random()}`, at: Date.now() }, ...get().itemReservations] }),
+      releaseItem: (id) => set({ itemReservations: get().itemReservations.filter((r) => r.id !== id) }),
       addShelfReport: (r) => set({ shelfReports: [r, ...get().shelfReports] }),
       addCleanReport: (r) => set({ cleanReports: [r, ...get().cleanReports] }),
       joinCleanup: (id) => set({ joinedCleanups: Array.from(new Set([...get().joinedCleanups, id])) }),

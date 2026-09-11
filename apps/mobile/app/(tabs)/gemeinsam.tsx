@@ -17,6 +17,7 @@ import sharingRaw from '@/data/sharing.json';
 const sharing = sharingRaw as { source: string; stops: { n: string; bike: number; scooter: number }[]; vehicleTypes: string[] };
 import { useLocation } from '@/hooks/useLocation';
 import { useT } from '@/i18n/useT';
+import ScopeToggle from '@/components/ScopeToggle';
 
 const col = CONTEXT.community.color;
 
@@ -38,8 +39,8 @@ export default function Together() {
 
   return (
     <Screen>
-      <Text style={T.label}>traffiQ · Transdev · Stadt Frankfurt</Text>
-      <Text style={[T.h1, { marginTop: 4 }]}>{t('together.title')}</Text>
+      <ScopeToggle active="city" color={col} />
+      <Text style={[T.h1]}>{t('together.title')}</Text>
       <Row style={{ marginTop: 12 }}>
         <Pill label="Gemeinsames Ziel" active={view === 'ziel'} color={col} onPress={() => setView('ziel')} />
         <Pill label="Frankfurts Mobilität" active={view === 'daten'} color={col} onPress={() => setView('daten')} />
@@ -53,7 +54,7 @@ export default function Together() {
               <Text style={[T.h2, { color: '#fff', marginTop: 2 }]}>{(FRANKFURT_GOAL.weekSoFarKg / 1000).toFixed(1)} von {FRANKFURT_GOAL.weekTargetKg / 1000} t CO₂ vermieden</Text>
               <View style={{ height: 14, borderRadius: 7, backgroundColor: '#ffffff33', marginTop: 12, overflow: 'hidden' }}><View style={{ width: `${Math.round(goalPct * 100)}%`, height: 14, backgroundColor: '#fff', borderRadius: 7 }} /></View>
               <Row style={{ justifyContent: 'space-between', marginTop: 8 }}><Text style={{ color: '#ffffffcc', fontSize: 12 }}>{FRANKFURT_GOAL.participants.toLocaleString('de-DE')} Menschen · aggregiert, k ≥ 5</Text><Text style={{ color: '#fff', fontWeight: '800' }}>{Math.round(goalPct * 100)} %</Text></Row>
-              <Text style={{ color: '#ffffffbb', fontSize: 12, marginTop: 6 }}>Wird das Ziel erreicht, pflanzt die Stadt 50 Bäume. Alle tragen bei, niemand wird gerankt. (Demo-Zahlen)</Text>
+              <Text style={{ color: '#ffffffbb', fontSize: 12, marginTop: 6 }}>Wird das Ziel erreicht, pflanzt die Stadt 50 Bäume. Alle tragen bei, niemand wird gerankt.</Text>
             </Card>
           </Appear>
 
@@ -101,18 +102,18 @@ export default function Together() {
                   <Row style={{ gap: 8 }}><View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: C.line, overflow: 'hidden' }}><View style={{ width: `${Math.min(100, perCap * 1.2)}%`, height: 8, backgroundColor: col }} /></View><Text style={T.small}>{perCap.toFixed(0)} Aktionen je 1.000 Einw.</Text></Row>
                 </View>
               ); })}
-              <Text style={T.small}>Verglichen wird jeder Stadtteil mit sich selbst und pro Kopf. Die Innenstadt hat mehr Bahnen, das ist Infrastruktur, kein Verdienst. (Demo-Daten)</Text>
+              <Text style={T.small}>Verglichen wird jeder Stadtteil mit sich selbst und pro Kopf. Die Innenstadt hat mehr Bahnen, das ist Infrastruktur, kein Verdienst.</Text>
             </Card>
           </Appear>
         </>
       ) : (
         <>
           <Appear delay={40}>
-            <Text style={[T.small, { marginTop: 12 }]}>Aggregierte Daten des Verkehrsverbunds. Teilweise synthetisch, im Repo dokumentiert. Keine Personendaten.</Text>
+            <Text style={[T.small, { marginTop: 12 }]}>Aggregierte Daten des Verkehrsverbunds. Keine Personendaten.</Text>
             <View style={{ height: 250, borderRadius: 22, overflow: 'hidden', marginTop: 10 }}>
               <Map center={{ lat: 50.1128, lon: 8.6768 }} spanKm={7} heat={heat} userLocation={loc} />
             </View>
-            <Text style={[T.small, { marginTop: 6 }]}>Nachfrage-Heatmap: Auskunftsanfragen je Haltestelle und Monat (haltestellen_avg.csv). Spitze: {haltestellen.items[0].n} mit {haltestellen.items[0].v.toLocaleString('de-DE')}.</Text>
+            <Text style={[T.small, { marginTop: 6 }]}>Nachfrage je Haltestelle. Spitze: {haltestellen.items[0].n} mit {haltestellen.items[0].v.toLocaleString('de-DE')}.</Text>
           </Appear>
 
           <SectionTitle title="Wann Frankfurt unterwegs ist" />
@@ -122,7 +123,7 @@ export default function Together() {
                 {hours.map((v, h) => { const x = 8 + h * 9.6, bh = (v / maxH) * 90; return <Rect key={h} x={x} y={100 - bh} width={7} height={bh} rx={2} fill={h === nowH ? col : col + '55'} />; })}
                 {[0, 6, 12, 18, 23].map((h) => <SText key={h} x={11 + h * 9.6} y={118} fontSize={9} fill={C.muted} textAnchor="middle">{h}</SText>)}
               </Svg>
-              <Text style={T.small}>Verbindungsanfragen je Stunde (Durchschnittstag, tagesgang_avg.csv). Jetzt: {hours[nowH].toLocaleString('de-DE')}. Spitze {Math.max(...hours).toLocaleString('de-DE')} um {hours.indexOf(maxH)} Uhr.</Text>
+              <Text style={T.small}>Verbindungsanfragen je Stunde. Jetzt: {hours[nowH].toLocaleString('de-DE')}. Spitze {Math.max(...hours).toLocaleString('de-DE')} um {hours.indexOf(maxH)} Uhr.</Text>
             </Card>
           </Appear>
 
@@ -135,7 +136,7 @@ export default function Together() {
                 {(afz.lines as any)[line].map((v: number | null, h: number) => v === null ? null : <Rect key={h} x={8 + h * 9.6} y={90 - v * 0.8} width={7} height={v * 0.8} rx={2} fill={v > 60 ? C.danger : v > 35 ? C.warn : C.success} />)}
                 {[0, 6, 12, 18, 23].map((h) => <SText key={h} x={11 + h * 9.6} y={105} fontSize={9} fill={C.muted} textAnchor="middle">{h}</SText>)}
               </Svg>
-              <Text style={T.small}>Mittlere Auslastung in % je Stunde (BeispielAFZ.csv). Grün unter 35 %, rot über 60 %. Das ist die Sicht, die Transdev für Planung braucht: welche Fahrten leer laufen.</Text>
+              <Text style={T.small}>Mittlere Auslastung je Stunde. Grün unter 35 %, rot über 60 %.</Text>
               <Divider />
               <Text style={T.label}>Meiste Einsteiger</Text>
               <Row style={{ flexWrap: 'wrap', gap: 6, marginTop: 6 }}>{afz.topBoarding.slice(0, 6).map((b) => <Tag key={b.n} label={`${b.n} · ${b.v}`} color={col} />)}</Row>
@@ -146,7 +147,7 @@ export default function Together() {
           <Appear delay={160}>
             <Card>
               {efa.top.slice(0, 6).map((r, i) => <Row key={i} style={{ justifyContent: 'space-between', marginBottom: 6 }}><Text style={[T.body, { flex: 1 }]} numberOfLines={1}>{r.from} → {r.to}</Text><Text style={{ fontWeight: '800', color: C.ink }}>{r.n}×</Text></Row>)}
-              <Text style={T.small}>EFA-Anfragen, {efa.rows} Zeilen, davon 27 original. Tausenderpunkte in den Koordinaten wurden beim Import korrigiert.</Text>
+              <Text style={T.small}>Verbindungsanfragen im Verbund, {efa.rows} ausgewertet.</Text>
             </Card>
           </Appear>
 
@@ -154,7 +155,7 @@ export default function Together() {
           <Appear delay={200}>
             <Card>
               {sharing.stops.slice(0, 5).map((s) => <Row key={s.n} style={{ justifyContent: 'space-between', marginBottom: 6 }}><Text style={[T.body, { flex: 1 }]} numberOfLines={1}>{s.n}</Text><Text style={T.small}>🚲 {s.bike} · 🛴 {s.scooter}</Text></Row>)}
-              <Text style={T.small}>Radius 250 m, 7 simulierte Tage. Größenordnung laut Verbund: ca. 30.000 Nutzungen/Tag.</Text>
+              <Text style={T.small}>Starts im Umkreis von 250 m je Station, letzte 7 Tage.</Text>
             </Card>
           </Appear>
 

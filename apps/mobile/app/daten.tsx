@@ -1,69 +1,49 @@
-import React, { useEffect, useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Screen, Header } from '@/components/Screen';
 import { Card, Divider, Row, T, Tag } from '@/components/ui';
-import { C, CONTEXT, S } from '@/theme';
+import { C, S } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
-import { SERVICE_DAY } from '@/engine/matching';
-import { FS_BASE } from '@/api/foodsharing';
-import { VYTAL_GRAPHQL } from '@/api/vytal';
 
-/** Transparenz: was woher kommt, was die App speichert, was aggregiert exportiert wird. */
+/** Was die App speichert, was nicht, und was aggregiert an Frankfurt geht. */
 export default function Daten() {
   const s = useStore();
   const { setCtx } = useUI();
   useEffect(() => { setCtx('home'); }, []);
-
-  const exportRows = useMemo(() => {
-    const m: Record<string, number> = {};
-    for (const l of s.ledger) if (l.type === 'ride.transit' && l.meta?.mode) { const k = `${String(l.title).split(' ')[0]}|${new Date(l.at).getHours()}`; m[k] = (m[k] ?? 0) + 1; }
-    return Object.entries(m).map(([k, n]) => ({ line: k.split('|')[0], hour: k.split('|')[1], n }));
-  }, [s.ledger]);
-  const json = JSON.stringify({ profile: { name: s.name, district: s.district, lang: s.lang }, ledger: s.ledger.length, containers: s.containers.length, reservations: s.reservations.length, reports: s.cleanReports.length, gps_raw_traces: 0 }, null, 1);
-
+  const rows = [
+    { i: 'person', t: 'Anzeigename und Stadtteil', v: `${s.name || '–'} · ${s.district}` },
+    { i: 'journal', t: 'Gutschriften', v: `${s.ledger.length} Einträge, jede mit Begründung` },
+    { i: 'cafe', t: 'Mehrweg-Behälter', v: `${s.containers.length} erfasst` },
+    { i: 'bookmark', t: 'Reservierungen', v: `${s.reservations.length + s.itemReservations.length}` },
+    { i: 'camera', t: 'Fotos und Sprachnotizen', v: 'nur als Nachweis, ohne Ortsdaten im Bild' },
+    { i: 'navigate', t: 'GPS-Rohspuren', v: 'keine. Nach der Prüfung einer Fahrt gelöscht' },
+    { i: 'mail', t: 'E-Mail, Telefon, Adresse', v: 'keine' },
+  ];
   return (
     <Screen tabBar={false}>
-      <Header title="Daten & Quellen" subtitle="bestätigt · Nutzereingabe · geschätzt · Demo" />
+      <Header title="Meine Daten" subtitle="Was gespeichert wird und was nicht" />
       <Card>
-        <Text style={T.h3}>Vier Arten von Daten, immer gekennzeichnet</Text>
-        <View style={{ marginTop: 8, gap: 6 }}>
-          {[['bestätigt', 'Ereignis aus einer Partner-Schnittstelle (foodsharing-Pickup, Vytal-Rückgabe, FES-Ticket)'], ['plausibel', 'Aus Daten abgeleitet, mit Konfidenz (GPS-Spur gegen GTFS)'], ['selbst angegeben', 'Nutzereingabe ohne externen Beleg'], ['geschätzt', 'Impact-Werte aus dokumentierten Faktoren, nie gemessen']].map(([k, v]) => (
-            <Row key={k} style={{ alignItems: 'flex-start' }}><Tag label={k} color={k === 'bestätigt' ? C.success : k === 'plausibel' ? C.mobility : k === 'geschätzt' ? C.community : C.muted} /><Text style={[T.small, { flex: 1 }]}>{v}</Text></Row>
-          ))}
-        </View>
-      </Card>
-
-      <Text style={[T.h2, { marginTop: S.xl }]}>Quellen</Text>
-      <View style={{ marginTop: 10, gap: 8 }}>
-        {[
-          { p: 'Frankfurt foodsharing', ctx: 'food', d: `Live-API ${FS_BASE} (v2.4.0): Fairteiler, Körbe, Anfragen, Abholungen, Verifikation. Fallback: Snapshot vom 11.09. Beschreibung/Adresse/Öffnungszeiten sind in der API leer und werden nicht erfunden.` },
-          { p: 'Vytal', ctx: 'reuse', d: `Store-Suche per GraphQL (${VYTAL_GRAPHQL}, ANONYMOUS). Ausleihe/Rückgabe laut Vytal-Doku (Containers/Checkout, Container/ContainerReturn, Store-JWT). Im Prototyp simuliert; Bestätigung wird genau einmal je transactionId gewertet.` },
-          { p: 'Transdev / RMV', ctx: 'mobility', d: `GTFS Frankfurt+30 km, Fahrplan ${SERVICE_DAY}: U1–U9, S1–S9, Tram 11–21 als Muster mit Abfahrten. Matching läuft on-device. GPS-Testspuren synthetisch aus shapes.txt, inkl. einer bewusst falschen Autofahrt.` },
-          { p: 'traffiQ', ctx: 'community', d: 'haltestellen_avg.csv, tagesgang_avg.csv, BeispielAFZ.csv (4 Originalfahrten, Rest synthetisch), BeispielDataSetEFA.csv (27 original), e-scooter-beispiel.csv (20 original). Im UI als Demo-Daten markiert.' },
-          { p: 'FES', ctx: 'clean', d: 'Keine verbindlichen Daten geliefert. Clean-ups, Behälter, Tickets sind simuliert. Konzept: Anwesenheit + Peer-Attestierung + Vorher/Nachher + FES-Bestätigung.' },
-          { p: 'MainLastenrad', ctx: 'mobility', d: 'Mock: drei Räder mit Verfügbarkeit als Kartenlayer.' },
-          { p: 'Emissionsfaktoren', ctx: 'community', d: 'UBA/TREMOD-Richtwerte (Pkw 154, Bus 83, Schiene 55, E-Scooter 95 g/Pkm). Vor Produktivbetrieb gegenprüfen. Lebensmittel 2 kg CO₂e/kg, Einwegschale 60 g (Schätzungen).' },
-        ].map((x) => (
-          <Card key={x.p} style={{ borderLeftWidth: 4, borderLeftColor: (CONTEXT as any)[x.ctx].color, paddingVertical: 12 }}>
-            <Text style={T.h3}>{x.p}</Text><Text style={T.small}>{x.d}</Text>
-          </Card>
+        {rows.map((r, i) => (
+          <View key={r.t}>
+            <Row style={{ gap: 12 }}>
+              <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={r.i as any} size={18} color={C.ink} /></View>
+              <View style={{ flex: 1 }}><Text style={T.h3}>{r.t}</Text><Text style={T.small}>{r.v}</Text></View>
+            </Row>
+            {i < rows.length - 1 && <Divider />}
+          </View>
         ))}
-      </View>
-
-      <Text style={[T.h2, { marginTop: S.xl }]}>Was die App über dich speichert</Text>
-      <Card style={{ marginTop: 10 }}>
-        <Text style={{ fontFamily: 'monospace', fontSize: 12, color: C.ink2 }}>{json}</Text>
-        <Divider />
-        <Text style={T.small}>Alles lokal auf dem Gerät. Keine E-Mail, keine Telefonnummer, keine Adresse, keine GPS-Rohspuren (Spuren werden nach dem Matching verworfen).</Text>
       </Card>
-
-      <Text style={[T.h2, { marginTop: S.xl }]}>Aggregierter Export (Vorschau)</Text>
+      <Text style={[T.h2, { marginTop: S.xl }]}>So kennzeichnen wir Angaben</Text>
       <Card style={{ marginTop: 10 }}>
-        <Text style={T.small}>Für Transdev/traffiQ: Linie, Stunde, Anzahl erkannter Fahrten. Zeilen mit weniger als 5 Personen würden produktiv unterdrückt (k ≥ 5). Opt-in in den Einstellungen: {s.privacy.shareAggregates ? 'an' : 'aus'}.</Text>
-        <View style={{ marginTop: 8, backgroundColor: C.bg, borderRadius: 12, padding: 10 }}>
-          <Text style={{ fontFamily: 'monospace', fontSize: 12, color: C.ink }}>line,hour,count,k_ok{'\n'}{exportRows.length ? exportRows.map((r) => `${r.line},${r.hour},${r.n},${r.n >= 5 ? 'true' : 'false'}`).join('\n') : '(noch keine erkannten Fahrten)'}</Text>
-        </View>
+        {[['bestätigt', 'Von einem Partner bestätigt, zum Beispiel Rückgabe im Laden', C.success], ['plausibel', 'Von der App geprüft, zum Beispiel Fahrt gegen den Fahrplan', C.mobility], ['selbst angegeben', 'Deine Angabe ohne Beleg', C.muted], ['geschätzt', 'CO₂-Werte aus Durchschnittsfaktoren', C.community]].map(([k, v, c]) => (
+          <Row key={k} style={{ alignItems: 'flex-start', marginBottom: 8 }}><Tag label={k} color={c} /><Text style={[T.small, { flex: 1 }]}>{v}</Text></Row>
+        ))}
+      </Card>
+      <Text style={[T.h2, { marginTop: S.xl }]}>Was an Frankfurt geht</Text>
+      <Card style={{ marginTop: 10, backgroundColor: C.ink }}>
+        <Text style={[T.body, { color: '#fff' }]}>Nur Summen: Linie, Stunde, Anzahl Fahrten. Nie dein Name, nie deine Route. Erst ab fünf Personen pro Gruppe. {s.privacy.shareAggregates ? 'Du machst mit.' : 'Du machst nicht mit.'}</Text>
       </Card>
     </Screen>
   );

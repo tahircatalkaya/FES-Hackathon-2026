@@ -24,7 +24,7 @@ const col = CONTEXT.mobility.color;
 export default function Ride() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ station?: string; tag?: string }>();
+  const params = useLocalSearchParams<{ station?: string; tag?: string; nfc?: string }>();
   const { loc, isDemo } = useLocation();
   const tracker = useTracker();
   const { addAward, addNfc } = useStore();
@@ -43,6 +43,7 @@ export default function Ride() {
   const simPts = useRef<TracePoint[]>([]);
 
   useEffect(() => { setCtx('mobility'); nfcAvailable().then(setNfcOk); }, []);
+  useEffect(() => { if (params.nfc) setTimeout(() => setNfcOpen(true), 350); }, [params.nfc]);
   useEffect(() => { if (params.tag) { const t = demoTag(String(params.tag)); t.source = 'qr'; setTag(t); } }, [params.tag]);
   useEffect(() => { if (phase === 'track') { const i = setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000); return () => clearInterval(i); } }, [phase, startedAt]);
 

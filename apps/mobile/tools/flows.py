@@ -35,9 +35,14 @@ try:
         step(page, 'quiz_done', lambda: T('Kapitel abschließen').click())
         # Fairteiler melden
         page.goto(B + '/fairteiler/6', wait_until='networkidle'); time.sleep(2)
-        step(page, 'ft_report', lambda: T('Regal-Status melden').click())
-        step(page, 'ft_fill', lambda: (T('voll').click(), T('Backwaren').click(), T('Foto (ohne EXIF)').click()))
-        step(page, 'ft_send', lambda: T('Senden').click())
+        step(page, 'ft_report', lambda: T('Regal fotografieren').click())
+        step(page, 'ft_ai', lambda: (T('Beispielfoto').click(), time.sleep(3)))
+        step(page, 'ft_send', lambda: T('Stimmt so').click())
+        step(page, 'ft_close', lambda: T('Weiter').click())
+        step(page, 'ft_hold', lambda: T('30 min halten').click())
+        step(page, 'ft_voice', lambda: T('Per Sprache').click())
+        step(page, 'ft_pickup_open', lambda: (page.keyboard.press('Escape'), page.mouse.click(10, 10), T('Abgeholt').click()))
+        step(page, 'ft_pickup_ai', lambda: (T('Beispielfoto').click(), time.sleep(3), T('Stimmt so').click()))
         # Korb anfragen -> Zusage -> Abholung
         page.goto(B + '/korb/9001', wait_until='networkidle'); time.sleep(2)
         step(page, 'korb_req', lambda: T('Anfrage senden').click())
@@ -52,7 +57,7 @@ try:
         # Clean-up
         page.goto(B + '/cleanup/cu1', wait_until='networkidle'); time.sleep(2)
         step(page, 'cu_join', lambda: T('Mitmachen').click())
-        step(page, 'cu_fes', lambda: (T('Vorher').click(), T('Nachher').click(), T('FES-Bestätigung (Demo)').click()))
+        step(page, 'cu_fes', lambda: (T('Vorher').click(), T('Nachher').click(), T('FES-Abholung bestätigen').click()))
         step(page, 'cu_claim', lambda: T('Teilnahme werten').click())
         # Melden
         page.goto(B + '/melden', wait_until='networkidle'); time.sleep(2)
@@ -65,7 +70,7 @@ try:
         # Saver, Verteilung, Belohnungen, Journal, Daten, Profil-Sprache
         page.goto(B + '/saver', wait_until='networkidle'); time.sleep(2.5); step(page, 'saver', lambda: None)
         page.goto(B + '/verteilung/d1', wait_until='networkidle'); time.sleep(2)
-        step(page, 'dist_slot', lambda: (page.get_by_text('18:', exact=False).nth(1).click(), T('Slot reservieren').click()))
+        step(page, 'dist_slot', lambda: (page.get_by_text('+', exact=True).first.click(), page.get_by_text(':', exact=False).nth(3).click(), T('Reservieren').click()))
         page.goto(B + '/belohnungen', wait_until='networkidle'); time.sleep(2); step(page, 'rewards', lambda: None)
         page.goto(B + '/journal', wait_until='networkidle'); time.sleep(2)
         step(page, 'journal_why', lambda: page.locator('text=+').first.click())

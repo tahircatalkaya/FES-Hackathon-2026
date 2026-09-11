@@ -14,7 +14,7 @@ export const BASE: Record<ActionType, number> = {
   'food.report': 15,
   'food.offer': 25,
   'food.distribute': 60,
-  'food.pickup': 0,
+  'food.pickup': 15,
   'food.pickup_for_other': 15,
   'food.reservation_kept': 5,
   'clean.participate': 60,
@@ -36,6 +36,7 @@ export const DAILY_COUNT_CAP: Partial<Record<ActionType, number>> = {
   'clean.bin_checkin': 3,
   'clean.quiz': 3,
   'food.report': 4,
+  'food.pickup': 2,
 };
 
 /** Kategorie für die Degression (1., 2., 3. Aktion am Tag) */
@@ -67,7 +68,7 @@ export const WHY_BASE: Record<ActionType, string> = {
   'food.report': 'Regal-Status gemeldet. Andere fahren nicht umsonst hin.',
   'food.offer': 'Korb angeboten. Lebensmittel bleiben im Kreislauf.',
   'food.distribute': 'Verteilung als Saver durchgeführt. Ehrenamtliche Arbeit mit dem höchsten Gemeinnutzen.',
-  'food.pickup': 'Abholen gibt keine Punkte: Wer Essen mitnimmt, bekommt bereits Essen. Der Impact zählt trotzdem voll.',
+  'food.pickup': 'Lebensmittel abgeholt, bevor sie weggeworfen werden. Zweimal am Tag gewertet, damit für alle etwas übrig bleibt.',
   'food.pickup_for_other': 'Abholung für eine andere Person, per QR bestätigt.',
   'food.reservation_kept': 'Reservierung eingehalten. Verlässlichkeit hilft allen.',
   'clean.participate': 'Teilnahme an einer angemeldeten Clean-up-Aktion, Anwesenheit gegenseitig bestätigt.',

@@ -52,27 +52,27 @@ export default function Saver() {
 
   function createDistribution() {
     if (!title.trim()) return;
-    showToast(addAward({ type: 'food.distribute', partner: 'foodsharing', status: isVerified ? 'bestätigt' : 'selbst angegeben', key: `dist:new:${Date.now()}`, at: Date.now(), title: `Verteilung: ${title}`, meta: { food_g: 6000, source: isVerified ? 'api (verifizierter Saver)' : 'user', evidence: [isVerified ? 'Saver-Status in der foodsharing-API verifiziert' : 'Saver-Status noch nicht verifiziert', `${slots} Slots à 5 min, Posten: ${items || 'nicht angegeben'}`] } }));
+    showToast(addAward({ type: 'food.distribute', partner: 'foodsharing', status: isVerified ? 'bestätigt' : 'selbst angegeben', key: `dist:new:${Date.now()}`, at: Date.now(), title: `Verteilung: ${title}`, meta: { food_g: 6000, source: isVerified ? 'saver' : 'user', evidence: [isVerified ? 'Verifizierter Saver' : 'Saver-Status noch nicht verifiziert', `${slots} Slots à 5 min, Posten: ${items || 'nicht angegeben'}`] } }));
     router.replace('/(tabs)/handeln');
   }
 
   const steps = [
-    { n: 1, t: 'Hygiene-Quiz', done: (ver?.quiz_passed ?? false) || quizOk, sub: quizOk ? 'Kapitel 3 bestanden' : 'Kapitel 3 „Der Fairteiler“ in der App', action: quizOk && !ver?.quiz_passed ? () => step({ quiz_passed: true }, 'Quiz bestanden') : () => router.push('/quiz/q3'), label: quizOk && !ver?.quiz_passed ? 'In API eintragen' : 'Quiz starten' },
+    { n: 1, t: 'Hygiene-Quiz', done: (ver?.quiz_passed ?? false) || quizOk, sub: quizOk ? 'Kapitel 3 bestanden' : 'Kapitel 3 „Der Fairteiler“ in der App', action: quizOk && !ver?.quiz_passed ? () => step({ quiz_passed: true }, 'Quiz bestanden') : () => router.push('/quiz/q3'), label: quizOk && !ver?.quiz_passed ? 'Eintragen' : 'Quiz starten' },
     { n: 2, t: `Einführungsabholungen ${Math.min(trials, need)}/${need}`, done: trials >= need, sub: 'Dreimal mit einem erfahrenen Saver mitgehen', action: () => step({ trial_pickups_completed: Math.min(need, trials + 1) }, `Einführungsabholung ${trials + 1}`), label: 'Abholung bestätigen' },
     { n: 3, t: 'Freigabe durch Mentor:in', done: !!ver?.mentor_approved, sub: 'Bestätigt durch erfahrene Foodsaver', action: () => step({ mentor_approved: true }, 'Mentor-Freigabe'), label: 'Freigabe simulieren' },
-    { n: 4, t: 'Verifikation berechnen', done: isVerified, sub: 'is_verified = true → Geschäftsrettungen erlaubt', action: approve, label: 'Berechnen' },
+    { n: 4, t: 'Verifikation berechnen', done: isVerified, sub: 'Danach darfst du bei Betrieben abholen', action: approve, label: 'Berechnen' },
   ];
 
   return (
     <Screen tabBar={false}>
-      <Header title="Saver werden" subtitle="Onboarding über die foodsharing-API" color={col} />
+      <Header title="Saver werden" subtitle="Quiz, drei Einführungsabholungen, Freigabe" color={col} />
       <Appear>
         <Card style={{ backgroundColor: isVerified ? C.success : col }}>
           <Row>
             <View style={{ flex: 1 }}>
-              <Text style={[T.label, { color: '#ffffffaa' }]}>{user ? `${user.display_name} · Team ${user.team_id}` : offline ? 'Offline-Demo' : 'Lade Nutzer…'}</Text>
+              <Text style={[T.label, { color: '#ffffffaa' }]}>{user ? user.display_name : 'Dein Profil'}</Text>
               <Text style={[T.h2, { color: '#fff' }]}>{isVerified ? 'Verifizierter Saver' : 'Noch nicht verifiziert'}</Text>
-              <Text style={[T.small, { color: '#ffffffcc' }]}>Nicht jede Person ist automatisch Saver. Der echte Prozess: Quiz, drei Einführungsabholungen, Freigabe. Die API bildet genau das ab.</Text>
+              <Text style={[T.small, { color: '#ffffffcc' }]}>Saver werden Leute, die den Prozess durchlaufen haben: Quiz, drei Einführungsabholungen, Freigabe.</Text>
             </View>
             <Chameleon color="#fff" size={90} branch={false} mood={isVerified ? 'excited' : 'thinking'} />
           </Row>
@@ -91,14 +91,9 @@ export default function Saver() {
           </Appear>
         ))}
       </View>
-      <Card style={{ marginTop: 14 }}>
-        <Text style={T.label}>API-Protokoll</Text>
-        {log.length === 0 ? <Text style={[T.small, { marginTop: 4 }]}>Noch keine Aufrufe.</Text> : log.slice(0, 6).map((l, i) => <Text key={i} style={[T.small, { marginTop: 4, color: l.startsWith('✓') ? C.success : C.danger }]}>{l}</Text>)}
-        <Row style={{ marginTop: 8, gap: 6 }}><Tag label={`may_pick_up_from_business: ${String(ver?.may_pick_up_from_business ?? false)}`} /><Tag label={`may_earn_rewards: ${String(ver?.may_earn_rewards ?? false)}`} /></Row>
-      </Card>
 
       <Text style={[T.h2, { marginTop: S.xl }]}>Verteilung anlegen</Text>
-      <Text style={T.small}>Ersetzt die WhatsApp-Gruppe: Zeitfenster, Posten, Slots. Leute im Umkreis bekommen eine Nachricht (Ruhezeit 22–7 Uhr).</Text>
+      <Text style={T.small}>Zeitfenster, Posten, Slots. Leute im Umkreis bekommen eine Nachricht.</Text>
       <Card style={{ marginTop: 10, gap: 10 }}>
         <TextInput value={title} onChangeText={setTitle} placeholder="z. B. REWE Oeder Weg, Backwaren & Obst" placeholderTextColor={C.muted} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
         <TextInput value={items} onChangeText={setItems} placeholder="Posten, z. B. 2 Tüten Laugenstangen, 6× Joghurt" placeholderTextColor={C.muted} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, color: C.ink }} />

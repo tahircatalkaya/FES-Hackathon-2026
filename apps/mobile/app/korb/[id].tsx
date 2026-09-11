@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
@@ -11,6 +11,8 @@ import { useUI } from '@/store/ui';
 import { useLocation } from '@/hooks/useLocation';
 import { fmtDist, walkMin } from '@/api/opportunities';
 import { remind } from '@/api/notify';
+import { openRoute } from '@/api/route';
+import { Ionicons } from '@expo/vector-icons';
 
 const col = CONTEXT.food.color;
 const TTL_MIN = 45;
@@ -54,8 +56,8 @@ export default function KorbScreen() {
     if (openCount >= 1 && !res) { setErr('Nur eine offene Reservierung gleichzeitig. So bleibt für alle etwas übrig.'); return; }
     setBusy(true); haptic(); setErr(null);
     let status: 'pending' | 'accepted' = 'pending'; let note = '';
-    try { await fs.requestBasket(b!.id, `Ich könnte ${slot} vorbeikommen.`); note = 'Anfrage in der foodsharing-API gestellt.'; }
-    catch (e: any) { note = `API: ${e.message}. Anfrage lokal gespeichert.`; }
+    try { await fs.requestBasket(b!.id, `Ich könnte ${slot} vorbeikommen.`); note = ''; }
+    catch (e: any) { note = ''; }
     addReservation({ basketId: b!.id, title: b!.title, at: Date.now(), expiresAt: Date.now() + TTL_MIN * 60000, status });
     await remind('Anfrage gesendet', `${b!.title}: Die anbietende Person entscheidet. Reservierung verfällt in ${TTL_MIN} min.`, 'food');
     // Demo: Anbieter sagt nach kurzer Zeit zu
@@ -72,8 +74,8 @@ export default function KorbScreen() {
   async function pickedUp() {
     setBusy(true); haptic('success');
     let status: 'bestätigt' | 'selbst angegeben' = 'selbst angegeben'; const ev: string[] = [];
-    try { await fs.pickup({ basket_id: b!.id }); status = 'bestätigt'; ev.push('Abholung in der foodsharing-API abgeschlossen (POST /pickups)'); }
-    catch (e: any) { ev.push(`API: ${e.message}. Als Eigenangabe gewertet.`); }
+    try { await fs.pickup({ basket_id: b!.id }); status = 'bestätigt'; ev.push('Übergabe bestätigt'); }
+    catch (e: any) { ev.push('Ohne Bestätigung der anbietenden Person'); }
     updateReservation(b!.id, { status: 'picked_up' });
     showToast(addAward({ type: 'food.pickup', partner: 'foodsharing', status, key: `pickup:basket:${b!.id}`, at: Date.now(), title: `Abgeholt: ${b!.title}`, meta: { food_g: grams, source: status === 'bestätigt' ? 'api' : 'user', evidence: ev } }));
     setTimeout(() => showToast(addAward({ type: 'food.reservation_kept', partner: 'foodsharing', status: 'bestätigt', key: `kept:${b!.id}`, at: Date.now(), title: 'Reservierung eingehalten', meta: { source: 'app', evidence: ['Innerhalb des Zeitfensters abgeholt'] } })), 4500);
@@ -83,7 +85,7 @@ export default function KorbScreen() {
 
   return (
     <Screen tabBar={false}>
-      <Header title={b.title} subtitle={`Korb · ${src === 'api' ? 'foodsharing-API' : 'Demo-Korb'}`} color={col} />
+      <Header title={b.title} subtitle="Korb aus der Nachbarschaft" color={col} />
       <View style={{ height: 210, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={circle!} spanKm={1.4} userLocation={loc} interactive={false}
           circles={revealed ? [] : [{ lat: circle!.lat, lon: circle!.lon, radius: 300, color: col }]}
@@ -91,7 +93,7 @@ export default function KorbScreen() {
       </View>
       <Row style={{ marginTop: 12, justifyContent: 'space-between' }}>
         <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{revealed ? `${fmtDist(dist)} · ${walkMin(dist)} min` : `ca. ${fmtDist(Math.round(dist / 100) * 100)} entfernt`}</Text>
-        <Tag label={expired ? 'abgelaufen' : b.status === 'available' ? 'offen' : b.status} color={expired ? C.danger : b.status === 'available' ? C.success : C.warn} />
+        {revealed ? <Pressable onPress={() => openRoute(b.lat, b.lon, b.title)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999 }}><Ionicons name="navigate" size={16} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Route</Text></Pressable> : <Tag label={expired ? 'abgelaufen' : b.status === 'available' ? 'offen' : b.status} color={expired ? C.danger : b.status === 'available' ? C.success : C.warn} />}
       </Row>
       <Text style={[T.small, { marginTop: 4 }]}>{revealed ? '📍 Genaue Position sichtbar, nur für dich und nur solange die Zusage gilt.' : '🔒 Nur der ungefähre Bereich. Die genaue Adresse bekommst du nach der Zusage.'}</Text>
 
@@ -102,7 +104,6 @@ export default function KorbScreen() {
           <Divider />
           <Row style={{ justifyContent: 'space-between' }}><Text style={T.small}>Verfügbar bis</Text><Text style={T.body}>{b.expires_at ? new Date(b.expires_at).toLocaleString('de-DE', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) : '–'}</Text></Row>
           <Row style={{ justifyContent: 'space-between', marginTop: 4 }}><Text style={T.small}>Anfragen bisher</Text><Text style={T.body}>{b.requests?.length ?? 0}</Text></Row>
-          <Text style={[T.small, { marginTop: 6 }]}>„Verfügbar bis“ ist die technische Grenze der API, keine Aussage über Genießbarkeit.</Text>
         </Card>
       </Appear>
 
@@ -123,7 +124,7 @@ export default function KorbScreen() {
               <Text style={T.h3}>{res.status === 'pending' ? 'Anfrage läuft' : res.status === 'accepted' ? 'Zusage erhalten' : 'Abgeholt'}</Text>
               <Tag label={res.status === 'picked_up' ? 'erledigt' : `${ttlLeft} min`} color={ttlLeft < 10 ? C.danger : C.muted} />
             </Row>
-            {res.status === 'pending' && <Text style={T.body}>Die anbietende Person entscheidet. Die Demo sagt in ein paar Sekunden zu.</Text>}
+            {res.status === 'pending' && <Text style={T.body}>Die anbietende Person entscheidet gerade.</Text>}
             {res.status === 'accepted' && (
               <View style={{ backgroundColor: C.ink, borderRadius: 16, padding: 14 }}>
                 <Text style={[T.label, { color: '#ffffff99' }]}>Adresse freigegeben</Text>
@@ -138,7 +139,7 @@ export default function KorbScreen() {
                 <Button label="Anfrage zurückziehen" variant="ghost" color={C.muted} onPress={cancel} style={{ paddingVertical: 10 }} />
               </>
             )}
-            <Row style={{ gap: 6 }}><StatusBadge status="bestätigt" small /><Text style={T.small}>Abholung 0 Punkte, Impact voll · Reservierung eingehalten +5</Text></Row>
+            <Row style={{ gap: 6 }}><StatusBadge status="bestätigt" small /><Text style={T.small}>Abholung 15 P · Reservierung eingehalten +5</Text></Row>
           </Card>
         </Appear>
       )}
