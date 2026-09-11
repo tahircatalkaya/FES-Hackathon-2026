@@ -1,6 +1,7 @@
 "use strict";
 const copy = {
   de: {
+    home: "Start",
     together: "Gemeinsam",
     food: "Essen retten",
     reuse: "Mehrweg",
@@ -119,9 +120,11 @@ const copy = {
     refill: "Nicht erneut belohnt",
     rule: "Regel demo-v1",
     homeTitle: "Dein Alltag kann etwas bewegen.",
+    homeIntro: "Ein Ort, vier Wege: Gemeinsam, Essen retten, Mehrweg, Mobilität.",
     emptyDate: "Abrufzeit unbekannt",
   },
   en: {
+    home: "Home",
     together: "Together",
     food: "Save food",
     reuse: "Reuse",
@@ -238,12 +241,14 @@ const copy = {
     refill: "Not rewarded again",
     rule: "Rule demo-v1",
     homeTitle: "Your everyday choices can make a difference.",
+    homeIntro: "One place, four paths: Together, Save food, Reuse, Mobility.",
     emptyDate: "Retrieval time unknown",
   },
 };
 copy.de.mapNoStreets = "Standortkarte ohne Straßenebene";
 copy.en.mapNoStreets = "Location map without a street layer";
 const themes = {
+  home: ["#8a4b12", "#f7ece0"],
   together: ["#102b54", "#e6edf8"],
   food: ["#31643a", "#edf5e9"],
   reuse: ["#7c3155", "#f8eaf0"],
@@ -352,6 +357,9 @@ function map() {
     .join("");
   return `<div class="geo-map"><svg viewBox="0 0 400 320" role="img" aria-label="${label}"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#cad7e6" stroke-width=".6"/></pattern></defs><rect width="400" height="320" fill="#edf3f9"/><rect width="400" height="320" fill="url(#grid)"/><circle cx="200" cy="160" r="145" fill="none" stroke="#b4c5d9" stroke-dasharray="4 5"/><path d="M200 150v20m-10-10h20" stroke="#506987" stroke-width="2"/>${markers}<text x="18" y="27" fill="#304e6c" font-size="14">N ↑</text><path d="M20 290h64m-64-4v8m64-8v8" stroke="#304e6c"/><text x="20" y="280" fill="#304e6c" font-size="12">2 km</text></svg><p>${label} · ${t("distance")}</p></div><p class="quiet">${esc(p.name ?? "Frankfurt")} · <a href="https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lon}#map=16/${p.lat}/${p.lon}" target="_blank" rel="noopener noreferrer">OpenStreetMap ↗</a></p>`;
 }
+function home() {
+  return `<div class="eyebrow">MAINWANDEL</div><h1>${t("homeTitle")}</h1><p class="lead">${t("homeIntro")}</p><section class="hero"><div><div class="eyebrow">MAINWANDEL × CHAMI</div><h2>${t("hero")}</h2><p>${t("heroText")}</p>${button("start", "food")}</div><div class="world"><div class="planet"><img src="/chameleon.svg" alt="Chami"></div><small>${t("symbol")}</small></div></section>${stats()}<div class="section-head"><h2>${t("next")}</h2></div><div class="twocol"><section class="card"><span class="tag">${t("together")}</span><h3>${t("hello")}</h3><p>${t("intro")}</p><button class="secondary" data-tab="together">${t("together")}</button></section><section class="card"><span class="tag">${t("mobility")}</span><h3>${t("rideTitle")}</h3><p>${t("rideIntro")}</p><button class="secondary" data-tab="mobility">${t("mobility")}</button></section></div>`;
+}
 function together() {
   return `<div class="eyebrow">${t("region")}</div><h1>${t("hello")}</h1><p class="lead">${t("intro")}</p><section class="hero"><div><div class="eyebrow">MAINWANDEL × CHAMI</div><h2>${t("hero")}</h2><p>${t("heroText")}</p>${button("start", "food")}</div><div class="world"><div class="planet"><img src="/chameleon.svg" alt="Chami"></div><small>${t("symbol")}</small></div></section>${stats()}<div class="section-head"><h2>${t("next")}</h2></div><div class="twocol"><section class="card tint"><span class="tag">FES · ${t("sim")}</span><h3>${t("mission")}</h3><p>${t("missionText")}</p>${button("learn", "quiz")}</section><section class="card"><span class="tag">${t("community")}</span><h3>${t("week")}</h3><p>${t("weekText")}</p><div class="progress"><span style="width:${Math.min(100, (state.account.earned / 30) * 100)}%"></span></div><p class="quiet">${fmt(state.account.earned)} / 30 ${t("demoPoints")}</p></section></div><p class="quiet">${t("weekFoot")}</p><div class="section-head row"><h2>${t("near")}</h2>${button("all", "food", "secondary")}</div>${placeList("food", 3)}${source()}<details><summary>${t("social")}</summary><p>${t("socialText")}</p></details><details><summary>${t("reward")}</summary><p>${t("rewardText")}</p></details><details><summary>${t("symbol")}</summary><p>${t("communityText")}</p></details>`;
 }
@@ -374,6 +382,7 @@ function render() {
     state.lang === "de" ? "EN" : "DE";
   document.querySelector("#profile").setAttribute("aria-label", t("profile"));
   document.querySelector("#content").innerHTML = {
+    home,
     together,
     food,
     reuse,
@@ -382,7 +391,7 @@ function render() {
   document.querySelector("#navigation").innerHTML = Object.keys(themes)
     .map(
       (key, i) =>
-        `<button data-tab="${key}" class="${state.tab === key ? "active" : ""}" ${state.tab === key ? 'aria-current="page"' : ""}><span class="nav-icon" aria-hidden="true">${["⌂", "♧", "↺", "↗"][i]}</span>${t(key)}</button>`,
+        `<button data-tab="${key}" class="${state.tab === key ? "active" : ""}" ${state.tab === key ? 'aria-current="page"' : ""}><span class="nav-icon" aria-hidden="true">${["⌂", "♥", "♧", "↺", "↗"][i]}</span>${t(key)}</button>`,
     )
     .join("");
   const select = document.querySelector("#area");
