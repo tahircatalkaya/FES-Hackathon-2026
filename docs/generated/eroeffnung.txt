@@ -1,0 +1,305 @@
+## ppt/slides/slide1.xml
+Nachhaltige
+ 
+Angebote
+ 
+entdecken
+.
+Handeln
+ 
+ermöglichen
+. 
+Wirkung
+ 
+sichtbar
+ 
+machen
+.
+Frankfurt 
+Impact Challenge
+FES Hackathon 2026
+11.–12. September 2026  |  THE SQUAIRE, Frankfurt
+
+## ppt/slides/slide2.xml
+2
+Unsere Geschäftsfelder
+FES GmbH – Digitale Services & Produkte
+
+## ppt/slides/slide3.xml
+3
+Digitale Services & Produkte 
+Praxisnah.
+ Validiert. 
+Prozessorientiert. Für Kunden & 
+Kommunn
+FES GmbH – Digitale Services & Produkte
+für digitale Kommunen
+für engagierte Entsorger
+für zukunftsorientierte Unternehmen
+Lösungen
+BürgerPlus
+hofMate
+Powerstunden
+KIRMA Chatbot Maintal
+
+## ppt/slides/slide4.xml
+4
+Viele Möglichkeiten. Noch keine gemeinsame Journey.
+Ausgangslage
+FES GmbH – Digitale Services & Produkte
+Angebote
+sind verteilt und nicht sichtbar
+Beitrag
+bleibt für Einzelne häufig abstrakt
+Wirkung
+wird selten gemeinsam erlebbar
+Die Chance: 
+aus
+ 
+einzelnen
+ 
+Angeboten
+ 
+ein
+ 
+motivierendes
+, 
+glaubwürdiges
+ 
+Nutzererlebnis
+ zu entwickeln.
+
+## ppt/slides/slide5.xml
+Entdecken
+Handeln
+Nachweisen
+Belohnen
+Wirkung sehen
+5
+Eure gemeinsame Aufgabe
+Challenge
+FES GmbH – Digitale Services & Produkte
+Entwickelt einen mobile-first Prototypen
+für eine Frankfurt-weite Impact-Plattform.
+PRINZIPIEN
+datenbasiert
+fair
+
+## ppt/slides/slide6.xml
+6
+Gemeinsam möglich gemacht
+Danke
+FES GmbH – Digitale Services & Produkte
+Challenge-Partner
+Praxiswissen, Aufgaben und Daten
+Sponsoren
+Ressourcen und Preisgeld
+Mentor:innen & Jury
+Zeit, Feedback und Erfahrung
+Venue-Partner
+Raum für 24 Stunden Ideen
+Danke für Vertrauen, Unterstützung und die Bereitschaft, gemeinsam neue Lösungen für Frankfurt zu ermöglichen.
+
+## ppt/slides/slide7.xml
+Ride2Impact
+ÖPNV-Fahrt erkennen
+7
+Fünf Bausteine. Eine gemeinsame Wirkung!
+Aufgabenbausteine
+FES GmbH – Digitale Services & Produkte
+Smart 
+Mehrweg
+ 
+Reward
+Abfall vermeiden
+Stadtsauberkeit
+Engagement aktivieren
+Save2Share
+Lebensmittel retten
+Mobilitätsimpact
+Gemeinschaft sichtbar machen
+
+## ppt/slides/slide8.xml
+Überzeugender
+ 
+Pitch
+Sichtbarer
+ 
+Impact
+Faire 
+Motivation
+Plausible 
+Nachweislogik
+Klarer 
+Nutzerfluss
+Mobile-first 
+Prototyp
+8
+Was wir morgen von euch sehen möchten
+Ergebnis
+FES GmbH – Digitale Services & Produkte
+01
+02
+03
+04
+05
+06
+Nicht alles bauen. Den Kern 
+erlebbar
+ machen.
+
+## ppt/slides/slide9.xml
+FES 
+stellt
+:
+9
+Rahmenbedingungen
+Spielwiese
+FES GmbH – Digitale Services & Produkte
+GitHub
+Aufgabenstellung
+Datengrundlage
+verpflichtende
+ 
+Ablage
+ChatGPT
+1.000€ Tokens 
+pro TEAM
+Pitch:
+10 min + 5min 
+Fragerunde
+
+## ppt/slides/slide10.xml
+10
+Ablauf
+24h Hackathon
+FES GmbH – Digitale Services & Produkte
+11. September
+14:30
+Get-together & Snacks
+Ankommen und erstes Kennenlernen
+15:00
+Begrüßung & Challenge
+FES, Partner und Aufgabenstellung
+16:00
+Start der Arbeitsphase
+Auf die Plätze, fertig, los!
+18:00
+„How to …“-Workshop
+Praxisimpuls für die Teams
+19:00
+Buffet & Arbeitsmodus
+Gemeinsam essen, anschließend weiterarbeiten
+12. September
+07:45
+Frühstück
+Energie für den Endspurt
+12:00
+Mittagessen
+Gemeinsame Pause
+13:00
+Präsentations-Workshop
+„How to präsentieren“
+16:00
+Präsentationen vor der Jury
+Pitches und Rückfragen
+18:00
+Ehrung der Teilnehmenden
+Würdigung und Preisverleihung
+18:30
+Abendessen & Ausklang
+Fingerfood und gemeinsamer Abschluss
+Freitag
+Samstag
+Samstag
+Freitag
+
+## ppt/slides/slide11.xml
+11
+Euer Start im Team
+Die ersten 30 Minuten
+FES GmbH – Digitale Services & Produkte
+01
+Ankommen
+Raum, Technik und Materialien klären
+02
+Fokus finden
+Aufgabe lesen und Nutzerproblem schärfen
+03
+Rollen verteilen
+Moderation, Doku, Technik und Pitch
+04
+Loslegen
+Erste Idee skizzieren und früh testen
+Welche konkrete Situation soll für Nutzer:innen morgen besser sein?
+
+## ppt/slides/slide12.xml
+12
+Eure Teams 
+stehen
+. 
+Jetzt
+ 
+geht
+ es in die 
+Räume
+.
+Teamaufteilung
+FES GmbH – Digitale Services & Produkte
+TEAM 1
+Raum: Ernst
+TEAM 2
+Raum: Johns
+TEAM 3
+Raum: Doig
+TEAM 4
+Raum: 
+Immendorf
+TEAM 5
+Raum: Hockney
+Bitte geht mit eurem Team direkt in den zugewiesenen Arbeitsraum.
+Amal, Imad, Laroussi, Rania, 
+Tabarek
+, Tahir
+Altay, Chintan, Harsh, Krishna, Parth, Sarah
+Dilshan, Dmitrii, 
+Iuliia
+, Long, Mahesh, Yuqing
+Abhishek, David, Frederik, Ken, Laurin, Shirin
+Baran, Danish, Luca, Sadan, Sascha, Wanda
+
+## ppt/notesSlides/notesSlide1.xml
+1
+
+## ppt/notesSlides/notesSlide2.xml
+2
+
+## ppt/notesSlides/notesSlide3.xml
+3
+
+## ppt/notesSlides/notesSlide4.xml
+4
+
+## ppt/notesSlides/notesSlide5.xml
+5
+
+## ppt/notesSlides/notesSlide6.xml
+6
+
+## ppt/notesSlides/notesSlide7.xml
+7
+
+## ppt/notesSlides/notesSlide8.xml
+8
+
+## ppt/notesSlides/notesSlide9.xml
+9
+
+## ppt/notesSlides/notesSlide10.xml
+10
+
+## ppt/notesSlides/notesSlide11.xml
+11
+
+## ppt/notesSlides/notesSlide12.xml
+12

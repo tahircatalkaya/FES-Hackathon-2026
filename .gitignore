@@ -1,0 +1,12 @@
+.runtime/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+docs/generated/ppt-media/
+docs/generated/*page-*.png
+docs/generated/*contact*.jpg
+docs/generated/vytal-page.html
+.sites-runtime/
+

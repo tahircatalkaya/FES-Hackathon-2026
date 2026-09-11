@@ -1,0 +1,2716 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Foodsharing Hackathon API",
+    "description": "\n## Foodsharing Hackathon API\n\nThis API manages team users, simulated verification, food baskets, pickup requests,\nFairteiler locations, fictional businesses and completed pickups for the Frankfurt Sustainability Hackathon.\n\n### Authentication and users\n\nProtected endpoints require a team key in `X-API-Key`. Swagger's **Authorize**\naccepts the key without a prefix. Each team has two test users.\n\n`GET /users` lists the team's users. For user-specific actions, `X-User-ID`\nselects a member of that team; each request without it uses the key's default user.\nRoutes with a user ID in the path target that ID and ignore `X-User-ID`.\n\nUser profiles, verification and personal histories are scoped to the authenticated\nteam. Baskets and their request summaries are readable with any valid team key.\nChanging a request requires the selected user to be its requester or basket owner,\ndepending on the target status.\n\nPublic endpoints: Fairteiler list and detail, `/`, `/ready`, `/docs`, `/redoc`\nand `/openapi.json`.\n\n### Verification and pickups\n\n| Source | Pickup permission |\n|---|---|\n| Baskets and Fairteiler | All team users; no verification or quiz required |\n| Businesses | Only verified users (`is_verified: true`) |\n\n`POST /pickups` records baskets/Fairteiler. `GET /businesses` lists fictional shops;\n`POST /businesses/{business_id}/pickups` records a business rescue for the selected user.\nEach successful business POST creates a separate event; no appointment slots or stock\nare simulated. Unverified business requests receive 403 with their verification state.\n`may_pick_up` covers baskets/Fairteiler; `may_pick_up_from_business` covers businesses.\n\nRegular verification requires a passed quiz, enough trial pickups and approval.\nThe default trial threshold is three and is returned as `trial_pickups_required`\nin verification data. `POST /users/me/approve` records simulated approval,\nincluding before quiz or trials are complete. Introductory pickups are simulated via\n`PATCH /users/{user_id}/verification` with `trial_pickups_completed`; collecting baskets\nor Fairteiler food does not advance this onboarding step.\n\nGET /users returns the current state of both test users, including any trial credit.\nTest PATCHes can edit flags, counters and timestamps. An explicit `is_verified`\ntakes precedence in that PATCH. Later verification input PATCHes or approval\nrecalculate it. Counter edits preserve event history. All new rescues increment the\nregular pickup counter and have `was_trial: false`; historical trial records are preserved.\n\n`GET /users/me` includes verification data. `GET/PATCH /users/{user_id}/verification`\nreturns that state directly. A verification denial on a business pickup\nincludes `detail.error`, `detail.message` and `detail.verification`.\n\n### Pickup data\n\n| Endpoint | Content |\n|---|---|\n| `GET /users/me/pickups` | Selected user's history with pickup `id` |\n| `GET /pickups/sample` | Non-team history with `person` instead of pickup `id` |\n\nBoth contain the source, `picked_up_at`, `was_trial`, source coordinates and\nbasket, Fairteiler or business details. Sample pseudonyms remain stable across pages and filters\nwhile the non-team user set is unchanged. All team members are excluded from the sample.\n\nThe API contains no points, badges or leaderboard. The existing `may_earn_rewards`\nfield equals `is_verified`; it does not calculate or grant rewards.\nExample locations are in Frankfurt am Main; new baskets can use any valid latitude\nand longitude. Basket expiry is a technical availability deadline.\n",
+    "contact": {
+      "name": "Hackathon Organizers",
+      "email": "tobias.nagelschmidt@fes-frankfurt.de"
+    },
+    "version": "2.4.0"
+  },
+  "paths": {
+    "/food-share-points": {
+      "get": {
+        "tags": [
+          "Fairteiler (public)"
+        ],
+        "summary": "List all Fairteiler (public — no API key required)",
+        "description": "Stored Fairteiler and Abgabestelle locations, with name and coordinates. Location data covers the Frankfurt am Main area.\n\nCall it without parameters to get the full list, or pass `lat` **and** `lon` to get only the ones nearby, sorted by distance.\n\nThis endpoint requires no API key.",
+        "operationId": "get_food_share_points_food_share_points_get",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 90,
+                  "minimum": -90
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Latitude of your location",
+              "title": "Lat"
+            },
+            "description": "Latitude of your location",
+            "example": 50.1109
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 180,
+                  "minimum": -180
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Longitude of your location",
+              "title": "Lon"
+            },
+            "description": "Longitude of your location",
+            "example": 8.6821
+          },
+          {
+            "name": "distance_km",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100.0,
+              "minimum": 0.1,
+              "description": "Search radius in km (only used with lat/lon)",
+              "default": 10.0,
+              "title": "Distance Km"
+            },
+            "description": "Search radius in km (only used with lat/lon)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FoodSharePointResponse"
+                  },
+                  "title": "Response Get Food Share Points Food Share Points Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/food-share-points/{food_share_point_id}": {
+      "get": {
+        "tags": [
+          "Fairteiler (public)"
+        ],
+        "summary": "Get one Fairteiler (public — no API key required)",
+        "operationId": "get_food_share_point_food_share_points__food_share_point_id__get",
+        "parameters": [
+          {
+            "name": "food_share_point_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Food Share Point Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodSharePointResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "Get your own user and onboarding status",
+        "description": "Returns the selected member of your team. Set X-User-ID to switch users; omit it to use your original/default user. Other teams remain inaccessible.",
+        "operationId": "get_me_users_me_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "Edit the selected test user",
+        "description": "Freely edit your selected user's sandbox state: quiz, approval, verification, counters, name and timestamps. False resets flags. Omitted inputs are preserved; derived verification and timestamps may change automatically. Counter edits never change pickup history. Explicit is_verified overrides the derived status for this edit; later onboarding changes recalculate it. Unknown fields, IDs and team membership are rejected (422).",
+        "operationId": "update_me_users_me_patch",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/approve": {
+      "post": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "Ok vom Verantwortlichen (simulated)",
+        "description": "Records simulated approval for the selected team user, including before quiz or trial pickups are complete. Repeated calls preserve an existing approval timestamp. Each call recalculates verification from quiz, trial count and approval.",
+        "operationId": "approve_me_users_me_approve_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/pickups": {
+      "get": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "Your pickup history — how often and when",
+        "description": "Completed pickups of the selected team user, newest first, with limit/offset pagination. Includes pickup id, picked_up_at, was_trial and source details. The sample endpoint replaces pickup id with person; it excludes team users.",
+        "operationId": "get_my_pickups_users_me_pickups_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PickupResponse"
+                  },
+                  "title": "Response Get My Pickups Users Me Pickups Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "List your team's test users",
+        "operationId": "get_team_users_users_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserMeResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Team Users Users Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "Get one of your team's users",
+        "operationId": "get_team_user_users__user_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Team Users"
+        ],
+        "summary": "Freely edit one of your team's test users",
+        "description": "Same editable fields and sandbox rules as PATCH /users/me. Other teams' users return 404.",
+        "operationId": "update_team_user_users__user_id__patch",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/verification": {
+      "get": {
+        "tags": [
+          "Verification"
+        ],
+        "summary": "Read a team member's verification progress",
+        "operationId": "get_user_verification_users__user_id__verification_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Verification"
+        ],
+        "summary": "Freely edit a team member's verification steps",
+        "description": "Freely set or reset quiz_passed, trial_pickups_completed, mentor_approved, is_verified and their timestamps for sandbox testing. Omitted inputs are preserved; derived verification and timestamps may change automatically. Changed quiz/approval flags automatically set or clear their timestamps unless an explicit timestamp is provided. Supplying quiz, approval or trial counter inputs recalculates verification even when their values are unchanged; explicit is_verified takes precedence for this PATCH. Later onboarding changes recalculate verification again. Counter edits preserve actual pickup history. Names, regular pickup counters, IDs and team membership are not editable here. Use Authorize in Swagger to enter your team's X-API-Key. Other teams' users return 404.",
+        "operationId": "update_user_verification_users__user_id__verification_patch",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pickups/sample": {
+      "get": {
+        "tags": [
+          "Pickups"
+        ],
+        "summary": "Pseudonymised pickup history of non-team users",
+        "description": "Historic pickups from users without team membership, newest first. All team members are excluded, regardless of whether they have their own or an active key.\n\nShares the source, timestamp and trial fields of GET /users/me/pickups, but replaces pickup id with a person pseudonym (person_001, …). Source IDs remain present. Pseudonyms are stable across pages and filters while the non-team user set is unchanged. Supports source filtering and limit/offset pagination.",
+        "operationId": "get_sample_pickups_pickups_sample_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 200,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "basket",
+                    "food_share_point",
+                    "business"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Restrict to one kind of source",
+              "title": "Source"
+            },
+            "description": "Restrict to one kind of source"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SamplePickupResponse"
+                  },
+                  "title": "Response Get Sample Pickups Pickups Sample Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pickups": {
+      "post": {
+        "tags": [
+          "Pickups"
+        ],
+        "summary": "Log a pickup",
+        "description": "Records that you picked something up, either from a Fairteiler (`food_share_point_id`) or from a basket (`basket_id`) — exactly one of the two.\n\nNo verification required: all team users may collect baskets and Fairteiler food. New pickups have was_trial: false and increment the regular counter, never trial credit. Business rescues use POST /businesses/{business_id}/pickups and require verification. Each successful Fairteiler POST creates another event.\n\nAn unexpired, free basket may be picked up directly. Your own baskets are rejected (400); expired, completed or other users' reserved baskets return 409. An existing open request of yours is completed with the same pickup. Closed requests cannot be reopened.",
+        "operationId": "create_pickup_pickups_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PickupCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baskets/nearby": {
+      "get": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Find available baskets near you",
+        "operationId": "get_nearby_baskets_baskets_nearby_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 90,
+              "minimum": -90,
+              "description": "Latitude of your location",
+              "title": "Lat"
+            },
+            "description": "Latitude of your location",
+            "example": 50.1109
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 180,
+              "minimum": -180,
+              "description": "Longitude of your location",
+              "title": "Lon"
+            },
+            "description": "Longitude of your location",
+            "example": 8.6821
+          },
+          {
+            "name": "distance_km",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 50.0,
+              "minimum": 0.1,
+              "description": "Search radius in km",
+              "default": 5.0,
+              "title": "Distance Km"
+            },
+            "description": "Search radius in km"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BasketSummary"
+                  },
+                  "title": "Response Get Nearby Baskets Baskets Nearby Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baskets/{basket_id}": {
+      "get": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Get basket details",
+        "operationId": "get_basket_baskets__basket_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "basket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Basket Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasketDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baskets": {
+      "post": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Offer a basket",
+        "description": "Creates a basket owned by the selected team user (X-User-ID or key default). A valid team key is required; verification is not.",
+        "operationId": "create_basket_baskets_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BasketCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasketDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baskets/{basket_id}/requests": {
+      "post": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Request a pickup",
+        "description": "Reserves a basket for the selected team user (X-User-ID or key default). No verification is required. Creating a request does not yet record a pickup.",
+        "operationId": "create_pickup_request_baskets__basket_id__requests_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "basket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Basket Id"
+            }
+          },
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PickupRequestCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickupRequestResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baskets/{basket_id}/requests/{requester_id}/status": {
+      "patch": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Update a pickup request's status",
+        "description": "Only the two people involved may change a request, and which of them depends on the new status:\n\n| Status | Who may set it |\n|--------|----------------|\n| `accepted`, `rejected` | the user who **offered** the basket |\n| `cancelled` | the **requester**, withdrawing their own request |\n| `picked_up` | **either** party |\n\nSetting the status to `picked_up` records a Pickup for the requester — that is an event in their `GET /users/me/pickups` history.\n\nOnly pending or accepted requests can be completed. Rejected, cancelled and picked_up requests are terminal (409). Completion rechecks the reservation and the basket's expiry. No verification is required.",
+        "operationId": "update_pickup_status_baskets__basket_id__requests__requester_id__status_patch",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "basket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Basket Id"
+            }
+          },
+          {
+            "name": "requester_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Requester Id"
+            }
+          },
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PickupStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickupStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/businesses": {
+      "get": {
+        "tags": [
+          "Businesses"
+        ],
+        "summary": "List demo businesses",
+        "description": "Fictional shops for sandbox tests, not real foodsharing cooperation partners. Requires a team key, no verification.",
+        "operationId": "get_businesses_businesses_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Businesses Businesses Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/businesses/{business_id}/pickups": {
+      "post": {
+        "tags": [
+          "Businesses"
+        ],
+        "summary": "Rescue food from a business (verified users only)",
+        "description": "Records a completed business rescue for the selected team user (X-User-ID or key default). Requires is_verified=true, checked again under a user row lock. Unverified users in any onboarding stage receive 403. No request body needed. Each successful POST records one event and increments the regular pickup counter; repeated POSTs represent separate rescues. This sandbox does not model appointment slots or shop stock. The event appears in GET /users/me/pickups with source=business and was_trial=false.",
+        "operationId": "create_business_pickup_businesses__business_id__pickups_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Business Id"
+            }
+          },
+          {
+            "name": "x-user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Act as this user of your team; omitted = original/default user",
+              "title": "X-User-Id"
+            },
+            "description": "Act as this user of your team; omitted = original/default user"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health check",
+        "operationId": "health_check__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Service readiness",
+        "operationId": "readiness_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service not ready"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BasketCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "example": "Gemüsekiste vom Markt"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Reste vom Sachsenhäuser Wochenmarkt"
+          },
+          "lat": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "example": 50.1053
+          },
+          "lon": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "example": 8.6927
+          },
+          "food_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Types",
+            "example": [
+              "vegetables",
+              "bread"
+            ]
+          },
+          "expires_in_hours": {
+            "type": "integer",
+            "maximum": 168.0,
+            "minimum": 1.0,
+            "title": "Expires In Hours",
+            "description": "Hours until the basket expires",
+            "default": 48,
+            "example": 24
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "lat",
+          "lon"
+        ],
+        "title": "BasketCreate"
+      },
+      "BasketDetail": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "example": "Gemüsekiste vom Markt"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Reste vom Sachsenhäuser Wochenmarkt"
+          },
+          "lat": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "example": 50.1053
+          },
+          "lon": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "example": 8.6927
+          },
+          "food_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Types",
+            "example": [
+              "vegetables",
+              "bread"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "available | requested | picked_up | expired"
+          },
+          "created_by_user_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By User Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km",
+            "description": "Distance from query point in km"
+          },
+          "pickup_requests": {
+            "items": {
+              "$ref": "#/components/schemas/PickupRequestSummary"
+            },
+            "type": "array",
+            "title": "Pickup Requests",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "lat",
+          "lon",
+          "id",
+          "status",
+          "created_by_user_id",
+          "created_at",
+          "expires_at"
+        ],
+        "title": "BasketDetail"
+      },
+      "BasketSummary": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "example": "Gemüsekiste vom Markt"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Reste vom Sachsenhäuser Wochenmarkt"
+          },
+          "lat": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "example": 50.1053
+          },
+          "lon": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "example": 8.6927
+          },
+          "food_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Types",
+            "example": [
+              "vegetables",
+              "bread"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "available | requested | picked_up | expired"
+          },
+          "created_by_user_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By User Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km",
+            "description": "Distance from query point in km"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "lat",
+          "lon",
+          "id",
+          "status",
+          "created_by_user_id",
+          "created_at",
+          "expires_at"
+        ],
+        "title": "BasketSummary"
+      },
+      "BusinessResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lon": {
+            "type": "number",
+            "title": "Lon"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "lat",
+          "lon"
+        ],
+        "title": "BusinessResponse"
+      },
+      "FoodSharePointResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "example": "Fairteiler Sachsenhausen"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Regal im Eingangsbereich des Gemeinschaftsgartens"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address",
+            "example": "Darmstädter Landstraße 102, 60598 Frankfurt"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat",
+            "example": 50.0953
+          },
+          "lon": {
+            "type": "number",
+            "title": "Lon",
+            "example": 8.6927
+          },
+          "opening_hours": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opening Hours",
+            "example": "24/7"
+          },
+          "region_id": {
+            "type": "integer",
+            "title": "Region Id",
+            "example": 1
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km",
+            "description": "Distance from query point in km"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "lat",
+          "lon",
+          "region_id"
+        ],
+        "title": "FoodSharePointResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PickupCreate": {
+        "properties": {
+          "food_share_point_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Share Point Id",
+            "description": "Id of the Fairteiler you picked up from",
+            "example": 7
+          },
+          "basket_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Id",
+            "description": "Id of the basket you picked up"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PickupCreate",
+        "description": "Log a pickup. Provide exactly one source: a Fairteiler or a basket."
+      },
+      "PickupRequestCreate": {
+        "properties": {
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "example": "Ich hole es heute Abend ab!"
+          }
+        },
+        "type": "object",
+        "title": "PickupRequestCreate"
+      },
+      "PickupRequestResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "basket_id": {
+            "type": "integer",
+            "title": "Basket Id"
+          },
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "requested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Requested At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "basket_id",
+          "requester_id",
+          "status",
+          "message",
+          "requested_at"
+        ],
+        "title": "PickupRequestResponse"
+      },
+      "PickupRequestSummary": {
+        "properties": {
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "requested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Requested At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requester_id",
+          "status",
+          "requested_at"
+        ],
+        "title": "PickupRequestSummary"
+      },
+      "PickupResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "basket",
+              "food_share_point",
+              "business"
+            ],
+            "title": "Source",
+            "description": "Where the food came from"
+          },
+          "picked_up_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Picked Up At",
+            "description": "When the pickup happened"
+          },
+          "was_trial": {
+            "type": "boolean",
+            "title": "Was Trial",
+            "description": "Historical trial marker. New basket, Fairteiler and business rescues are non-trial."
+          },
+          "food_share_point_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Share Point Id"
+          },
+          "food_share_point_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Share Point Name"
+          },
+          "business_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Id"
+          },
+          "business_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Name"
+          },
+          "basket_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Id"
+          },
+          "basket_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Title"
+          },
+          "basket_created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Created At"
+          },
+          "basket_expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Expires At",
+            "description": "Technical availability deadline of the source basket"
+          },
+          "food_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Types"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "picked_up_at",
+          "was_trial"
+        ],
+        "title": "PickupResponse",
+        "description": "One completed pickup.\n\nContains the pickup id, timestamp, trial flag and source details."
+      },
+      "PickupStatusResponse": {
+        "properties": {
+          "basket_id": {
+            "type": "integer",
+            "title": "Basket Id"
+          },
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "pickup_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickup Id",
+            "description": "Id of the Pickup record created when the status became picked_up"
+          },
+          "was_trial": {
+            "type": "boolean",
+            "title": "Was Trial",
+            "description": "True if this counted as a Probeabholung",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "basket_id",
+          "requester_id",
+          "status",
+          "updated_at"
+        ],
+        "title": "PickupStatusResponse"
+      },
+      "PickupStatusUpdate": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "rejected",
+              "picked_up",
+              "cancelled"
+            ],
+            "title": "Status",
+            "description": "New status for the pickup request"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "PickupStatusUpdate"
+      },
+      "ReadinessResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ready",
+            "title": "Status",
+            "default": "ready"
+          },
+          "build_id": {
+            "type": "string",
+            "title": "Build Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "build_id"
+        ],
+        "title": "ReadinessResponse"
+      },
+      "SamplePickupResponse": {
+        "properties": {
+          "person": {
+            "type": "string",
+            "title": "Person",
+            "description": "Person pseudonym, stable while the non-team user set is unchanged. Not a user id.",
+            "example": "person_007"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "basket",
+              "food_share_point",
+              "business"
+            ],
+            "title": "Source"
+          },
+          "picked_up_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Picked Up At"
+          },
+          "was_trial": {
+            "type": "boolean",
+            "title": "Was Trial"
+          },
+          "food_share_point_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Share Point Id"
+          },
+          "food_share_point_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Share Point Name"
+          },
+          "business_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Id"
+          },
+          "business_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Name"
+          },
+          "basket_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Id"
+          },
+          "basket_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Title"
+          },
+          "basket_created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Created At"
+          },
+          "basket_expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basket Expires At"
+          },
+          "food_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Types"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          }
+        },
+        "type": "object",
+        "required": [
+          "person",
+          "source",
+          "picked_up_at",
+          "was_trial"
+        ],
+        "title": "SamplePickupResponse",
+        "description": "One pickup from the shared, pseudonymised non-team history.\n\nShares the source, timestamp and trial fields of personal history. Replaces pickup\nid with person; no user_id is included. Source IDs remain present. Pseudonyms stay\nstable across pages and filters while the non-team user set is unchanged."
+      },
+      "UserMeResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "example": 42
+          },
+          "team_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Name",
+            "description": "Label of the API key you authenticated with"
+          },
+          "team_id": {
+            "type": "integer",
+            "title": "Team Id"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "is_default": {
+            "type": "boolean",
+            "title": "Is Default"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Joined At"
+          },
+          "pickups_completed": {
+            "type": "integer",
+            "title": "Pickups Completed",
+            "description": "Completed non-trial rescues from any source, independent of verification",
+            "example": 12
+          },
+          "trial_pickups_completed": {
+            "type": "integer",
+            "title": "Trial Pickups Completed",
+            "description": "Probeabholungen completed",
+            "example": 3
+          },
+          "verification": {
+            "$ref": "#/components/schemas/VerificationState"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "team_id",
+          "is_default",
+          "joined_at",
+          "pickups_completed",
+          "trial_pickups_completed",
+          "verification"
+        ],
+        "title": "UserMeResponse",
+        "description": "A member of your own team; other teams remain inaccessible."
+      },
+      "UserUpdateRequest": {
+        "properties": {
+          "quiz_passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiz Passed"
+          },
+          "quiz_passed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiz Passed At"
+          },
+          "mentor_approved": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mentor Approved"
+          },
+          "mentor_approved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mentor Approved At"
+          },
+          "is_verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Verified"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "trial_pickups_completed": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2147483647.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trial Pickups Completed"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "joined_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Joined At"
+          },
+          "pickups_completed": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2147483647.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickups Completed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "UserUpdateRequest",
+        "description": "Editable sandbox user state; identity and team membership are immutable."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VerificationState": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "quiz_pending",
+              "trial_pending",
+              "approval_pending",
+              "verified"
+            ],
+            "title": "Status",
+            "example": "trial_pending"
+          },
+          "is_verified": {
+            "type": "boolean",
+            "title": "Is Verified",
+            "example": false
+          },
+          "quiz_passed": {
+            "type": "boolean",
+            "title": "Quiz Passed",
+            "description": "Onlinetest bestanden"
+          },
+          "quiz_passed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiz Passed At"
+          },
+          "trial_pickups_completed": {
+            "type": "integer",
+            "title": "Trial Pickups Completed",
+            "description": "Probeabholungen completed",
+            "example": 1
+          },
+          "trial_pickups_required": {
+            "type": "integer",
+            "title": "Trial Pickups Required",
+            "example": 3
+          },
+          "mentor_approved": {
+            "type": "boolean",
+            "title": "Mentor Approved",
+            "description": "Ok vom Verantwortlichen erhalten"
+          },
+          "mentor_approved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mentor Approved At"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "may_pick_up": {
+            "type": "boolean",
+            "title": "May Pick Up",
+            "description": "May collect baskets and Fairteiler food; true for all authenticated team users"
+          },
+          "may_pick_up_from_business": {
+            "type": "boolean",
+            "title": "May Pick Up From Business",
+            "description": "May rescue food from businesses; requires is_verified"
+          },
+          "may_earn_rewards": {
+            "type": "boolean",
+            "title": "May Earn Rewards",
+            "description": "Legacy flag equal to is_verified; no rewards are calculated or granted."
+          },
+          "next_step": {
+            "type": "string",
+            "title": "Next Step",
+            "example": "Get the Ok vom Verantwortlichen: POST /users/me/approve"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "is_verified",
+          "quiz_passed",
+          "trial_pickups_completed",
+          "trial_pickups_required",
+          "mentor_approved",
+          "may_pick_up",
+          "may_pick_up_from_business",
+          "may_earn_rewards",
+          "next_step"
+        ],
+        "title": "VerificationState"
+      },
+      "VerificationUpdateRequest": {
+        "properties": {
+          "quiz_passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiz Passed"
+          },
+          "quiz_passed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiz Passed At"
+          },
+          "mentor_approved": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mentor Approved"
+          },
+          "mentor_approved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mentor Approved At"
+          },
+          "is_verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Verified"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "trial_pickups_completed": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2147483647.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trial Pickups Completed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "VerificationUpdateRequest",
+        "description": "Editable verification progress, without changing actual pickup events.\n\nCounter edits do not create/delete pickup events. Explicit is_verified wins over\nautomatic derivation for this PATCH. Later PATCHes supplying quiz, approval or\ntrial counter inputs recalculate it, even if those values are unchanged."
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "description": "Your team's API key",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

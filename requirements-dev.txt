@@ -1,0 +1,4 @@
+# App/kernel use only Python standard library plus timezone data on Windows.
+tzdata>=2025.2
+# Only tools/inspect_sources.py requires pypdf.
+pypdf>=5

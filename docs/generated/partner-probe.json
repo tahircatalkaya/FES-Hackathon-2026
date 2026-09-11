@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-09-11T19:38:46.543543+00:00",
+  "writes": false,
+  "checks": {
+    "openapi": {
+      "ok": true,
+      "version": "2.4.0"
+    },
+    "fairteiler": {
+      "ok": true,
+      "count": 28
+    },
+    "users": {
+      "ok": true,
+      "users": [
+        {
+          "id": 21,
+          "team_id": 1,
+          "is_default": true,
+          "selected_correctly": true,
+          "is_verified": false,
+          "may_earn_rewards": false,
+          "trial_pickups_required": 3,
+          "history_sample_count": 1
+        },
+        {
+          "id": 31,
+          "team_id": 1,
+          "is_default": false,
+          "selected_correctly": true,
+          "is_verified": false,
+          "may_earn_rewards": false,
+          "trial_pickups_required": 3,
+          "history_sample_count": 0
+        }
+      ]
+    },
+    "vytal_public_stores": {
+      "ok": true,
+      "count": 20
+    }
+  }
+}

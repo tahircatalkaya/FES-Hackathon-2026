@@ -1,0 +1,242 @@
+[
+  {
+    "id": "str_f2nmswwldr6imkqsjavl",
+    "name": "HELIUM",
+    "lonlat": {
+      "latitude": 50.11244058609009,
+      "longitude": 8.679993152618408
+    },
+    "store": {
+      "type": "NATIONAL_CHAIN",
+      "location_name": "Bleidenstraße 7"
+    }
+  },
+  {
+    "id": "str_hc25wibbyoepwarmxan9",
+    "name": "Der Thai - Kaiserstraße",
+    "lonlat": {
+      "latitude": 50.10913610458374,
+      "longitude": 8.670594692230225
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Kaiserstraße 38"
+    }
+  },
+  {
+    "id": "str_yb0izipsizoqu20p8fs3",
+    "name": "BackWerk Frankfurt Zeil",
+    "lonlat": {
+      "latitude": 50.11462926864624,
+      "longitude": 8.68844747543335
+    },
+    "store": {
+      "type": "NATIONAL_CHAIN",
+      "location_name": "Zeil 45"
+    }
+  },
+  {
+    "id": "str_x98nznc0ak01katu6ugc",
+    "name": "JAMY’S Burger - Römer",
+    "lonlat": {
+      "latitude": 50.11132478713989,
+      "longitude": 8.681881427764893
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Neue Kräme 14-16"
+    }
+  },
+  {
+    "id": "str_aavi304fx1mppdq0vs4d",
+    "name": "Stadtwerke Frankfurt am Main",
+    "lonlat": {
+      "latitude": 50.11085271835327,
+      "longitude": 8.688747882843018
+    },
+    "store": {
+      "type": "SELF_OPERATED_CANTEEN",
+      "location_name": "Kurt-Schumacher-Straße 8"
+    }
+  },
+  {
+    "id": "str_s266js8to3b1dyoj860d",
+    "name": "Häagen-Dazs Liebfrauenberg",
+    "lonlat": {
+      "latitude": 50.11248350143433,
+      "longitude": 8.681581020355225
+    },
+    "store": {
+      "type": "NATIONAL_CHAIN",
+      "location_name": "Liebfrauenberg 39"
+    }
+  },
+  {
+    "id": "str_th9g0hqm7msjwh21ajys",
+    "name": "Cafe & Bar Celona Frankfurt",
+    "lonlat": {
+      "latitude": 50.11282682418823,
+      "longitude": 8.679993152618408
+    },
+    "store": {
+      "type": "NATIONAL_CHAIN",
+      "location_name": "Holzgraben 31"
+    }
+  },
+  {
+    "id": "str_grl56eidshhle2aiiylx",
+    "name": "nullsechsneun",
+    "lonlat": {
+      "latitude": 50.11274099349976,
+      "longitude": 8.683125972747803
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Hasengasse 5-7"
+    }
+  },
+  {
+    "id": "str_4p8v7swqp7n4pv0w4frh",
+    "name": "JAMY'S Burger - Frankfurt Ostend",
+    "lonlat": {
+      "latitude": 50.10947942733765,
+      "longitude": 8.694584369659424
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Oskar-von-Miller-Straße 1"
+    }
+  },
+  {
+    "id": "str_yurfck51kotv37w4est8",
+    "name": "Else Kalbskopp",
+    "lonlat": {
+      "latitude": 50.11274099349976,
+      "longitude": 8.683083057403564
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Hasengasse 5-7"
+    }
+  },
+  {
+    "id": "str_1atdinfalas11hbh2jwa",
+    "name": "BABBA Baguette",
+    "lonlat": {
+      "latitude": 50.11359930038452,
+      "longitude": 8.679134845733643
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Hauptwache 6"
+    }
+  },
+  {
+    "id": "str_zx857fkmb7s6x4ktob49",
+    "name": "Der Fette Bulle - Oeder Weg",
+    "lonlat": {
+      "latitude": 50.11827707290649,
+      "longitude": 8.67995023727417
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Oeder Weg 2-4"
+    }
+  },
+  {
+    "id": "str_j2duzwbdv1ade1aj9m86",
+    "name": "Cafe Extrablatt Frankfurt Eschenheimer Tor",
+    "lonlat": {
+      "latitude": 50.11621713638306,
+      "longitude": 8.682911396026611
+    },
+    "store": {
+      "type": "NATIONAL_CHAIN",
+      "location_name": "Große Eschenheimer Str. 45"
+    }
+  },
+  {
+    "id": "str_jumgdx96dncugt5mudtw",
+    "name": "BackWerk Frankfurt Zeil Mitte",
+    "lonlat": {
+      "latitude": 50.11420011520386,
+      "longitude": 8.68269681930542
+    },
+    "store": {
+      "type": "NATIONAL_CHAIN",
+      "location_name": "Zeil 85-93"
+    }
+  },
+  {
+    "id": "str_nntjskmht6ckcx18tsfb",
+    "name": "Die KostBar",
+    "lonlat": {
+      "latitude": 50.10484457015991,
+      "longitude": 8.688876628875732
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Wallstraße 7"
+    }
+  },
+  {
+    "id": "str_i491qb5frpicxkm4v532",
+    "name": "Brunch and Bar - Hasengasse",
+    "lonlat": {
+      "latitude": 50.11274099349976,
+      "longitude": 8.683083057403564
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Hasengasse 5 - 7"
+    }
+  },
+  {
+    "id": "str_abkz4e5wmmtnpkk0knt6",
+    "name": "Pret A Manger Frankfurt Fressgass",
+    "lonlat": {
+      "latitude": 50.11484384536743,
+      "longitude": 8.674113750457764
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Große Bockenheimer Straße 46"
+    }
+  },
+  {
+    "id": "str_cwkumuis4i3ss501a2ei",
+    "name": "KFC Frankfurt - Hauptwache",
+    "lonlat": {
+      "latitude": 50.11286973953247,
+      "longitude": 8.678834438323975
+    },
+    "store": {
+      "type": "INTERNATIONAL_CHAIN",
+      "location_name": "Hauptwache B-Ebene 1"
+    }
+  },
+  {
+    "id": "str_hoyl6mjondfh9kcvhykk",
+    "name": "Barry's Frankfurt",
+    "lonlat": {
+      "latitude": 50.11583089828491,
+      "longitude": 8.672869205474854
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Opernplatz 14"
+    }
+  },
+  {
+    "id": "str_h69awz2lh7vouln3masl",
+    "name": "Café Karin",
+    "lonlat": {
+      "latitude": 50.11145353317261,
+      "longitude": 8.678061962127686
+    },
+    "store": {
+      "type": "RESTAURANT",
+      "location_name": "Großer Hirschgraben 28"
+    }
+  }
+]

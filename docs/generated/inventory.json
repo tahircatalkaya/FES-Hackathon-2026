@@ -1,0 +1,122 @@
+[
+  {
+    "path": ".DS_Store",
+    "bytes": 8196,
+    "sha256": "04fbda1444d44df56bd9b190a2cff84568294f2639f0c1985edc3c1124208def"
+  },
+  {
+    "path": "2026_09_08_Vorstellung_Eröffnung_V2.pptx",
+    "bytes": 10341084,
+    "sha256": "b7a7fe30dd94fa9cc540ddf86a55c96d21aec3c4b4a64592be37958552c1b605"
+  },
+  {
+    "path": "Foodsharing API/API-GUIDE.md",
+    "bytes": 14828,
+    "sha256": "ec059d8587b33f863b64bdc834a306f53c435c836a74ab7555cde64b16e267ce"
+  },
+  {
+    "path": "Foodsharing API/DATABASE.md",
+    "bytes": 7053,
+    "sha256": "57127c69186f9cc0dcc29492c47091e57372f4e9b334e58d8fe8fe15e7375ca3"
+  },
+  {
+    "path": "Foodsharing API/KEYS.txt",
+    "bytes": 91,
+    "sha256": null
+  },
+  {
+    "path": "Foodsharing API/SCHEMA.md",
+    "bytes": 11063,
+    "sha256": "08f98f3c7325ad59dda2a3d304e8fc7533b51f44f5c7a8d29ff8d3ab409eca33"
+  },
+  {
+    "path": "Foodsharing API/TEAM-USERS.md",
+    "bytes": 7152,
+    "sha256": "d387e64ecd143f82ac9501db004adf2e5a229a24f51181a2103a93cca6c3a45e"
+  },
+  {
+    "path": "Gesamtaufgabe.pdf",
+    "bytes": 1642580,
+    "sha256": "9f230573515606a61dc0758029d33d2ae2d8703f8d7934242874337bdcd2b3f1"
+  },
+  {
+    "path": "GPT-6_ASTRA_HACKATHON_MASTERPROMPT.md",
+    "bytes": 88360,
+    "sha256": "e0036028abb499bf180a7676387105b92aaa6f715d54a95e78ae14cbcb52a6a8"
+  },
+  {
+    "path": "GPT-6_ASTRA_HACKATHON_MASTERPROMPT.txt",
+    "bytes": 87767,
+    "sha256": "0cdc1cd06ca184a6059ffb285ada06d7007e3b84ab0fe4f26b34d0991fa9e4a0"
+  },
+  {
+    "path": "GPT-6_ASTRA_QUELLEN_UND_ABDECKUNG.md",
+    "bytes": 13239,
+    "sha256": "439784a68de8f8e3ae756c6215363f449459e84df65b0c918100036c95a0a20f"
+  },
+  {
+    "path": "Mobilitätsdaten/.DS_Store",
+    "bytes": 8196,
+    "sha256": "7b6df07973412760b31e6e337c01297f4d74b4b976b35e4af11d03bddd2f5022"
+  },
+  {
+    "path": "Mobilitätsdaten/BeispielAFZ.csv",
+    "bytes": 162539,
+    "sha256": "66478a1a223ae32b79e7dfd63cb2cfd3273253358d97f5e6b9518d4ddc36c10e"
+  },
+  {
+    "path": "Mobilitätsdaten/BeispielDataSetEFA.csv",
+    "bytes": 11425,
+    "sha256": "f60e851fc58fb7b15f9f449bf20f850dd1f84185c3a0eb1bd5eb135ed2ea9dfa"
+  },
+  {
+    "path": "Mobilitätsdaten/docs/AFZ_HERKUNFT.json",
+    "bytes": 1898,
+    "sha256": "5a02dbe7567a6933bf3ddc5f82053c709bde95246c5f3204c2f05d441fefe3e2"
+  },
+  {
+    "path": "Mobilitätsdaten/docs/BeispielDataSetEFA_original.csv",
+    "bytes": 11425,
+    "sha256": "f60e851fc58fb7b15f9f449bf20f850dd1f84185c3a0eb1bd5eb135ed2ea9dfa"
+  },
+  {
+    "path": "Mobilitätsdaten/docs/DATENKATALOG.md",
+    "bytes": 21910,
+    "sha256": "09746634ec4a8a96a5962a9ee742e08271702f9082581fc13ab91dbc6813357f"
+  },
+  {
+    "path": "Mobilitätsdaten/docs/EFA_HERKUNFT.json",
+    "bytes": 8488,
+    "sha256": "d4db20d2f2a7443f7c71eaf06c6446e224d61b33df45d120806ca54490bdac60"
+  },
+  {
+    "path": "Mobilitätsdaten/e-scooter-beispiel.csv",
+    "bytes": 778191,
+    "sha256": "8613797fed6014c4e34285f5d18456fd515200987c311b37f0e1f5eea8a5f4bd"
+  },
+  {
+    "path": "Mobilitätsdaten/GTFS_gefiltert_Frankfurt+30km.7z",
+    "bytes": 7636848,
+    "sha256": "f10b2160561f7c0f650856ee0ac9d040ae0cadcfe1c074c0ba07d0f39851a7d9"
+  },
+  {
+    "path": "Mobilitätsdaten/haltestellen_avg.csv",
+    "bytes": 172150,
+    "sha256": "38c30ec76a7707ac994665f8832ba02812b7c751f3aa578de79571e077de7b7a"
+  },
+  {
+    "path": "Mobilitätsdaten/tagesgang_avg.csv",
+    "bytes": 305,
+    "sha256": "b189662f839df783e2d612c438c8965b55645a047ca0f87a177844e5fa1b2322"
+  },
+  {
+    "path": "README.md",
+    "bytes": 6330,
+    "sha256": "77d0aae64df02024c5754894f13787311b5fe5f3752ea09259579b3c81507106"
+  },
+  {
+    "path": "tools/inspect_sources.py",
+    "bytes": 3623,
+    "sha256": "c9062d8d3cd7e2c04b944b591e9996fbe9c91444f0259e0654f27e9ce8faf7ea"
+  }
+]

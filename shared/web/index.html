@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#102b54" />
+    <title>MainWandel · Frankfurt Impact</title>
+    <meta
+      name="description"
+      content="Lokale Integrationsdemo für die Frankfurt Impact Challenge"
+    />
+    <link rel="icon" href="/chameleon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#content">Zum Inhalt / Skip to content</a>
+    <div class="shell">
+      <header>
+        <a class="brand" href="/" aria-label="MainWandel"
+          ><span class="brandchami" role="img" aria-label="Chami"></span
+          >mainwandel<span class="beta">DEMO</span></a
+        >
+        <div class="tools">
+          <button id="language" aria-label="Switch language">EN</button
+          ><button id="profile" aria-label="Profil und Punkte">◎</button>
+        </div>
+      </header>
+      <main id="content" tabindex="-1"></main>
+      <nav id="navigation" aria-label="Hauptnavigation"></nav>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <dialog id="account">
+      <div id="account-content"></div>
+      <form method="dialog"><button id="close-dialog">Schließen</button></form>
+    </dialog>
+  </body>
+</html>

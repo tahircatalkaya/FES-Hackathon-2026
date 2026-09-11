@@ -1,0 +1,400 @@
+## Seite 1
+HAUPTAUFGABE 
+Frankfurt Impact Challenge  
+Übergreifende Hackathon-Aufgabe: nachhaltige Angebote entdecken, Aktionen plausibel 
+nachweisen, fair belohnen und Wirkung sichtbar machen. 
+Zielbild 
+Eine gemeinsame Plattform-Journey 
+Output 
+Mobile-first Prototyp 
+Prinzip 
+Datenbasiert, fair, 
+datenschutzfreundlich 
+ 
+Ausgangslage 
+Frankfurt verfügt über viele konkrete Möglichkeiten für nachhaltiges Handeln: klimafreundliche Mobilität, 
+Mehrweg, Lebensmittelrettung und Engagement für Stadtsauberkeit. Für Bürger:innen sind diese 
+Möglichkeiten jedoch oft verteilt, wenig sichtbar oder ihr persönlicher Beitrag bleibt abstrakt. 
+Die Herausforderung besteht darin, aus unterschiedlichen Datenquellen und freiwilligen Aktionen ein 
+motivierendes, glaubwürdiges und gemeinschaftliches Nutzererlebnis zu entwickeln. Die einzelnen 
+Partneraufgaben werden dabei als Bausteine verstanden, die in einer gemeinsamen Journey kombiniert 
+oder einzeln prototypisch umgesetzt werden können. 
+Eure übergreifende Aufgabe 
+Entwickelt einen mobile-first Prototypen für eine Frankfurt-weite Impact-Journey. Nutzer:innen sollen 
+nachhaltige Möglichkeiten in ihrer Nähe entdecken, eine Aktion bewusst auslösen oder nachvollziehbar 
+bestätigen, ihren persönlichen Beitrag verstehen und durch faire Belohnungs- oder Community-Mechaniken 
+zu wiederholtem Engagement motiviert werden. 
+Bausteine, die eingebaut werden können 
+Baustein Partner Kernbeitrag im Gesamtsystem 
+ÖPNV-Fahrt erkennen Transdev 
+Freiwillig gestartete ÖPNV-Fahrt 
+plausibel erkennen und als 
+Mobilitätsbeitrag ausgeben. 
+Mehrweg-Rückgabe bestätigen Vytal 
+Ausleihe und Rückgabe 
+verknüpfen, bestätigte Rückgabe 
+genau einmal belohnen. 
+Stadtsauberkeit aktivieren FES 
+Bürger:innen motivieren, 
+Meldungen, Clean-ups oder 
+Aufklärung für Stadtsauberkeit 
+umzusetzen. 
+Foodsharing erleichtern Frankfurt Foodsharing 
+Fairteiler finden, Rettungsaktion 
+nachvollziehbar begleiten und 
+Fehlanreize vermeiden. 
+Mobilitätsdaten sichtbar 
+machen traffiq 
+Aggregierte Mobilitätsdaten in 
+Impact- und 
+Gemeinschaftserlebnisse 
+übersetzen. 
+
+## Seite 2
+ 
+Gemeinsame Mindestanforderungen 
+• Mobile-first Journey mit klarer Kernaktion und kurzer, verständlicher Nutzerführung. 
+• Freiwilligkeit und Transparenz bei sensiblen Daten, insbesondere Standort- oder Nutzungsdaten. 
+• Klare Unterscheidung zwischen bestätigten Daten, Nutzereingaben und geschätzten Wirkungswerten. 
+• Faire Reward-Mechanik: Belohnungen fördern hilfreiches, regelmäßiges Verhalten statt Menge, 
+Hamstern oder Konkurrenz. 
+• Nachvollziehbare Begründung: Nutzer:innen sehen, warum ein Nachweis akzeptiert wurde und wie 
+Punkte, Badges oder Impact zustande kommen. 
+• Gemeinschaftsperspektive: Der individuelle Beitrag wird mit einem gemeinsamen Frankfurter Ziel 
+verbunden. 
+Vorgeschlagene gemeinsame User Journey 
+1. Entdecken: Nutzer:innen wählen ein Thema oder sehen nachhaltige Möglichkeiten in einem Suchgebiet. 
+2. Auswählen: Ein konkretes Angebot, ein Ort oder eine Aktion wird ausgewählt. 
+3. Bewusst starten oder bestätigen: Die Aktion wird freiwillig gestartet, über eine Schnittstelle bestätigt oder 
+plausibel nachvollzogen. 
+4. Prüfen: Der Prototyp bewertet den Nachweis anhand der verfügbaren Daten und zeigt Status sowie 
+Begründung. 
+5. Wirkung anzeigen: Persönlicher und gemeinsamer Impact werden verständlich dargestellt. 
+6. Motivieren: Punkte, Badges, Challenges, Streaks oder Teamziele regen zu wiederholtem Engagement 
+an. 
+Bewertungskriterien 
+• Nutzerwert und Verständlichkeit der Journey 
+• Qualität der Datenintegration und Plausibilität des Nachweises 
+• Fairness, Datenschutz und Schutz vor Fehlanreizen 
+• Nachvollziehbarkeit der Impact- und Reward-Logik 
+• Qualität des klickbaren oder lauffähigen Prototyps 
+Leitfrage 
+Wie können wir unterschiedliche städtische Nachhaltigkeitsangebote so verbinden, dass Bürger:innen konkrete 
+Aktionen einfach finden, glaubwürdig nachweisen und als persönlichen sowie gemeinsamen Beitrag für 
+Frankfurt erleben können? 
+ 
+ 
+ 
+
+## Seite 3
+AUFGABENBAUSTEIN 
+Baustein: Ride2Impact  
+ÖPNV-Fahrt plausibel erkennen und in die gemeinsame Impact-Journey integrieren. 
+Partner 
+Transdev 
+Modul 
+ÖPNV-Fahrt erkennen 
+Rolle 
+Baustein der Hauptaufgabe 
+ 
+Kurzbeschreibung 
+Dieser Baustein konzentriert sich auf die nachvollziehbare Erkennung einer bewusst gestarteten ÖPNV-
+Fahrt. Er liefert einen Mobilitätsnachweis für die übergreifende Frankfurt Impact Challenge. 
+Eure Aufgabe 
+Entwickelt einen mobile-first Flow, der eine bewusst gestartete Fahrt mit bereitgestellten Haltestellen-, 
+Fahrplan-, Linien- und Abfahrtsdaten abgleicht und ein verständliches Ergebnis für die gemeinsame 
+Reward- und Impact-Logik bereitstellt. 
+Kernfunktionen dieses Bausteins 
+• nahe Haltestellen oder Bahnhöfe identifizieren 
+• aktuelle Abfahrten abrufen und anzeigen 
+• Tracking erst nach bewusster Aktion starten 
+• GPS-Spur mit Linienwegen, Haltestellenfolgen und Zeiten abgleichen 
+• wahrscheinlich genutzte Fahrt inklusive Konfidenz darstellen 
+Gekürzte User Journey 
+1. Station wählen oder korrigieren 
+2. aktuelle Abfahrten ansehen 
+3. Tracking bewusst starten 
+4. Fahrt aufzeichnen 
+5. Fahrt erkennen und Ergebnis prüfen 
+Bereitgestellte Daten für diesen Baustein 
+• GTFS_Frankfurt+30km 
+• synthetische oder historische GPS-Testspuren mit Ground Truth 
+Definition of Done 
+• mindestens eine plausible Fahrt wird erkannt 
+• Konfidenz und Begründung sind sichtbar 
+• fehlende DB-Zuordnungen werden sauber behandelt 
+
+## Seite 4
+• Ergebnis kann an die zentrale Impact-/Reward-Logik übergeben werden 
+ 
+ 
+
+## Seite 5
+AUFGABENBAUSTEIN 
+Baustein: Smart Mehrweg Reward 
+Mehrweg-Ausleihe und Rückgabe nachvollziehen und bestätigte Rückgaben fair belohnen. 
+Partner 
+Vytal 
+Modul 
+Mehrweg-Zyklus bestätigen 
+Rolle 
+Baustein der Hauptaufgabe 
+ 
+Kurzbeschreibung 
+Dieser Baustein macht eine konkrete Mehrweg-Rückgabe als bestätigtes Ereignis nutzbar. Er liefert einen 
+belastbaren Nachweis für nachhaltiges Verhalten im Alltag. 
+Eure Aufgabe 
+Entwickelt einen mobile-first Flow, der Vytal-Partner sichtbar macht, aktiven Behälterstatus übernimmt, 
+Rückgaben eindeutig zuordnet und bestätigte Rückgaben genau einmal an die zentrale Reward-Logik 
+meldet. 
+Kernfunktionen dieses Bausteins 
+ Vytal-Partner auf einer Karte anzeigen 
+ Ausleihe und aktiven Behälterstatus darstellen 
+ Ausleih-, Rückgabe- und Statusdaten verarbeiten 
+ Doppelbelohnungen verhindern 
+Gekürzte User Journey 
+1. Partner entdecken 
+2. Ausleihe erfassen 
+3. Nutzung begleiten 
+4. Rückgabe prüfen 
+5. bestätigte Rückgabe an Reward-Logik übergeben 
+Bereitgestellte Daten für diesen Baustein 
+ Vytal-Testdaten oder Sandbox 
+ Ausleihe, Rückgabe, Behälter-ID, Partner/Standort und Status 
+ optional Ereignis-ID, Transaktions-ID, Partner-ID, Zeitstempel und Nutzerbezug 
+ Testbehälter und Demo-Setup vor Ort 
+Definition of Done 
+ ein Ausleih-Ereignis wird übernommen 
+ eine passende Rückgabe wird erkannt 
+
+## Seite 6
+ jede bestätigte Rückgabe wird höchstens einmal belohnt 
+ Nachweisstatus und Begründung sind verständlich 
+ 
+
+## Seite 7
+AUFGABENBAUSTEIN 
+Baustein: Gemeinsam für ein sauberes Frankfurt 
+Bürger:innen aktivieren, Verantwortung für Stadtsauberkeit zu übernehmen. 
+Partner 
+FES 
+Modul 
+Stadtsauberkeit und Engagement 
+Rolle 
+Baustein der Hauptaufgabe 
+ 
+Kurzbeschreibung 
+Dieser Baustein fokussiert auf aktive Beteiligung für Stadtsauberkeit: organisieren, aufklären, vermeiden 
+oder gemeinsam handeln. 
+Eure Aufgabe 
+Entwickelt einen kreativen digitalen Service, der Bürger:innen unterstützt oder motiviert, einen konkreten 
+Beitrag zu einer sauberen Stadt zu leisten. Der Baustein soll in die zentrale Frankfurt Impact Challenge 
+eingebunden werden. 
+Kernfunktionen dieses Bausteins 
+ Clean-up-Aktionen organisieren oder koordinieren 
+ freiwilliges Engagement motivieren 
+ Müllvermeidung und richtige Entsorgung verständlich machen 
+ Aufklärung, Gamification oder KI Unterstützung einsetzen 
+Gekürzte User Journey 
+1. Nutzer:in erkennt eine Möglichkeit zum Engagement 
+2. Aktion auswählen oder starten 
+3. Beitrag dokumentieren oder koordinieren 
+4. Rückmeldung, Motivation oder Folgeaktion erhalten 
+Bereitgestellte Daten für diesen Baustein 
+ keine verbindlichen Datensätze im bereitgestellten Dokument genannt 
+ mögliche eigene oder simulierte Daten für Meldungen, Clean-ups, Papierkörbe oder Lerninhalte 
+ optionale KI- oder Community-Funktionen als Konzeptbestandteil 
+Definition of Done 
+ konkreter Nutzen für Bürger:innen ist erkennbar 
+ Lösung geht über eine klassische Meldeplattform hinaus 
+ Beitrag zu sauberer und lebenswerter Stadt ist nachvollziehbar 
+ Prototyp oder Konzept ist demonstrierbar 
+
+## Seite 8
+AUFGABENBAUSTEIN 
+Baustein: Save2Share 
+foodsharing-Angebote finden, Rettungen plausibel begleiten und Fehlanreize vermeiden. 
+Partner 
+Frankfurt foodsharing 
+Modul 
+Lebensmittelrettung 
+Rolle 
+Baustein der Hauptaufgabe 
+ 
+Kurzbeschreibung 
+Dieser Baustein macht lokale foodsharing-Angebote auffindbar und unterstützt einen fairen, 
+datenschutzfreundlichen Prozess rund um Lebensmittelrettung. 
+Eure Aufgabe 
+Entwickelt einen mobile-first Flow, der Fairteiler oder Angebote aus der bereitgestellten API sichtbar macht, 
+relevante Informationen verständlich darstellt und eine Rettungsaktion so begleitet, dass sie plausibel, fair 
+und ohne Fehlanreize in die gemeinsame Impact-Journey einfließen kann. 
+Kernfunktionen dieses Bausteins 
+• Fairteiler-Orte in einem Suchgebiet identifizieren 
+• API-Informationen verständlich darstellen 
+• Rettungsaktion freiwillig und nachvollziehbar bestätigen 
+• direkte Daten, Nutzereingaben und Schätzwerte trennen 
+• Belohnung nach Verifikationsgrad und gesellschaftlichem Nutzen gewichten 
+Gekürzte User Journey 
+1. Suchgebiet bestimmen 
+2. API-Daten abrufen 
+3. Daten für Nutzer:innen aufbereiten 
+4. Gelegenheiten nachvollziehbar priorisieren 
+5. Rettung fair bewerten 
+Bereitgestellte Daten für diesen Baustein 
+• foodsharing-Hackathon-API und OpenAPI-Dokumentation 
+• Endpunkte, Parameter, Antwortmodelle und Statuscodes 
+• Orts- und Standortdaten, soweit in der API vorhanden 
+• eigene Faktoren für Impact und Spielregeln mit klarer Kennzeichnung 
+Definition of Done 
+• mindestens ein fachlich relevanter API-Endpunkt wird genutzt 
+• Kernaktion ist mobile-first durchführbar 
+
+## Seite 9
+• direkte Daten und Schätzwerte sind getrennt 
+• Gamification fördert Wertschätzung und Gemeinschaft statt Hamstern oder Konkurrenz 
+
+## Seite 10
+AUFGABENBAUSTEIN 
+Baustein: Mobilitätsimpact sichtbar machen  
+Aggregierte traffiQ-Daten als gemeinschaftliches Nachhaltigkeitserlebnis darstellen. 
+Partner 
+traffiQ 
+Modul 
+Mobilitätsdaten und 
+Gemeinschaftsgefühl 
+Rolle 
+Baustein der Hauptaufgabe 
+ 
+Kurzbeschreibung 
+Dieser Baustein nutzt bereitgestellte Mobilitätsdaten, um öffentlichen und geteilten Mobilitätsnutzen 
+verständlich und gemeinschaftlich erfahrbar zu machen. 
+Eure Aufgabe 
+Entwickelt einen mobile-first Flow, der traffiQ-Daten verständlich darstellt, daraus nachvollziehbare Impact-
+Aussagen ableitet und Nutzer:innen zeigt, dass sie Teil eines größeren gemeinsamen Beitrags sind. 
+Kernfunktionen dieses Bausteins 
+• bereitgestellte traffiQ-Daten darstellen 
+• lokale oder zeitliche Mobilitätsnutzung sichtbar machen 
+• Impact aus aggregierten Daten ableiten 
+• persönliche und gemeinschaftliche Perspektive verbinden 
+Gekürzte User Journey 
+1. App öffnen 
+2. Standort, Haltestelle oder Gebiet wählen 
+3. relevante Mobilitätsdaten sehen 
+4. Tages-, Wochen- oder Monatsimpact für Frankfurt betrachten 
+5. Gemeinschaftsbeitrag verstehen 
+Bereitgestellte Daten für diesen Baustein 
+• Ein- und Ausstiegszahlen pro Haltestelle 
+• Nutzungszahlen je E-Scooter-Standort oder Gebiet 
+• Nutzungszahlen für Knut/Ridesharing 
+• Forecast zur Streckenauslastung beziehungsweise Verbindungssuche 
+Definition of Done 
+• Schnittstellen oder Datensätze werden ausgewertet 
+• Impact-Aussagen sind nachvollziehbar 
+
+## Seite 11
+• Nutzer:innen verstehen ihren Beitrag als Teil eines Ganzen 
+
+## Seite 12
+DATENHANDOUT 
+Bereitgestellte Daten und Komponenten  
+Konsolidierte Datenbasis für die Frankfurt Impact Challenge und alle Aufgabenbausteine. 
+Zweck 
+Datenübersicht 
+Umfang 
+Alle bereitgestellten Aufgaben 
+Nutzung 
+Grundlage für Prototypen 
+ 
+Grundsatz zur Datenverwendung 
+• Daten aus Schnittstellen, Nutzereingaben und abgeleitete Schätzwerte müssen in der Anwendung klar 
+unterschieden werden. 
+• Produktive Integrationen sind nur dort relevant, wo sie ausdrücklich vorgesehen sind; für den Hackathon 
+reichen Sandbox-, Mock-, Test- oder simulierte Daten. 
+• Impact-Faktoren und Spielregeln, die nicht aus einer Schnittstelle stammen, müssen als Annahmen 
+dokumentiert werden. 
+Daten je Baustein 
+Baustein Daten/Komponenten Zweck im Prototyp Besonderheiten 
+Transdev 
+DB-Timetables; 
+ZHV/GTFS; ID-Mapping; 
+GPS-Testspuren 
+Fahrtkandidaten 
+eingrenzen, GPS-Spur 
+abgleichen, Konfidenz 
+bilden 
+fehlende DB-EVA-
+Zuordnungen 
+berücksichtigen 
+Vytal 
+Sandbox/Testdaten; 
+Ausleihe; Rückgabe; 
+Behälter-ID; 
+Partner/Standort; 
+Status; Testbehälter 
+Ausleihe und Rückgabe 
+verknüpfen, bestätigte 
+Rückgabe genau einmal 
+belohnen 
+Ereignis- oder 
+Transaktions-ID optional 
+nutzbar 
+FES 
+Keine verbindlichen 
+Daten genannt; 
+mögliche simulierte 
+Meldungen, Clean-ups 
+oder Lerninhalte 
+Engagement für 
+Stadtsauberkeit 
+prototypisch abbilden 
+Fokus auf Konzept, 
+Motivation und Nutzen 
+Frankfurt Foodsharing 
+Hackathon-API; 
+OpenAPI-
+Dokumentation; 
+Endpunkte; Parameter; 
+Antwortmodelle; Orts-
+/Standortdaten; eigene 
+Faktoren 
+Fairteiler finden, Daten 
+darstellen, Rettung fair 
+und nachvollziehbar 
+begleiten 
+nur dokumentierte API-
+Felder voraussetzen 
+MainLastenrad 
+Mock-API; Standorte; 
+Fahrräder; 
+Verfügbarkeiten 
+Ausleihorte und freie 
+Termine sichtbar 
+machen 
+Angebotsdarstellung als 
+leichter 
+Einstiegsbaustein 
+traffiq 
+Ein-/Ausstiegszahlen; 
+Scooter-
+Nutzungszahlen; 
+Knut/Ridesharing-Daten; 
+Forecasts 
+aggregierte 
+Mobilitätsdaten und 
+Gemeinschaftsimpact 
+darstellen 
+Impact aus Daten 
+ableiten und 
+nachvollziehbar 
+kommunizieren 
+
+## Seite 13
+Gemeinsame Datenlogik 
+1. Datenquelle identifizieren: API, Sandbox, Mock-Daten, Testdaten oder Nutzereingabe. 
+2. Daten normalisieren: IDs, Zeitstempel, Koordinaten, Statuswerte und optionale Felder konsistent 
+aufbereiten. 
+3. Nachweisstatus bilden: bestätigt, plausibel, ausstehend, nicht zuordenbar oder geschätzt. 
+4. Impact und Rewards berechnen: nur auf Basis dokumentierter Daten oder klar ausgewiesener 
+Annahmen. 
+5. Ergebnis erklären: Status, Begründung, Unsicherheiten und verwendete Berechnungsregeln sichtbar 
+machen. 

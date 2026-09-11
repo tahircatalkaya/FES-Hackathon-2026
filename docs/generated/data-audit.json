@@ -1,0 +1,163 @@
+{
+  "Mobilitätsdaten/BeispielAFZ.csv": {
+    "rows": 1042,
+    "columns": 21,
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "headers": [
+      "Datum",
+      "Tag",
+      "Linie",
+      "Ri",
+      "AbZeit",
+      "FahrtAbHstName",
+      "AnZeit",
+      "FahrtAnHstName",
+      "PlaetzeIst",
+      "StehplaetzeIst",
+      "SitzplaetzeIst",
+      "AnZeit Soll",
+      "AbZeit Soll",
+      "AnZeit",
+      "AbZeit",
+      "HstName(Fpl)",
+      "Hst",
+      "Einsteiger",
+      "Aussteiger",
+      "Besetzung",
+      "Auslastung"
+    ],
+    "sha256": "66478a1a223ae32b79e7dfd63cb2cfd3273253358d97f5e6b9518d4ddc36c10e",
+    "row_widths": {
+      "21": 1042
+    },
+    "dates": {
+      "30.04.2024": 100,
+      "15.09.2025": 942
+    },
+    "lines": {
+      "U7": 100,
+      "U1": 132,
+      "U2": 138,
+      "U3": 180,
+      "U4": 102,
+      "U5": 96,
+      "U6": 84,
+      "U8": 126,
+      "U9": 84
+    },
+    "operational_marker_rows": 104
+  },
+  "Mobilitätsdaten/BeispielDataSetEFA.csv": {
+    "rows": 50,
+    "columns": 15,
+    "encoding": "utf-8-sig",
+    "delimiter": ";",
+    "headers": [
+      "request_timestamp",
+      "start_type",
+      "s_adress_name",
+      "s_hafas_id",
+      "s_longitude",
+      "s_latitude",
+      "ziel_type",
+      "z_adress_name",
+      "z_hafas_id",
+      "z_longitude",
+      "z_latitude",
+      "s_gem",
+      "z_gem",
+      "log_timestamp",
+      "diff_time"
+    ],
+    "sha256": "f60e851fc58fb7b15f9f449bf20f850dd1f84185c3a0eb1bd5eb135ed2ea9dfa",
+    "row_widths": {
+      "15": 50
+    }
+  },
+  "Mobilitätsdaten/docs/BeispielDataSetEFA_original.csv": {
+    "rows": 50,
+    "columns": 15,
+    "encoding": "utf-8-sig",
+    "delimiter": ";",
+    "headers": [
+      "request_timestamp",
+      "start_type",
+      "s_adress_name",
+      "s_hafas_id",
+      "s_longitude",
+      "s_latitude",
+      "ziel_type",
+      "z_adress_name",
+      "z_hafas_id",
+      "z_longitude",
+      "z_latitude",
+      "s_gem",
+      "z_gem",
+      "log_timestamp",
+      "diff_time"
+    ],
+    "sha256": "f60e851fc58fb7b15f9f449bf20f850dd1f84185c3a0eb1bd5eb135ed2ea9dfa",
+    "row_widths": {
+      "15": 50
+    }
+  },
+  "Mobilitätsdaten/e-scooter-beispiel.csv": {
+    "rows": 6740,
+    "columns": 9,
+    "encoding": "utf-8-sig",
+    "delimiter": ",",
+    "headers": [
+      "provider_name",
+      "end_date",
+      "start_hour",
+      "end_hour",
+      "vehicle_type",
+      "stop_name",
+      "radius",
+      "trips_starting",
+      "trips_ending"
+    ],
+    "sha256": "8613797fed6014c4e34285f5d18456fd515200987c311b37f0e1f5eea8a5f4bd",
+    "row_widths": {
+      "9": 6740
+    },
+    "providers": {
+      "nextbike": 20,
+      "synthetic_bikesharing": 3360,
+      "synthetic_e_scooter": 3360
+    }
+  },
+  "Mobilitätsdaten/haltestellen_avg.csv": {
+    "rows": 3093,
+    "columns": 4,
+    "encoding": "utf-8-sig",
+    "delimiter": ";",
+    "headers": [
+      "haltestelle",
+      "gps_x",
+      "gps_y",
+      "anfragen_durchschnittsmonat"
+    ],
+    "sha256": "38c30ec76a7707ac994665f8832ba02812b7c751f3aa578de79571e077de7b7a",
+    "row_widths": {
+      "4": 3093
+    },
+    "missing_coordinates": 79
+  },
+  "Mobilitätsdaten/tagesgang_avg.csv": {
+    "rows": 24,
+    "columns": 2,
+    "encoding": "utf-8-sig",
+    "delimiter": ";",
+    "headers": [
+      "stunde",
+      "anfragen_durchschnittstag"
+    ],
+    "sha256": "b189662f839df783e2d612c438c8965b55645a047ca0f87a177844e5fa1b2322",
+    "row_widths": {
+      "2": 24
+    },
+    "sum_requests": 567200.0
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "agency.txt": {
+    "rows": 1168,
+    "timezones": [
+      "Europe/Berlin"
+    ]
+  },
+  "calendar.txt": {
+    "rows": 3903,
+    "start": "20250712",
+    "end": "20251213"
+  },
+  "calendar_dates.txt": {
+    "rows": 470417
+  },
+  "routes.txt": {
+    "rows": 621
+  },
+  "shapes.txt": {
+    "rows": 170460
+  },
+  "stop_times.txt": {
+    "rows": 1918201
+  },
+  "stops.txt": {
+    "rows": 10437
+  },
+  "trips.txt": {
+    "rows": 100483,
+    "shape_id_dot_zero_rows": 100483
+  },
+  "relations": {
+    "missing_parent_ids": 515,
+    "unique_shapes": 5119,
+    "unmatched_normalized_trip_shapes": 0,
+    "max_service_day_seconds": 112740
+  }
+}
