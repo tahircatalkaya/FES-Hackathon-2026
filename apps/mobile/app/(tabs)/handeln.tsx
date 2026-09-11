@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Appear, Card, Ring, SectionTitle, T, Tag, haptic } from '@/components/ui';
+import { Appear, Card, Ring, Row, SectionTitle, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S, shadow } from '@/theme';
 import { useStore, weekStats, chameleonStage, balance } from '@/store';
 import { useUI } from '@/store/ui';
@@ -25,12 +25,15 @@ export default function Act() {
   const nextQuiz = CHAPTERS.find((c) => !quizDone.includes(c.id));
   const todayPts = ledger.filter((l) => new Date(l.at).toDateString() === new Date().toDateString()).reduce((a, l) => a + l.points, 0);
 
-  const actions = [
+  const usage: Record<string, number> = { mobility: 0, food: 0, reuse: 0, clean: 0 };
+  for (const l of ledger) { const k = l.type.startsWith('ride') ? 'mobility' : l.type.startsWith('food') ? 'food' : l.type.startsWith('reuse') ? 'reuse' : l.type.startsWith('clean') ? 'clean' : ''; if (k) usage[k]++; }
+  const actions = ([
     { key: 'mobility', title: t('act.ride'), sub: t('act.ride.sub'), emoji: '🚇', href: '/fahrt', partner: 'Transdev' },
     { key: 'food', title: t('act.food'), sub: t('act.food.sub'), emoji: '🥕', href: '/(tabs)?layer=food', partner: 'foodsharing' },
     { key: 'reuse', title: t('act.reuse'), sub: t('act.reuse.sub'), emoji: '🥡', href: '/mehrweg', partner: 'Vytal' },
     { key: 'clean', title: t('act.clean'), sub: t('act.clean.sub'), emoji: '🧹', href: '/cleanup/list', partner: 'FES' },
-  ] as const;
+  ] as const).slice().sort((a, b) => usage[b.key] - usage[a.key]);
+  const favorite = ledger.length >= 3 && usage[actions[0].key] > 0 ? actions[0].key : null;
 
   return (
     <Screen>
@@ -90,6 +93,17 @@ export default function Act() {
         </Appear>
       )}
 
+      <View style={{ flexDirection: 'row', gap: 10, marginTop: S.md }}>
+        {[{ e: '▣', l: 'Scannen', h: '/scan', c: C.ink }, { e: '📡', l: 'Fahrt', h: '/fahrt', c: C.mobility }, { e: '🗺️', l: 'Karte', h: '/(tabs)', c: C.food }].map((q, i) => (
+          <Appear key={q.l} delay={100 + i * 40} style={{ flex: 1 }}>
+            <Card onPress={() => router.push(q.h as any)} style={{ alignItems: 'center', paddingVertical: 14, backgroundColor: q.c }}>
+              <Text style={{ fontSize: 24 }}>{q.e}</Text>
+              <Text style={{ color: '#fff', fontWeight: '800', marginTop: 4 }}>{q.l}</Text>
+            </Card>
+          </Appear>
+        ))}
+      </View>
+
       <SectionTitle title="Kernaktionen" />
       <View style={{ gap: 12 }}>
         {actions.map((a, i) => (
@@ -99,7 +113,7 @@ export default function Act() {
               <View style={{ flex: 1 }}>
                 <Text style={T.h3}>{a.title}</Text>
                 <Text style={T.small}>{a.sub}</Text>
-                <Tag label={`mit ${a.partner}`} color={CONTEXT[a.key].color} />
+                <Row style={{ gap: 6 }}><Tag label={`mit ${a.partner}`} color={CONTEXT[a.key].color} />{favorite === a.key && <Tag label="dein Favorit" color={C.gold} />}</Row>
               </View>
               <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: CONTEXT[a.key].color, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontWeight: '900' }}>›</Text></View>
             </Card>
@@ -122,13 +136,13 @@ export default function Act() {
         <Appear delay={480}>
           <Card onPress={() => router.push('/melden')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 26 }}>📸</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Volle Tonne oder wilde Kippe melden</Text><Text style={T.small}>Wird zu einem FES-Ticket. 25 Punkte, wenn es bearbeitet wird.</Text></View>
+            <View style={{ flex: 1 }}><Text style={T.h3}>Volle Tonne oder wilde Kippe melden</Text><Text style={T.small}>Foto, Ort, fertig. 25 Punkte.</Text></View>
           </Card>
         </Appear>
         <Appear delay={540}>
           <Card onPress={() => router.push('/scan?mode=litter')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 26 }}>🫶</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Müll aufgehoben?</Text><Text style={T.small}>Gibt keine Punkte, weil das nicht prüfbar ist. {chameleonName} freut sich trotzdem.</Text></View>
+            <View style={{ flex: 1 }}><Text style={T.h3}>Müll aufgehoben?</Text><Text style={T.small}>Ohne Punkte, aber {chameleonName} freut sich.</Text></View>
           </Card>
         </Appear>
       </View>

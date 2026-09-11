@@ -1,11 +1,20 @@
 import React, { useEffect, useRef } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
+import LeafletWebView from './LeafletWebView';
 import MapView, { Circle, Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import type { MapProps } from './Map.types';
 import { shadow } from '@/theme';
 
-/** Native Karte (Apple Maps auf iOS, Google Maps auf Android via Expo Go). */
-export default function Map({ center, spanKm = 4, markers = [], polylines = [], circles = [], heat = [], userLocation, style, interactive = true, onPress, follow }: MapProps) {
+/**
+ * Native Karte: Apple Maps auf iOS (kein Key nötig). Android braucht für Google Maps einen API-Key,
+ * deshalb dort Leaflet/OSM in einer WebView, identisch zur Web-Version und ohne Key.
+ */
+export default function Map(props: MapProps) {
+  if (Platform.OS !== 'ios') return <LeafletWebView {...props} />;
+  return <AppleMap {...props} />;
+}
+
+function AppleMap({ center, spanKm = 4, markers = [], polylines = [], circles = [], heat = [], userLocation, style, interactive = true, onPress, follow }: MapProps) {
   const ref = useRef<MapView>(null);
   const delta = spanKm / 111;
   useEffect(() => {

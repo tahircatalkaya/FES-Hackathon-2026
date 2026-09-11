@@ -12,6 +12,7 @@ import { BINS, CLEANUPS } from '@/data/mock';
 import { parseContainerCode, demoContainerCode } from '@/api/vytal';
 import { parseTag } from '@/api/nfc';
 import { useLocation } from '@/hooks/useLocation';
+import NfcSheet from '@/components/NfcSheet';
 import { hav } from '@/api/foodsharing';
 
 type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'litter';
@@ -24,6 +25,39 @@ const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTE
 };
 
 export default function Scan() {
+  const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
+  if (!p.mode) return <Chooser />;
+  return <ScanInner />;
+}
+
+function Chooser() {
+  const router = useRouter();
+  const { setCtx } = useUI();
+  useEffect(() => { setCtx('home'); }, []);
+  const items: { mode: Mode; emoji: string; t: string; s: string }[] = [
+    { mode: 'ride', emoji: '🚇', t: 'Bus & Bahn', s: 'Tag oder QR im Fahrzeug' },
+    { mode: 'vytal', emoji: '🥡', t: 'Mehrweg-Schale', s: 'Code auf der Schale' },
+    { mode: 'bin', emoji: '🗑️', t: 'FES-Behälter', s: 'Aufkleber am Papierkorb' },
+    { mode: 'peer', emoji: '🤝', t: 'Clean-up-Partner', s: 'Code vom anderen Handy' },
+    { mode: 'litter', emoji: '🫶', t: 'Müll aufgehoben', s: 'Danke sagen, ohne Punkte' },
+  ];
+  return (
+    <Screen tabBar={false}>
+      <Header title="Scannen" subtitle="Was hast du vor dir?" />
+      <View style={{ gap: 10 }}>
+        {items.map((it, i) => (
+          <Card key={it.mode} onPress={() => router.replace(`/scan?mode=${it.mode}`)} style={{ flexDirection: 'row', alignItems: 'center', gap: 14, borderLeftWidth: 5, borderLeftColor: CONTEXT[TITLES[it.mode].ctx].color }}>
+            <Text style={{ fontSize: 30 }}>{it.emoji}</Text>
+            <View style={{ flex: 1 }}><Text style={T.h3}>{it.t}</Text><Text style={T.small}>{it.s}</Text></View>
+            <Text style={{ color: C.muted, fontWeight: '900', fontSize: 18 }}>›</Text>
+          </Card>
+        ))}
+      </View>
+    </Screen>
+  );
+}
+
+function ScanInner() {
   const router = useRouter();
   const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
   const mode = ((p.mode as Mode) ?? 'ride');
@@ -32,6 +66,7 @@ export default function Scan() {
   const [perm, requestPerm] = useCameraPermissions();
   const [manual, setManual] = useState('');
   const [done, setDone] = useState<string | null>(null);
+  const [nfcOpen, setNfcOpen] = useState(false);
   const lock = useRef(false);
   const { addAward, addContainer, attest, thankLitter, nfcSeen } = useStore();
   const { setCtx, showToast } = useUI();
@@ -98,10 +133,11 @@ export default function Scan() {
           <TextInput value={manual} onChangeText={setManual} placeholder={mode === 'ride' ? 'z. B. U4|1234' : mode === 'vytal' ? 'z. B. B7K2M9QX' : 'Code'} placeholderTextColor={C.muted} autoCapitalize="characters" style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
           <Row style={{ gap: 8 }}>
             <Button label="Prüfen" color={color} onPress={() => manual && handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
-            <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : mode === 'bin' ? (p.id ?? BINS[0].id) : 'PEER-7F3K2Q')} />
+            {mode === 'bin' ? <Button label="NFC antippen" icon="📡" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q')} />}
           </Row>
         </Card>
       )}
+      <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={(t) => handle(p.id ?? t.raw)} color={color} title="Handy an den Behälter halten" label="Der Tag sitzt am FES-Aufkleber des Behälters. Hier simuliert." />
       {mode === 'litter' && !done && <View style={{ marginTop: 14 }}><Button label="Ja, aufgehoben und entsorgt" color={color} icon="🫶" onPress={() => handle('litter')} /></View>}
       {done && <View style={{ marginTop: 14 }}><Button label="Fertig" color={color} onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/handeln'))} /></View>}
       {mode === 'bin' && nfcSeen.length > 0 && <Text style={[T.small, { marginTop: 10 }]}>Zuletzt gelesene Tags: {nfcSeen.slice(-3).join(', ')}</Text>}

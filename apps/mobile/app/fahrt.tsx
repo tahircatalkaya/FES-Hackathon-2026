@@ -14,7 +14,8 @@ import { statusFromConfidence } from '@/engine/reward';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
 import traces from '@/data/traces.json';
-import { nfcAvailable, readTag, demoTag, type TagInfo } from '@/api/nfc';
+import { nfcAvailable, demoTag, type TagInfo } from '@/api/nfc';
+import NfcSheet from '@/components/NfcSheet';
 
 type Phase = 'pick' | 'track' | 'result';
 const TR = traces as unknown as Record<string, { title: string; desc: string; expect: string; points: [number, number, number][] }>;
@@ -32,7 +33,7 @@ export default function Ride() {
   const [stationId, setStationId] = useState<number | null>(params.station ? Number(params.station) : null);
   const [tag, setTag] = useState<TagInfo | null>(null);
   const [nfcOk, setNfcOk] = useState(false);
-  const [reading, setReading] = useState(false);
+  const [nfcOpen, setNfcOpen] = useState(false);
   const [sim, setSim] = useState<string | null>(null);
   const [result, setResult] = useState<MatchResult | null>(null);
   const [startedAt, setStartedAt] = useState(0);
@@ -49,13 +50,8 @@ export default function Ride() {
   const station = stationId !== null ? STATIONS[stationId] : near[0];
   const deps = useMemo(() => (station ? departuresAt(station.id, nowMinutes()) : []), [station?.id]);
 
-  async function tapIn() {
-    setReading(true); haptic();
-    let t: TagInfo | null = null;
-    if (nfcOk) t = await readTag();
-    if (!t) t = demoTag(deps[0]?.route ?? 'U4');
-    setTag(t); addNfc(t.vehicle); setReading(false); haptic('success');
-  }
+  function tapIn() { haptic(); setNfcOpen(true); }
+  function onTag(t: TagInfo) { setTag(t); addNfc(t.vehicle); }
 
   async function start() {
     setStartedAt(Date.now()); setElapsed(0); setResult(null);
@@ -113,8 +109,8 @@ export default function Ride() {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 1 }}>
                 <Text style={[T.label, { color: '#ffffffaa' }]}>Nachweis-Kette</Text>
-                <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>Bewusst starten → GPS-Spur → Fahrplanabgleich → Konfidenz</Text>
-                <Text style={[T.small, { color: '#ffffffcc', marginTop: 6 }]}>Der Standort wird nur während der Fahrt gelesen und verlässt das Gerät nicht. Übertragen wird nur das Ergebnis.</Text>
+                <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>Antippen, einsteigen, aussteigen. Den Rest prüft die App.</Text>
+                <Text style={[T.small, { color: '#ffffffcc', marginTop: 6 }]}>Standort nur während der Fahrt, nur auf deinem Gerät.</Text>
               </View>
               <Chameleon color="#fff" size={96} branch={false} lookX={-0.6} />
             </View>
@@ -127,7 +123,7 @@ export default function Ride() {
         </ScrollView>
 
         <Text style={[T.h3, { marginTop: S.xl }]}>2 · Nächste Abfahrten {station ? `ab ${station.name}` : ''}</Text>
-        <Text style={T.small}>Fahrplan {SERVICE_DAY}, Uhrzeit heute. Für die Demo wird der Wochentag gemappt.</Text>
+        <Text style={T.small}>Fahrplan RMV (GTFS), Demo-Tag {SERVICE_DAY.split(' ')[0]}.</Text>
         <View style={{ marginTop: 10, gap: 8 }}>
           {deps.length === 0 && <Text style={T.body}>Keine Abfahrten in den nächsten 90 Minuten in den bereitgestellten Linien (U, S, Tram).</Text>}
           {deps.map((d, i) => (
@@ -146,19 +142,19 @@ export default function Ride() {
           <Row>
             <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: tag ? C.success + '22' : col + '15', alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 22 }}>{tag ? '✅' : '📡'}</Text></View>
             <View style={{ flex: 1 }}>
-              <Text style={T.h3}>{tag ? `Tag gelesen: ${tag.line} · Fahrzeug ${tag.vehicle}` : 'NFC-Tag im Fahrzeug antippen'}</Text>
-              <Text style={T.small}>{tag ? (tag.source === 'nfc' ? 'Echter NFC-Tag' : tag.source === 'qr' ? 'QR-Code am Fahrzeug' : 'Demo-Tag (Expo Go hat kein NFC)') + ' · hebt den Nachweis auf „bestätigt“, wenn er zur Fahrt passt' : nfcOk ? 'Handy an den Tag im Türbereich halten' : 'Kein NFC verfügbar: Demo-Tag oder QR-Code'}</Text>
+              <Text style={T.h3}>{tag ? `Tag gelesen: ${tag.line} · ${tag.vehicle}` : 'Tag im Fahrzeug antippen'}</Text>
+              <Text style={T.small}>{tag ? 'Nachweis wird „bestätigt“, wenn der Tag zur Fahrt passt.' : 'Mit Tag volle Punkte, ohne Tag 70 %.'}</Text>
             </View>
           </Row>
           <Row style={{ gap: 8 }}>
-            <Button label={reading ? 'Lese…' : tag ? 'Erneut lesen' : nfcOk ? 'NFC lesen' : 'Demo-Tag'} color={col} variant="soft" onPress={tapIn} style={{ flex: 1, paddingVertical: 12 }} />
-            <Button label="QR scannen" color={col} variant="soft" onPress={() => router.push('/scan?mode=ride')} style={{ flex: 1, paddingVertical: 12 }} />
+            <Button label={tag ? 'Erneut antippen' : 'NFC antippen'} icon="📡" color={col} onPress={tapIn} style={{ flex: 1, paddingVertical: 12 }} />
+            <Button label="QR" icon="▣" color={col} variant="soft" onPress={() => router.push('/scan?mode=ride')} style={{ paddingVertical: 12, paddingHorizontal: 18 }} />
           </Row>
         </Card>
         <View style={{ marginTop: 14 }}>
-          <Button label={tag ? 'Fahrt mit Tag starten' : 'Fahrt ohne Tag starten (nur GPS)'} icon="▶️" color={col} onPress={start} />
-          <Text style={[T.small, { textAlign: 'center', marginTop: 8 }]}>Ohne Tag maximal „plausibel“ (×0,7). Mit passendem Tag „bestätigt“ (×1,0).</Text>
+          <Button label={tag ? 'Fahrt starten' : 'Ohne Tag starten (nur GPS)'} icon="▶️" color={col} onPress={start} />
         </View>
+        <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={onTag} color={col} demoLine={deps[0]?.route ?? 'U4'} />
       </Screen>
     );
   }

@@ -59,7 +59,7 @@ try:
         step(page, 'melden', lambda: (T('Wilde Müllkippe').click(), T('Foto (ohne EXIF)').click(), T('Absenden').click()))
         # Scan bin + litter
         page.goto(B + '/scan?mode=bin&id=bin-0421', wait_until='networkidle'); time.sleep(1.5)
-        step(page, 'bin', lambda: T('Demo-Code').click())
+        step(page, 'bin', lambda: (T('NFC antippen').click(), time.sleep(3.5)))
         page.goto(B + '/scan?mode=litter', wait_until='networkidle'); time.sleep(1.5)
         step(page, 'litter', lambda: T('Ja, aufgehoben').click())
         # Saver, Verteilung, Belohnungen, Journal, Daten, Profil-Sprache

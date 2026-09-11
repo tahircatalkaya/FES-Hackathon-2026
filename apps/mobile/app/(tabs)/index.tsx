@@ -80,7 +80,10 @@ export default function Discover() {
             {LAYERS.map((l) => <Pill key={l.key} label={l.label} icon={l.emoji} active={layer === l.key} color={CONTEXT[l.ctx].color} onPress={() => { setLayer(l.key); setSel(null); }} />)}
           </ScrollView>
         </View>
-        {loading && <View style={{ position: 'absolute', right: 16, bottom: 16, backgroundColor: '#fff', borderRadius: 20, padding: 8 }}><ActivityIndicator color={ctxColor} /></View>}
+        {loading && <View style={{ position: 'absolute', left: 16, bottom: 16, backgroundColor: '#fff', borderRadius: 20, padding: 8 }}><ActivityIndicator color={ctxColor} /></View>}
+        <Pressable onPress={() => { haptic(); router.push('/scan'); }} style={[{ position: 'absolute', right: 16, bottom: 16, width: 58, height: 58, borderRadius: 29, backgroundColor: C.ink, alignItems: 'center', justifyContent: 'center' }, shadow(3)]}>
+          <Text style={{ color: '#fff', fontSize: 24 }}>▣</Text>
+        </Pressable>
       </View>
 
       <View style={{ flex: 1 }}>
