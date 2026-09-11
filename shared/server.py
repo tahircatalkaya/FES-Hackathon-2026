@@ -10,17 +10,21 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 import json
 from pathlib import Path
 from urllib.parse import urlsplit
+from zoneinfo import ZoneInfo
 from .contracts import EvidenceEvent
 from .ledger import Ledger
 
 ROOT=Path(__file__).resolve().parents[1]
-ASSETS={'/':('index.html','text/html'),'/app.js':('app.js','text/javascript'),'/style.css':('style.css','text/css'),'/chameleon.svg':('chameleon.svg','image/svg+xml')}
+ASSETS={'/':('index.html','text/html'),'/app.js':('app.js','text/javascript'),'/style.css':('style.css','text/css'),'/chameleon.svg':('chameleon.svg','image/svg+xml'),'/gecko.svg':('gecko.svg','image/svg+xml'),'/fes-logo.svg':('fes-logo.svg','image/svg+xml')}
 FIXTURES={
     'learn':('fes','fes.quiz','confirmed',True),
     'return':('vytal','vytal.return','confirmed',True),
     'pickup':('foodsharing','foodsharing.basket_pickup','confirmed',False),
     'ride':('transdev','transdev.journey','plausible',True),
+    'bin_bingo':('fes','fes.bin_bingo','self_reported',True),
+    'bio_check':('fes','fes.bio_check','self_reported',True),
 }
+DAILY_FIXTURES={'bin_bingo','bio_check'}
 
 def catalog():
     generated=ROOT/'docs/generated'
@@ -70,8 +74,13 @@ def handler(ledger,port):
                     return self.respond({'error':'fixture_required'},400)
                 if urlsplit(self.path).path!='/api/demo/evidence':return self.respond({'error':'not_found'},404)
                 fixture=body['fixture'];partner,action,evidence,eligible=FIXTURES[fixture]
-                event=EvidenceEvent(event_id=f'demo:{fixture}',partner=partner,environment='local_demo',
-                    action_key=f'demo:{fixture}:v1',user_id='demo',action=action,
+                if fixture in DAILY_FIXTURES:
+                    day=datetime.now(timezone.utc).astimezone(ZoneInfo('Europe/Berlin')).date().isoformat()
+                    key=f'demo:{fixture}:{day}:v1'
+                else:
+                    key=f'demo:{fixture}:v1'
+                event=EvidenceEvent(event_id=key,partner=partner,environment='local_demo',
+                    action_key=key,user_id='demo',action=action,
                     occurred_at=datetime.now(timezone.utc).isoformat(),source='own_fixture',
                     evidence_status=evidence,reason='Own integration fixture; no real action or environmental claim',reward_eligible=eligible)
                 result=ledger.accept(event,'demo')
