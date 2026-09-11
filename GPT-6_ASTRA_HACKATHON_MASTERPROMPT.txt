@@ -682,8 +682,3 @@ Halte gemeinsame Entscheidungen und Schnittstellen nachvollziehbar aktuell. Wenn
 Prüfe zunächst Repository, Zuständigkeit, Quellen und verbleibende Zeit. Gleiche diesen Prompt gegen die offiziellen Unterlagen und den tatsächlichen Dateistand ab. Erstelle eine kompakte Liste der wichtigsten gesicherten Befunde und offenen Abhängigkeiten. Entscheide den ersten durchgängigen Demoablauf und die gemeinsamen Schnittstellen. Beginne danach direkt mit der ausführbaren Arbeit im freigegebenen Bereich.
 
 Der Anspruch lautet: eine verständliche gemeinsame App, echte nutzbare Integrationen, begründete Fairness, überprüfbare Aussagen und eine überzeugende Demonstration. Bewahre sämtliche Anforderungen in der Matrix, arbeite priorisiert und mache Fortschritte, Grenzen und Entscheidungen für das gesamte Team nachvollziehbar.
-
-
-Weitere Infos: Überlege auch für dich selber was alles noch mit rein sollte damit wir dieses hackathon zu 100% gewinnen. Es sollte definitiv einen wow effekt haben und all die ziele von allen unternehmen erreich und sogar darüber hinaus. Denke also vielleicht noch an eigene probleme und features um alles perfekt darzustellen. Solltest du irgendwelche Fragen haben oder weitere informationen benötigen dann sag bescheid und wir geben dir alles.
-
-Du bist in der Rolle des besten Senior Software Engineers der alle Hackathons gewinnt. Deswegen mache den Code sehr sauber und sehr bedacht.
