@@ -6,6 +6,7 @@ import Animated, { Easing, interpolateColor, useAnimatedProps, useSharedValue, w
 const APath = Animated.createAnimatedComponent(Path);
 const AEllipse = Animated.createAnimatedComponent(Ellipse);
 const ACircle = Animated.createAnimatedComponent(Circle);
+const ALine = Animated.createAnimatedComponent(Line);
 
 export function shade(hex: string, amt: number) {
   const h = hex.replace('#', '');
@@ -24,10 +25,12 @@ interface Props {
   lookX?: number; // -1..1
   style?: any;
   branch?: boolean;
+  /** Zähler: jede Änderung löst einen Zungenschlag aus */
+  poke?: number;
 }
 
 /** Kai, das Chamäleon. Nimmt die Farbe des aktiven Kontexts an, blinzelt, atmet, wedelt mit dem Schwanz. */
-export default function Chameleon({ color, size = 180, stage = 1, mood = 'happy', lookX = 0.3, style, branch = true }: Props) {
+export default function Chameleon({ color, size = 180, stage = 1, mood = 'happy', lookX = 0.3, style, branch = true, poke = 0 }: Props) {
   const prev = useRef(color);
   const from = useSharedValue(color);
   const to = useSharedValue(color);
@@ -36,6 +39,7 @@ export default function Chameleon({ color, size = 180, stage = 1, mood = 'happy'
   const blink = useSharedValue(1);
   const tail = useSharedValue(0);
   const bounce = useSharedValue(0);
+  const tongue = useSharedValue(0);
 
   useEffect(() => {
     from.value = prev.current; to.value = color; t.value = 0;
@@ -50,6 +54,10 @@ export default function Chameleon({ color, size = 180, stage = 1, mood = 'happy'
   }, []);
 
   useEffect(() => {
+    if (poke > 0) tongue.value = withSequence(withTiming(1, { duration: 140, easing: Easing.out(Easing.cubic) }), withDelay(120, withTiming(0, { duration: 220 })));
+  }, [poke]);
+
+  useEffect(() => {
     if (mood === 'excited') bounce.value = withSequence(withTiming(-16, { duration: 170 }), withTiming(0, { duration: 420, easing: Easing.bounce }));
   }, [mood]);
 
@@ -59,6 +67,8 @@ export default function Chameleon({ color, size = 180, stage = 1, mood = 'happy'
   const strokeMain = useAnimatedProps(() => ({ stroke: interpolateColor(t.value, [0, 1], [from.value, to.value]) }));
   const strokeDark = useAnimatedProps(() => ({ stroke: interpolateColor(t.value, [0, 1], [shade(from.value, -0.3), shade(to.value, -0.3)]) }));
   const eyeProps = useAnimatedProps(() => ({ ry: 8.5 * blink.value }));
+  const tongueProps = useAnimatedProps(() => ({ x2: 186 + tongue.value * 46, opacity: tongue.value > 0.05 ? 1 : 0 }));
+  const tongueTipProps = useAnimatedProps(() => ({ cx: 186 + tongue.value * 46, opacity: tongue.value > 0.05 ? 1 : 0 }));
   const pupilProps = useAnimatedProps(() => ({ r: 4.2 * Math.max(0.15, blink.value) }));
   const bodyStyle = useAnimatedStyle(() => ({ transform: [{ translateY: bounce.value }, { scale: 1 + breath.value * 0.016 }] }));
   const tailStyle = useAnimatedStyle(() => ({ transform: [{ translateX: -0.3 * size }, { translateY: 0.08 * size }, { rotate: `${tail.value * 6}deg` }, { translateX: 0.3 * size }, { translateY: -0.08 * size }] }));
@@ -110,6 +120,9 @@ export default function Chameleon({ color, size = 180, stage = 1, mood = 'happy'
           <APath animatedProps={fillMain} d="M138,72 C138,50 160,38 178,46 C194,54 196,78 184,90 C172,100 148,98 140,84 Z" />
           {/* Helm (Casque) */}
           <APath animatedProps={fillDark} d="M144,58 C150,38 172,30 190,44 C182,48 166,50 150,60 Z" />
+          {/* Zunge */}
+          <ALine animatedProps={tongueProps} x1={184} y1={84} y2={84} stroke="#FF6B8A" strokeWidth={4} strokeLinecap="round" />
+          <ACircle animatedProps={tongueTipProps} cy={84} r={3.6} fill="#FF4D73" />
           {/* Mund */}
           <Path d={smile} stroke="#2A1F14" strokeWidth={3} fill="none" strokeLinecap="round" />
           {/* Auge (Turm) */}

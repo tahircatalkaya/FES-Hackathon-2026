@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -18,6 +18,7 @@ export default function Act() {
   const { setCtx, mood } = useUI();
   const wk = weekStats(ledger);
   const st = chameleonStage(ledger);
+  const [poke, setPoke] = useState(0);
   useEffect(() => { setCtx('home'); }, []);
   const openContainers = containers.filter((c) => !c.returnedAt);
   const openRes = reservations.filter((r) => r.status === 'pending' || r.status === 'accepted');
@@ -45,7 +46,7 @@ export default function Act() {
         <Card style={{ marginTop: S.lg, overflow: 'hidden', paddingVertical: 12 }}>
           <LinearGradient colors={[C.home + '14', '#fff']} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Pressable onPress={() => haptic()}><Chameleon color={C.home} size={150} stage={st.stage as any} mood={mood} lookX={0.4} /></Pressable>
+            <Pressable onPress={() => { haptic(); setPoke((p) => p + 1); }}><Chameleon color={C.home} size={150} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} /></Pressable>
             <View style={{ flex: 1, paddingLeft: 4 }}>
               <Text style={T.h3}>{chameleonName} · {st.label}</Text>
               <Text style={[T.small, { marginBottom: 10 }]}>{st.next ? `Nächste Stufe: ${st.next}` : 'Höchste Stufe erreicht'}</Text>

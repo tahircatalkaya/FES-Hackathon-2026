@@ -64,8 +64,8 @@ export default function Discover() {
       <View style={{ height: mapH + insets.top }}>
         <Map center={selected ? { lat: selected.lat, lon: selected.lon } : loc} spanKm={selected ? 1.6 : 3.2} markers={markers} userLocation={loc} style={{ flex: 1 }} />
         <LinearGradient colors={['rgba(246,245,239,0.95)', 'rgba(246,245,239,0)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 96 }} pointerEvents="none" />
-        <View style={{ position: 'absolute', top: insets.top + 6, left: S.lg, right: S.lg }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <View pointerEvents="box-none" style={{ position: 'absolute', top: insets.top + 6, left: S.lg, right: S.lg }}>
+          <View pointerEvents="box-none" style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Pressable onPress={() => router.push('/handeln')}><Chameleon color={ctxColor} size={64} mood={mood} lookX={0.7} /></Pressable>
             <View style={{ flex: 1 }}>
               <Text style={[T.h2]} numberOfLines={1}>{t('home.greeting')} {name || 'du'} 👋</Text>
