@@ -16,7 +16,7 @@ export default function Journal() {
   useEffect(() => { setCtx('home'); markRead(); }, []);
   return (
     <Screen tabBar={false}>
-      <Header title="Journal" subtitle="Jede Gutschrift, jede Mitteilung, nachvollziehbar" />
+      <Header title="" />
       <Row><Pill label={`Gutschriften (${ledger.length})`} active={tab === 'ledger'} color={C.home} onPress={() => setTab('ledger')} /><Pill label={`Mitteilungen (${notices.length})`} active={tab === 'notices'} color={C.home} onPress={() => setTab('notices')} /></Row>
       <View style={{ marginTop: 14, gap: 8 }}>
         {tab === 'ledger' ? (ledger.length ? ledger.map((l) => (
@@ -34,7 +34,7 @@ export default function Journal() {
           <Card key={n.id} style={{ paddingVertical: 12, borderLeftWidth: 4, borderLeftColor: (CONTEXT as any)[n.ctx]?.color ?? C.home }}>
             <Text style={T.h3}>{n.title}</Text><Text style={T.body}>{n.body}</Text><Text style={T.small}>{new Date(n.at).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</Text>
           </Card>
-        )) : <Text style={T.body}>Keine Mitteilungen. Ruhezeit 22–7 Uhr, max. 5 am Tag.</Text>)}
+        )) : <Text style={T.body}>Keine Mitteilungen.</Text>)}
       </View>
     </Screen>
   );
