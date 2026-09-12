@@ -3,7 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { View, Platform } from 'react-native';
+import { View, Platform, Text as RNText, ScrollView, Pressable } from 'react-native';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
 import AwardToast from '@/components/AwardToast';
@@ -59,5 +59,19 @@ export default function RootLayout() {
         </View>
       </SafeAreaProvider>
     </GestureHandlerRootView>
+  );
+}
+
+/** Fängt Render-Fehler ab, damit statt eines Absturzes eine lesbare Meldung erscheint. */
+export function ErrorBoundary({ error, retry }: { error: Error; retry: () => Promise<void> }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: '#0F2A5C', padding: 24, justifyContent: 'center' }}>
+      <RNText style={{ color: '#fff', fontSize: 20, fontWeight: '800', marginBottom: 10 }}>Da ist etwas schiefgelaufen</RNText>
+      <RNText selectable style={{ color: '#fff', fontSize: 13, marginBottom: 6 }}>{String(error?.message ?? error)}</RNText>
+      <ScrollView style={{ maxHeight: 320 }}><RNText selectable style={{ color: '#ffffffaa', fontSize: 11 }}>{String(error?.stack ?? '')}</RNText></ScrollView>
+      <Pressable onPress={() => retry()} style={{ marginTop: 16, backgroundColor: '#fff', borderRadius: 999, paddingVertical: 12, alignItems: 'center' }}>
+        <RNText style={{ color: '#0F2A5C', fontWeight: '800' }}>Nochmal versuchen</RNText>
+      </Pressable>
+    </View>
   );
 }
