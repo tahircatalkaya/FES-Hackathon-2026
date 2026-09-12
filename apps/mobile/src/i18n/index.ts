@@ -63,7 +63,7 @@ const leicht: Partial<Record<Key, string>> = {
   'tab.discover': 'Karte', 'tab.act': 'Machen', 'tab.impact': 'Wirkung', 'tab.together': 'Zusammen', 'tab.profile': 'Ich',
   'act.title': 'Was willst du heute machen?',
   'act.ride': 'Bus oder Bahn fahren', 'act.ride.sub': 'Fahrt starten und Punkte bekommen',
-  'act.reuse': 'Mehrweg-Schale', 'act.reuse.sub': 'Schale ausleihen. Schale zurückbringen.',
+  'act.reuse': 'Mehrweg-Behälter', 'act.reuse.sub': 'Behälter ausleihen. Behälter zurückbringen.',
   'act.food': 'Essen retten', 'act.food.sub': 'Essen holen oder Essen teilen',
   'act.clean': 'Stadt sauber machen', 'act.clean.sub': 'Mitmachen. Melden. Lernen.',
   'act.learn': 'Lernen', 'act.learn.sub': 'Kurze Fragen mit Kai',

@@ -1,10 +1,10 @@
 import { fs, hav, type ApiSource } from './foodsharing';
 import { vytalStores } from './vytal';
 import { STATIONS } from '@/engine/matching';
-import { CLEANUPS, BINS, LASTENRAD, SAVER_DISTRIBUTIONS } from '@/data/mock';
+import { CLEANUPS, BINS, SAVER_DISTRIBUTIONS } from '@/data/mock';
 import type { ContextKey } from '@/theme';
 
-export type Layer = 'food' | 'reuse' | 'mobility' | 'clean' | 'lastenrad';
+export type Layer = 'food' | 'reuse' | 'mobility' | 'clean';
 
 export interface Opportunity {
   id: string;
@@ -43,7 +43,6 @@ export async function getOpportunities(lat: number, lon: number, radiusKm = 3): 
   }
   for (const c of CLEANUPS) items.push({ id: `cu-${c.id}`, layer: 'clean', ctx: 'clean', partner: 'fes', title: c.title, sub: `${new Date(c.start).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })} ${new Date(c.start).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} · ${c.participants} dabei`, lat: c.lat, lon: c.lon, distance_m: d(c.lat, c.lon), icon: 'sparkles', emoji: '🧹', href: `/cleanup/${c.id}`, availability: c.fesConfirmed ? 'unbekannt' : c.start < Date.now() && c.end > Date.now() ? 'jetzt' : 'bald', source: 'mock', verification: 'Simuliert' });
   for (const b of BINS) items.push({ id: `bin-${b.id}`, layer: 'clean', ctx: 'clean', partner: 'fes', title: `${b.kind} ${b.label}`, sub: 'FES-Behälter mit NFC/QR', lat: b.lat, lon: b.lon, distance_m: d(b.lat, b.lon), icon: b.kind === 'Altkleider' ? 'shirt' : 'trash', emoji: b.kind === 'Glascontainer' ? '🍾' : b.kind === 'Altkleider' ? '👕' : b.kind === 'Pfandring' ? '♻️' : '🗑️', href: `/scan?mode=bin&id=${b.id}`, availability: 'jetzt', source: 'mock', verification: 'Simuliert' });
-  for (const l of LASTENRAD) items.push({ id: `lr-${l.id}`, layer: 'lastenrad', ctx: 'mobility', partner: 'mainlastenrad', title: l.name, sub: `${l.station} · ${l.free ? 'frei' : 'ausgeliehen'} · ${l.next}`, lat: l.lat, lon: l.lon, distance_m: d(l.lat, l.lon), icon: 'bicycle', emoji: '🚲', href: '/handeln', availability: l.free ? 'jetzt' : 'bald', source: 'mock', verification: 'Simuliert' });
 
   items.sort((a, b) => a.distance_m - b.distance_m);
   return { items, sources, fetchedAt: Date.now() };

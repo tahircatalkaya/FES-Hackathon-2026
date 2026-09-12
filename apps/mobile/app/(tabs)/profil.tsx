@@ -5,7 +5,7 @@ import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import { Appear, Button, Card, Divider, Pill, Row, SectionTitle, Stat, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
-import { useStore, balance, weekStats, chameleonStage } from '@/store';
+import { useStore, balance, weekStats, chameleonStage, STAGES } from '@/store';
 import { useUI } from '@/store/ui';
 import { LANGS } from '@/i18n';
 import { useT } from '@/i18n/useT';
@@ -43,7 +43,7 @@ export default function Profile() {
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg }}>
           <Row>
-            <Chameleon pose="cool" size={110} />
+            <Chameleon pose={STAGES[Math.max(0, st.stage - 1)].pose} size={110} />
             <View style={{ flex: 1 }}>
               {editName ? (
                 <Row><TextInput value={nm} onChangeText={setNm} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, padding: 8, fontWeight: '800', color: C.ink }} maxLength={24} /><Button label="OK" color={col} onPress={() => { s.setProfile({ name: nm.trim() || s.name }); setEditName(false); }} style={{ paddingVertical: 8, paddingHorizontal: 12 }} /></Row>

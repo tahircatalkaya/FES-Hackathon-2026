@@ -129,7 +129,9 @@ export function Row({ children, style, gap = S.sm }: { children: React.ReactNode
 }
 
 export function Appear({ children, delay = 0, style }: { children: React.ReactNode; delay?: number; style?: ViewStyle }) {
-  return <Animated.View entering={FadeInDown.delay(delay).springify().damping(16)} style={style}>{children}</Animated.View>;
+  // damping 22 bei stiffness 110 liegt leicht ueber der kritischen Daempfung: Die Karte
+  // kommt weich herein und bleibt stehen, statt nachzuwippen.
+  return <Animated.View entering={FadeInDown.delay(delay).springify().damping(22).stiffness(110)} style={style}>{children}</Animated.View>;
 }
 
 export function Divider() { return <View style={{ height: 1, backgroundColor: C.line, marginVertical: S.md }} />; }
