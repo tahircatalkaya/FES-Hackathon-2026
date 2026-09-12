@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
+import { FesLogo } from '@/components/FesLogo';
 import { Appear, Button, Card, Ring, SectionTitle, T, Tag, haptic } from '@/components/ui';
 import { BingoSheet } from '@/components/BingoSheet';
 import { BinCheckSheet } from '@/components/BinCheckSheet';
@@ -12,13 +13,13 @@ import { NewActionSheet } from '@/components/NewActionSheet';
 import { C, R, S } from '@/theme';
 import { useStore, chameleonStage, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
-import { CHAPTERS, CLEANUPS } from '@/data/mock';
+import { CLEANUPS } from '@/data/mock';
 import { BINGO, bingoIndexFor, dayKey } from '@/data/fes';
 
-/** FES-Bereich: jeden Tag eine kleine Sache, dazu Biotonnen-Check, Lernen und Aktionen im Viertel. */
+/** FES-Bereich: drei Tages-Challenges und die Aktionen im eigenen Viertel. */
 export default function Act() {
   const router = useRouter();
-  const { ledger, chameleonName, quizDone, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
+  const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx, mood } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
   const [poke, setPoke] = useState(0);
@@ -34,18 +35,10 @@ export default function Act() {
     return { filled: new Set(days.map((d) => bingoIndexFor(new Date(d)))).size, doneToday: days.includes(dayKey()), days };
   }, [ledger]);
 
-  /** Streak: aufeinanderfolgende Tage mit gemeldeter Challenge, gestern zählt weiter. */
-  const streak = useMemo(() => {
-    const set = new Set(bingo.days);
-    const cursor = new Date();
-    if (!set.has(dayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
-    let n = 0;
-    while (set.has(dayKey(cursor))) { n++; cursor.setDate(cursor.getDate() - 1); }
-    return n;
-  }, [bingo.days]);
-
   const binDone = ledger.some((l) => l.key === `bincheck:${dayKey()}`);
-  const nextQuiz = CHAPTERS.find((c) => c.ctx === 'clean' && !quizDone.includes(c.id)) ?? CHAPTERS.find((c) => !quizDone.includes(c.id));
+  /** Tagesziel statt Streak: drei Challenges, die heute offenstehen. */
+  const joinedToday = ledger.some((l) => l.type === 'clean.participate' && new Date(l.at).toDateString() === new Date().toDateString());
+  const todayDone = [bingo.doneToday, binDone, joinedToday].filter(Boolean).length;
   const nearby = [...ownCleanups, ...CLEANUPS]
     .filter((c) => c.end > Date.now())
     .sort((a, b) => (a.district === district ? -1 : b.district === district ? 1 : a.start - b.start));
@@ -67,10 +60,10 @@ export default function Act() {
 
   return (
     <Screen>
-      <Text style={T.label}>FES · Sauberes Frankfurt</Text>
-      <Text style={[T.h1, { marginTop: 4 }]}>Frankfurt bleibt sauber.</Text>
+      <FesLogo width={92} />
+      <Text style={[T.h1, { marginTop: 10 }]}>Frankfurt bleibt sauber.</Text>
 
-      {/* Kopf: Chamäleon, Streak, eigene Aktion anlegen */}
+      {/* Kopf: Chamäleon, Tagesziel, eigene Aktion anlegen */}
       <Appear delay={60}>
         <Card style={{ marginTop: S.lg, overflow: 'hidden', paddingVertical: 12 }}>
           <LinearGradient colors={[C.clean + '18', '#fff']} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
@@ -79,17 +72,15 @@ export default function Act() {
               <Chameleon color={C.clean} size={140} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} />
             </Pressable>
             <View style={{ flex: 1, paddingLeft: 4 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={{ fontSize: 18 }}>🔥</Text>
-                <Text style={{ fontSize: 22, fontWeight: '900', color: C.ink }}>{streak}</Text>
-                <Text style={T.small}>{streak === 1 ? 'Tag' : 'Tage'} Streak</Text>
-              </View>
-              <Text style={[T.small, { marginTop: 2 }]}>{chameleonName} · {st.label}</Text>
+              <Text style={T.h3}>{chameleonName} · {st.label}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 10 }}>
-                <Ring progress={wk.activeDays / wk.goal} size={58} stroke={8} color={C.clean}>
-                  <Text style={{ fontWeight: '900', fontSize: 13, color: C.ink }}>{wk.activeDays}/{wk.goal}</Text>
+                <Ring progress={todayDone / 3} size={62} stroke={8} color={C.clean}>
+                  <Text style={{ fontWeight: '900', fontSize: 14, color: C.ink }}>{todayDone}/3</Text>
                 </Ring>
-                <Text style={[T.small, { flex: 1 }]}>Aktive Tage diese Woche</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontWeight: '800', color: C.ink }}>Challenges heute</Text>
+                  <Text style={T.small}>{todayDone === 3 ? 'Alle drei geschafft' : `Noch ${3 - todayDone} offen`} · Wochenziel {wk.activeDays}/{wk.goal} Tage</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -106,7 +97,6 @@ export default function Act() {
           <View style={{ flex: 1 }}>
             <Text style={T.label}>{binDone ? 'Heute geprüft' : 'Foto reicht'}</Text>
             <Text style={T.h3}>Biotonnen-Check</Text>
-            <Text style={T.small} numberOfLines={2}>Die Bilderkennung schlägt Fehlwürfe vor, du bestätigst.</Text>
           </View>
           <Ionicons name={binDone ? 'checkmark-circle' : 'chevron-forward'} size={binDone ? 26 : 20} color={binDone ? C.success : C.muted} />
         </Card>
@@ -136,18 +126,6 @@ export default function Act() {
           </View>
         </Card>
       </Appear>
-
-      {/* Lernen */}
-      {nextQuiz && (
-        <Appear delay={240}>
-          <Card onPress={() => router.push(`/quiz/${nextQuiz.id}` as any)} style={{ marginTop: S.md, backgroundColor: C.ink }}>
-            <Text style={[T.label, { color: '#ffffff99' }]}>FES-Wissen · mit {chameleonName}</Text>
-            <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
-            <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
-            <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{nextQuiz.questions.length} Fragen · +{nextQuiz.questions.length * 5} Punkte</Text>
-          </Card>
-        </Appear>
-      )}
 
       {/* Aktionen im Viertel */}
       <SectionTitle title="Aktionen in deiner Nähe" action={nearby.length > 3 ? (showAll ? 'Weniger' : `Alle ${nearby.length}`) : undefined} onAction={() => setShowAll((v) => !v)} />
