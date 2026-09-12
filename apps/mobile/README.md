@@ -54,11 +54,27 @@ npx expo-doctor
 Module nativ in genau einer Version mit. Zieht npm eine neuere JS-Version, stürzt die App beim Start
 kommentarlos ab. Also bitte so lassen, solange wir mit Expo Go demonstrieren.
 
+## Bild- und Spracherkennung (Foodsharing)
+
+Beim Fairteiler gibt es drei Aktionen (Abholen, Einstellen, Regal melden) und jeweils drei Wege:
+Foto, Sprachnotiz oder selbst eintragen. Foto und Sprachnotiz werden von einer echten KI ausgewertet,
+das Ergebnis ist immer editierbar. Dafür braucht die App einen Schlüssel:
+
+```bash
+cp .env.example .env      # dann EXPO_PUBLIC_GEMINI_KEY eintragen (kostenlos: https://aistudio.google.com/apikey)
+npx expo start -c         # Schlüssel wird beim Bundlen eingesetzt, deshalb neu starten
+```
+
+Alternativ `EXPO_PUBLIC_OPENAI_KEY` (Vision + Whisper). Ohne Schlüssel bleibt alles bedienbar:
+Foto und Sprachnotiz werden als Nachweis gespeichert, den Inhalt trägt man dann selbst ein.
+Es wird nichts vorgetäuscht. Der Schlüssel liegt für den Hackathon im Client, für einen Store-Build
+gehört er hinter einen kleinen Server.
+
 ## Was echt ist, was simuliert
 
 | Baustein | Echt | Simuliert |
 |---|---|---|
-| Foodsharing | Live-API (Fairteiler, Körbe, Anfragen, Abholungen, Saver-Verifikation) | Verteilungen, Zusage des Anbieters (Demo-Timer) |
+| Foodsharing | Live-API (Fairteiler, Körbe, Anfragen, Abholungen, Saver-Verifikation), Bild- und Spracherkennung mit Schlüssel | Verteilungen, Zusage des Anbieters (Demo-Timer) |
 | Transdev | GTFS RMV (U/S/Tram), Abfahrten, Matching on-device mit Konfidenz | GPS-Testspuren (aus shapes.txt erzeugt), Demo-NFC-Tag in Expo Go |
 | Vytal | Store-Suche (GraphQL, mit Snapshot-Fallback) | Ausleihe/Rückgabe-Bestätigung (Store-seitig) |
 | traffiQ | CSVs aus dem Repo (Heatmap, Tagesgang, Auslastung, Relationen, Sharing) | Daten teils synthetisch |

@@ -56,7 +56,7 @@ export default function Melden() {
           <Button label={photo ? 'Foto ✓' : 'Foto (ohne EXIF)'} color={col} variant="soft" onPress={snap} style={{ flex: 1, paddingVertical: 12 }} />
           <Button label="Absenden" color={col} onPress={submit} style={{ flex: 1, paddingVertical: 12 }} />
         </Row>
-        <Row style={{ gap: 6 }}><StatusBadge status={photo ? 'plausibel' : 'selbst angegeben'} small /><Text style={T.small}>{photo ? 'Foto + Standort ×0,7' : 'Ohne Foto ×0,3'} · 25 Basispunkte · Dubletten im Umkreis 60 m werden zusammengeführt</Text></Row>
+        <Text style={T.small}>{photo ? 'Mit Foto zählt die Meldung mehr.' : 'Ein Foto macht die Meldung glaubwürdiger.'} Doppelte Meldungen im Umkreis von 60 m werden zusammengeführt.</Text>
       </Card>
       {cleanReports.length > 0 && (
         <View style={{ marginTop: S.xl }}>

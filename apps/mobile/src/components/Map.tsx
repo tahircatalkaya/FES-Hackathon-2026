@@ -48,7 +48,7 @@ function Inner({ center, spanKm = 4, markers = [], polylines = [], circles = [],
   return (
     <View style={[{ flex: 1, overflow: 'hidden' }, style]}>
       <MapContainer center={[center.lat, center.lon]} zoom={zoom} style={{ width: '100%', height: '100%' }} zoomControl={false} dragging={interactive} scrollWheelZoom={interactive} doubleClickZoom={interactive} touchZoom={interactive} attributionControl>
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" attribution='&copy; OpenStreetMap, &copy; CARTO' />
+        <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap-Mitwirkende' />
         <Controller />
         {heat.map((h, i) => <Circle key={`h${i}`} center={[h.lat, h.lon]} radius={80 + h.v * 320} pathOptions={{ color: 'transparent', fillColor: '#7C4DFF', fillOpacity: 0.08 + h.v * 0.35 }} />)}
         {circles.map((c, i) => <Circle key={`c${i}`} center={[c.lat, c.lon]} radius={c.radius} pathOptions={{ color: c.color, fillColor: c.color, fillOpacity: 0.2, weight: 2 }} />)}

@@ -90,7 +90,7 @@ export default function Quiz() {
           <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
             <Chameleon color={col} size={170} mood="excited" />
             <Text style={[T.h2, { marginTop: 8 }]}>{correct}/{ch.questions.length} richtig</Text>
-            <Row style={{ marginTop: 6, gap: 6 }}><StatusBadge status="bestätigt" small /><Text style={T.small}>5 Punkte je richtige Antwort, max 3 Kapitel/Tag</Text></Row>
+            <Row style={{ marginTop: 6, gap: 6 }}><Text style={T.small}>5 Punkte je richtige Antwort, max 3 Kapitel/Tag</Text></Row>
             <View style={{ marginTop: 16, width: '100%', gap: 8 }}>
               <Button label={`Nächstes: ${nextCh.title}`} color={col} onPress={() => { setStep(-1); setCorrect(0); router.replace(`/quiz/${nextCh.id}`); }} />
               <Button label="Zurück" variant="ghost" color={C.muted} onPress={() => router.replace('/(tabs)/handeln')} />

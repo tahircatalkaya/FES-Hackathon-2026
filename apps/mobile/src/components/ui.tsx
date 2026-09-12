@@ -3,6 +3,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, TextStyle, View, ViewSt
 import Svg, { Circle } from 'react-native-svg';
 import Animated, { FadeInDown, FadeInUp, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming, Easing } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
 import { C, R, S, shadow, STATUS_COLORS } from '@/theme';
 
 const ACircle = Animated.createAnimatedComponent(Circle);
@@ -54,7 +55,7 @@ export function Button({ label, onPress, color = C.ink, variant = 'solid', disab
   return (
     <Pressable disabled={disabled} onPressIn={() => (sc.value = withSpring(0.96))} onPressOut={() => (sc.value = withSpring(1))} onPress={() => { haptic(); onPress?.(); }}>
       <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, st, style]}>
-        {icon ? <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text> : null}
+        {icon ? ((Ionicons as any).glyphMap?.[icon] ? <Ionicons name={icon as any} size={18} color={fg} style={{ marginRight: 8 }} /> : <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text>) : null}
         <Text style={{ color: fg, fontWeight: '800', fontSize: 16 }}>{label}</Text>
       </Animated.View>
     </Pressable>

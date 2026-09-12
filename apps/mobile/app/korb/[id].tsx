@@ -139,7 +139,7 @@ export default function KorbScreen() {
                 <Button label="Anfrage zurückziehen" variant="ghost" color={C.muted} onPress={cancel} style={{ paddingVertical: 10 }} />
               </>
             )}
-            <Row style={{ gap: 6 }}><StatusBadge status="bestätigt" small /><Text style={T.small}>Abholung 15 P · Reservierung eingehalten +5</Text></Row>
+            <Text style={[T.small, { textAlign: 'center' }]}>Abholung 15 P · Reservierung eingehalten +5</Text>
           </Card>
         </Appear>
       )}

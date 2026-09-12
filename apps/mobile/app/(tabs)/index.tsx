@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
@@ -57,13 +58,33 @@ export default function Discover() {
   }, [data, layer]);
   const ctxColor = CONTEXT[LAYERS.find((l) => l.key === layer)!.ctx].color;
   const selected = shown.find((o) => o.id === sel) ?? null;
-  const mapH = Math.max(260, Math.round(height * 0.42));
 
-  const markers = shown.map((o) => ({ id: o.id, lat: o.lat, lon: o.lon, color: CONTEXT[o.ctx].color, emoji: o.emoji, selected: o.id === sel, onPress: () => { haptic(); setSel(o.id); const i = shown.findIndex((x) => x.id === o.id); if (i >= 0) listRef.current?.scrollToIndex({ index: i, animated: true, viewPosition: 0.2 }); } }));
+  // Liste als verschiebbares Sheet über der Karte: drei Rastpunkte (nur Karte, geteilt, nur Liste)
+  const fullTop = insets.top + 128;
+  const halfTop = Math.round(height * 0.52);
+  const peekTop = height - (100 + insets.bottom) - 64;
+  const snaps = [fullTop, halfTop, peekTop];
+  const top = useSharedValue(halfTop);
+  const startY = useSharedValue(halfTop);
+  const [snapIdx, setSnapIdx] = useState(1);
+  const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: top.value - fullTop }] }));
+  function snapTo(i: number) { setSnapIdx(i); top.value = withSpring(snaps[i], { damping: 19, stiffness: 170, mass: 0.8 }); }
+  const pan = Gesture.Pan()
+    .onBegin(() => { startY.value = top.value; })
+    .onUpdate((e) => { top.value = Math.min(peekTop, Math.max(fullTop, startY.value + e.translationY)); })
+    .onEnd((e) => {
+      const proj = top.value + e.velocityY * 0.12;
+      let best = 0; for (let i = 1; i < snaps.length; i++) if (Math.abs(snaps[i] - proj) < Math.abs(snaps[best] - proj)) best = i;
+      top.value = withSpring(snaps[best], { damping: 19, stiffness: 170, mass: 0.8 });
+      runOnJS(setSnapIdx)(best);
+    });
+  const cycle = () => { haptic(); snapTo(snapIdx === 2 ? 1 : snapIdx === 1 ? 0 : 2); };
+
+  const markers = shown.map((o) => ({ id: o.id, lat: o.lat, lon: o.lon, color: CONTEXT[o.ctx].color, emoji: o.emoji, selected: o.id === sel, onPress: () => { haptic(); setSel(o.id); if (snapIdx === 2) snapTo(1); const i = shown.findIndex((x) => x.id === o.id); if (i >= 0) setTimeout(() => listRef.current?.scrollToIndex({ index: i, animated: true, viewPosition: 0.1 }), 80); } }));
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      <View style={{ height: mapH + insets.top }}>
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height }}>
         <Map center={selected ? { lat: selected.lat, lon: selected.lon } : loc} spanKm={selected ? 1.6 : 3.2} markers={markers} userLocation={loc} style={{ flex: 1 }} />
         <LinearGradient colors={['rgba(246,245,239,0.96)', 'rgba(246,245,239,0)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 100 }} pointerEvents="none" />
         <View pointerEvents="box-none" style={{ position: 'absolute', top: insets.top + 6, left: S.lg, right: S.lg }}>
@@ -87,19 +108,31 @@ export default function Discover() {
             ))}
           </ScrollView>
         </View>
-        {loading && <View style={{ position: 'absolute', right: 16, bottom: 16, backgroundColor: '#fff', borderRadius: 20, padding: 8 }}><ActivityIndicator color={ctxColor} /></View>}
+        {loading && <View style={{ position: 'absolute', right: 16, top: insets.top + 130, backgroundColor: '#fff', borderRadius: 20, padding: 8 }}><ActivityIndicator color={ctxColor} /></View>}
       </View>
 
+      <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: fullTop, height: height - fullTop, backgroundColor: C.bg, borderTopLeftRadius: 26, borderTopRightRadius: 26 }, Platform.OS === 'web' ? ({ userSelect: 'none' } as any) : null, shadow(3), sheetStyle]}>
+        <GestureDetector gesture={pan}>
+          <Pressable onPress={cycle} style={{ paddingTop: 8, paddingBottom: 6, paddingHorizontal: S.lg, alignItems: 'center' }}>
+            <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: C.line }} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 8 }}>
+              <Text style={T.h3}>{shown.length} in deiner Nähe</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Ionicons name={snapIdx === 0 ? 'map' : 'list'} size={15} color={C.muted} />
+                <Text style={{ color: C.muted, fontWeight: '700', fontSize: 12 }}>{snapIdx === 0 ? 'Karte zeigen' : snapIdx === 1 ? 'Ziehen' : 'Liste zeigen'}</Text>
+              </View>
+            </View>
+          </Pressable>
+        </GestureDetector>
       <FlatList
         ref={listRef}
         data={shown}
         keyExtractor={(o) => o.id}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: S.lg, paddingTop: 12, paddingBottom: 120 + insets.bottom, gap: 10 }}
+        contentContainerStyle={{ paddingHorizontal: S.lg, paddingTop: 4, paddingBottom: 120 + insets.bottom, gap: 10 }}
         getItemLayout={(_, i) => ({ length: 96, offset: 96 * i, index: i })}
         onScrollToIndexFailed={() => {}}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={<Text style={[T.h3, { marginBottom: 4 }]}>{shown.length} in deiner Nähe</Text>}
         ListEmptyComponent={loading ? null : <Text style={[T.body, { padding: 20 }]}>Hier ist gerade nichts. Probier eine andere Kategorie.</Text>}
         renderItem={({ item: o, index }) => {
           const c = CONTEXT[o.ctx].color; const av = AVAIL[o.availability];
@@ -123,6 +156,7 @@ export default function Discover() {
           );
         }}
       />
+      </Animated.View>
     </View>
   );
 }

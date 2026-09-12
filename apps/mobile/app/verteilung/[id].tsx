@@ -122,11 +122,11 @@ export default function Verteilung() {
             <Divider />
             <Button label="Übergabe bestätigen" color={col} onPress={pickedUp} />
             <Button label="Reservierung aufheben" variant="ghost" color={C.muted} onPress={cancel} style={{ paddingVertical: 10 }} />
-            <Row style={{ gap: 6 }}><StatusBadge status="plausibel" small /><Text style={T.small}>Abholung 15 P · Slot eingehalten +5</Text></Row>
+            <Text style={[T.small, { textAlign: 'center' }]}>Abholung 15 P · Slot eingehalten +5</Text>
           </Card>
         </Appear>
       )}
-      <View style={{ marginTop: S.xl }}><Button label="Selbst Saver werden" variant="soft" color={col} icon="🦸" onPress={() => router.push('/saver')} /></View>
+      <View style={{ marginTop: S.xl }}><Button label="Selbst Saver werden" variant="soft" color={col} icon="people" onPress={() => router.push('/saver')} /></View>
     </Screen>
   );
 }

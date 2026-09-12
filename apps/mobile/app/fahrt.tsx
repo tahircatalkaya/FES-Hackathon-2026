@@ -148,12 +148,12 @@ export default function Ride() {
             </View>
           </Row>
           <Row style={{ gap: 8 }}>
-            <Button label={tag ? 'Erneut antippen' : 'NFC antippen'} icon="📡" color={col} onPress={tapIn} style={{ flex: 1, paddingVertical: 12 }} />
-            <Button label="QR" icon="▣" color={col} variant="soft" onPress={() => router.push('/scan?mode=ride')} style={{ paddingVertical: 12, paddingHorizontal: 18 }} />
+            <Button label={tag ? 'Erneut antippen' : 'NFC antippen'} icon="radio" color={col} onPress={tapIn} style={{ flex: 1, paddingVertical: 12 }} />
+            <Button label="QR" icon="qr-code" color={col} variant="soft" onPress={() => router.push('/scan?mode=ride')} style={{ paddingVertical: 12, paddingHorizontal: 18 }} />
           </Row>
         </Card>
         <View style={{ marginTop: 14 }}>
-          <Button label={tag ? 'Fahrt starten' : 'Ohne Tag starten (nur GPS)'} icon="▶️" color={col} onPress={start} />
+          <Button label={tag ? 'Fahrt starten' : 'Ohne Tag starten (nur GPS)'} icon="play" color={col} onPress={start} />
         </View>
         <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={onTag} color={col} demoLine={deps[0]?.route ?? 'U4'} />
       </Screen>
@@ -184,7 +184,7 @@ export default function Ride() {
               </View>
             )}
             {sim && <Text style={T.small}>▶ {TR[sim].title}: {TR[sim].desc}</Text>}
-            <Button label="Fahrt beenden & prüfen" color={C.ink} icon="⏹" onPress={stop} />
+            <Button label="Fahrt beenden & prüfen" color={C.ink} icon="stop" onPress={stop} />
           </Card>
         </View>
       </View>

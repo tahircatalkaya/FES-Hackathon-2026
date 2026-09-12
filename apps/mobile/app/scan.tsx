@@ -134,12 +134,12 @@ function ScanInner() {
           <TextInput value={manual} onChangeText={setManual} placeholder={mode === 'ride' ? 'z. B. U4|1234' : mode === 'vytal' ? 'z. B. B7K2M9QX' : 'Code'} placeholderTextColor={C.muted} autoCapitalize="characters" style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
           <Row style={{ gap: 8 }}>
             <Button label="Prüfen" color={color} onPress={() => manual && handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
-            {mode === 'bin' ? <Button label="NFC antippen" icon="📡" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q')} />}
+            {mode === 'bin' ? <Button label="NFC antippen" icon="radio" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q')} />}
           </Row>
         </Card>
       )}
       <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={(t) => handle(p.id ?? t.raw)} color={color} title="Handy an den Behälter halten" label="Der Tag sitzt am FES-Aufkleber des Behälters. Hier simuliert." />
-      {mode === 'litter' && !done && <View style={{ marginTop: 14 }}><Button label="Ja, aufgehoben und entsorgt" color={color} icon="🫶" onPress={() => handle('litter')} /></View>}
+      {mode === 'litter' && !done && <View style={{ marginTop: 14 }}><Button label="Ja, aufgehoben und entsorgt" color={color} icon="checkmark-circle" onPress={() => handle('litter')} /></View>}
       {done && <View style={{ marginTop: 14 }}><Button label="Fertig" color={color} onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/handeln'))} /></View>}
       {mode === 'bin' && nfcSeen.length > 0 && <Text style={[T.small, { marginTop: 10 }]}>Zuletzt gelesene Tags: {nfcSeen.slice(-3).join(', ')}</Text>}
     </Screen>

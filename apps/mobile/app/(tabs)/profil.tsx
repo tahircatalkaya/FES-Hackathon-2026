@@ -63,8 +63,8 @@ export default function Profile() {
       </Appear>
 
       <Row style={{ marginTop: 12, gap: 8 }}>
-        <Button label="Belohnungen" icon="🎁" color={col} onPress={() => router.push('/belohnungen')} style={{ flex: 1, paddingVertical: 12 }} />
-        <Button label="Journal" icon="📒" color={col} variant="soft" onPress={() => router.push('/journal')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label="Belohnungen" icon="gift" color={col} onPress={() => router.push('/belohnungen')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label="Journal" icon="journal" color={col} variant="soft" onPress={() => router.push('/journal')} style={{ flex: 1, paddingVertical: 12 }} />
       </Row>
 
       <SectionTitle title="Sprache" />

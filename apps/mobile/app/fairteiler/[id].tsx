@@ -4,8 +4,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
-import { Appear, Button, Card, Divider, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
-import { AiPhotoSheet, VoiceSheet, type AiResult } from '@/components/AiSheets';
+import { Appear, Card, Row, T, Tag, haptic } from '@/components/ui';
+import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
 import { C, CONTEXT, S } from '@/theme';
 import { fs, hav, type FoodSharePoint } from '@/api/foodsharing';
 import fairteilerSnapshot from '@/data/fairteiler.json';
@@ -24,7 +24,7 @@ export default function Fairteiler() {
   const router = useRouter();
   const { loc } = useLocation();
   const [pt, setPt] = useState<FoodSharePoint | null>(null);
-  const [sheet, setSheet] = useState<null | 'report' | 'stock' | 'pickup' | 'voice'>(null);
+  const [sheet, setSheet] = useState<null | 'shelf' | 'stock' | 'pickup'>(null);
   const { shelfReports, addShelfReport, addAward, itemReservations, reserveItem, releaseItem, name } = useStore();
   const { setCtx, showToast } = useUI();
 
@@ -42,22 +42,26 @@ export default function Fairteiler() {
   const title = pt.name.replace(/^Abgabestelle\s*/i, '').replace(/"/g, '');
   const ageMin = latest ? Math.round((Date.now() - latest.at) / 60000) : null;
   const myRes = itemReservations.filter((r) => r.placeId === `fsp-${pt.id}` && r.expiresAt > Date.now());
-  const proof = (r: AiResult) => [r.photo ? 'Foto mit Zeitstempel gespeichert' : r.audio ? 'Sprachnotiz gespeichert' : 'Ohne Foto', near ? `Standort ${Math.round(dist)} m vom Fairteiler` : `Standort ${Math.round(dist)} m entfernt`];
-  const status = (r: AiResult): 'plausibel' | 'schwach plausibel' | 'selbst angegeben' => (r.photo && near ? 'plausibel' : r.photo || r.audio ? 'schwach plausibel' : 'selbst angegeben');
-
-  function onReport(r: AiResult) {
+  const proof = (r: ActionResult) => [
+    r.photo ? 'Foto mit Zeitstempel gespeichert' : r.audio ? 'Sprachnotiz gespeichert' : 'Selbst eingetragen',
+    r.ai ? (r.method === 'photo' ? 'Inhalt per Bilderkennung erfasst, von dir bestätigt' : 'Sprachnotiz transkribiert, von dir bestätigt') : null,
+    near ? `Standort ${Math.round(dist)} m vom Fairteiler` : `Standort ${Math.round(dist)} m entfernt`,
+  ].filter(Boolean) as string[];
+  const status = (r: ActionResult): 'plausibel' | 'schwach plausibel' | 'selbst angegeben' => (r.photo && near ? 'plausibel' : r.photo || r.audio ? 'schwach plausibel' : 'selbst angegeben');
+  const srcOf = (r: ActionResult) => (r.method === 'photo' ? (r.ai ? 'foto+ki' : 'foto') : r.method === 'voice' ? (r.ai ? 'sprachnotiz+ki' : 'sprachnotiz') : 'user');
+  function onReport(r: ActionResult) {
     addShelfReport({ pointId: pt!.id, at: Date.now(), fill: r.fill, categories: Array.from(new Set(r.items.map((i) => i.cat))), photo: r.photo, items: r.items });
-    showToast(addAward({ type: 'food.report', partner: 'foodsharing', status: status(r), key: `shelf:${pt!.id}:${Math.floor(Date.now() / (6 * 3600e3))}`, at: Date.now(), title: `Regal-Status: ${title}`, meta: { source: 'foto+ki', evidence: [`Erkannt: ${r.items.map((i) => i.name).join(', ') || 'nichts'} · Füllstand ${r.fill}`, ...proof(r)] } }));
+    showToast(addAward({ type: 'food.report', partner: 'foodsharing', status: status(r), key: `shelf:${pt!.id}:${Math.floor(Date.now() / (6 * 3600e3))}`, at: Date.now(), title: `Regal-Status: ${title}`, meta: { source: srcOf(r), evidence: [`Inhalt: ${r.items.map((i) => i.name).join(', ') || 'leer'} · Füllstand ${r.fill}`, ...proof(r)] } }));
   }
-  function onStock(r: AiResult) {
+  function onStock(r: ActionResult) {
     addShelfReport({ pointId: pt!.id, at: Date.now(), fill: 'mittel', categories: Array.from(new Set(r.items.map((i) => i.cat))), photo: r.photo, items: r.items });
-    showToast(addAward({ type: 'food.stock', partner: 'foodsharing', status: status(r), key: `stock:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Eingestellt: ${r.items.map((i) => i.name).join(', ')}`, meta: { food_g: r.grams, source: r.audio ? 'sprachnotiz+ki' : 'foto+ki', evidence: [`ca. ${(r.grams / 1000).toFixed(1)} kg für andere bereitgestellt`, ...proof(r)] } }));
+    showToast(addAward({ type: 'food.stock', partner: 'foodsharing', status: status(r), key: `stock:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Eingestellt: ${r.items.map((i) => i.name).join(', ')}`, meta: { food_g: r.grams, source: srcOf(r), evidence: [`ca. ${(r.grams / 1000).toFixed(1)} kg für andere bereitgestellt`, ...proof(r)] } }));
   }
-  async function onPickup(r: AiResult) {
+  async function onPickup(r: ActionResult) {
     let st = status(r); const ev = [`Mitgenommen: ${r.items.map((i) => i.name).join(', ')} (ca. ${(r.grams / 1000).toFixed(1)} kg)`, ...proof(r)];
     try { await fs.pickup({ food_share_point_id: pt!.id }); st = 'plausibel'; ev.push('Abholung bei foodsharing registriert'); } catch {}
     myRes.forEach((x) => releaseItem(x.id));
-    showToast(addAward({ type: 'food.pickup', partner: 'foodsharing', status: st, key: `pickup:fsp:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Abgeholt: ${title}`, meta: { food_g: r.grams, source: 'foto+ki', evidence: ev } }));
+    showToast(addAward({ type: 'food.pickup', partner: 'foodsharing', status: st, key: `pickup:fsp:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Abgeholt: ${title}`, meta: { food_g: r.grams, source: srcOf(r), evidence: ev } }));
   }
   function hold(item: { name: string; qty: string }) {
     haptic('success');
@@ -101,24 +105,31 @@ export default function Fairteiler() {
                 })}
               </View>
             </View>
-          ) : <Text style={[T.body, { marginTop: 6 }]}>Heute hat noch niemand gemeldet. Ein Foto reicht, die App erkennt den Rest. 15 Punkte.</Text>}
+          ) : <Text style={[T.body, { marginTop: 6 }]}>Heute hat noch niemand gemeldet. Ein kurzer Blick ins Regal hilft allen, die danach kommen.</Text>}
         </Card>
       </Appear>
 
-      <View style={{ marginTop: 14, gap: 10 }}>
-        <Button label="Regal fotografieren · 15 P" color={col} icon="📷" onPress={() => setSheet('report')} />
-        <Row style={{ gap: 10 }}>
-          <Button label="Eingestellt · 40 P" color={col} variant="soft" icon="🫙" onPress={() => setSheet('stock')} style={{ flex: 1 }} />
-          <Button label="Per Sprache" color={col} variant="soft" icon="🎙️" onPress={() => setSheet('voice')} style={{ flex: 1 }} />
-        </Row>
-        <Button label="Abgeholt · 15 P" color={C.ink} variant="ghost" icon="🥕" onPress={() => setSheet('pickup')} />
-      </View>
-      <Row style={{ marginTop: 10, gap: 6, flexWrap: 'wrap' }}><StatusBadge status="plausibel" small /><Text style={T.small}>mit Foto vor Ort · </Text><StatusBadge status="selbst angegeben" small /><Text style={T.small}>ohne Nachweis</Text></Row>
+      <Text style={[T.label, { marginTop: 18, marginBottom: 8 }]}>Was machst du gerade?</Text>
+      <Row style={{ gap: 10 }}>
+        <ActionTile icon="bag-handle" label="Abholen" pts={15} color={col} onPress={() => setSheet('pickup')} />
+        <ActionTile icon="add-circle" label="Einstellen" pts={40} color={col} onPress={() => setSheet('stock')} />
+        <ActionTile icon="eye" label="Regal melden" pts={15} color={col} onPress={() => setSheet('shelf')} />
+      </Row>
+      <Text style={[T.small, { marginTop: 8, textAlign: 'center' }]}>Per Foto, Sprachnotiz oder selbst eintragen. Du entscheidest.</Text>
 
-      <AiPhotoSheet open={sheet === 'report'} onClose={() => setSheet(null)} onDone={onReport} color={col} mode="shelf" title="Was ist im Regal?" />
-      <AiPhotoSheet open={sheet === 'stock'} onClose={() => setSheet(null)} onDone={onStock} color={col} mode="stock" title="Was hast du eingestellt?" />
-      <AiPhotoSheet open={sheet === 'pickup'} onClose={() => setSheet(null)} onDone={onPickup} color={col} mode="pickup" title="Was nimmst du mit?" />
-      <VoiceSheet open={sheet === 'voice'} onClose={() => setSheet(null)} onDone={onStock} color={col} />
+      <FoodActionSheet open={sheet === 'shelf'} mode="shelf" onClose={() => setSheet(null)} onDone={onReport} color={col} />
+      <FoodActionSheet open={sheet === 'stock'} mode="stock" onClose={() => setSheet(null)} onDone={onStock} color={col} />
+      <FoodActionSheet open={sheet === 'pickup'} mode="pickup" onClose={() => setSheet(null)} onDone={onPickup} color={col} />
     </Screen>
+  );
+}
+
+function ActionTile({ icon, label, pts, color, onPress }: { icon: any; label: string; pts: number; color: string; onPress: () => void }) {
+  return (
+    <Pressable onPress={() => { haptic(); onPress(); }} style={({ pressed }) => [{ flex: 1, alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingVertical: 16, paddingHorizontal: 6, borderWidth: 1.5, borderColor: pressed ? color : C.line, transform: [{ scale: pressed ? 0.97 : 1 }] }]}>
+      <View style={{ width: 52, height: 52, borderRadius: 18, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={icon} size={26} color="#fff" /></View>
+      <Text style={[T.h3, { marginTop: 8, fontSize: 14 }]} numberOfLines={1}>{label}</Text>
+      <Text style={{ color, fontWeight: '800', fontSize: 12, marginTop: 2 }}>+{pts} P</Text>
+    </Pressable>
   );
 }

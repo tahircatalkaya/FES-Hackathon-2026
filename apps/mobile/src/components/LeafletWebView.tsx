@@ -21,7 +21,7 @@ export default function LeafletWebView({ center, spanKm = 4, markers = [], polyl
 </head><body><div id="m"></div><script>${LEAFLET_JS}</script>
 <script>
 var map=L.map('m',{zoomControl:false,attributionControl:true,dragging:${interactive},scrollWheelZoom:${interactive},doubleClickZoom:${interactive},touchZoom:${interactive},tap:${interactive}}).setView([${center.lat},${center.lon}],${zoom});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap, &copy; CARTO',maxZoom:19}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap-Mitwirkende',maxZoom:19}).addTo(map);
 var layer=L.layerGroup().addTo(map);var userM=null;var post=function(o){window.ReactNativeWebView&&window.ReactNativeWebView.postMessage(JSON.stringify(o))};
 map.on('click',function(e){post({type:'press',lat:e.latlng.lat,lon:e.latlng.lng})});
 function icon(c,e,s){var z=s?42:34;return L.divIcon({html:'<div class="mm" style="background:'+c+';width:'+z+'px;height:'+z+'px;font-size:'+(s?20:16)+'px">'+e+'</div>',className:'',iconSize:[z,z],iconAnchor:[z/2,z/2]})}

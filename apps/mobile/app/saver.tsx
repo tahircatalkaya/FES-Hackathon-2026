@@ -99,7 +99,7 @@ export default function Saver() {
         <TextInput value={items} onChangeText={setItems} placeholder="Posten, z. B. 2 Tüten Laugenstangen, 6× Joghurt" placeholderTextColor={C.muted} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, color: C.ink }} />
         <Row style={{ gap: 6 }}><Text style={T.small}>Slots</Text>{[6, 8, 12].map((n) => <Pill key={n} label={String(n)} active={slots === n} color={col} onPress={() => setSlots(n)} />)}</Row>
         <Button label={`Veröffentlichen · 60 P ${isVerified ? '(bestätigt)' : '(×0,3 bis zur Verifikation)'}`} color={col} onPress={createDistribution} disabled={!title.trim()} />
-        <Row style={{ gap: 6 }}><StatusBadge status={isVerified ? 'bestätigt' : 'selbst angegeben'} small /><Text style={T.small}>Adresse wird nie öffentlich. Kreis 300 m, exakt erst 15 min vor Slot.</Text></Row>
+        <Text style={T.small}>Adresse wird nie öffentlich. Kreis 300 m, exakt erst 15 min vor Slot.</Text>
       </Card>
     </Screen>
   );

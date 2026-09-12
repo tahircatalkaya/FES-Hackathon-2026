@@ -11,7 +11,7 @@ Reihenfolge so, dass der stärkste Moment (die abgelehnte Autofahrt) in Minute 3
 | 2:15 | Tracking | Banner „Aufzeichnung läuft“, Simulation **Autofahrt neben der Linie** → beenden | **„Nicht zuordenbar. 0 Punkte. Das System lehnt eine Autofahrt ab.“** |
 | 3:00 | Fahrt starten | Nochmal, Simulation **U4-Fahrt** → 95 % Konfidenz, Bausteine, Begründung → Bestätigen | „Konfidenz aus vier Bausteinen, jede Zahl erklärt.“ |
 | 3:45 | Toast → Warum-Sheet | +14 Punkte, Tippen: Formel 20 × 0,7 × 1, Faktoren, Quelle | „Nachvollziehbarkeit: ein Screen, ein Kriterium.“ |
-| 4:15 | Fairteiler | Regal-Status melden mit Foto → 15 P schwach plausibel | „Nutzereingabe bleibt Nutzereingabe. Melden hilft anderen.“ |
+| 4:15 | Fairteiler | Regal melden → Foto → Erkennung schlägt Inhalt vor → bestätigen → 15 P | „Nutzereingabe bleibt Nutzereingabe. Melden hilft anderen.“ |
 | 5:00 | Korb | Anfrage statt Reservierung, Kreis statt Adresse, Zusage → Adresse erscheint, Abholung → 0 Punkte, voller Impact | „Abholen gibt keine Punkte. Hamstern hat keinen Hebel.“ |
 | 5:45 | Saver | Verifikation über die API: Quiz → 3 Abholungen → Freigabe → is_verified | „Der echte Foodsaver-Prozess, digital.“ |
 | 6:30 | Mehrweg | Ausleihe scannen, Rückgabe bestätigen → +30, zweites Mal → 0 (Doppelbelohnung) | „Genau einmal je Transaktion.“ |
