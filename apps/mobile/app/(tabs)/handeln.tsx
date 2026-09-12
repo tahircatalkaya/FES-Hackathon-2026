@@ -83,7 +83,7 @@ export default function Act() {
               </View>
             </View>
           </View>
-          <Button label="Aktion starten" icon="🧹" onPress={() => setSheet('new')} color={C.clean} style={{ marginTop: S.md }} />
+          <Button label="Aktion starten" icon="🤝" onPress={() => setSheet('new')} color={C.clean} style={{ marginTop: S.md }} />
         </Card>
       </Appear>
 
@@ -135,7 +135,7 @@ export default function Act() {
             <Appear key={c.id} delay={300 + i * 50}>
               <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 }}>
                 <Pressable onPress={() => router.push(`/cleanup/${c.id}` as any)} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Text style={{ fontSize: 24 }}>🧹</Text>
+                  <Text style={{ fontSize: 24 }}>🤝</Text>
                   <View style={{ flex: 1 }}>
                     <Text style={T.h3} numberOfLines={1}>{c.title}</Text>
                     <Text style={T.small} numberOfLines={1}>

@@ -61,7 +61,7 @@ export default function CleanupScreen() {
     <Screen tabBar={false}>
       <Header title={cu.title} subtitle={cu.district} color={col} />
       <View style={{ height: 190, borderRadius: 22, overflow: 'hidden' }}>
-        <Map center={{ lat: cu.lat, lon: cu.lon }} spanKm={1.6} userLocation={loc} interactive={false} circles={[{ lat: cu.lat, lon: cu.lon, radius: cu.radiusM, color: col }]} markers={[{ id: 'c', lat: cu.lat, lon: cu.lon, color: col, emoji: '🧹', selected: true }]} />
+        <Map center={{ lat: cu.lat, lon: cu.lon }} spanKm={1.6} userLocation={loc} interactive={false} circles={[{ lat: cu.lat, lon: cu.lon, radius: cu.radiusM, color: col }]} markers={[{ id: 'c', lat: cu.lat, lon: cu.lon, color: col, emoji: '🤝', selected: true }]} />
       </View>
       <Row style={{ marginTop: 12, justifyContent: 'space-between' }}>
         <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{new Date(cu.start).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}–{new Date(cu.end).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text>

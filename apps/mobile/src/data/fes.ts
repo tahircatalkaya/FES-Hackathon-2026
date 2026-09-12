@@ -35,7 +35,7 @@ export const BIN_FINDINGS = [
 
 /** Vorlagen für eigene Aktionen: Auswahl statt Freitext. */
 export const ACTION_TYPES = [
-  { icon: '🧹', title: 'Clean-up', short: 'Clean-up' },
+  { icon: '🤝', title: 'Clean-up', short: 'Clean-up' },
   { icon: '🚬', title: 'Kippen-Sammelrunde', short: 'Kippen' },
   { icon: '🌳', title: 'Parkputz', short: 'Park' },
   { icon: '🚲', title: 'Uferweg-Aktion', short: 'Uferweg' },
