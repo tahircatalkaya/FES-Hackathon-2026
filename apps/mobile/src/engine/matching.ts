@@ -62,6 +62,22 @@ export function departuresAt(stationId: number, nowMin: number, limit = 8): Depa
   return out.filter((d) => { const k = d.route + d.headsign; seen[k] = (seen[k] ?? 0) + 1; return seen[k] <= 2; }).slice(0, limit);
 }
 
+export interface UpcomingStop { id: number; name: string; lat: number; lon: number; minute: number; last: boolean }
+
+/**
+ * Restliche Halte einer Fahrt ab dem Einstieg, mit planmaessiger Ankunft.
+ * Die Abfahrt kennt ihren Halt-Index, daraus laesst sich der Fahrtbeginn zurueckrechnen.
+ */
+export function remainingStops(d: Departure): UpcomingStop[] {
+  const start = d.minute - d.pattern.offsets[d.stopIndex];
+  const lastIdx = d.pattern.stops.length - 1;
+  return d.pattern.stops.slice(d.stopIndex + 1).map((id, k) => {
+    const i = d.stopIndex + 1 + k;
+    const st = STATIONS[id];
+    return { id, name: st.name, lat: st.lat, lon: st.lon, minute: start + d.pattern.offsets[i], last: i === lastIdx };
+  });
+}
+
 export interface MatchScore {
   pattern: Pattern;
   fromIdx: number; toIdx: number;
