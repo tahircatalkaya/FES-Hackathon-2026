@@ -51,7 +51,6 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
   const width = size * p.ratio;
   const blink = useSharedValue(0);
   const idle = useSharedValue(0);
-  const hop = useSharedValue(0);
 
   useEffect(() => {
     blink.value = withRepeat(
@@ -73,26 +72,15 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
       -1,
       false,
     );
-    /** Alle paar Sekunden ein doppelter Hüpfer, damit die Figur nicht einschläft. */
-    hop.value = withRepeat(
-      withSequence(
-        withDelay(3600, withTiming(1, { duration: 170, easing: Easing.out(Easing.quad) })),
-        withTiming(0, { duration: 220, easing: Easing.in(Easing.quad) }),
-        withTiming(1, { duration: 150, easing: Easing.out(Easing.quad) }),
-        withTiming(0, { duration: 200, easing: Easing.in(Easing.quad) }),
-      ),
-      -1,
-      false,
-    );
   }, []);
 
   const swing = p.lively ? 7 : 4;
   const bodyStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: (p.lively ? 0.04 : 0.02) * size * (idle.value - 0.5) * 2 },
-      { translateY: -0.06 * size * idle.value - 0.12 * size * hop.value },
+      { translateY: -0.06 * size * idle.value },
       { rotate: `${-swing / 2 + swing * idle.value}deg` },
-      { scale: 1 + 0.03 * idle.value + 0.05 * hop.value },
+      { scale: 1 + 0.03 * idle.value },
     ],
   }));
   const lidStyle = useAnimatedStyle(() => ({ transform: [{ scaleY: blink.value }] }));
