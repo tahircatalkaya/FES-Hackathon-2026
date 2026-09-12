@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withSpring, withTiming, withRepeat, withSequence } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { C, NAVY, shadow } from '@/theme';
 import { useT } from '@/i18n/useT';
@@ -37,8 +37,6 @@ function TabBar({ state, navigation }: any) {
   const slotOf = (i: number) => (i < 2 ? i : i + 1);
   // Animate slot units so a resize cannot leave a stale pixel position outside the bar.
   const position = useSharedValue(slotOf(Math.max(0, activeIdx)));
-  const animatedColor = useSharedValue(color);
-  const glow = useSharedValue(1);
   useEffect(() => {
     // Keep the current position, but discard momentum from an interrupted tab change.
     cancelAnimation(position);
@@ -47,19 +45,10 @@ function TabBar({ state, navigation }: any) {
     });
     return () => cancelAnimation(position);
   }, [activeIdx, position]);
-  useEffect(() => {
-    // Retarget from the displayed color, including during rapid context changes.
-    animatedColor.value = withTiming(color, { duration: 500 });
-  }, [color, animatedColor]);
-  useEffect(() => {
-    glow.value = withRepeat(withSequence(withTiming(1.08, { duration: 1400 }), withTiming(1, { duration: 1400 })), -1, true);
-    return () => cancelAnimation(glow);
-  }, [glow]);
   const ind = useAnimatedStyle(() => ({
     transform: [{ translateX: Math.min(slots - 1, Math.max(0, position.value)) * cell }],
-    backgroundColor: animatedColor.value,
+    backgroundColor: NAVY,
   }));
-  const scanSt = useAnimatedStyle(() => ({ transform: [{ scale: glow.value }], backgroundColor: animatedColor.value }));
 
   return (
     <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center', paddingBottom: Math.max(insets.bottom, 10), pointerEvents: 'box-none' }}>

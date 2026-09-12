@@ -16,6 +16,8 @@ import { fmtCo2, FACTORS } from '@/engine/impact';
 import { useT } from '@/i18n/useT';
 import { FRANKFURT_GOAL } from '@/data/mock';
 
+const WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+
 const MEDALS = [
   { name: 'Bronze', points: 15, color: '#B87333' },
   { name: 'Silber', points: 50, color: '#9DA5AE' },
@@ -34,7 +36,6 @@ export default function Impact() {
   const wk = weekStats(ledger);
   const st = chameleonStage(ledger);
   const earnedPoints = ledger.reduce((sum, entry) => sum + Math.max(0, entry.points), 0);
-  const comp = comparisons(total.co2_g);
   const byMode = useMemo(() => {
     const m: Record<string, { km: number; co2: number; n: number }> = {};
     for (const l of ledger) if (l.type.startsWith('ride') && l.meta?.mode) { const k = String(l.meta.mode); m[k] = m[k] ?? { km: 0, co2: 0, n: 0 }; m[k].km += l.impact.km; m[k].co2 += l.impact.co2_g; m[k].n++; }
