@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
-import { ChamiClip, ChamiMascot } from '@/components/ChamiMascot';
+import { CelebrationOverlay, ChamiMascot } from '@/components/ChamiMascot';
 import { FesLogo } from '@/components/FesLogo';
 import { Appear, Button, Card, Ring, SectionTitle, T, Tag, haptic } from '@/components/ui';
 import { BingoSheet } from '@/components/BingoSheet';
@@ -22,12 +22,16 @@ export default function Act() {
   const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
-  const [celebrating, setCelebrating] = useState(false);
+  const [reward, setReward] = useState<null | { title: string; points: number }>(null);
   const [showAll, setShowAll] = useState(false);
   useEffect(() => { setCtx('clean'); }, []);
+  /** Jede neue Gutschrift im Journal löst die Belohnung aus. */
   const seen = React.useRef(ledger.length);
   useEffect(() => {
-    if (ledger.length > seen.current) setCelebrating(true);
+    if (ledger.length > seen.current) {
+      const fresh = ledger[0];
+      if (fresh) setReward({ title: fresh.title, points: fresh.points });
+    }
     seen.current = ledger.length;
   }, [ledger.length]);
 
@@ -72,9 +76,8 @@ export default function Act() {
       <Appear delay={60}>
         <Card style={{ marginTop: S.lg, overflow: 'hidden', paddingVertical: 12 }}>
           <LinearGradient colors={[C.clean + '18', '#fff']} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
-          {celebrating && <ChamiClip onDone={() => setCelebrating(false)} />}
-          <View style={{ flexDirection: 'row', alignItems: 'center', display: celebrating ? 'none' : 'flex' }}>
-            <ChamiMascot size={140} onPress={() => { haptic(); setCelebrating(true); }} />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <ChamiMascot size={140} />
             <View style={{ flex: 1, paddingLeft: 4 }}>
               <Text style={T.h3}>{chameleonName} · {st.label}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 10 }}>
@@ -158,6 +161,7 @@ export default function Act() {
         })}
       </View>
 
+      <CelebrationOverlay open={!!reward} title={reward?.title} points={reward?.points} onClose={() => setReward(null)} />
       <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} />
       <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} />
       <NewActionSheet open={sheet === 'new'} onClose={() => setSheet(null)} />
