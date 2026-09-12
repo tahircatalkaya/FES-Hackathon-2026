@@ -50,6 +50,7 @@ export function BingoSheet({ open, onClose }: { open: boolean; onClose: () => vo
     });
     haptic(a.duplicate ? 'warn' : 'success');
     setBefore(null); setAfter(null); setConfirmed(false); setHint('');
+    onClose(); // Platz machen: die Belohnung liegt auf der Seite darunter
   }
 
   return (
