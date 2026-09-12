@@ -154,7 +154,7 @@ export function ClipPlayer({ clip = 'clean', style }: { clip?: ClipName; style?:
 /** Kachel im Stil einer Lernapp: farbiger Rahmen, Label oben, Wert groß. */
 function StatTile({ label, value, color, delay }: { label: string; value: string; color: string; delay: number }) {
   return (
-    <Animated.View entering={ZoomIn.springify().damping(13).delay(delay)} style={{ flex: 1, borderRadius: 18, backgroundColor: color, padding: 2 }}>
+    <Animated.View entering={ZoomIn.duration(240).delay(delay)} style={{ flex: 1, borderRadius: 18, backgroundColor: color, padding: 2 }}>
       <View style={{ borderRadius: 16, backgroundColor: '#fff', paddingVertical: 10, paddingHorizontal: 12, alignItems: 'center' }}>
         <Text style={{ fontSize: 11, fontWeight: '900', color, letterSpacing: 0.8 }}>{label}</Text>
         <Text style={{ fontSize: 26, fontWeight: '900', color: C.ink, letterSpacing: -0.5, marginTop: 2 }}>{value}</Text>
@@ -213,7 +213,7 @@ export function CelebrationOverlay({
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable onPress={onClose} style={{ flex: 1, backgroundColor: 'rgba(15,20,15,0.72)', alignItems: 'center', justifyContent: 'center', padding: S.lg }}>
-        <Animated.View entering={ZoomIn.springify().damping(15)} style={[{ width: boxWidth, backgroundColor: '#fff', borderRadius: R.xl, overflow: 'hidden' }, shadow(3)]}>
+        <Animated.View entering={ZoomIn.duration(240)} style={[{ width: boxWidth, backgroundColor: '#fff', borderRadius: R.xl, overflow: 'hidden' }, shadow(3)]}>
           <VideoView player={player} style={{ width: boxWidth, height: boxWidth / c.ratio }} contentFit="cover" nativeControls={false} />
 
           <View style={{ padding: S.lg, alignItems: 'center' }}>

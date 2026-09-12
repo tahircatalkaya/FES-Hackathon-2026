@@ -47,9 +47,9 @@ interface State {
   setPrivacy: (p: Partial<State['privacy']>) => void;
   addAward: (e: ActionEvent) => Award;
   syncFoodAwards: (receipts: Award[]) => void;
+  syncContainers: (containers:Container[]) => void;
   redeem: (r: Omit<Redemption, 'id' | 'at'>) => boolean;
   addContainer: (c: Container) => void;
-  returnContainer: (code: string, returnedAt: number) => Container | undefined;
   addReservation: (r: Reservation) => void;
   updateReservation: (id: number, patch: Partial<Reservation>) => void;
   reserveItem: (r: Omit<ItemReservation, 'id' | 'at'>) => void;
@@ -112,7 +112,7 @@ export const useStore = create<State>()(
       setPrivacy: (p) => set({ privacy: { ...get().privacy, ...p } }),
       // Display cache only; the handover server owns these receipts and all food awards.
       syncFoodAwards: (receipts) => set({ ledger: [
-        ...receipts.filter(a => a.key.startsWith('trust:') && a.partner === 'foodsharing'),
+        ...receipts.filter(a => a.key.startsWith('trust:') && ['foodsharing','vytal'].includes(a.partner)),
         ...get().ledger.filter(a => !a.key.startsWith('trust:')),
       ].sort((a, b) => b.at - a.at) }),
       addAward: (e) => {
@@ -136,13 +136,8 @@ export const useStore = create<State>()(
         set({ spent: s.spent + r.cost, redemptions: [{ ...r, id: `${Date.now()}`, at: Date.now() }, ...s.redemptions] });
         return true;
       },
-      addContainer: (c) => set({ containers: [c, ...get().containers] }),
-      returnContainer: (code, returnedAt) => {
-        const c = get().containers.find((x) => x.code === code && !x.returnedAt);
-        if (!c) return undefined;
-        set({ containers: get().containers.map((x) => (x === c ? { ...x, returnedAt } : x)) });
-        return { ...c, returnedAt };
-      },
+      syncContainers: (containers) => set({containers:[...containers,...get().containers.filter(c=>!c.txId.startsWith('trust:')&&!containers.some(n=>n.code===c.code))]}),
+      addContainer: (c) => set({ containers: get().containers.some(x=>x.code===c.code&&!x.returnedAt)?get().containers:[c, ...get().containers] }),
       addReservation: (r) => set({ reservations: [r, ...get().reservations] }),
       updateReservation: (id, patch) => set({ reservations: get().reservations.map((r) => (r.basketId === id ? { ...r, ...patch } : r)) }),
       reserveItem: (r) => set({ itemReservations: [{ ...r, id: `${Date.now()}-${Math.random()}`, at: Date.now() }, ...get().itemReservations] }),
@@ -160,9 +155,9 @@ export const useStore = create<State>()(
       addNfc: (id) => set({ nfcSeen: [...get().nfcSeen, id] }),
       resetAll: () => set({ ...initial }),
     }),
-    { name: 'mainsam-v1', version: 2, storage: createJSONStorage(() => AsyncStorage), migrate: (saved: any) => ({
+    { name: 'mainsam-v1', version: 3, storage: createJSONStorage(() => AsyncStorage), migrate: (saved: any) => ({
       ...saved,
-      ledger: (saved?.ledger ?? []).map((a: Award) => a.type.startsWith('food.') ? computeAward(a, []) : a),
+      ledger: (saved?.ledger ?? []).map((a: Award) => !a.key.startsWith('trust:') && (a.type.startsWith('food.')||a.type.startsWith('reuse.')) ? computeAward(a, []) : a),
       reservations: (saved?.reservations ?? []).map((r: Reservation) => ({ ...r, status: r.status === 'accepted' ? 'pending' : r.status, addressRevealed: undefined })),
     }) },
   ),

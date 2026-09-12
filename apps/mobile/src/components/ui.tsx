@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle, Platform } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import Animated, { FadeInDown, FadeInUp, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming, Easing } from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeInUp, useAnimatedProps, useAnimatedStyle, useSharedValue, withTiming, Easing, ReduceMotion } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { C, R, S, shadow, STATUS_COLORS } from '@/theme';
@@ -32,7 +32,7 @@ export function Card({ children, style, onPress, tint }: { children: React.React
   );
   if (!onPress) return inner;
   return (
-    <Pressable onPressIn={() => (sc.value = withSpring(0.975))} onPressOut={() => (sc.value = withSpring(1))} onPress={() => { haptic(); onPress(); }}>
+    <Pressable onPressIn={() => (sc.value = withTiming(0.975, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPressOut={() => (sc.value = withTiming(1, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPress={() => { haptic(); onPress(); }}>
       {inner}
     </Pressable>
   );
@@ -40,7 +40,7 @@ export function Card({ children, style, onPress, tint }: { children: React.React
 
 export function Pill({ label, color = C.ink, active, onPress, icon }: { label: string; color?: string; active?: boolean; onPress?: () => void; icon?: string }) {
   return (
-    <Pressable onPress={onPress ? () => { haptic(); onPress(); } : undefined} style={[styles.pill, { borderColor: active ? color : C.line, backgroundColor: active ? color : '#fff' }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected:!!active}} onPress={onPress ? () => { haptic(); onPress(); } : undefined} style={[styles.pill, { borderColor: active ? color : C.line, backgroundColor: active ? color : '#fff' }]}>
       {icon ? <Text style={{ fontSize: 13 }}>{icon} </Text> : null}
       <Text style={{ color: active ? '#fff' : C.ink2, fontWeight: '700', fontSize: 13 }}>{label}</Text>
     </Pressable>
@@ -53,10 +53,10 @@ export function Button({ label, onPress, color = C.ink, variant = 'solid', disab
   const bg = variant === 'solid' ? color : variant === 'soft' ? color + '1A' : 'transparent';
   const fg = variant === 'solid' ? '#fff' : color;
   return (
-    <Pressable disabled={disabled} onPressIn={() => (sc.value = withSpring(0.96))} onPressOut={() => (sc.value = withSpring(1))} onPress={() => { haptic(); onPress?.(); }}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{disabled:!!disabled}} disabled={disabled} onPressIn={() => (sc.value = withTiming(0.96, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPressOut={() => (sc.value = withTiming(1, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPress={() => { haptic(); onPress?.(); }}>
       <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, st, style]}>
         {icon ? ((Ionicons as any).glyphMap?.[icon] ? <Ionicons name={icon as any} size={18} color={fg} style={{ marginRight: 8 }} /> : <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text>) : null}
-        <Text style={{ color: fg, fontWeight: '800', fontSize: 16 }}>{label}</Text>
+        <Text style={{ color: fg, fontWeight: '800', fontSize: 16, flexShrink: 1, textAlign: 'center' }}>{label}</Text>
       </Animated.View>
     </Pressable>
   );
@@ -116,7 +116,7 @@ export function Sheet({ open, onClose, children, title }: { open: boolean; onClo
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.sheet, shadow(3)]}>
+      <Animated.View entering={FadeInUp.duration(220).reduceMotion(ReduceMotion.System)} style={[styles.sheet, shadow(3)]}>
         <View style={styles.grip} />
         {title ? <Text style={[T.h2, { marginBottom: S.md }]}>{title}</Text> : null}
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }}>{children}</ScrollView>
@@ -130,7 +130,7 @@ export function Row({ children, style, gap = S.sm }: { children: React.ReactNode
 }
 
 export function Appear({ children, delay = 0, style }: { children: React.ReactNode; delay?: number; style?: ViewStyle }) {
-  return <Animated.View entering={FadeInDown.delay(delay).springify().damping(16)} style={style}>{children}</Animated.View>;
+  return <Animated.View entering={FadeInDown.withInitialValues({ transform: [{ translateY: 10 }] }).delay(Math.min(delay, 160)).duration(220).easing(Easing.out(Easing.cubic)).reduceMotion(ReduceMotion.System)} style={style}>{children}</Animated.View>;
 }
 
 export function Divider() { return <View style={{ height: 1, backgroundColor: C.line, marginVertical: S.md }} />; }

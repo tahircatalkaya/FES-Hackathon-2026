@@ -42,11 +42,11 @@ export function impactFor(e: ActionEvent): Impact {
       out.estimated = true;
       break;
     }
-    case 'reuse.return':
-    case 'reuse.return_fast': {
+    case 'reuse.return_fast': break; // Bonus is not a second physical return.
+    case 'reuse.return': {
       const n = m.containers ?? 1;
       out.packaging = n;
-      out.co2_g = n * BOWL_CO2;
+      out.co2_g = n * (m.kind === 'cup' ? CUP_CO2 : BOWL_CO2);
       break;
     }
     case 'food.pickup':

@@ -58,7 +58,7 @@ export default function Quiz() {
       )}
 
       {q && (
-        <Animated.View key={step} entering={FadeInRight.springify().damping(16)}>
+        <Animated.View key={step} entering={FadeInRight.duration(240)}>
           <Card>
             <Row style={{ alignItems: 'flex-start' }}>
               <Chameleon pose={picked === null ? 'think' : picked === q.answer ? 'cheer' : 'shock'} size={70} />

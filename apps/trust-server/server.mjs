@@ -2,13 +2,15 @@ import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
 import { randomBytes, randomInt, randomUUID, createHash, scrypt, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { reuseRoutes } from './reuse.mjs';
 import { award } from '../mobile/src/engine/reward.ts';
 
 const derive = promisify(scrypt);
 const hash = value => createHash('sha256').update(value).digest('hex');
+const shelfIds = new Set(JSON.parse(readFileSync(new URL('../mobile/src/data/fairteiler.json',import.meta.url),'utf8')).map(p=>p.id));
 const DAY = 86400_000, CODE_TTL = 10 * 60_000;
 class Problem extends Error { constructor(status, message) { super(message); this.status = status; } }
 const fail = (status, message) => { throw new Problem(status, message); };
@@ -34,6 +36,25 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
   const run = (sql, ...args) => db.prepare(sql).run(...args);
   const transaction = fn => { db.exec('BEGIN IMMEDIATE'); try { const result = fn(); db.exec('COMMIT'); return result; } catch (e) { db.exec('ROLLBACK'); throw e; } };
   const username = id => get('SELECT name FROM users WHERE id=?', id)?.name ?? 'Person';
+  const foodAwards = actor => all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload));
+  const reuse = reuseRoutes({ db, get, all, run, transaction, now, fail, fields, text, limit, foodAwards });
+  // Additive migrations retain existing accounts, appointments and receipts.
+  const addColumn = (table, name, type) => { if (!all(`PRAGMA table_info(${table})`).some(c=>c.name===name)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${type}`); };
+  addColumn('offers','slot_minutes','INTEGER');
+  addColumn('handoffs','slot_start','INTEGER'); addColumn('handoffs','slot_end','INTEGER');
+  addColumn('handoffs','reserve_expires','INTEGER'); addColumn('handoffs','ticket_hash','TEXT'); addColumn('handoffs','ticket_expires','INTEGER');
+  db.exec(`CREATE TABLE IF NOT EXISTS shelf_updates(id TEXT PRIMARY KEY, point_id INTEGER NOT NULL, actor TEXT NOT NULL REFERENCES users(id), kind TEXT NOT NULL, fill TEXT NOT NULL, items TEXT NOT NULL, created INTEGER NOT NULL, request_key TEXT NOT NULL, UNIQUE(actor,request_key));`);
+  const slotOffer = (h,o) => ({...o,starts:h.slot_start??o.starts,ends:h.slot_end??o.ends});
+  function slots(o) {
+    if(!o.slot_minutes) return [];
+    const booked=all("SELECT h.slot_start,h.slot_end FROM handoffs h JOIN offers x ON x.id=h.offer_id WHERE x.owner=? AND h.status IN ('pending','accepted','received','completed')",o.owner);
+    const result=[];
+    for(let start=o.starts;start+o.slot_minutes*60000<=o.ends;start+=o.slot_minutes*60000) {
+      if(start<now()-60000) continue;
+      result.push({startsAt:start,endsAt:start+o.slot_minutes*60000,available:!booked.some(h=>h.slot_start<start+o.slot_minutes*60000&&h.slot_end>start)});
+    }
+    return result;
+  }
   const rate = new Map();
   function limit(key, max, windowMs) {
     const t = now(), entry = rate.get(key);
@@ -43,7 +64,7 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
     if (rate.size > 5000) for (const [k, v] of rate) if (v.until <= t) rate.delete(k);
   }
   function expire() {
-    for (const h of all("SELECT h.id,h.offer_id FROM handoffs h JOIN offers o ON o.id=h.offer_id WHERE h.status IN ('pending','accepted') AND o.ends<?", now())) {
+    for (const h of all("SELECT h.id,h.offer_id FROM handoffs h JOIN offers o ON o.id=h.offer_id WHERE h.status IN ('pending','accepted') AND (COALESCE(h.slot_end,o.ends)<? OR (h.status='pending' AND h.reserve_expires IS NOT NULL AND h.reserve_expires<?))", now(), now())) {
       run("UPDATE handoffs SET status='expired',code_hash=NULL WHERE id=?", h.id);
       run('UPDATE offers SET remaining=remaining+1 WHERE id=?', h.offer_id);
     }
@@ -60,7 +81,7 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
     return { count: unique.length, visible: true, satisfaction: avg('satisfaction'), reliability: avg('reliability'), respect: avg('respect') };
   }
   function offerView(o, actor, showAddress = false) {
-    return { id: o.id, ownerId: o.owner, ownerName: username(o.owner), title: o.title, items: JSON.parse(o.items), portions: o.portions, remaining: o.remaining, area: o.area, startsAt: o.starts, endsAt: o.ends,
+    return { id: o.id, ownerId: o.owner, ownerName: username(o.owner), title: o.title, items: JSON.parse(o.items), portions: o.portions, remaining: o.remaining, area: o.area, startsAt: o.starts, endsAt: o.ends, slots: slots(o),
       address: o.owner === actor || showAddress ? o.address : undefined, reputation: reputation(o.owner) };
   }
   function handoff(id, actor) {
@@ -68,18 +89,19 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
     if (!h) fail(404, 'Übergabe nicht gefunden.');
     const o = get('SELECT * FROM offers WHERE id=?', h.offer_id);
     if (o.owner !== actor && h.receiver !== actor) fail(403, 'Diese Übergabe gehört anderen Personen.');
-    return { h, o };
+    return { h, o: slotOffer(h,o) };
   }
   function view(h, o, actor) {
+    o = slotOffer(h,o);
     const counterpart = actor === o.owner ? h.receiver : o.owner;
     const locationVisible = ['accepted','received'].includes(h.status) && now() >= o.starts - 15 * 60_000 && now() <= o.ends;
-    return { id: h.id, status: h.status, role: actor === o.owner ? 'provider' : 'receiver', offer: offerView(o, actor, locationVisible), counterpart: { id: counterpart, name: username(counterpart), reputation: reputation(counterpart) },
+    return { id: h.id, status: h.status, reserveExpiresAt:h.reserve_expires, role: actor === o.owner ? 'provider' : 'receiver', offer: offerView(o, actor, locationVisible), counterpart: { id: counterpart, name: username(counterpart), reputation: reputation(counterpart) },
       codeExpiresAt: actor === o.owner ? h.code_expires : undefined, completedAt: h.completed,
       reviewed: !!get('SELECT 1 FROM reviews WHERE handoff_id=? AND reviewer=?', h.id, actor),
       concern: all('SELECT reporter,reason,disputed FROM concerns WHERE handoff_id=?', h.id).map(c => ({ mine: c.reporter === actor, reason: c.reason, disputed: !!c.disputed })) };
   }
   function receipt(h, o, actor, type) {
-    const ledger = all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload));
+    const ledger = [...foodAwards(actor),...reuse.awards(actor)];
     const other = actor === o.owner ? h.receiver : o.owner;
     const recentPair = get(`SELECT 1 FROM handoffs h JOIN offers o ON o.id=h.offer_id WHERE h.status='completed' AND h.id<>? AND h.completed>? AND ((o.owner=? AND h.receiver=?) OR (o.owner=? AND h.receiver=?))`, h.id, now() - 7 * DAY, actor, other, other, actor);
     const dailyRole = ledger.filter(a => a.type === type && new Date(a.at).toDateString() === new Date(now()).toDateString()).length;
@@ -93,6 +115,21 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
     // The same food must never count twice across provider and recipient.
     if (type !== 'food.pickup') { result.impact.food_g = 0; result.impact.co2_g = 0; }
     run('INSERT INTO awards VALUES(?,?,?)', actor, h.id, JSON.stringify(result));
+  }
+  function createOffer(body,actor) {
+      fields(body, ['title','items','portions','area','address','startsAt','endsAt','requestKey','slotMinutes']);
+      const key = text(body.requestKey, 80, 8), old = get('SELECT * FROM offers WHERE owner=? AND request_key=?', actor, key);
+      if (old) return offerView(old, actor);
+      limit(`offer:${actor}`, 60, DAY);
+      if (!Array.isArray(body.items) || !body.items.length || body.items.length > 20) fail(422, 'Bitte 1–20 Lebensmittel pro Portion erfassen.');
+      const items = body.items.map(i => { fields(i, ['name','qty','cat','grams']); return { name: text(i.name, 100), qty: text(i.qty, 60), cat: text(i.cat, 60), grams: integer(i.grams, 1, 10000) }; });
+      if (items.reduce((n, i) => n + i.grams, 0) > 20000) fail(422, 'Eine Portion darf höchstens 20 kg umfassen.');
+      const starts = integer(body.startsAt, now() - 60_000, now() + 7 * DAY), ends = integer(body.endsAt, starts + 15 * 60_000, starts + 4 * 3600_000);
+      const minutes=body.slotMinutes===undefined?null:integer(body.slotMinutes,5,30);
+      const o = { id: randomUUID(), owner: actor, title: text(body.title), items: JSON.stringify(items), portions: integer(body.portions, 1, 20), area: text(body.area, 80), address: text(body.address, 200), starts, ends, created: now(), request_key: key };
+      run('INSERT INTO offers(id,owner,title,items,portions,remaining,area,address,starts,ends,created,request_key) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', o.id, actor, o.title, o.items, o.portions, o.portions, o.area, o.address, starts, ends, o.created, key);
+      if(minutes!==null) run('UPDATE offers SET slot_minutes=? WHERE id=?',minutes,o.id);
+      return offerView({ ...o, slot_minutes:minutes, remaining: o.portions }, actor);
   }
   async function dispatch(method, path, body, actor, ip) {
     if (method === 'GET' && path === '/health') return { ok: true, version: 1 };
@@ -119,37 +156,82 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
       run('INSERT INTO sessions VALUES(?,?,?)', hash(token), u.id, now() + 30 * DAY);
       return { token, user: { id: u.id, name: u.name } };
     }
-    if (!actor) fail(401, 'Bitte für Übergaben anmelden.');
-    if (method === 'GET' && path === '/me') return { user: { id: actor, name: username(actor) }, reputation: reputation(actor), awards: all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload)) };
-    if (method === 'GET' && path === '/offers') return all('SELECT * FROM offers WHERE owner=? OR (remaining>0 AND ends>?) ORDER BY created DESC LIMIT 100', actor, now()).map(o => offerView(o, actor));
+    if(method==='GET' && /^\/shelves(\/\d+)?$/.test(path)) {
+      const point=path.split('/')[2];
+      const rows=point?all('SELECT * FROM shelf_updates WHERE point_id=? ORDER BY created DESC LIMIT 20',Number(point)):all("SELECT * FROM shelf_updates WHERE kind='shelf' AND id IN (SELECT id FROM shelf_updates s WHERE kind='shelf' AND created=(SELECT MAX(created) FROM shelf_updates WHERE point_id=s.point_id AND kind='shelf')) ORDER BY created DESC LIMIT 100");
+      return rows.map(r=>({id:r.id,pointId:r.point_id,kind:r.kind,fill:r.fill,items:JSON.parse(r.items),at:r.created}));
+    }
+    if (!actor) fail(401, 'Bitte anmelden.');
+    if (method === 'GET' && path === '/me') return { user: { id: actor, name: username(actor) }, reputation: reputation(actor), awards: [...foodAwards(actor),...reuse.awards(actor)], merchantStores:reuse.stores(actor) };
+    if(path.startsWith('/reuse/')) { const result=reuse.dispatch(method,path,body,actor); if(result!==undefined) return result; }
+    if (method === 'GET' && path === '/offers') return all('SELECT * FROM offers WHERE owner=? OR (ends>?) ORDER BY created DESC LIMIT 100', actor, now()).map(o => offerView(o, actor));
     if (method === 'GET' && path === '/handoffs') return all('SELECT h.* FROM handoffs h JOIN offers o ON h.offer_id=o.id WHERE o.owner=? OR h.receiver=? ORDER BY h.created DESC LIMIT 100', actor, actor).map(h => view(h, get('SELECT * FROM offers WHERE id=?', h.offer_id), actor));
     if (method === 'POST' && path === '/offers') {
-      fields(body, ['title','items','portions','area','address','startsAt','endsAt','requestKey']);
-      const key = text(body.requestKey, 80, 8), old = get('SELECT * FROM offers WHERE owner=? AND request_key=?', actor, key);
-      if (old) return offerView(old, actor);
-      limit(`offer:${actor}`, 10, DAY);
-      if (!Array.isArray(body.items) || !body.items.length || body.items.length > 20) fail(422, 'Bitte 1–20 Lebensmittel pro Portion erfassen.');
-      const items = body.items.map(i => { fields(i, ['name','qty','cat','grams']); return { name: text(i.name, 100), qty: text(i.qty, 60), cat: text(i.cat, 60), grams: integer(i.grams, 1, 10000) }; });
-      if (items.reduce((n, i) => n + i.grams, 0) > 20000) fail(422, 'Eine Portion darf höchstens 20 kg umfassen.');
-      const starts = integer(body.startsAt, now() - 60_000, now() + 7 * DAY), ends = integer(body.endsAt, starts + 15 * 60_000, starts + 4 * 3600_000);
-      const o = { id: randomUUID(), owner: actor, title: text(body.title), items: JSON.stringify(items), portions: integer(body.portions, 1, 20), area: text(body.area, 80), address: text(body.address, 200), starts, ends, created: now(), request_key: key };
-      run('INSERT INTO offers VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', o.id, actor, o.title, o.items, o.portions, o.portions, o.area, o.address, starts, ends, o.created, key);
-      return offerView({ ...o, remaining: o.portions }, actor);
+      return createOffer(body,actor);
     }
+    if(method==='POST' && path==='/distributions') return transaction(()=>{
+      fields(body,['title','area','address','startsAt','endsAt','requestKey','lots']);
+      if(!Array.isArray(body.lots)||!body.lots.length||body.lots.length>20) fail(422,'Bitte 1–20 Lebensmittelposten zusammenstellen.');
+      return body.lots.map((lot,i)=>{
+        fields(lot,['items','portions']);
+        return createOffer({title:body.lots.length===1?body.title:`${text(body.title,80)} · ${text(lot.items?.[0]?.name,70)}`,area:body.area,address:body.address,startsAt:body.startsAt,endsAt:body.endsAt,requestKey:`${text(body.requestKey,65,8)}-${i}`,items:lot.items,portions:lot.portions,slotMinutes:5},actor);
+      });
+    });
     const request = path.match(/^\/offers\/([^/]+)\/request$/);
     if (method === 'POST' && request) return transaction(() => {
-      fields(body, []); const o = get('SELECT * FROM offers WHERE id=?', request[1]);
+      fields(body, ['slotStart']); const o = get('SELECT * FROM offers WHERE id=?', request[1]);
       if (!o) fail(404, 'Angebot nicht gefunden.');
       if (o.owner === actor) fail(403, 'Eigene Angebote können nicht abgeholt werden.');
       const old = get('SELECT * FROM handoffs WHERE offer_id=? AND receiver=?', o.id, actor);
       if (old) return view(old, o, actor);
       if (o.remaining < 1 || o.ends <= now()) fail(409, 'Keine Portion mehr verfügbar.');
       if (get("SELECT 1 FROM handoffs WHERE receiver=? AND status IN ('pending','accepted','received')", actor)) fail(409, 'Du hast bereits eine offene Abholung. Bitte zuerst abschließen oder absagen.');
-      const h = { id: randomUUID(), offer_id: o.id, receiver: actor, status: 'pending', created: now() };
+      const cancellations=get("SELECT COUNT(*) AS n FROM handoffs WHERE receiver=? AND status IN ('cancelled','expired') AND created>?",actor,now()-DAY).n;
+      if(cancellations>=3) fail(429,'Heute sind drei Anfragen abgesagt oder verfallen. Bitte morgen wieder reservieren.');
+      let chosen=null;
+      if(o.slot_minutes) { chosen=slots(o).find(s=>s.startsAt===body.slotStart&&s.available); if(!chosen) fail(409,'Bitte einen noch freien Abholtermin wählen.'); }
+      const h = { slot_start:chosen?.startsAt,slot_end:chosen?.endsAt,reserve_expires:Math.min(now()+15*60000,chosen?.endsAt??o.ends), id: randomUUID(), offer_id: o.id, receiver: actor, status: 'pending', created: now() };
       run('INSERT INTO handoffs(id,offer_id,receiver,status,created) VALUES(?,?,?,?,?)', h.id, o.id, actor, h.status, h.created);
+      run('UPDATE handoffs SET slot_start=?,slot_end=?,reserve_expires=? WHERE id=?',h.slot_start??null,h.slot_end??null,h.reserve_expires,h.id);
       run('UPDATE offers SET remaining=remaining-1 WHERE id=?', o.id);
-      return view(h, o, actor);
+      return view(h, {...o,remaining:o.remaining-1}, actor);
     });
+    const ticket=path.match(/^\/handoffs\/([^/]+)\/(ticket|confirm-ticket)$/);
+    if(method==='POST' && ticket) {
+      const {h,o}=handoff(ticket[1],actor);
+      fields(body,ticket[2]==='ticket'?[]:['proof']);
+      if(ticket[2]==='ticket') {
+        if(actor!==h.receiver) fail(403,'Den persönlichen Abholcode zeigt die abholende Person.');
+        if(h.status!=='accepted'||now()<o.starts||now()>o.ends) fail(409,'Dein Abholcode ist nur zum zugesagten Termin verfügbar.');
+        limit(`ticket:${h.id}`,10,60000);
+        const secret=randomBytes(24).toString('hex'),expires=Math.min(now()+5*60000,o.ends);
+        run('UPDATE handoffs SET ticket_hash=?,ticket_expires=? WHERE id=?',hash(secret),expires,h.id);
+        return {proof:`mainsam:food:${h.id}:${secret}`,expiresAt:expires};
+      }
+      if(actor!==o.owner) fail(403,'Nur die anbietende Person kann diese Übergabe abschließen.');
+      const match=text(body.proof,200).match(/^mainsam:food:([a-f0-9-]{36}):([a-f0-9]{48})$/);
+      if(!match||match[1]!==h.id||!h.ticket_hash||!timingSafeEqual(Buffer.from(hash(match[2])),Buffer.from(h.ticket_hash))) fail(422,'Dieser Abholcode gehört nicht zu dieser Zusage.');
+      if(h.status==='completed') return view(h,o,actor);
+      if(h.status!=='accepted'||h.ticket_expires<=now()||now()<o.starts||now()>o.ends) fail(409,'Der Abholcode ist abgelaufen. Bitte vor Ort erneuern.');
+      return transaction(()=>{
+        run("UPDATE handoffs SET status='completed',received=?,completed=?,code_hash=NULL WHERE id=?",now(),now(),h.id);
+        receipt(h,o,o.owner,'food.distribute');receipt(h,o,h.receiver,'food.pickup');
+        return view(get('SELECT * FROM handoffs WHERE id=?',h.id),o,actor);
+      });
+    }
+    const shelf=path.match(/^\/shelves\/(\d+)$/);
+    if(shelf && method==='GET') return all('SELECT * FROM shelf_updates WHERE point_id=? ORDER BY created DESC LIMIT 20',Number(shelf[1])).map(r=>({id:r.id,pointId:r.point_id,kind:r.kind,fill:r.fill,items:JSON.parse(r.items),at:r.created}));
+    if(shelf && method==='POST') {
+      if(!shelfIds.has(Number(shelf[1]))) fail(404,'Fairteiler nicht gefunden.');
+      fields(body,['kind','fill','items','requestKey']);
+      const key=text(body.requestKey,80,8); const old=get('SELECT id FROM shelf_updates WHERE actor=? AND request_key=?',actor,key); if(old) return {id:old.id};
+      if(!['shelf','stock','pickup'].includes(body.kind)||!['leer','wenig','mittel','voll'].includes(body.fill)) fail(422,'Bitte eine Regalaktion wählen.');
+      if(!Array.isArray(body.items)||body.items.length>20) fail(422,'Bitte höchstens 20 Posten angeben.');
+      const items=body.items.map(i=>({name:text(i.name,100),qty:text(i.qty,60),cat:text(i.cat,60),grams:integer(i.grams,0,10000)}));
+      limit(`shelf:${actor}:${shelf[1]}`,8,3600000);
+      const id=randomUUID();run('INSERT INTO shelf_updates VALUES(?,?,?,?,?,?,?,?)',id,Number(shelf[1]),actor,body.kind,body.fill,JSON.stringify(items),now(),key);
+      return {id};
+    }
     const action = path.match(/^\/handoffs\/([^/]+)\/(accept|cancel|code|receive|complete|review|concern|dispute)$/);
     if (method === 'POST' && action) {
       const { h, o } = handoff(action[1], actor), op = action[2], provider = actor === o.owner;

@@ -114,7 +114,7 @@ function sameDay(a: number, b: number) {
  * Einzige Stelle, die Punkte vergibt.
  * Idempotent über `event.key`, mit Multiplikator, Degression, Zähl- und Punktedeckel.
  */
-export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { verifiedFood: true }): Award {
+export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { verifiedFood?: true; verifiedReuse?: true }): Award {
   // A photo, GPS reading, API self-report or caller-supplied status is not a handover.
   // Only the authenticated server calls this with authority after both parties finish.
   if (event.type.startsWith('food.') && !authority?.verifiedFood) {
@@ -124,6 +124,9 @@ export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { ve
       reasons: ['Erfassung gespeichert. Foto und Audio beschreiben Lebensmittel, beweisen aber keine Übergabe.', 'Ohne beidseitig bestätigte Übergabe keine Punkte und kein bestätigter Impact.'],
       formula: 'Nachweis ausstehend → 0 Punkte',
     };
+  }
+  if (event.type.startsWith('reuse.') && !authority?.verifiedReuse) {
+    return {...event,status:'ausstehend',base:BASE[event.type],multiplier:0,degression:0,capped:0,points:0,impact:emptyImpact(),duplicate:ledger.some(l=>l.key===event.key),reasons:['Eine Rückgabe zählt erst mit einem gültigen Beleg einer freigegebenen Rücknahmestelle.'],formula:'Rückgabebeleg ausstehend → 0 Punkte'};
   }
   const reasons: string[] = [];
   const impact = impactFor(event);

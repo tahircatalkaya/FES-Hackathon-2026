@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import Animated, { FadeInDown, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { FadeInDown, runOnJS, useAnimatedStyle, useSharedValue, withTiming, cancelAnimation } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -68,17 +68,18 @@ export default function Discover() {
   const top = useSharedValue(halfTop);
   const startY = useSharedValue(halfTop);
   const [snapIdx, setSnapIdx] = useState(1);
-  const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: top.value - fullTop }] }));
-  function snapTo(i: number) { setSnapIdx(i); top.value = withSpring(snaps[i], { damping: 19, stiffness: 170, mass: 0.8 }); }
+  const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: Math.min(peekTop,Math.max(fullTop,top.value)) - fullTop }] }));
+  function snapTo(i: number) { setSnapIdx(i); top.value = withTiming(snaps[i], { duration: 230 }); }
   const pan = Gesture.Pan()
-    .onBegin(() => { startY.value = top.value; })
+    .onBegin(() => { cancelAnimation(top); startY.value = top.value; })
     .onUpdate((e) => { top.value = Math.min(peekTop, Math.max(fullTop, startY.value + e.translationY)); })
     .onEnd((e) => {
       const proj = top.value + e.velocityY * 0.12;
       let best = 0; for (let i = 1; i < snaps.length; i++) if (Math.abs(snaps[i] - proj) < Math.abs(snaps[best] - proj)) best = i;
-      top.value = withSpring(snaps[best], { damping: 19, stiffness: 170, mass: 0.8 });
+      top.value = withTiming(snaps[best], { duration: 230 });
       runOnJS(setSnapIdx)(best);
     });
+  useEffect(() => { cancelAnimation(top); top.value = snaps[snapIdx]; }, [height, insets.bottom]);
   const cycle = () => { haptic(); snapTo(snapIdx === 2 ? 1 : snapIdx === 1 ? 0 : 2); };
 
   const markers = shown.map((o) => ({ id: o.id, lat: o.lat, lon: o.lon, color: CONTEXT[o.ctx].color, emoji: o.emoji, selected: o.id === sel, onPress: () => { haptic(); setSel(o.id); if (snapIdx === 2) snapTo(1); const i = shown.findIndex((x) => x.id === o.id); if (i >= 0) setTimeout(() => listRef.current?.scrollToIndex({ index: i, animated: true, viewPosition: 0.1 }), 80); } }));
@@ -138,7 +139,7 @@ export default function Discover() {
         renderItem={({ item: o, index }) => {
           const c = CONTEXT[o.ctx].color; const av = AVAIL[o.availability];
           return (
-            <Animated.View entering={FadeInDown.delay(Math.min(index, 10) * 35).springify().damping(16)}>
+            <Animated.View entering={FadeInDown.delay(Math.min(index, 10) * 35).duration(240)}>
               <Pressable onPress={() => { haptic(); router.push(o.href as any); }} style={[{ height: 86, flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#fff', borderRadius: 20, padding: 10, borderWidth: 2, borderColor: o.id === sel ? c : 'transparent' }, shadow(1)]}>
                 <LinearGradient colors={[shade(c, 0.15), shade(c, -0.25)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 66, height: 66, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}>
                   <Ionicons name={o.icon as any} size={30} color="#fff" />

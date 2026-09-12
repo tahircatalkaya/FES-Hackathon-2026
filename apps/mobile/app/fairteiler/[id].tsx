@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
+import { trust, type SharedShelfUpdate } from '@/api/trust';
+import TrustAccount from '@/components/TrustAccount';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { Appear, Button, Card, Row, T, Tag, haptic } from '@/components/ui';
 import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
@@ -24,6 +26,13 @@ export default function Fairteiler() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { loc } = useLocation();
+  const [shared,setShared]=useState<SharedShelfUpdate[]>([]),[syncError,setSyncError]=useState(''),[login,setLogin]=useState(false);
+  const refresh=useCallback(async()=>{try{setShared(await trust.shelf(Number(id)));setSyncError('');}catch{setSyncError('Gemeinsamer Regalstand gerade nicht erreichbar. Lokale Meldungen bleiben erhalten.');}},[id]);
+  useFocusEffect(useCallback(()=>{void refresh();const t=setInterval(()=>void refresh(),15000);return()=>clearInterval(t);},[refresh]));
+  async function publish(kind:'shelf'|'stock'|'pickup',r:ActionResult){
+    if(!await trust.hasSession()){setSyncError('Auf diesem Gerät gespeichert. Bitte anmelden, um die Meldung mit anderen zu teilen.');setLogin(true);return;}
+    try{await trust.updateShelf(Number(id),{kind,fill:r.fill,items:r.items,requestKey:`shelf-${Date.now()}-${Math.random().toString(36).slice(2)}`});await refresh();}catch(e:any){setSyncError(`Lokal gespeichert. Teilen fehlgeschlagen: ${e.message}`);}
+  }
   const [pt, setPt] = useState<FoodSharePoint | null>(null);
   const [sheet, setSheet] = useState<null | 'shelf' | 'stock' | 'pickup'>(null);
   const { shelfReports, addShelfReport, addAward, itemReservations, reserveItem, releaseItem, name } = useStore();
@@ -39,7 +48,10 @@ export default function Fairteiler() {
   const dist = hav(loc.lat, loc.lon, pt.lat, pt.lon);
   const near = dist < 200;
   const reports = shelfReports.filter((r) => r.pointId === pt.id).sort((a, b) => b.at - a.at);
-  const latest = reports[0];
+  const sharedLatest=shared.find(r=>r.kind==='shelf');
+  const local=reports[0];
+  const latest=sharedLatest&&(!local||sharedLatest.at>=local.at)?sharedLatest:local;
+  const changed=!!latest&&shared.some(r=>r.kind!=='shelf'&&r.at>latest.at);
   const title = pt.name.replace(/^Abgabestelle\s*/i, '').replace(/"/g, '');
   const ageMin = latest ? Math.round((Date.now() - latest.at) / 60000) : null;
   const myRes = itemReservations.filter((r) => r.placeId === `fsp-${pt.id}` && r.expiresAt > Date.now());
@@ -51,14 +63,17 @@ export default function Fairteiler() {
   const status = (r: ActionResult): 'plausibel' | 'schwach plausibel' | 'selbst angegeben' => (r.photo && near ? 'plausibel' : r.photo || r.audio ? 'schwach plausibel' : 'selbst angegeben');
   const srcOf = (r: ActionResult) => (r.method === 'photo' ? (r.ai ? 'foto+ki' : 'foto') : r.method === 'voice' ? (r.ai ? 'sprachnotiz+ki' : 'sprachnotiz') : 'user');
   function onReport(r: ActionResult) {
+    void publish('shelf',r);
     addShelfReport({ pointId: pt!.id, at: Date.now(), fill: r.fill, categories: Array.from(new Set(r.items.map((i) => i.cat))), photo: r.photo, items: r.items });
     showToast(addAward({ type: 'food.report', partner: 'foodsharing', status: status(r), key: `shelf:${pt!.id}:${Math.floor(Date.now() / (6 * 3600e3))}`, at: Date.now(), title: `Regal-Status: ${title}`, meta: { source: srcOf(r), evidence: [`Inhalt: ${r.items.map((i) => i.name).join(', ') || 'leer'} · Füllstand ${r.fill}`, ...proof(r)] } }));
   }
   function onStock(r: ActionResult) {
-    addShelfReport({ pointId: pt!.id, at: Date.now(), fill: 'mittel', categories: Array.from(new Set(r.items.map((i) => i.cat))), photo: r.photo, items: r.items });
+    void publish('stock',r);
+
     showToast(addAward({ type: 'food.stock', partner: 'foodsharing', status: status(r), key: `stock:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Eingestellt: ${r.items.map((i) => i.name).join(', ')}`, meta: { food_g: r.grams, source: srcOf(r), evidence: [`ca. ${(r.grams / 1000).toFixed(1)} kg für andere bereitgestellt`, ...proof(r)] } }));
   }
   async function onPickup(r: ActionResult) {
+    void publish('pickup',r);
     let st = status(r); const ev = [`Mitgenommen: ${r.items.map((i) => i.name).join(', ')} (ca. ${(r.grams / 1000).toFixed(1)} kg)`, ...proof(r)];
     try { await fs.pickup({ food_share_point_id: pt!.id }); ev.push('Eigene Meldung beim verbundenen Dienst; kein unabhängiger Nachweis'); } catch { ev.push('Nur auf diesem Gerät gespeichert'); }
     myRes.forEach((x) => releaseItem(x.id));
@@ -83,17 +98,19 @@ export default function Fairteiler() {
         </Pressable>
       </Row>
 
+      {!!syncError&&<Text accessibilityRole="alert" style={[T.small,{marginTop:12,color:C.warn}]}>{syncError}</Text>}
+      {login&&<TrustAccount onReady={()=>{setLogin(false);setSyncError('Angemeldet. Bitte die aktuelle Regalmeldung erneut erfassen, um sie zu teilen.');void refresh();}}/>}
       <Appear delay={60}>
         <Card style={{ marginTop: 14 }}>
           <Row style={{ justifyContent: 'space-between' }}>
-            <Text style={T.h3}>Was ist gerade drin?</Text>
+            <Text style={T.h3}>Zuletzt im Regal gesehen</Text>
             {latest ? <Tag label={`vor ${ageMin! < 60 ? `${ageMin} min` : `${Math.round(ageMin! / 60)} h`}`} color={ageMin! < 120 ? C.success : C.muted} /> : null}
           </Row>
           {latest ? (
             <View style={{ marginTop: 8 }}>
               <Row style={{ gap: 6 }}>{(['leer', 'wenig', 'mittel', 'voll'] as const).map((f, i) => <View key={f} style={{ flex: 1, height: 10, borderRadius: 5, backgroundColor: i <= ['leer', 'wenig', 'mittel', 'voll'].indexOf(latest.fill) ? col : C.line }} />)}</Row>
-              <Text style={[T.small, { marginTop: 4 }]}>Füllstand {latest.fill}</Text>
-              {latest.photo && latest.photo !== 'demo' && <Image source={{ uri: latest.photo }} style={{ height: 120, borderRadius: 12, marginTop: 8 }} />}
+              <Text style={[T.small, { marginTop: 4 }]}>Füllstand {latest.fill} · {sharedLatest?.at===latest.at?'gemeinsam gemeldet':'auf diesem Gerät gemeldet'}</Text><Text style={[T.small,{marginTop:4,color:changed?C.warn:C.muted}]}>{changed?'Seitdem wurden Lebensmittel eingestellt oder mitgenommen. Bitte den aktuellen Stand prüfen.':'Momentaufnahme, keine Bestandszusage. Am offenen Regal können auch Personen ohne App etwas mitnehmen.'}</Text>
+              {'photo' in latest && latest.photo && latest.photo !== 'demo' && <Image source={{ uri: latest.photo }} style={{ height: 120, borderRadius: 12, marginTop: 8 }} />}
               <View style={{ marginTop: 8, gap: 6 }}>
                 {(latest.items ?? []).map((it) => {
                   const held = itemReservations.find((r) => r.item === it.name && r.placeId === `fsp-${pt.id}` && r.expiresAt > Date.now());
@@ -110,6 +127,7 @@ export default function Fairteiler() {
         </Card>
       </Appear>
 
+      {!!shared.length&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>Letzte Meldungen vor Ort</Text>{shared.slice(0,5).map(r=><Text key={r.id} style={T.small}>{new Date(r.at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} · {r.kind==='stock'?'Eingestellt':r.kind==='pickup'?'Mitgenommen':'Regal angesehen'}: {r.items.map(i=>`${i.qty} ${i.name}`).join(', ')||r.fill}</Text>)}</Card>}
       <Text style={[T.label, { marginTop: 18, marginBottom: 8 }]}>Was machst du gerade?</Text>
       <Row style={{ gap: 10 }}>
         <ActionTile icon="bag-handle" label="Abholen" pts={15} color={col} onPress={() => setSheet('pickup')} />

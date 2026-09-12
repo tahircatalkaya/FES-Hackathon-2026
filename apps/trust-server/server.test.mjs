@@ -150,3 +150,125 @@ test('No-show reports require a prior agreement and grace period; stale receipts
   assert.equal((await f.call('/handoffs',r)).find(h=>h.id===h3.id).status,'disputed');
   assert.equal((await f.call('/me',r)).awards.length,0);
 });
+
+async function merchantFixture(t) {
+  const {DatabaseSync}=await import('node:sqlite');
+  const {readFileSync}=await import('node:fs');
+  const directory=mkdtempSync(join(tmpdir(),'mainsam-reuse-'));
+  const dbPath=join(directory,'test.sqlite');
+  const f=await fixture(t,dbPath);
+  t.after(()=>rmSync(directory,{recursive:true,force:true}));
+  const stores=JSON.parse(readFileSync(new URL('../mobile/src/data/vytal-stores.json',import.meta.url),'utf8'));
+  const customer=await f.register('customer'),staff=await f.register('staff'),outsider=await f.register('outsider');
+  const grant=(name,storeId)=>{const db=new DatabaseSync(dbPath);try{const user=db.prepare('SELECT id FROM users WHERE name=?').get(name);db.prepare('INSERT INTO merchants VALUES(?,?)').run(user.id,storeId);}finally{db.close();}};
+  return {...f,dbPath,stores,customer,staff,outsider,grant};
+}
+
+test('Reuse client claims cannot award points; the fast-return bonus never doubles physical impact',()=>{
+  for(const type of ['reuse.return','reuse.return_fast']) {
+    const r=award({type,partner:'vytal',status:'bestätigt',key:'fake',at:Date.now(),title:'Fake',meta:{source:'store',containers:500,verifiedReuse:true}},[]);
+    assert.equal(r.points,0);assert.equal(r.impact.packaging,0);
+  }
+  const r=award({type:'reuse.return_fast',partner:'vytal',status:'bestätigt',key:'bonus',at:Date.now(),title:'Bonus'},[],{verifiedReuse:true});
+  assert.equal(r.impact.packaging,0);assert.equal(r.impact.co2_g,0);
+});
+
+test('Return requires assigned merchant, exact loan and fresh proof; damage persists, concurrent replay awards once',async t=>{
+  const f=await merchantFixture(t),store=f.stores[0].id;
+  const l=await f.call('/reuse/loans',f.customer,{code:'CUP12345',kind:'cup',storeId:store});
+  assert.equal((await f.call('/reuse/loans',f.customer,{code:l.code,kind:'cup'})).id,l.id);
+  await f.call('/reuse/loans',f.outsider,{code:l.code,kind:'cup'},409);
+  await f.call('/reuse/merchant/receipt',f.customer,{loanId:l.id,storeId:store},403);
+  await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store},403);
+  f.grant('staff',store);
+  await f.call(`/reuse/loans/${l.id}/damage`,f.outsider,{reason:'cracked'},403);
+  const damaged=await f.call(`/reuse/loans/${l.id}/damage`,f.customer,{reason:'cracked',note:'Riss am Rand'});
+  assert.equal(damaged.damage.note,'Riss am Rand');assert.equal(damaged.returnedAt,null);
+  assert.equal((await f.call('/reuse/merchant/inspect',f.staff,{code:l.code,storeId:store})).damage.reason,'cracked');
+  await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:f.stores[1].id},403);
+  const first=await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store});
+  assert.equal((await f.call('/me',f.customer)).awards.length,0);
+  await f.call('/reuse/return',f.customer,{loanId:l.id,proof:'https://vytal.org/store/static-qr'},422);
+  const other=await f.call('/reuse/loans',f.customer,{code:'BOWL2345',kind:'bowl'});
+  await f.call('/reuse/return',f.customer,{loanId:other.id,proof:first.proof},422);
+  await f.call('/reuse/return',f.outsider,{loanId:l.id,proof:first.proof},403);
+  f.advance(180001);await f.call('/reuse/return',f.customer,{loanId:l.id,proof:first.proof},409);
+  const fresh=await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store});
+  const send=()=>f.call('/reuse/return',f.customer,{loanId:l.id,proof:fresh.proof});
+  const results=await Promise.all([send(),send()]);assert.equal(results.filter(r=>r.duplicate).length,1);
+  const me=await f.call('/me',f.customer);assert.equal(me.awards.length,2);assert.equal(me.awards.reduce((n,a)=>n+a.impact.packaging,0),1);assert.equal(me.awards.reduce((n,a)=>n+a.impact.co2_g,0),30);
+  assert.equal(me.awards.filter(a=>a.type==='reuse.return').length,1);
+  await f.call(`/reuse/loans/${l.id}/damage`,f.customer,{reason:'other'},409);
+  assert.ok((await f.call('/reuse/loans',f.customer)).find(x=>x.id===l.id).returnedAt);
+  assert.ok(!JSON.stringify(await f.call('/reuse/loans',f.customer)).includes(fresh.proof));
+});
+
+test('Merchant cannot confirm own return; revoked, replaced and demo proofs cannot produce rewards',async t=>{
+  const f=await merchantFixture(t),store=f.stores[0].id;f.grant('staff',store);
+  const own=await f.call('/reuse/loans',f.staff,{code:'OWN12345',kind:'bowl'});
+  await f.call('/reuse/merchant/receipt',f.staff,{loanId:own.id,storeId:store},403);
+  const l=await f.call('/reuse/loans',f.customer,{code:'DEMO2345',kind:'bowl',demo:true});
+  const old=await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store});
+  const fresh=await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store});
+  await f.call('/reuse/return',f.customer,{loanId:l.id,proof:old.proof},409);
+  const {DatabaseSync}=await import('node:sqlite');const db=new DatabaseSync(f.dbPath);db.prepare('DELETE FROM merchants WHERE store_id=?').run(store);db.close();
+  await f.call('/reuse/return',f.customer,{loanId:l.id,proof:fresh.proof},403);
+  f.grant('staff',store);await f.call('/reuse/return',f.customer,{loanId:l.id,proof:fresh.proof});
+  assert.equal((await f.call('/me',f.customer)).awards.length,0);
+  const second=await f.call('/reuse/loans',f.customer,{code:l.code,kind:'bowl'});
+  const again=await f.call('/reuse/merchant/receipt',f.staff,{loanId:second.id,storeId:store});
+  await f.call('/reuse/return',f.customer,{loanId:second.id,proof:again.proof});
+  assert.equal((await f.call('/me',f.customer)).awards.reduce((n,a)=>n+a.points,0),0);
+});
+
+test('Distribution posts are atomic; provider time slots cannot overlap and pending stock expires',async t=>{
+  const f=await fixture(t),p=await f.register('provider'),r=await f.register('receiver'),x=await f.register('another');
+  const item={name:'Brot',qty:'1 Stück',cat:'Backwaren',grams:500};
+  const draft={title:'Heute gerettet',area:'Bockenheim',address:'Privater Treffpunkt',startsAt:f.now()+30*60000,endsAt:f.now()+2*3600000,requestKey:'batch-test-key',lots:[{items:[item],portions:2},{items:[{...item,name:'Äpfel'}],portions:3}]};
+  await f.call('/distributions',p,{...draft,lots:[draft.lots[0],{items:[item],portions:0}]},422);
+  assert.equal((await f.call('/offers',p)).length,0);
+  const offers=await f.call('/distributions',p,draft);assert.equal(offers.length,2);
+  assert.deepEqual((await f.call('/distributions',p,draft)).map(o=>o.id),offers.map(o=>o.id));
+  const slot=offers[0].slots[0].startsAt;
+  const h=await f.call(`/offers/${offers[0].id}/request`,r,{slotStart:slot});
+  assert.equal(h.offer.remaining,1);assert.equal(h.offer.address,undefined);
+  await f.call(`/offers/${offers[1].id}/request`,x,{slotStart:slot},409);
+  f.advance(16*60000);
+  assert.equal((await f.call('/handoffs',r))[0].status,'expired');
+  assert.equal((await f.call('/offers',p)).find(o=>o.id===offers[0].id).remaining,2);
+  await f.call(`/offers/${offers[1].id}/request`,x,{slotStart:slot});
+});
+
+test('Personal food QR is restricted to agreed pickup and provider, expiring, one-time and private',async t=>{
+  const f=await fixture(t),p=await f.register('provider'),r=await f.register('receiver'),x=await f.register('outsider');
+  const o=await f.offer(p,{slotMinutes:10});const h=await f.call(`/offers/${o.id}/request`,r,{slotStart:o.slots[0].startsAt});
+  await f.call(`/handoffs/${h.id}/ticket`,r,{},409);
+  await f.call(`/handoffs/${h.id}/accept`,p,{});
+  await f.call(`/handoffs/${h.id}/ticket`,p,{},403);
+  const ticket=await f.call(`/handoffs/${h.id}/ticket`,r,{});
+  assert.ok(!JSON.stringify(await f.call('/handoffs',p)).includes(ticket.proof));
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:ticket.proof},403);
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,x,{proof:ticket.proof},403);
+  f.advance(5*60000+1);await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof},409);
+  const fresh=await f.call(`/handoffs/${h.id}/ticket`,r,{});
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:fresh.proof});
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:fresh.proof});
+  assert.equal((await f.call('/me',r)).awards.length,1);assert.equal((await f.call('/me',p)).awards.length,1);
+  assert.equal((await f.call('/handoffs',r))[0].offer.address,undefined);
+  await f.call(`/handoffs/${h.id}/review`,r,{satisfaction:5,reliability:4,respect:5});
+  const next=await f.offer(p,{slotMinutes:10});
+  assert.equal(next.slots[0].available,false);
+  await f.call(`/offers/${next.id}/request`,x,{slotStart:next.slots[0].startsAt},409);
+});
+
+test('Public shelf updates are shared, idempotent and remain self-reports without points or photos',async t=>{
+  const {readFileSync}=await import('node:fs');const point=JSON.parse(readFileSync(new URL('../mobile/src/data/fairteiler.json',import.meta.url),'utf8'))[0].id;
+  const f=await fixture(t),p=await f.register('reporter');const data={kind:'shelf',fill:'mittel',items:[{name:'Brot',qty:'1 Stück',cat:'Backwaren',grams:500}],requestKey:'shelf-test-unique'};
+  await f.call(`/shelves/${point}`,null,data,401);await f.call('/shelves/999999',p,data,404);
+  const first=await f.call(`/shelves/${point}`,p,data);const repeat=await f.call(`/shelves/${point}`,p,data);assert.equal(first.id,repeat.id);
+  const shared=await f.call(`/shelves/${point}`,null);assert.equal(shared.length,1);assert.equal(shared[0].items[0].name,'Brot');assert.equal(shared[0].actor,undefined);assert.equal(shared[0].photo,undefined);
+  f.advance(1000);await f.call(`/shelves/${point}`,p,{...data,kind:'pickup',requestKey:'shelf-pickup-unique'});
+  assert.equal((await f.call(`/shelves/${point}`,null)).length,2);
+  assert.equal((await f.call('/shelves',null))[0].kind,'shelf');
+  assert.equal((await f.call('/me',p)).awards.length,0);
+});

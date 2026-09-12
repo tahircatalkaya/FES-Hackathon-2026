@@ -154,7 +154,7 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
               )}
 
               {step === 'result' && (
-                <Animated.View key="result" entering={FadeInDown.springify().damping(16)}>
+                <Animated.View key="result" entering={FadeInDown.duration(240)}>
                   <Row style={{ gap: 10, marginBottom: 8 }}>
                     {photo ? <Image source={{ uri: photo }} style={{ width: 64, height: 64, borderRadius: 12 }} /> : <View style={{ width: 64, height: 64, borderRadius: 12, backgroundColor: color + '22', alignItems: 'center', justifyContent: 'center' }}><Ionicons name={method === 'voice' ? 'mic' : 'create'} size={28} color={color} /></View>}
                     <View style={{ flex: 1 }}>

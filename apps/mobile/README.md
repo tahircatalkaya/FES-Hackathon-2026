@@ -63,11 +63,17 @@ Die Demo verwendet weiterhin öffentliche Client-Umgebungsvariablen für KI-Schl
 
 ## Bestätigte Foodsharing-Übergaben
 
-Neu: Profil → **Übergaben & Zuverlässigkeit**. Ein lokaler Server speichert getrennte Konten, echte Zusagen, kurz gültige Übergabecodes und Bewertungen. Kamera und Audio bleiben zur Erfassung erhalten. Punkte erst nach Bestätigung beider Personen; keine automatischen Zusagen oder Selbst-Freigaben mehr.
+Neu: Profil → **Übergaben & Zuverlässigkeit**. Ein lokaler Server speichert getrennte Konten, Lebensmittelposten mit eigenen Portionszahlen, fünfminütige Abholtermine und Bewertungen. Der Abholer zeigt seinen persönlichen, kurz gültigen QR; der Anbieter scannt ihn bei der tatsächlichen Übergabe. Kamera und Audio bleiben zur Erfassung erhalten. Punkte erst nach Bestätigung beider Personen; keine automatischen Zusagen oder Selbst-Freigaben mehr.
 
 Im App-Ordner zuerst `npm run trust:lan`, dann in einem zweiten Terminal `npm run start:lan`. Beide Geräte müssen dasselbe private Netz nutzen. Jede Person legt einen eigenen Zugang an. Der Treffpunkt erscheint nur nach Zusage, kurz vor dem Termin. [Ablauf, Tests und Grenzen](../trust-server/README.md).
 
-Offene Regal-Meldungen ohne Gegenüber bleiben Eigenangaben ohne Punkte und bestätigten Impact. Alte Foodsharing-Gutschriften aus Selbstbestätigungen werden entsprechend gekennzeichnet. Für echte Prämieneinlösung ist zusätzlich ein serverseitiges Prämiensystem nötig; der lokale Dienst ist kein öffentlicher Produktionsbetrieb.
+Angemeldete Personen teilen Regal-Meldungen mit allen Nutzern; aktuelle Momentaufnahmen und spätere Änderungen erscheinen am Ort. Offene Regal-Meldungen ohne Gegenüber bleiben Eigenangaben ohne Punkte und bestätigten Impact. Alte Foodsharing-Gutschriften aus Selbstbestätigungen werden entsprechend gekennzeichnet. Für echte Prämieneinlösung ist zusätzlich ein serverseitiges Prämiensystem nötig; der lokale Dienst ist kein öffentlicher Produktionsbetrieb.
+
+## Mehrweg-Rückgabe und Schäden
+
+**Mehrweg → Meine Behälter** bietet die Rückgabe und die Schadensmeldung direkt am Behälter. Ein Schadenshinweis bleibt sichtbar, bis das Personal den Behälter prüft. Zur Rückgabe erstellt ein vom Serverbetreiber freigegebenes Ladenkonto nach der Annahme einen persönlichen QR-Beleg. Der Kunde scannt ihn; erst der geprüfte Beleg schließt die Ausleihe in Mainsam. Statische Aufkleber und ein eigener Knopfdruck reichen nicht.
+
+Der lokale Ablauf benötigt keine bezahlte API, aber getrennte Kunden-/Ladenkonten und die einmalige Betreiberfreigabe. Er beendet **keine echte Vytal-Ausleihe**, solange der geschützte Vytal-Adapter fehlt. [Einrichtung, Freigabebefehl und Grenzen](../trust-server/README.md#einmalige-freigabe-einer-lokalen-rücknahmestelle).
 
 ## Partner
 
@@ -91,13 +97,13 @@ Die automatisierten Adaptertests prüfen Upload/MIME, leere Dateien, API-Limits,
 |---|---|---|
 | Foodsharing | Fairteiler/Korb-API, Bild-/Spracherkennung, eigener Übergaben-Server mit Zusagen, Codes und Bewertungen | Historische Verteilungsbeispiele; keine automatische Zusage und keine Punkte für Selbstbestätigungen |
 | Transdev | GTFS RMV (U/S/Tram), Abfahrten, Matching on-device mit Konfidenz | GPS-Testspuren (aus shapes.txt erzeugt), Demo-NFC-Tag in Expo Go |
-| Vytal | Store-Suche (GraphQL, mit Snapshot-Fallback) | Ausleihe/Rückgabe-Bestätigung (Store-seitig) |
+| Vytal | Store-Suche (mit Snapshot-Fallback), lokaler Rückgabe-Server, autorisierte Ladenbelege und Schadensmeldungen | Keine Buchung im externen Vytal-Konto; Store-Freigaben werden lokal verwaltet |
 | traffiQ | CSVs aus dem Repo (Heatmap, Tagesgang, Auslastung, Relationen, Sharing) | Daten teils synthetisch |
 | FES | Konzept + Flows (Peer-QR, Vorher/Nachher, Ticket) | Aktionen, Behälter, FES-Bestätigung |
 
 NFC: `react-native-nfc-manager` ist eingebunden und wird in einem Dev- oder Store-Build echt gelesen.
 Expo Go hat kein NFC, dort läuft automatisch der Demo-Tag, der Ablauf im UI ist identisch.
-QR-Codes funktionieren überall (expo-camera).
+QR-Kamera: Expo Go/native Builds mit Kamerafreigabe; im Web steht die Textcode-Eingabe zur Verfügung.
 
 ## Demo-Ablauf für den Pitch
 
