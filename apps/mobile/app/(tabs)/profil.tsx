@@ -34,7 +34,7 @@ export default function Profile() {
       <Row style={{ justifyContent: 'space-between' }}>
         <Text style={T.h1}>{t('tab.profile')}</Text>
         <Row style={{ gap: 8 }}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Sprachen" onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Sprachen" accessibilityState={{ expanded: showLanguages }} onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 18 }}>🌐</Text>
           </Pressable>
           <Pressable accessibilityRole="button" accessibilityLabel="Mitteilungen" onPress={() => { s.markRead(); router.push('/journal?tab=notices'); }} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
@@ -46,7 +46,7 @@ export default function Profile() {
 
       {showLanguages && (
         <Card style={{ marginTop: 8 }}>
-          {LANGS.filter((language) => language.code !== 'leicht').map((language, index, languages) => (
+          {LANGS.map((language, index, languages) => (
             <View key={language.code}>
               <Pressable accessibilityRole="button" accessibilityState={{ selected: s.lang === language.code }} onPress={() => { s.setProfile({ lang: language.code }); setShowLanguages(false); }} style={{ paddingVertical: 10 }}>
                 <Row style={{ justifyContent: 'space-between' }}>

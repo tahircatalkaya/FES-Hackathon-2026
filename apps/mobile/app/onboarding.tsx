@@ -33,13 +33,13 @@ export default function Onboarding() {
       <LinearGradient colors={[color + '33', C.bg]} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 420 }} />
       <ScrollView contentContainerStyle={{ paddingTop: insets.top + 12, paddingHorizontal: S.xl, paddingBottom: insets.bottom + 24, flexGrow: 1, maxWidth: 560, width: '100%', alignSelf: 'center' }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'flex-end' }}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Sprachen" onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Sprachen" accessibilityState={{ expanded: showLanguages }} onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 18 }}>🌐</Text>
           </Pressable>
         </View>
         {showLanguages && (
           <Card style={{ marginTop: 8 }}>
-            {LANGS.filter((language) => language.code !== 'leicht').map((language, index, languages) => (
+            {LANGS.map((language, index, languages) => (
               <View key={language.code}>
                 <Pressable accessibilityRole="button" accessibilityState={{ selected: lang === language.code }} onPress={() => { setProfile({ lang: language.code }); setShowLanguages(false); }} style={{ paddingVertical: 10 }}>
                   <Row style={{ justifyContent: 'space-between' }}>

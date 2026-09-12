@@ -1,7 +1,6 @@
 export type Lang = 'de' | 'leicht' | 'en' | 'tr' | 'ar';
 export const LANGS: { code: Lang; label: string; flag: string }[] = [
   { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-  { code: 'leicht', label: 'Leichte Sprache', flag: '💬' },
   { code: 'en', label: 'English', flag: '🇬🇧' },
   { code: 'tr', label: 'Türkçe', flag: '🇹🇷' },
   { code: 'ar', label: 'العربية', flag: '🇸🇦' },

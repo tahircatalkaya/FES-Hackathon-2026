@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming, interpolateColor, withRepeat, withSequence } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withSpring, withTiming, withRepeat, withSequence } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { C, CONTEXT, shadow } from '@/theme';
 import { useUI } from '@/store/ui';
@@ -35,30 +35,46 @@ function TabBar({ state, navigation }: any) {
   const color = CONTEXT[ctx].color;
   const pad = 14, w = Math.min(width, 520) - pad * 2;
   const slots = 5, cell = w / slots; // 2 Tabs, Scan, 2 Tabs
-  const visible = state.routes.filter((r: any) => TABS.some((x) => x.name === r.name));
   const activeName = state.routes[state.index].name === 'gemeinsam' ? 'impact' : state.routes[state.index].name;
   const activeIdx = TABS.findIndex((x) => x.name === activeName);
   const slotOf = (i: number) => (i < 2 ? i : i + 1);
-  const x = useSharedValue(slotOf(Math.max(0, activeIdx)) * cell);
-  const col = useSharedValue(0);
-  const prev = React.useRef(color);
-  const from = useSharedValue(color), to = useSharedValue(color);
+  // Animate slot units so a resize cannot leave a stale pixel position outside the bar.
+  const position = useSharedValue(slotOf(Math.max(0, activeIdx)));
+  const animatedColor = useSharedValue(color);
   const glow = useSharedValue(1);
-  useEffect(() => { x.value = withSpring(slotOf(Math.max(0, activeIdx)) * cell, { damping: 16, stiffness: 160 }); }, [activeIdx, cell]);
-  useEffect(() => { from.value = prev.current; to.value = color; col.value = 0; col.value = withTiming(1, { duration: 700 }); prev.current = color; }, [color]);
-  useEffect(() => { glow.value = withRepeat(withSequence(withTiming(1.08, { duration: 1400 }), withTiming(1, { duration: 1400 })), -1, true); }, []);
-  const ind = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }], backgroundColor: interpolateColor(col.value, [0, 1], [from.value, to.value]) }));
-  const scanSt = useAnimatedStyle(() => ({ transform: [{ scale: glow.value }], backgroundColor: interpolateColor(col.value, [0, 1], [from.value, to.value]) }));
+  useEffect(() => {
+    // Keep the current position, but discard momentum from an interrupted tab change.
+    cancelAnimation(position);
+    position.value = withSpring(slotOf(Math.max(0, activeIdx)), {
+      mass: 1, damping: 28, stiffness: 260, velocity: 0, overshootClamping: true,
+    });
+    return () => cancelAnimation(position);
+  }, [activeIdx, position]);
+  useEffect(() => {
+    // Retarget from the displayed color, including during rapid context changes.
+    animatedColor.value = withTiming(color, { duration: 500 });
+  }, [color, animatedColor]);
+  useEffect(() => {
+    glow.value = withRepeat(withSequence(withTiming(1.08, { duration: 1400 }), withTiming(1, { duration: 1400 })), -1, true);
+    return () => cancelAnimation(glow);
+  }, [glow]);
+  const ind = useAnimatedStyle(() => ({
+    transform: [{ translateX: Math.min(slots - 1, Math.max(0, position.value)) * cell }],
+    backgroundColor: animatedColor.value,
+  }));
+  const scanSt = useAnimatedStyle(() => ({ transform: [{ scale: glow.value }], backgroundColor: animatedColor.value }));
 
   return (
     <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center', paddingBottom: Math.max(insets.bottom, 10), pointerEvents: 'box-none' }}>
-      <View style={[{ width: w + 8, flexDirection: 'row', backgroundColor: '#fff', borderRadius: 30, padding: 4, height: 66, alignItems: 'center' }, shadow(3)]}>
-        <Animated.View style={[{ position: 'absolute', top: 4, left: 4, width: cell, height: 58, borderRadius: 26 }, ind]} />
+      <View testID="main-tab-bar" style={[{ width: w + 8, flexDirection: 'row', backgroundColor: '#fff', borderRadius: 30, padding: 4, height: 66, alignItems: 'center' }, shadow(3)]}>
+        {/* Clip only the moving highlight; the raised scan button and shadow stay visible. */}
+        <View pointerEvents="none" style={{ position: 'absolute', top: 4, left: 4, width: w, height: 58, borderRadius: 26, overflow: 'hidden' }}>
+          <Animated.View testID="tab-indicator" style={[{ width: cell, height: 58, borderRadius: 26 }, ind]} />
+        </View>
         {TABS.map((def, i) => {
-          const route = visible.find((r: any) => r.name === def.name);
           const focused = activeName === def.name;
           const tab = (
-            <Pressable key={def.name} onPress={() => { haptic(); navigation.navigate(def.name); }} style={{ width: cell, alignItems: 'center', justifyContent: 'center', height: 58 }}>
+            <Pressable key={def.name} accessibilityRole="tab" accessibilityLabel={t(def.key)} accessibilityState={{ selected: focused }} onPress={() => { haptic(); navigation.navigate(def.name); }} style={{ width: cell, alignItems: 'center', justifyContent: 'center', height: 58 }}>
               <Ionicons name={(focused ? def.icon : `${def.icon}-outline`) as any} size={22} color={focused ? '#fff' : C.muted} />
               <Text style={{ fontSize: 10.5, fontWeight: '800', color: focused ? '#fff' : C.muted, marginTop: 3 }} numberOfLines={1}>{t(def.key)}</Text>
             </Pressable>
