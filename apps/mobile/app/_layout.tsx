@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -12,10 +12,17 @@ import { C, CONTEXT } from '@/theme';
 
 export default function RootLayout() {
   const onboarded = useStore((s) => s.onboarded);
-  const hydrated = useStore.persist?.hasHydrated?.() ?? true;
+  const [hydrated, setHydrated] = useState(false);
   const router = useRouter();
   const segments = useSegments();
   const { toast, showToast, why, showWhy, ctx } = useUI();
+
+  useEffect(() => {
+    // Wait for persisted state and React hydration before deciding on a redirect.
+    const unsubscribe = useStore.persist.onFinishHydration(() => setHydrated(true));
+    setHydrated(useStore.persist.hasHydrated());
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -54,6 +61,8 @@ export default function RootLayout() {
             <Stack.Screen name="belohnungen" />
             <Stack.Screen name="journal" />
             <Stack.Screen name="daten" />
+            <Stack.Screen name="partner" />
+            <Stack.Screen name="uebergaben" />
             <Stack.Screen name="scan" options={{ animation: 'slide_from_bottom' }} />
           </Stack>
           <AwardToast award={toast} onWhy={(a) => showWhy(a)} onDone={() => showToast(null)} color={CONTEXT[ctx].color} />

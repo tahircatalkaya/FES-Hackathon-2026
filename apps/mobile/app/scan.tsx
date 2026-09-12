@@ -3,14 +3,20 @@ import { Platform, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen, Header } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Button, Card, T, Tag, Row, haptic, StatusBadge, Divider } from '@/components/ui';
-import { C, CONTEXT, S } from '@/theme';
+import { Button, Card, T, Row, haptic, StatusBadge, Divider } from '@/components/ui';
+import { C, CONTEXT } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
 import { BINS, CLEANUPS } from '@/data/mock';
+import ProofScanner from '@/components/ProofScanner';
+import TrustAccount from '@/components/TrustAccount';
+import { syncReuse } from '@/components/ReuseInventory';
+import { trust, reuseTrust } from '@/api/trust';
+import { scheduleReturnReminder } from '@/api/notify';
 import { parseContainerCode, demoContainerCode } from '@/api/vytal';
 import { parseTag } from '@/api/nfc';
 import { useLocation } from '@/hooks/useLocation';
@@ -20,20 +26,23 @@ import { hav } from '@/api/foodsharing';
 import { photoFingerprint } from '@/api/photohash';
 import { checkLitterProof, PROOF, type LitterVerdict } from '@/engine/litterproof';
 
-type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'litter';
+type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'vytal-return' | 'food-handover' | 'litter';
 const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTEXT; hint: string }> = {
   ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Die Punkte gibt es beim Check-in.' },
   bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 5 Punkte, bis zu dreimal am Tag.' },
   peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Ihr bestätigt euch gegenseitig vor Ort.' },
   vytal: { title: 'Mehrweg-Behälter', sub: 'Code auf dem Behälter', ctx: 'reuse', hint: 'Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte.' },
-  litter: { title: 'Müll aufgehoben', sub: 'Vorher/Nachher-Nachweis', ctx: 'clean', hint: 'Kein Punkt je Müllstück, das wäre nicht prüfbar und würde zum Sammeln verleiten. Der Nachweis zählt für die Statistik und für FES.' },
+  'vytal-return': {title:'Rückgabe-QR scannen',sub:'Frischer Code vom Personal',ctx:'reuse',hint:'Gib den Behälter ab. Das Personal stellt danach einen einmaligen Rückgabe-QR für genau diesen Behälter aus.'},
+  'food-handover': {title:'Abholcode scannen',sub:'Code vom Handy der abholenden Person',ctx:'food',hint:'Prüfe die vereinbarte Portion. Scanne den persönlichen QR-Code und bestätige erst, wenn du sie übergeben hast.'},
+  litter: { title: 'Müll aufgehoben', sub: 'Vorher/Nachher-Nachweis', ctx: 'clean', hint: 'Der Nachweis dokumentiert deine Aktion. Es gibt keine Punkte je Müllstück.' },
 };
 
 export default function Scan() {
   const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
-  if (!p.mode) return <Chooser />;
-  if (p.mode === 'litter') return <LitterProofScreen />;
-  return <ScanInner />;
+  if (!p.mode || !(p.mode in TITLES)) return <Chooser />;
+  if(p.mode==='food-handover'||p.mode==='vytal-return')return <ProofScanner key={`${p.mode}:${p.id}`} kind={p.mode==='food-handover'?'food':'return'} id={p.id||''}/>;
+  if(p.mode==='litter')return <LitterProofScreen />;
+  return <ScanInner key={`${p.mode}:${p.id??''}`} />;
 }
 
 function Chooser() {
@@ -43,6 +52,10 @@ function Chooser() {
   const items: { mode: Mode; icon: string; t: string; s: string; href?: string }[] = [
     { mode: 'ride', icon: 'train', t: 'Bus & Bahn', s: 'Am Terminal einchecken', href: '/fahrt?nfc=1' },
     { mode: 'vytal', icon: 'cafe', t: 'Mehrweg-Behälter', s: 'Code auf dem Behälter scannen' },
+    { mode: 'vytal-return', icon: 'return-down-back', t: 'Mehrweg zurückgeben', s: 'Rückgabe-QR vom Personal scannen', href:'/rueckgabe' },
+    { mode: 'food-handover', icon:'basket', t:'Lebensmittel übergeben', s:'Abholung & persönlichen QR-Code öffnen', href:'/uebergaben?mine=1' },
+    { mode: 'bin', icon: 'trash', t: 'FES-Behälter', s: 'Aufkleber am Papierkorb antippen' },
+    { mode: 'peer', icon: 'people', t: 'Clean-up-Partner', s: 'Code vom anderen Handy scannen' },
     { mode: 'litter', icon: 'camera', t: 'Müll aufgehoben', s: 'Vorher/Nachher belegen' },
   ];
   return (
@@ -74,14 +87,20 @@ function ScanInner() {
   const [done, setDone] = useState<string | null>(null);
   const [nfcOpen, setNfcOpen] = useState(false);
   const lock = useRef(false);
-  const { addAward, addContainer, attest, nfcSeen } = useStore();
+  const [signed,setSigned]=useState<boolean|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
+  const needsAccount=mode==='vytal';
+  async function loadAccount(){try{setSigned(await trust.hasSession());}catch(e:any){setError(e.message);}}
+  useEffect(()=>{if(needsAccount)void loadAccount();},[mode,p.id]);
+
+  const { addAward, attest, nfcSeen } = useStore();
   const { setCtx, showToast } = useUI();
   const { loc } = useLocation();
 
   useEffect(() => { setCtx(cfg.ctx); if (Platform.OS !== 'web' && !perm?.granted) requestPerm(); }, [mode]);
 
-  function handle(raw: string) {
-    if (lock.current) return; lock.current = true; haptic('success');
+  async function handle(raw: string, demo=false) {
+    if (lock.current||done) return; lock.current = true; setError('');setBusy(true);
+    try {
     switch (mode) {
       case 'ride': {
         const t = parseTag(raw) ?? { line: raw.slice(0, 3).toUpperCase(), vehicle: raw };
@@ -99,29 +118,33 @@ function ScanInner() {
         attest(cu.id, peer); setDone(`Bestätigung von ${peer} für „${cu.title}“ gespeichert.`); break;
       }
       case 'vytal': {
-        const c = parseContainerCode(raw);
-        if (!c) { setDone('Kein gültiger Behälter-Code.'); lock.current = false; return; }
-        addContainer({ code: c.code, storeId: p.store ?? 'str_demo', storeName: p.store ? 'Vytal-Partner' : 'Demo-Store Hauptwache', borrowedAt: Date.now(), txId: `tx_${Date.now()}`, kind: c.kind });
-        setDone(`${c.kind === 'cup' ? 'Becher' : 'Schale'} ${c.code} ausgeliehen. 14 Tage Zeit, +10 Punkte bei Rückgabe in 48 h.`); break;
+        const c=parseContainerCode(raw);if(!c)throw new Error('Kein gültiger Behälter-Code. Bitte den Code auf Becher oder Schale verwenden.');
+        const l=await reuseTrust.borrow({code:c.code,kind:c.kind,storeId:p.store,demo});
+        await syncReuse();await scheduleReturnReminder(l.id,l.code,l.borrowedAt);
+        setDone(`${c.kind==='cup'?'Becher':'Schale'} ${c.code} erfasst. ${l.demo?'Demo ohne Punkte. ':''}Die Rückgabe zählt erst nach Annahme durch das Personal und deinem Scan des Rückgabebelegs.`);break;
       }
     }
-    setTimeout(() => (lock.current = false), 1500);
+    haptic('success');
+    } catch(e:any) {setError(e.message);haptic('warn');}
+    finally {lock.current=false;setBusy(false);}
   }
 
-  const cameraOk = Platform.OS !== 'web' && perm?.granted && !done;
+  if(needsAccount&&signed!==true)return <Screen tabBar={false}><Header title={cfg.title}/>{signed===null?<Text>Lade Zugang…</Text>:<TrustAccount color={color} onReady={()=>void loadAccount()}/>}</Screen>;
+  const cameraOk = Platform.OS !== 'web' && perm?.granted && !done && !busy && mode !== 'litter';
 
   return (
     <Screen tabBar={false}>
       <Header title={cfg.title} subtitle={cfg.sub} color={color} />
+      {!!error&&<Text accessibilityRole="alert" style={[T.body,{color:C.danger,marginBottom:12}]}>{error}</Text>}
       {cameraOk ? (
         <View style={{ height: 320, borderRadius: 24, overflow: 'hidden', backgroundColor: '#000' }}>
-          <CameraView style={{ flex: 1 }} facing="back" barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={(e) => handle(e.data)} />
+          <CameraView style={{ flex: 1 }} facing="back" barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={(e) => void handle(e.data)} />
           <View style={{ position: 'absolute', left: '15%', right: '15%', top: '15%', bottom: '15%', borderWidth: 3, borderColor: color, borderRadius: 24 }} />
         </View>
       ) : (
         <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
           <Chameleon pose={done ? 'thumbs' : mode === 'vytal' ? 'coffee' : mode === 'ride' ? 'run' : 'leaf'} size={140} />
-          <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>{done ?? (Platform.OS === 'web' ? 'Kamera-Scan läuft auf dem Handy. Hier: Code eingeben oder Demo.' : 'Kamera-Freigabe fehlt. Code eingeben oder Demo.')}</Text>
+          <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>{done ?? (mode === 'litter' ? 'Tippe unten, wenn du etwas aufgehoben und richtig entsorgt hast.' : Platform.OS === 'web' ? 'Kamera-Scan läuft auf dem Handy. Alternativ kannst du den Textcode eingeben.' : 'Kamera-Freigabe fehlt. Du kannst den Textcode eingeben.')}</Text>
         </Card>
       )}
       <Card style={{ marginTop: 14 }}>
@@ -131,15 +154,15 @@ function ScanInner() {
       {!done && (
         <Card style={{ marginTop: 14, gap: 10 }}>
           <Text style={T.label}>Code manuell</Text>
-          <TextInput value={manual} onChangeText={setManual} placeholder={mode === 'ride' ? 'z. B. U4|1234' : mode === 'vytal' ? 'z. B. B7K2M9QX' : 'Code'} placeholderTextColor={C.muted} autoCapitalize="characters" style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
+          <TextInput accessibilityLabel="QR- oder Textcode" value={manual} onChangeText={setManual} onSubmitEditing={()=>{if(manual.trim())void handle(manual);}} returnKeyType="done" autoCorrect={false} placeholder={mode === 'ride' ? 'z. B. U4|1234' : mode === 'vytal' ? 'z. B. B7K2M9QX' : 'Code'} placeholderTextColor={C.muted} autoCapitalize={mode==='vytal'?'characters':'none'} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
           <Row style={{ gap: 8 }}>
-            <Button label="Prüfen" color={color} onPress={() => manual && handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
-            {mode === 'bin' ? <Button label="NFC antippen" icon="📡" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q')} />}
+            <Button label="Prüfen" color={color} disabled={busy||!manual.trim()} onPress={() => void handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
+            {mode === 'bin' ? <Button label="NFC antippen" icon="radio" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q',true)} />}
           </Row>
         </Card>
       )}
       <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={(t) => handle(p.id ?? t.raw)} color={color} title="Handy an den Behälter halten" label="Der Tag sitzt am FES-Aufkleber des Behälters. Hier simuliert." />
-      {done && <View style={{ marginTop: 14 }}><Button label="Fertig" color={color} onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/handeln'))} /></View>}
+      {done && <View style={{ marginTop: 14 }}><Button label="Fertig" color={color} onPress={() => mode==='vytal'?router.replace('/mehrweg'):(router.canGoBack()?router.back():router.replace('/(tabs)/handeln'))} /></View>}
       {mode === 'bin' && nfcSeen.length > 0 && <Text style={[T.small, { marginTop: 10 }]}>Zuletzt gelesene Tags: {nfcSeen.slice(-3).join(', ')}</Text>}
     </Screen>
   );
@@ -150,14 +173,13 @@ function ScanInner() {
 /**
  * Vorher/Nachher-Nachweis. Punkte gibt es bewusst keine: ein Punkt je Müllstück
  * würde zum Sammeln statt zum Vermeiden verleiten. Geprüft wird trotzdem streng,
- * damit der Eintrag als Beleg taugt und nicht erfunden werden kann.
+ * als lokale Plausibilitätsprüfung. Eine externe FES-Bestätigung ist das nicht.
  */
 function LitterProofScreen() {
   const router = useRouter();
   const color = CONTEXT.clean.color;
   const { addAward, thankLitter, litterProof, startLitterProof, finishLitterProof, cancelLitterProof, photoHashes } = useStore();
   const { setCtx } = useUI();
-  const { loc } = useLocation();
   const [busy, setBusy] = useState(false);
   const [verdict, setVerdict] = useState<LitterVerdict | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
@@ -175,7 +197,21 @@ function LitterProofScreen() {
     if (r.canceled || !r.assets?.[0]) return null;
     const a = r.assets[0];
     const fp = await photoFingerprint(a.uri, a.base64 ?? undefined);
-    return { at: Date.now(), lat: loc.lat, lon: loc.lon, ...fp };
+    const at = Date.now();
+    const permission = await Location.requestForegroundPermissionsAsync();
+    if (!permission.granted) throw new Error('Für den Ortsnachweis braucht jedes Foto eine aktuelle Standortfreigabe.');
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const location = await Promise.race([
+        Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High }),
+        new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('Standort nicht rechtzeitig verfügbar. Bitte erneut versuchen.')), 20000); }),
+      ]);
+      const { latitude: lat, longitude: lon, accuracy } = location.coords;
+      if (accuracy == null || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > PROOF.geofenceM || Math.abs(Date.now() - location.timestamp) > 60000) {
+        throw new Error('Standort noch zu ungenau. Bitte draußen kurz warten und erneut aufnehmen.');
+      }
+      return { at, lat, lon, accuracy, ...fp };
+    } finally { if (timer) clearTimeout(timer); }
   }
 
   async function vorher() {
@@ -185,7 +221,7 @@ function LitterProofScreen() {
       if (!shot) return;
       if (photoHashes.some((h) => h === shot.hash)) { setFehler('Dieses Foto wurde schon einmal eingereicht.'); return; }
       startLitterProof(shot); haptic();
-    } finally { setBusy(false); }
+    } catch (e: any) { setFehler(e?.message || 'Aufnahme konnte nicht geprüft werden. Bitte erneut versuchen.'); } finally { setBusy(false); }
   }
 
   async function nachher() {
@@ -207,7 +243,7 @@ function LitterProofScreen() {
         });
         finishLitterProof([litterProof.hash, shot.hash]);
       }
-    } finally { setBusy(false); }
+    } catch (e: any) { setFehler(e?.message || 'Aufnahme konnte nicht geprüft werden. Bitte erneut versuchen.'); } finally { setBusy(false); }
   }
 
   const wartezeit = litterProof ? (Date.now() - litterProof.at) / 60000 : 0;
@@ -222,7 +258,7 @@ function LitterProofScreen() {
         <Chameleon pose={verdict?.ok ? 'thumbs' : litterProof ? 'think' : 'leaf'} size={132} />
         <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>
           {verdict?.ok
-            ? 'Belegt. Danke, das zählt für die Statistik von FES.'
+            ? 'Plausibel dokumentiert. Danke! Dein Eintrag ist in Mainsam gespeichert.'
             : litterProof
               ? abgelaufen
                 ? `Das Zeitfenster von ${PROOF.maxMinutes} Minuten ist vorbei. Bitte neu anfangen.`
@@ -261,14 +297,15 @@ function LitterProofScreen() {
       )}
 
       <Card style={{ marginTop: 14 }}>
-        <Text style={T.label}>Warum so umständlich</Text>
+        <Text style={T.label}>So wird dein Nachweis geprüft</Text>
         <Text style={[T.body, { marginTop: 4 }]}>
           Ein Knopf „hab was aufgehoben“ ließe sich beliebig oft drücken. Deshalb zählt nur, was sich prüfen lässt:
         </Text>
         <Text style={[T.body, { marginTop: 6 }]}>• {PROOF.minMinutes} bis {PROOF.maxMinutes} Minuten zwischen den Fotos</Text>
-        <Text style={T.body}>• beide Aufnahmen im Umkreis von {PROOF.geofenceM} m</Text>
+        <Text style={T.body}>• frischer Standort je Foto, beide im Umkreis von {PROOF.geofenceM} m</Text>
         <Text style={T.body}>• zwei verschiedene Bilder, direkt aus der Kamera</Text>
         <Text style={T.body}>• kein Foto, das schon einmal eingereicht wurde</Text>
+        <Text style={[T.small, { marginTop: 8 }]}>Lokale Plausibilitätsprüfung, keine externe FES-Bestätigung. Im Browser kann die Systemauswahl auch Dateien anbieten; auf dem Handy öffnet sich die Kamera.</Text>
       </Card>
 
       {verdict?.ok && (

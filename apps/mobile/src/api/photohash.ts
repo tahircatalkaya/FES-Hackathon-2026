@@ -68,5 +68,6 @@ export async function photoFingerprint(uri: string, base64?: string): Promise<Ph
     const h = await aHash(uri);
     if (h) return { hash: h, kind: 'ahash' };
   }
-  return { hash: digest(base64 ?? uri), kind: 'digest' };
+  if (!base64) throw new Error('Bilddaten fehlen. Bitte das Foto erneut aufnehmen.');
+  return { hash: digest(base64), kind: 'digest' };
 }

@@ -7,3 +7,7 @@ shots/
 .DS_Store
 ios/
 android/
+
+# Schlüssel bleiben lokal
+.env
+.env.local

@@ -29,6 +29,7 @@ export interface LitterShot {
   at: number;
   lat: number;
   lon: number;
+  accuracy?: number;
   /** Fingerabdruck des Fotos, siehe api/photohash. */
   hash: string;
 }
@@ -64,6 +65,15 @@ function meters(aLat: number, aLon: number, bLat: number, bLon: number) {
  * `used` enthaelt die Fingerabdruecke abgeschlossener Nachweise.
  */
 export function checkLitterProof(before: LitterShot, after: LitterShot, used: string[] = []): LitterVerdict {
+  const valid = (shot: LitterShot) => Number.isFinite(shot.at) && shot.at > 0
+    && Number.isFinite(shot.lat) && Math.abs(shot.lat) <= 90
+    && Number.isFinite(shot.lon) && Math.abs(shot.lon) <= 180
+    && Number.isFinite(shot.accuracy) && shot.accuracy! >= 0 && shot.accuracy! <= PROOF.geofenceM
+    && typeof shot.hash === 'string' && /^[a-f0-9]{16}$/i.test(shot.hash);
+  if (!before || !after || !valid(before) || !valid(after)) return {
+    ok: false, status: 'nicht zuordenbar', minutes: 0, meters: 0,
+    reasons: ['Kein gültiger Foto- und Standortnachweis. Bitte mit frischem Standort neu beginnen.'],
+  };
   const minutes = (after.at - before.at) / 60000;
   const dist = meters(before.lat, before.lon, after.lat, after.lon);
   const reasons: string[] = [];

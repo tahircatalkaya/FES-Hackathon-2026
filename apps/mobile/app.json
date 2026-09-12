@@ -57,8 +57,17 @@
           "cameraPermission": "Zum Scannen von QR-Codes und für Regal-Fotos."
         }
       ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Mainsam nimmt deine Sprachnotiz auf, wenn du die Aufnahme startest.",
+          "enableBackgroundRecording": false,
+          "enableBackgroundPlayback": false
+        }
+      ],
       "expo-localization",
       "expo-notifications",
+      "expo-secure-store",
       "expo-video"
     ],
     "experiments": {

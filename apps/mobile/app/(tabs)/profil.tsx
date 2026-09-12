@@ -3,13 +3,14 @@ import { Alert, Platform, Pressable, Switch, Text, TextInput, View } from 'react
 import { useRouter } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Appear, Button, Card, Divider, Row, SectionTitle, Stat, T, haptic } from '@/components/ui';
+import { Appear, Button, Card, Divider, Row, SectionTitle, Stat, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore, balance, weekStats, chameleonStage, STAGES } from '@/store';
 import { useUI } from '@/store/ui';
 import { LANGS } from '@/i18n';
 import { useT } from '@/i18n/useT';
 import { CHAPTERS } from '@/data/mock';
+import { trust } from '@/api/trust';
 
 const col = CONTEXT.home.color;
 
@@ -26,9 +27,22 @@ export default function Profile() {
   const unread = s.notices.filter((n) => !n.read).length;
   const nextQuiz = CHAPTERS.find((c) => !s.quizDone.includes(c.id));
 
+  const [leaving, setLeaving] = useState(false);
+  async function leave(resetLocal = false) {
+    if (leaving) return;
+    setLeaving(true);
+    try { await trust.logout(); } catch { /* Local credentials are cleared even when offline. */ }
+    finally {
+      if (resetLocal) s.resetAll();
+      else { s.syncFoodAwards([]); s.syncContainers([]); }
+      router.replace(resetLocal ? '/onboarding' : '/anmelden');
+      setLeaving(false);
+    }
+  }
+
   function reset() {
-    const go = () => { s.resetAll(); router.replace('/onboarding'); };
-    if (Platform.OS === 'web') { if (confirm('Alle Daten löschen?')) go(); } else Alert.alert('Alle Daten löschen?', 'Journal, Reservierungen, Behälter und Einstellungen werden lokal gelöscht.', [{ text: 'Abbrechen' }, { text: 'Löschen', style: 'destructive', onPress: go }]);
+    const go = () => { void leave(true); };
+    if (Platform.OS === 'web') { if (confirm('Lokale Daten löschen?')) go(); } else Alert.alert('Lokale Daten löschen?', 'Journal, Reservierungen, Behälter und Einstellungen werden lokal gelöscht.', [{ text: 'Abbrechen' }, { text: 'Löschen', style: 'destructive', onPress: go }]);
   }
 
   return (
@@ -43,7 +57,7 @@ export default function Profile() {
             <Text style={{ fontSize: 18 }}>🔔</Text>
             {unread > 0 && <View style={{ position: 'absolute', top: 4, right: 4, backgroundColor: C.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontSize: 10, fontWeight: '900' }}>{unread}</Text></View>}
           </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="Ausloggen" onPress={() => router.replace('/anmelden')} style={{ height: 42, borderRadius: 21, backgroundColor: '#fff', paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Ausloggen" accessibilityState={{ disabled: leaving }} disabled={leaving} onPress={() => void leave()} style={{ height: 42, borderRadius: 21, backgroundColor: '#fff', paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ color: C.ink, fontSize: 14, fontWeight: '800' }}>Ausloggen</Text>
           </Pressable>
         </Row>
@@ -88,8 +102,9 @@ export default function Profile() {
         </Card>
       </Appear>
 
-      <View style={{ marginTop: 12 }}>
-        <Button label="Belohnungen" icon="🎁" color={col} onPress={() => router.push('/belohnungen')} style={{ width: '100%', paddingVertical: 14 }} />
+      <View style={{ marginTop: 12, gap: 8 }}>
+        <Button label="Belohnungen" icon="gift" color={col} onPress={() => router.push('/belohnungen')} style={{ width: '100%', paddingVertical: 14 }} />
+        <Button label="Journal" icon="journal" color={col} variant="soft" onPress={() => router.push('/journal')} style={{ width: '100%', paddingVertical: 14 }} />
       </View>
 
       <SectionTitle title="Lernen" />
@@ -129,9 +144,19 @@ export default function Profile() {
         </Card>
       </Appear>
       <View style={{ marginTop: 10, gap: 8 }}>
-        <Button label="Alle Daten löschen" variant="ghost" color={C.danger} onPress={reset} style={{ paddingVertical: 12 }} />
+        <Button label="Lokale Daten löschen" variant="ghost" color={C.danger} onPress={reset} style={{ paddingVertical: 12 }} />
+        <Text style={T.small}>Konten und bestätigte Belege auf dem Server bleiben erhalten.</Text>
       </View>
 
+      <SectionTitle title="Foodsharing" />
+      <Button label="Übergaben & Zuverlässigkeit" icon="🤝" variant="soft" color={col} onPress={() => router.push('/uebergaben')} style={{ marginBottom: 12 }} />
+
+      <SectionTitle title="Über Mainsam" />
+      <Button label="Partner" icon="heart-circle-outline" variant="soft" color={col} onPress={() => router.push('/partner')} style={{ marginBottom: 12 }} />
+      <Card>
+        <Text style={T.body}>Mainsam bündelt Ride2Impact (Transdev), Smart Mehrweg (Vytal), Save2Share (Frankfurt foodsharing), Sauberes Frankfurt (FES) und den Mobilitätsimpact (traffiQ) in einer Journey. Punkte gibt es für Entscheidungen, nicht für Mengen. Jede Gutschrift erklärt sich selbst.</Text>
+        <Row style={{ gap: 6, marginTop: 8, flexWrap: 'wrap' }}><Tag label="Frankfurt gemeinsam" color={col} /><Tag label="Ressourcen teilen" /></Row>
+      </Card>
     </Screen>
   );
 }

@@ -41,7 +41,8 @@ export async function vytalStores(lat: number, lon: number): Promise<{ items: Vy
 /** Behälter-Code prüfen. Formate laut Doku: Legacy-Codes und URLs; wir akzeptieren beides und normalisieren. */
 export function parseContainerCode(raw: string): { code: string; kind: 'bowl' | 'cup' } | null {
   const s = raw.trim();
-  const m = s.match(/([A-Z0-9]{6,})$/i);
+  if(s.length>2048||/^mainsam:/i.test(s))return null;
+  const m = s.match(/([A-Z0-9]{6,32})$/i);
   if (!m) return null;
   const code = m[1].toUpperCase();
   return { code, kind: /C/.test(code[0]) ? 'cup' : 'bowl' };

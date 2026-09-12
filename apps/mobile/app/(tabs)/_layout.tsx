@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withTiming, Easing, ReduceMotion } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { C, NAVY, shadow } from '@/theme';
 import { useT } from '@/i18n/useT';
@@ -40,8 +40,8 @@ function TabBar({ state, navigation }: any) {
   useEffect(() => {
     // Keep the current position, but discard momentum from an interrupted tab change.
     cancelAnimation(position);
-    position.value = withSpring(slotOf(Math.max(0, activeIdx)), {
-      mass: 1, damping: 28, stiffness: 260, velocity: 0, overshootClamping: true,
+    position.value = withTiming(slotOf(Math.max(0, activeIdx)), {
+      duration: 210, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System,
     });
     return () => cancelAnimation(position);
   }, [activeIdx, position]);
@@ -60,20 +60,20 @@ function TabBar({ state, navigation }: any) {
         {TABS.map((def, i) => {
           const focused = activeName === def.name;
           const tab = (
-            <Pressable key={def.name} accessibilityRole="tab" accessibilityLabel={t(def.key)} accessibilityState={{ selected: focused }} onPress={() => { haptic(); navigation.navigate(def.name); }} style={{ width: cell, alignItems: 'center', justifyContent: 'center', height: 58 }}>
+            <NavigationTab key={def.name} label={t(def.key)} selected={focused} onPress={() => { haptic(); navigation.navigate(def.name); }} width={cell}>
               <Ionicons name={(focused ? def.icon : `${def.icon}-outline`) as any} size={22} color={focused ? '#fff' : C.muted} />
               <Text style={{ fontSize: 10.5, fontWeight: '800', color: focused ? '#fff' : C.muted, marginTop: 3 }} numberOfLines={1}>{t(def.key)}</Text>
-            </Pressable>
+            </NavigationTab>
           );
           if (i === 2) {
             return (
               <React.Fragment key="scan-slot">
-                <Pressable onPress={() => { haptic(); router.push('/scan'); }} style={{ width: cell, alignItems: 'center', justifyContent: 'center', height: 58 }}>
+                <NavigationTab role="button" label="Scannen" width={cell} onPress={() => { haptic(); router.push('/scan'); }}>
                   <View style={[{ width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', marginTop: -26, borderWidth: 4, borderColor: '#fff', backgroundColor: NAVY }, shadow(2)]}>
                     <Ionicons name="scan" size={26} color="#fff" />
                   </View>
                   <Text style={{ fontSize: 10.5, fontWeight: '800', color: C.muted, marginTop: 2 }}>Scan</Text>
-                </Pressable>
+                </NavigationTab>
                 {tab}
               </React.Fragment>
             );
@@ -83,4 +83,9 @@ function TabBar({ state, navigation }: any) {
       </View>
     </View>
   );
+}
+/** Native buttons on web keep keyboard and pointer navigation independent of the map responder. */
+function NavigationTab({label,selected,onPress,width,children,role='tab'}:{label:string;selected?:boolean;onPress:()=>void;width:number;children:React.ReactNode;role?:'tab'|'button'}) {
+  if(Platform.OS==='web')return <button type="button" role={role} aria-label={label} aria-selected={selected} onClick={onPress} style={{width,height:58,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:0,border:0,background:'transparent',cursor:'pointer',font:'inherit'}}>{children}</button>;
+  return <Pressable accessibilityRole={role} accessibilityLabel={label} accessibilityState={{selected}} onPress={onPress} style={{width,height:58,alignItems:'center',justifyContent:'center'}}>{children}</Pressable>;
 }

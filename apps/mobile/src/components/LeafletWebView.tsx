@@ -21,7 +21,7 @@ export default function LeafletWebView({ center, spanKm = 4, markers = [], polyl
 </head><body><div id="m"></div><script>${LEAFLET_JS}</script>
 <script>
 var map=L.map('m',{zoomControl:false,attributionControl:true,dragging:${interactive},scrollWheelZoom:${interactive},doubleClickZoom:${interactive},touchZoom:${interactive},tap:${interactive}}).setView([${center.lat},${center.lon}],${zoom});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap, &copy; CARTO',maxZoom:19}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap-Mitwirkende',maxZoom:19}).addTo(map);
 var layer=L.layerGroup().addTo(map);var userM=null;var post=function(o){window.ReactNativeWebView&&window.ReactNativeWebView.postMessage(JSON.stringify(o))};
 var lastRk=0,lastC=null,lastF='';
 function move(lat,lon,z){map.setView([lat,lon],z==null?map.getZoom():z,{animate:true})}

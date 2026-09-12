@@ -55,7 +55,7 @@ export default function Onboarding() {
         <View style={{ alignItems: 'center', marginTop: 28 }}>
           <Chameleon pose={last ? 'cheer' : i % 2 ? 'hello' : 'wave'} size={230} />
         </View>
-        <Animated.View key={i} entering={FadeInDown.springify().damping(16)} exiting={FadeOut} style={{ marginTop: 24, minHeight: 190 }}>
+        <Animated.View key={i} entering={FadeInDown.duration(240)} exiting={FadeOut} style={{ marginTop: 24, minHeight: 190 }}>
           {!last ? (
             <>
               {i === 1 && lang === 'de' ? (

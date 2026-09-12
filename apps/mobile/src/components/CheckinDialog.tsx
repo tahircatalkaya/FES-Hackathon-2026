@@ -167,7 +167,7 @@ function Success({ tag, award, label, onContinue }: { tag: TagInfo; award: Award
     delay: (i % 6) * 65, color: CONFETTI[i % 4], round: i % 3 === 2,
   })), []);
   const pop = useSharedValue(0.8);
-  useEffect(() => { pop.value = withSpring(1, { damping: 9, stiffness: 190 }); }, []);
+  useEffect(() => { pop.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) }); }, []);
   const popSt = useAnimatedStyle(() => ({ transform: [{ scale: pop.value }] }));
 
   return (
