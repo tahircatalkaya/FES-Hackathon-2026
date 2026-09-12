@@ -116,12 +116,9 @@ export function CelebrationOverlay({ open, points, onClose }: { open: boolean; t
             {earned > 0 ? (
               <>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <Flame />
                   <Text style={{ fontSize: 32, fontWeight: '900', color: C.ink, letterSpacing: -0.5 }}>+{earned}</Text>
+                  <Flame />
                 </View>
-                <Text style={{ fontSize: 16, fontWeight: '900', color: C.ink, marginTop: 6, textAlign: 'center' }}>
-                  {earned === 1 ? 'Punkt' : 'Punkte'} gutgeschrieben
-                </Text>
               </>
             ) : (
               <>
