@@ -70,7 +70,7 @@ export default function Act() {
   return (
     <Screen>
       <FesLogo width={92} />
-      <Text style={[T.h1, { marginTop: 10 }]}>Frankfurt bleibt sauber.</Text>
+      <Text style={[T.h1, { marginTop: 10 }]}>Wir machen die Stadt. Sauber.</Text>
 
       {/* Kopf: Chamäleon, Tagesziel, eigene Aktion anlegen */}
       <Appear delay={60}>
