@@ -4,6 +4,7 @@ import { tabs } from './tabs.ts';
 import { routes } from './routes.ts';
 import { components } from './components.ts';
 import { proofs } from './proofs.ts';
+import { updates } from './updates.ts';
 import { errors } from './errors.ts';
 import type { TranslationParams, TranslationRow } from './types';
 
@@ -19,7 +20,7 @@ export const LANGS: { code: Lang; label: string; flag: string }[] = [
 
 export const LOCALES: Record<Lang, string> = { de: 'de-DE', leicht: 'de-DE', en: 'en-GB', tr: 'tr-TR', ar: 'ar', hr: 'hr-HR', it: 'it-IT' };
 const COLUMN: Record<Lang, number> = { de: 0, en: 1, tr: 2, ar: 3, hr: 4, it: 5, leicht: 6 };
-export const TRANSLATIONS = { ...base, ...data, ...tabs, ...routes, ...components, ...proofs, ...errors };
+export const TRANSLATIONS = { ...base, ...data, ...tabs, ...routes, ...components, ...proofs, ...errors, ...updates };
 export type TKey = keyof typeof TRANSLATIONS;
 export type { TranslationParams } from './types';
 

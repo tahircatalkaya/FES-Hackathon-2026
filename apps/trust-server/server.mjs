@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { reuseRoutes } from './reuse.mjs';
 import { shelfRoutes } from './shelves.mjs';
 import { pinCodes } from './pins.mjs';
+import { cleanupRoutes } from './cleanups.mjs';
 import { accountRoutes } from './accounts.mjs';
 import { award } from '../mobile/src/engine/reward.ts';
 
@@ -37,7 +38,7 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
   const run = (sql, ...args) => db.prepare(sql).run(...args);
   const transaction = fn => { db.exec('BEGIN IMMEDIATE'); try { const result = fn(); db.exec('COMMIT'); return result; } catch (e) { db.exec('ROLLBACK'); throw e; } };
   const username = id => get('SELECT name FROM users WHERE id=?', id)?.name ?? 'Person';
-  const foodAwards = actor => [...all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload)),...shelves.awards(actor)];
+  const foodAwards = actor => [...all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload)),...shelves.awards(actor),...cleanups.awards(actor)];
   const accounts = accountRoutes({db,get,all,run,transaction,now,fail,fields,text,limit});
   const pins = pinCodes({db,get,run,now,fail});
   const reuse = reuseRoutes({ db, get, all, run, transaction, now, fail, fields, text, limit, foodAwards, isGuest:accounts.isGuest, pins });
@@ -45,9 +46,10 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
   const addColumn = (table, name, type) => { if (!all(`PRAGMA table_info(${table})`).some(c=>c.name===name)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${type}`); };
   addColumn('offers','slot_minutes','INTEGER');
   addColumn('handoffs','slot_start','INTEGER'); addColumn('handoffs','slot_end','INTEGER');
-  addColumn('handoffs','reserve_expires','INTEGER'); addColumn('handoffs','ticket_hash','TEXT'); addColumn('handoffs','ticket_expires','INTEGER');
+  addColumn('handoffs','reserve_expires','INTEGER'); addColumn('handoffs','ticket_hash','TEXT'); addColumn('handoffs','ticket_expires','INTEGER'); addColumn('handoffs','ticket_role','INTEGER NOT NULL DEFAULT 0');
   db.exec(`CREATE TABLE IF NOT EXISTS shelf_updates(id TEXT PRIMARY KEY, point_id INTEGER NOT NULL, actor TEXT NOT NULL REFERENCES users(id), kind TEXT NOT NULL, fill TEXT NOT NULL, items TEXT NOT NULL, created INTEGER NOT NULL, request_key TEXT NOT NULL, UNIQUE(actor,request_key));`);
   const shelves = shelfRoutes({db,get,all,run,transaction,now,fail,fields,text,pins,isGuest:accounts.isGuest,ledger:actor=>[...foodAwards(actor),...reuse.awards(actor)]});
+  const cleanups=cleanupRoutes({db,get,all,run,transaction,now,fail,fields,text,isGuest:accounts.isGuest,ledger:actor=>[...foodAwards(actor),...reuse.awards(actor)]});
   const slotOffer = (h,o) => ({...o,starts:h.slot_start??o.starts,ends:h.slot_end??o.ends});
   function slots(o) {
     if(!o.slot_minutes) return [];
@@ -146,6 +148,7 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
     }
     if (!actor) fail(401, 'Bitte anmelden.');
     if (method === 'GET' && path === '/me') return { user: accounts.userView(actor), reputation: reputation(actor), awards: [...foodAwards(actor),...reuse.awards(actor)], merchantStores:reuse.stores(actor), shelfStores:shelves.stores(actor) };
+    if(path.startsWith('/cleanups/')) {const result=cleanups.dispatch(method,path,body,actor);if(result!==undefined)return result;}
     if(path.startsWith('/shelf-actions')) {const result=shelves.dispatch(method,path,body,actor);if(result!==undefined)return result;}
     if(path.startsWith('/reuse/')) { const result=reuse.dispatch(method,path,body,actor); if(result!==undefined) return result; }
     if (method === 'GET' && path === '/offers') return all('SELECT * FROM offers WHERE owner=? OR (ends>?) ORDER BY created DESC LIMIT 100', actor, now()).map(o => offerView(o, actor));
@@ -185,15 +188,16 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
       const {h,o}=handoff(ticket[1],actor);
       fields(body,ticket[2]==='ticket'?[]:['proof']);
       if(ticket[2]==='ticket') {
-        if(actor!==h.receiver) fail(403,'Den persönlichen Abholcode zeigt die abholende Person.');
+        if(actor!==o.owner) fail(403,'Den Übergabecode zeigt die verteilende Person.');
         if(h.status!=='accepted'||now()<o.starts||now()>o.ends) fail(409,'Dein Abholcode ist nur zum zugesagten Termin verfügbar.');
         limit(`ticket:${h.id}`,10,60000);
         const secret=randomBytes(24).toString('hex'),expires=Math.min(now()+5*60000,o.ends);
         const code=pins.issue(`food:${h.id}`,expires);
-        run('UPDATE handoffs SET ticket_hash=?,ticket_expires=? WHERE id=?',hash(secret),expires,h.id);
+        run('UPDATE handoffs SET ticket_hash=?,ticket_expires=?,ticket_role=2 WHERE id=?',hash(secret),expires,h.id);
         return {proof:`mainsam:food:${h.id}:${secret}`,code,expiresAt:expires};
       }
-      if(actor!==o.owner) fail(403,'Nur die anbietende Person kann diese Übergabe abschließen.');
+      if(actor!==h.receiver) fail(403,'Nur die abholende Person kann diesen Übergabecode bestätigen.');
+      if(h.ticket_role!==2)fail(409,'Bitte den neuen Code von der verteilenden Person anzeigen lassen.');
       const value=text(body.proof,200);
       if(/^\d{4}$/.test(value)) { if(h.status!=='accepted') fail(409,'Diese Übergabe wurde bereits abgeschlossen.'); pins.verify(`food:${h.id}`,value); }
       else {

@@ -22,7 +22,7 @@ export const BASE: Record<ActionType, number> = {
   'food.pickup_for_other': 5,
   'food.reservation_kept': 2,
   // FES: Organisieren und Teilnehmen sind Tagesereignisse, die Tages-Challenges Kleinvieh.
-  'clean.signup': 1,
+  'clean.signup': 0,
   'clean.participate': 15,
   'clean.organize': 20,
   'clean.report': 10,
@@ -95,11 +95,11 @@ export const WHY_BASE: Record<ActionType, string> = {
   'food.pickup': 'Lebensmittel abgeholt, bevor sie weggeworfen werden. Zweimal am Tag gewertet, damit für alle etwas übrig bleibt.',
   'food.pickup_for_other': 'Abholung für eine andere Person, per QR bestätigt.',
   'food.reservation_kept': 'Reservierung eingehalten. Verlässlichkeit hilft allen.',
-  'clean.signup': 'Anmeldung zu einer Aktion. Ein Punkt für die Zusage, höchstens zwei Anmeldungen am Tag. Die Teilnahme selbst zählt vor Ort.',
+  'clean.signup': 'Anmeldung zu einer Aktion. Punkte gibt es erst nach QR-Bestätigung am Aktionsort.',
   'clean.participate': 'Teilnahme an einer angemeldeten Clean-up-Aktion, Anwesenheit gegenseitig bestätigt.',
   'clean.organize': 'Clean-up organisiert. FES hat die Sackabholung bestätigt.',
   'clean.report': 'Meldung, die zu einem FES-Ticket geführt hat. Erste Meldung je Ort in 72 h.',
-  'clean.bin_checkin': 'Entsorgung an einem registrierten FES-Behälter.',
+  'clean.bin_checkin': 'Bingo-Aufgabe zur richtigen Entsorgung.',
   'clean.bin_quality': 'Biotonne fotografiert und geprüft. Die Bilderkennung macht einen Vorschlag, bewertet wird deine Bestätigung.',
   'clean.quiz': 'Lernmodul abgeschlossen. Wissen über Vermeidung und richtige Entsorgung.',
   'clean.litter_solo': 'Ein einzelnes Müllstück gibt keine Punkte, weil das nicht prüfbar ist. Danke trotzdem, das Chamäleon freut sich.',
@@ -128,7 +128,7 @@ function sameDay(a: number, b: number) {
  * Einzige Stelle, die Punkte vergibt.
  * Idempotent über `event.key`, mit Multiplikator, Degression, Zähl- und Punktedeckel.
  */
-export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { verifiedFood?: true; verifiedReuse?: true }): Award {
+export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { verifiedFood?: true; verifiedReuse?: true; verifiedCleanup?: true }): Award {
   // A photo, GPS reading, API self-report or caller-supplied status is not a handover.
   // Only the authenticated server calls this with authority after both parties finish.
   if (event.type.startsWith('food.') && !authority?.verifiedFood) {
@@ -142,6 +142,7 @@ export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { ve
   if (event.type.startsWith('reuse.') && !authority?.verifiedReuse) {
     return {...event,status:'ausstehend',base:BASE[event.type],multiplier:0,degression:0,capped:0,points:0,impact:emptyImpact(),duplicate:ledger.some(l=>l.key===event.key),reasons:['Eine Rückgabe zählt erst mit einem gültigen Beleg einer freigegebenen Rücknahmestelle.'],formula:'Rückgabebeleg ausstehend → 0 Punkte'};
   }
+  if(event.type==='clean.participate'&&!authority?.verifiedCleanup)return {...event,status:'ausstehend',base:BASE[event.type],multiplier:0,degression:0,capped:0,points:0,impact:emptyImpact(),duplicate:ledger.some(l=>l.key===event.key),reasons:['Teilnahme erst nach QR-Bestätigung am Aktionsort.'],formula:'QR-Nachweis ausstehend → 0 Punkte'};
   const reasons: string[] = [];
   const impact = impactFor(event);
   const base = BASE[event.type];
@@ -154,7 +155,7 @@ export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { ve
       key: event.key, type: event.type, partner: event.partner, title: event.title, at: event.at, status: event.status,
       base, multiplier: mult, degression: 0, capped: 0, points: 0, impact,
       reasons: ['Dieses Ereignis wurde bereits gewertet (gleicher Schlüssel). Keine Doppelbelohnung.'],
-      formula: `Schlüssel ${event.key} bereits im Journal`, duplicate: true, flat, meta: event.meta,
+      formula: `Schlüssel ${event.key} bereits erfasst`, duplicate: true, flat, meta: event.meta,
     };
   }
 

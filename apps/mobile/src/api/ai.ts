@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { File } from 'expo-file-system';
+import { isNetworkError } from './network';
 
 /**
  * Echte Bild- und Spracherkennung für Foodsharing.
@@ -80,7 +81,7 @@ async function aiRequest(provider: string, url: string, init: RequestInit): Prom
     throw new Error(`${provider} ist gerade nicht verfügbar (HTTP ${r.status}). Bitte später erneut versuchen.`);
   } catch (e) {
     if (controller.signal.aborted) throw new Error('Die KI hat nach 45 Sekunden nicht geantwortet. Erneut versuchen oder selbst eintragen.');
-    if (e instanceof TypeError) throw new Error('Keine Verbindung zur KI. Internetverbindung prüfen oder selbst eintragen.');
+    if (isNetworkError(e, controller.signal)) throw new Error('Keine Verbindung zur KI. Internetverbindung prüfen oder selbst eintragen.');
     throw e;
   } finally { clearTimeout(timeout); }
 }

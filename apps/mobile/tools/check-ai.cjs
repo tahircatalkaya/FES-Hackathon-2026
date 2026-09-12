@@ -16,6 +16,7 @@ function loadAI(fetchImpl, key = 'test-key-never-sent') {
     exports: mod.exports, module: mod, fetch: fetchImpl, AbortController, FormData, TypeError, Error, FileReader: undefined,
     setTimeout, clearTimeout, process: { env: { EXPO_PUBLIC_GEMINI_KEY: key } },
     require: (name) => {
+      if (name === './network') return require('../src/api/network.ts');
       if (name === 'react-native') return { Platform: { OS: 'ios' } };
       if (name === 'expo-file-system') return { File: class {
         constructor(uri) { this.path = uri.replace(/^file:\/\//, ''); }
@@ -59,6 +60,8 @@ async function checks() {
   }
   const offline = loadAI(async () => { throw new TypeError('fetch failed'); });
   await assert.rejects(offline.analyzeText('Test', 'stock'), /Verbindung/);
+  const nativeOffline = loadAI(async () => { throw new Error('fetch failed: UnexpectedException: Could not connect to the server. (at ExpoModulesCore/Promise.swift:56)'); });
+  await assert.rejects(nativeOffline.analyzeText('Test', 'stock'), e => e.message.includes('Verbindung') && !e.message.includes('Swift'));
   assert.equal(loadAI(() => { throw new Error('No network expected'); }, '').aiProvider(), null);
   console.log('PASS: Text, Bild, native Audiodatei, MIME, leere Aufnahme, 400/403/404/429/503, Netzfehler, kein Schlüssel.');
 }

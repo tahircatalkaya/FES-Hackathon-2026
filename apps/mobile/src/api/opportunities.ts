@@ -2,7 +2,7 @@ import { fs, hav, type ApiSource } from './foodsharing';
 import { trust } from './trust';
 import { vytalStores } from './vytal';
 import { STATIONS } from '@/engine/matching';
-import { CLEANUPS, BINS, SAVER_DISTRIBUTIONS } from '@/data/mock';
+import { CLEANUPS, SAVER_DISTRIBUTIONS } from '@/data/mock';
 import type { ContextKey } from '@/theme';
 
 export type Layer = 'food' | 'reuse' | 'mobility' | 'clean';
@@ -60,7 +60,6 @@ export async function getOpportunities(lat: number, lon: number, radiusKm = 3, l
     if (dm <= radiusKm * 1000) items.push({ id: `st-${s.id}`, layer: 'mobility', ctx: 'mobility', partner: 'transdev', title: s.name, sub: 'Haltestelle · Abfahrten ansehen', lat: s.lat, lon: s.lon, distance_m: dm, icon: 'train', emoji: '🚇', href: `/fahrt?station=${s.id}`, availability: 'jetzt', source: 'gtfs', verification: 'Fahrplan' });
   }
   for (const c of CLEANUPS) items.push({ id: `cu-${c.id}`, layer: 'clean', ctx: 'clean', partner: 'fes', title: c.title, sub: `${new Date(c.start).toLocaleDateString(locale, { weekday: 'short', day: '2-digit', month: '2-digit' })} ${new Date(c.start).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} · ${c.participants} dabei`, lat: c.lat, lon: c.lon, distance_m: d(c.lat, c.lon), icon: 'sparkles', emoji: '🤝', href: `/cleanup/${c.id}`, availability: c.fesConfirmed ? 'unbekannt' : c.start < Date.now() && c.end > Date.now() ? 'jetzt' : 'bald', source: 'mock', verification: 'Simuliert' });
-  for (const b of BINS) items.push({ id: `bin-${b.id}`, layer: 'clean', ctx: 'clean', partner: 'fes', title: `${b.kind} ${b.label}`, sub: 'FES-Behälter mit NFC/QR', lat: b.lat, lon: b.lon, distance_m: d(b.lat, b.lon), icon: b.kind === 'Altkleider' ? 'shirt' : 'trash', emoji: b.kind === 'Glascontainer' ? '🍾' : b.kind === 'Altkleider' ? '👕' : b.kind === 'Pfandring' ? '♻️' : '🗑️', href: `/scan?mode=bin&id=${b.id}`, availability: 'jetzt', source: 'mock', verification: 'Simuliert' });
 
   // Der gewaehlte Umkreis gilt fuer jede Quelle gleich, sonst zeigt die Karte mehr als der Ring verspricht.
   const inRadius = items.filter((i) => i.distance_m <= radiusKm * 1000);

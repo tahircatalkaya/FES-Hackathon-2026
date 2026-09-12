@@ -27,12 +27,10 @@ export default function Reuse() {
   const [source, setSource] = useState<'api' | 'snapshot'>('snapshot');
   const [sel, setSel] = useState<string | null>(p.store ?? null);
   const [filter, setFilter] = useState<'alle' | 'RESTAURANT' | 'NATIONAL_CHAIN' | 'SELF_OPERATED_CANTEEN'>('alle');
-  const [returnStores,setReturnStores]=useState<string[]>([]);
   const { setCtx } = useUI();
 
   useEffect(() => { setCtx('reuse'); vytalStores(loc.lat, loc.lon).then((r) => { setStores(r.items); setSource(r.source); }); }, [loc.lat, loc.lon]);
   const shown = useMemo(() => stores.filter((s) => filter === 'alle' || s.type === filter).slice(0, 25), [stores, filter]);
-  useEffect(()=>{const refresh=()=>void reuseTrust.stores().then(setReturnStores).catch(()=>{});refresh();const t=setInterval(refresh,15000);return()=>clearInterval(t);},[]);
   const store = stores.find((s) => s.id === sel) ?? null;
 
   async function borrowDemo(s: VytalStore | null) {
@@ -60,15 +58,12 @@ export default function Reuse() {
               <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{s.name}</Text><Text style={T.small}>{s.address} · {fmtDist((s.distance_km ?? 0) * 1000, locale)}</Text></View>
               <Pressable onPress={() => openRoute(s.lat, s.lon, s.name)} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: col + '18', alignItems: 'center', justifyContent: 'center' }}><Ionicons name="navigate" size={18} color={col} /></Pressable>
             </Row>
-            {returnStores.includes(s.id)&&<Tag label={rt('routes.mainsam_returns_available')} color={col}/>}
             {s.id === sel && (
               <View style={{ marginTop: 10 }}>
                 <Divider />
                 <Row style={{ gap: 8 }}>
                   <Button label={rt('routes.scan_loan')} color={col} onPress={() => borrowDemo(s)} style={{ flex: 1, paddingVertical: 12 }} />
-                  <Button label={rt('routes.return_here')} color={col} variant="soft" disabled={!returnStores.includes(s.id)} onPress={() => router.push('/rueckgabe')} style={{ flex: 1, paddingVertical: 12 }} />
                 </Row>
-                {!returnStores.includes(s.id)&&<Text style={[T.small,{marginTop:8}]}>{rt('routes.this_partner_has_no_mainsam_return_station_yet_please_make_actual')}</Text>}
               </View>
             )}
           </Card>

@@ -20,14 +20,14 @@ export async function remind(title: string, body: string, ctx: string, inSeconds
 export async function scheduleReturnReminder(loanId:string,code:string,borrowedAt:number) {
   const key=`mainsam.return-reminder.${loanId}`;
   if(await AsyncStorage.getItem(key))return;
-  useStore.getState().notify({title:'Mehrweg-Ausleihe erfasst',body:`${code}: Rückgabe beim Personal bestätigen lassen und den Rückgabe-QR scannen.`,ctx:'reuse'});
+  useStore.getState().notify({title:'Mehrweg-Ausleihe erfasst',body:`${code}: Bitte den Behälter beim Personal abgeben.`,ctx:'reuse'});
   const ids:string[]=[];
   if(Platform.OS!=='web'&&useStore.getState().privacy.notifications) {
     try {
       const N=require('expo-notifications');const permission=await N.requestPermissionsAsync();
       if(permission.granted) for(const [hours,title] of [[36,'Dein Mehrwegbehälter kann zurück'],[13*24,'An deine Mehrweg-Rückgabe denken']] as const) {
         const seconds=Math.ceil((borrowedAt+hours*3600000-Date.now())/1000);
-        if(seconds>0)ids.push(await N.scheduleNotificationAsync({content:{title:localizeText(useStore.getState().lang,title),body:localizeText(useStore.getState().lang,`${code}: Behälter beim Personal abgeben und Rückgabe-QR scannen.`),data:{loanId}},trigger:{type:N.SchedulableTriggerInputTypes.TIME_INTERVAL,seconds}}));
+        if(seconds>0)ids.push(await N.scheduleNotificationAsync({content:{title:localizeText(useStore.getState().lang,title),body:localizeText(useStore.getState().lang,`${code}: Bitte den Behälter beim Personal abgeben.`),data:{loanId}},trigger:{type:N.SchedulableTriggerInputTypes.TIME_INTERVAL,seconds}}));
       }
     }catch{/* In Expo Go the in-app history remains available. */}
   }

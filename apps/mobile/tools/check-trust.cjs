@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const ts = require('typescript');
 const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; };
 
-function client(fetchImpl) {
+function client(fetchImpl, options = {}) {
   let saved = null;
   const state = { accessMode: 'guest', sessionExpired: false,
     setProfile: data => Object.assign(state, data), syncFoodAwards() {}, syncContainers() {} };
@@ -20,12 +20,13 @@ function client(fetchImpl) {
   vm.runInNewContext(code, {
     exports: mod.exports, module: mod, __DEV__: true, fetch: fetchImpl, URL, AbortController,
     setTimeout, clearTimeout, TypeError, Error,
-    process: { env: { EXPO_PUBLIC_TRUST_URL: 'http://127.0.0.1:8787' } },
+    process: { env: { EXPO_PUBLIC_TRUST_URL: options.url ?? 'http://127.0.0.1:8787' } },
     require(name) {
-      if (name === 'expo-constants') return {};
-      if (name === 'react-native') return { Platform: { OS: 'web' } };
+      if (name === './network') return require('../src/api/network.ts');
+      if (name === 'expo-constants') return options.constants || {};
+      if (name === 'react-native') return { Platform: { OS: options.os || 'web' } };
       if (name === '@react-native-async-storage/async-storage') return storage;
-      if (name === 'expo-secure-store') return {};
+      if (name === 'expo-secure-store') return {getItemAsync:storage.getItem,setItemAsync:storage.setItem,deleteItemAsync:storage.removeItem};
       if (name === '@/store') return { useStore: { getState: () => state, setState: data => Object.assign(state, data) } };
       throw new Error(`Unexpected dependency: ${name}`);
     },
@@ -66,4 +67,25 @@ test('continuing as an existing guest preserves outstanding handoffs', async () 
   const c = client(async () => { guests++; return Response.json({ token: 'guest-token' }); });
   await c.trust.hasSession(); await c.trust.guest(); await c.trust.hasSession();
   assert.equal(c.saved(), 'guest-token'); assert.equal(guests, 1);
+});
+
+
+test('Expo native connection failures retry reads once without losing the session',async()=>{
+  let reads=0;
+  const c=client(async url=>{
+    if(url.endsWith('/guest'))return Response.json({token:'guest-token'});
+    if(++reads===1)throw new Error('fetch failed: UnexpectedException: Could not connect to the server. (at ExpoModulesCore/Promise.swift:56)');
+    return Response.json([]);
+  });
+  await c.trust.hasSession();assert.deepEqual(await c.trust.handoffs(),[]);assert.equal(reads,2);assert.equal(c.saved(),'guest-token');
+});
+test('failed native writes are not replayed and report an unknown save status',async()=>{
+  let writes=0;
+  const c=client(async()=>{writes++;throw new Error('fetch failed: UnexpectedException: Could not connect to the server.');});
+  await assert.rejects(c.trust.cleanupConfirm('test','proof',{}),e=>e.code==='NETWORK_UNAVAILABLE'&&e.uncertain&&!e.message.includes('Swift'));
+  assert.equal(writes,1);
+});
+test('native localhost uses the private Metro address and manifest fallback',async()=>{
+  let called='';const c=client(async url=>{called=url;return Response.json([]);},{os:'ios',constants:{manifest2:{extra:{expoClient:{hostUri:'172.20.10.11:8081'}}}}});
+  await c.trust.handoffs();assert.equal(called,'http://172.20.10.11:8787/handoffs');
 });

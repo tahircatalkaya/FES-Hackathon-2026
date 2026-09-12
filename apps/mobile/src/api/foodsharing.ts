@@ -1,3 +1,4 @@
+import { isNetworkError } from './network';
 import fairteilerSnapshot from '@/data/fairteiler.json';
 
 /**
@@ -33,6 +34,9 @@ async function call<T>(path: string, init: RequestInit = {}, userId?: number, ti
       throw err;
     }
     return body as T;
+  } catch(error:unknown) {
+    if(isNetworkError(error,ctrl.signal))throw new Error('Foodsharing gerade nicht erreichbar. Bitte Verbindung prüfen und neu laden. Foto, Audio und eigene Eingaben bleiben verfügbar.');
+    throw error;
   } finally { clearTimeout(t); }
 }
 

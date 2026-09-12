@@ -185,7 +185,7 @@ Eine Top-100-Liste mit Deutschlandticket für Platz 1 verletzt das direkt.
   Punkte sammelt, hat damit nicht 10x mehr Chancen, sondern maximal die gleichen 4.
   Das ist der entscheidende Fairness-Mechanismus: Verlässlichkeit zählt, Menge nicht.
 - **Spenden-Option:** Punkte in eine Foodsharing-Spende oder Baumpflanzung umwandeln.
-  Nimmt Horte-Druck raus und gibt Vielsammlern ein sinnvolles Ventil.
+  gibt Vielsammlern ein sinnvolles Ventil.
 - **Keine Minuspunkte, kein öffentliches Ranking nach unten.**
 
 Soziales bleibt, aber kooperativ: Freundesgruppen haben ein **gemeinsames Wochenziel**

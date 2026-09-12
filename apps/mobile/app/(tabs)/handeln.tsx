@@ -1,3 +1,4 @@
+import type { Award } from '@/engine/types';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -27,7 +28,7 @@ export default function Act() {
   const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
-  const [reward, setReward] = useState<null | { points: number; duplicate: boolean; status: string }>(null);
+  const [reward, setReward] = useState<Award|null>(null);
   const [showAll, setShowAll] = useState(false);
   useEffect(() => { setCtx('clean'); }, []);
 
@@ -51,17 +52,7 @@ export default function Act() {
 
   function join(id: string, title: string) {
     joinCleanup(id);
-    const a = addAward({
-      type: 'clean.signup',
-      partner: 'fes',
-      status: 'bestätigt',
-      key: `cleanup-join:${id}`,
-      at: Date.now(),
-      title: translate('de', 'tabs.act.registration', { title }),
-      meta: { source: 'user', evidence: [translate('de', 'tabs.act.registrationEvidence'), translate('de', 'tabs.act.registrationRule')] },
-    });
-    haptic('success');
-    setReward({ points: a.points, duplicate: !!a.duplicate, status: a.status });
+    router.push(`/cleanup/${id}`);
   }
 
   return (
@@ -159,7 +150,7 @@ export default function Act() {
         })}
       </View>
 
-      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} pending={reward?.status === 'ausstehend'} onClose={() => setReward(null)} />
+      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} pending={reward?.status === 'ausstehend'} headline={reward?.title} note={reward?.points===0?reward.reasons.at(-1):undefined} onWhy={reward?()=>{setReward(null);useUI.getState().showWhy(reward);}:undefined} onClose={() => setReward(null)} />
       <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} onDone={setReward} />
       <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} onDone={setReward} />
       <NewActionSheet open={sheet === 'new'} onClose={() => setSheet(null)} />

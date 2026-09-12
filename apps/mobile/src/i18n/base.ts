@@ -164,13 +164,13 @@ export const base = {
     "Lernen"
   ],
   "act.learn.sub": [
-    "Kurze Kapitel mit Kai",
-    "Short chapters with Kai",
-    "Kai ile kısa bölümler",
-    "فصول قصيرة مع كاي",
-    "Kratka poglavlja s Kaijem",
-    "Brevi capitoli con Kai",
-    "Kurze Fragen mit Kai"
+    "Kurze Kapitel mit Leon",
+    "Short chapters with Leon",
+    "Leon ile kısa bölümler",
+    "فصول قصيرة مع ليون",
+    "Kratka poglavlja s Leonom",
+    "Brevi capitoli con Leon",
+    "Kurze Fragen mit Leon"
   ],
   "week.goal": [
     "Wochenziel",
@@ -362,13 +362,13 @@ export const base = {
     "Beispiel-Daten"
   ],
   "onb.1.title": [
-    "Hallo, ich bin Kai.",
-    "Hello, I am Kai.",
-    "Merhaba, ben Kai.",
-    "مرحبًا، أنا كاي.",
-    "Bok, ja sam Kai.",
-    "Ciao, sono Kai.",
-    "Hallo. Ich bin Kai."
+    "Hallo, ich bin Leon.",
+    "Hello, I am Leon.",
+    "Merhaba, ben Leon.",
+    "مرحبًا، أنا ليون.",
+    "Bok, ja sam Leon.",
+    "Ciao, sono Leon.",
+    "Hallo. Ich bin Leon."
   ],
   "onb.1.body": [
     "Ich bin ein Chamäleon und Frankfurt ist mein Zuhause.\nHilfst du mir, meinen Lebensraum zu schützen und zu verbessern?",
@@ -416,13 +416,13 @@ export const base = {
     "Wir machen mein Zuhause besser.\nWir geben der Natur in Frankfurt mehr Platz.\nDein Standort bleibt geschützt."
   ],
   "onb.name": [
-    "Wie darf Kai dich nennen?",
-    "What should Kai call you?",
-    "Kai sana nasıl hitap etsin?",
-    "بأي اسم يناديك كاي؟",
-    "Kako da te Kai zove?",
-    "Come deve chiamarti Kai?",
-    "Wie soll Kai dich nennen?"
+    "Wie darf Leon dich nennen?",
+    "What should Leon call you?",
+    "Leon sana nasıl hitap etsin?",
+    "بأي اسم يناديك ليون؟",
+    "Kako da te Leon zove?",
+    "Come deve chiamarti Leon?",
+    "Wie soll Leon dich nennen?"
   ],
   "onb.start": [
     "Los geht’s",

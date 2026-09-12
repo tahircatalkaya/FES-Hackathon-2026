@@ -17,7 +17,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "de.frankfurt.mainsam",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt und zum Anzeigen von Angeboten in deiner Nähe.",
+        "NSLocationWhenInUseUsageDescription": "Mainsam nutzt deinen Standort während der Nutzung der App für Angebote in deiner Nähe und bewusst gestartete Fahrten.",
         "NSCameraUsageDescription": "Die Kamera wird zum Scannen von QR-Codes (Mehrweg, Clean-up-Bestätigung) und für Regal-Fotos verwendet.",
         "NFCReaderUsageDescription": "Mainsam liest NFC-Tags in Bus und Bahn, um eine Fahrt bewusst zu starten."
       }
@@ -48,7 +48,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt."
+          "locationWhenInUsePermission": "Mainsam nutzt deinen Standort während der Nutzung der App für Angebote in deiner Nähe und bewusst gestartete Fahrten."
         }
       ],
       [

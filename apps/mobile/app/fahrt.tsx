@@ -291,6 +291,8 @@ function RideReward({ award, onClose }: { award: Award | null; onClose: () => vo
     <CelebrationOverlay
       open={!!award}
       clip="ride"
+      points={award?.points??0}
+      onWhy={award?()=>{onClose();useUI.getState().showWhy(award);}:undefined}
       headline={rt('routes.ride_confirmed')}
       tileLabel={rt('routes.co2_saved')}
       tileValue={fmtCo2(award?.impact.co2_g ?? 0, locale)}

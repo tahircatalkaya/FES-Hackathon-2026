@@ -12,8 +12,10 @@ import { Button, Card, FeeText, T, Row, haptic, StatusBadge, Divider } from '@/c
 import { C, CONTEXT } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
-import { BINS, CLEANUPS } from '@/data/mock';
+import { CLEANUPS } from '@/data/mock';
 import ProofScanner from '@/components/ProofScanner';
+import BorrowScanner from '@/components/BorrowScanner';
+import CleanupProof from '@/components/CleanupProof';
 import TrustAccount from '@/components/TrustAccount';
 import { syncReuse } from '@/components/ReuseInventory';
 import { trust, reuseTrust } from '@/api/trust';
@@ -28,20 +30,20 @@ import { hav } from '@/api/foodsharing';
 import { photoFingerprint } from '@/api/photohash';
 import { checkLitterProof, PROOF, type LitterVerdict } from '@/engine/litterproof';
 
-type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'vytal-return' | 'food-handover' | 'litter';
+type Mode = 'ride' | 'peer' | 'vytal' | 'vytal-return' | 'food-handover' | 'litter';
 const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTEXT; hint: string }> = {
   ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Die Punkte gibt es beim Check-in.' },
-  bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 3 Punkte, bis zu dreimal am Tag.' },
   peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Ihr bestätigt euch gegenseitig vor Ort.' },
   vytal: { title: 'Mehrweg-Behälter', sub: 'Code auf dem Behälter', ctx: 'reuse', hint: `Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte. ${LOAN_TERMS}` },
   'vytal-return': {title:'Rückgabe-QR scannen',sub:'Frischer Code vom Personal',ctx:'reuse',hint:`Gib den Behälter ab. Das Personal stellt danach einen einmaligen Rückgabe-QR für genau diesen Behälter aus. ${LOAN_TERMS}`},
-  'food-handover': {title:'Abholcode scannen',sub:'Code vom Handy der abholenden Person',ctx:'food',hint:'Prüfe die vereinbarte Portion. Scanne den persönlichen QR-Code und bestätige erst, wenn du sie übergeben hast.'},
+  'food-handover': {title:'Abholcode scannen',sub:'Code vom Handy der verteilenden Person',ctx:'food',hint:'Prüfe die vereinbarte Portion. Scanne den persönlichen QR-Code und bestätige erst, wenn du sie erhalten hast.'},
   litter: { title: 'Müll aufgehoben', sub: 'Vorher/Nachher-Nachweis', ctx: 'clean', hint: 'Der Nachweis dokumentiert deine Aktion. Es gibt keine Punkte je Müllstück.' },
 };
 
 export default function Scan() {
-  const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
-  if(p.mode==='shelf-handover')return <ProofScanner kind="shelf" id={p.id||''}/>;
+  const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string; proof?: string }>();
+  if(p.mode==='vytal')return <BorrowScanner/>;
+  if(p.mode==='peer')return <CleanupProof key={`${p.cleanup}:${p.proof}`} id={p.cleanup||''} initialProof={p.proof||''}/>;
   if (!p.mode || !(p.mode in TITLES)) return <Chooser />;
   if(p.mode==='food-handover'||p.mode==='vytal-return')return <ProofScanner key={`${p.mode}:${p.id}`} kind={p.mode==='food-handover'?'food':'return'} id={p.id||''}/>;
   if(p.mode==='litter')return <LitterProofScreen />;
@@ -55,9 +57,9 @@ function Chooser() {
   const { setCtx } = useUI();
   useEffect(() => { setCtx('home'); }, []);
   const items: { mode: Mode; icon: string; t: string; s: string; href?: string }[] = [
+    { mode: 'peer', icon:'people', t:rt('updates.scanPeer'), s:rt('updates.cleanupScanHint') },
     { mode: 'ride', icon: 'train', t: 'Bus & Bahn', s: 'Am Terminal einchecken', href: '/fahrt?nfc=1' },
     { mode: 'vytal', icon: 'cafe', t: 'Mehrweg-Behälter', s: 'Code auf dem Behälter scannen' },
-    { mode: 'vytal-return', icon: 'return-down-back', t: 'Mehrweg zurückgeben', s: 'Rückgabe-QR vom Personal scannen', href:'/rueckgabe' },
     { mode: 'food-handover', icon:'basket', t:'Lebensmittel übergeben', s:'Abholung & persönlichen QR-Code öffnen', href:'/uebergaben?mine=1' },
   ];
   return (
@@ -83,21 +85,20 @@ function ScanInner() {
   const rt = useT();
   const localize = useLocalize();
   const router = useRouter();
-  const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
+  const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string; proof?: string }>();
   const mode = ((p.mode as Mode) ?? 'ride');
   const cfg = TITLES[mode];
   const color = CONTEXT[cfg.ctx].color;
   const [perm, requestPerm] = useCameraPermissions();
   const [manual, setManual] = useState('');
   const [done, setDone] = useState<string | null>(null);
-  const [nfcOpen, setNfcOpen] = useState(false);
   const lock = useRef(false);
   const [signed,setSigned]=useState<boolean|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
   const needsAccount=mode==='vytal';
   async function loadAccount(){try{setSigned(await trust.hasSession());}catch(e:any){setSigned(false);setError(e.message);}}
   useEffect(()=>{if(needsAccount)void loadAccount();},[mode,p.id]);
 
-  const { addAward, attest, nfcSeen } = useStore();
+  const { addAward } = useStore();
   const { setCtx, showToast } = useUI();
   const { loc } = useLocation();
 
@@ -110,17 +111,6 @@ function ScanInner() {
       case 'ride': {
         const t = parseTag(raw) ?? { line: raw.slice(0, 3).toUpperCase(), vehicle: raw };
         router.replace(`/fahrt?tag=${encodeURIComponent(t.line)}`); return;
-      }
-      case 'bin': {
-        const bin = BINS.find((b) => raw.includes(b.id)) ?? BINS.find((b) => b.id === p.id) ?? BINS[0];
-        const d = hav(loc.lat, loc.lon, bin.lat, bin.lon);
-        const a = addAward({ type: 'clean.bin_checkin', partner: 'fes', status: d < 150 ? 'bestätigt' : 'schwach plausibel', key: `bin:${bin.id}:${Math.floor(Date.now() / 3600e3)}`, at: Date.now(), title: `${bin.kind} · ${bin.label}`, meta: { source: 'nfc/qr', evidence: [`Behälter ${bin.id} registriert`, d < 150 ? `Standort ${Math.round(d)} m vom Behälter entfernt` : `Standort ${Math.round(d)} m entfernt, Geofence nicht erfüllt`] } });
-        showToast(a); setDone(rt('routes.value_value_recorded', { p1: localize(bin.kind), p2: localize(bin.label) })); break;
-      }
-      case 'peer': {
-        const cu = CLEANUPS.find((c) => c.id === p.cleanup) ?? CLEANUPS[0];
-        const peer = raw.replace(/[^A-Za-z0-9]/g, '').slice(-6) || 'PEER';
-        attest(cu.id, peer); setDone(rt('routes.confirmation_by_value_for_value_saved', { p1: peer, p2: localize(cu.title) })); break;
       }
       case 'vytal': {
         const c=parseContainerCode(raw);if(!c)throw new Error('Kein gültiger Behälter-Code. Bitte den Code auf Becher oder Schale verwenden.');
@@ -163,13 +153,12 @@ function ScanInner() {
           <TextInput accessibilityLabel={rt('routes.qr_or_text_code')} value={manual} onChangeText={setManual} onSubmitEditing={()=>{if(manual.trim())void handle(manual);}} returnKeyType="done" autoCorrect={false} placeholder={mode === 'ride' ? rt('components.scan.rideExample') : mode === 'vytal' ? rt('routes.eg_b7k2m9qx') : rt('components.scan.code')} placeholderTextColor={C.muted} autoCapitalize={mode==='vytal'?'characters':'none'} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
           <Row style={{ gap: 8 }}>
             <Button label={rt('routes.check')} color={color} disabled={busy||!manual.trim()} onPress={() => void handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
-            {mode === 'bin' ? <Button label={rt('routes.tap_nfc')} icon="radio" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label={rt('routes.demo_code')} color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q',true)} />}
+            <Button label={rt('routes.demo_code')} color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q',true)} />
           </Row>
         </Card>
       )}
-      <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={(t) => handle(p.id ?? t.raw)} color={color} title={rt('routes.hold_your_phone_to_the_bin')} label={rt('routes.the_tag_is_on_the_bins_fes_sticker_simulated_here')} />
+
       {done && <View style={{ marginTop: 14 }}><Button label={rt('routes.done_2')} color={color} onPress={() => mode==='vytal'?router.replace('/mehrweg'):(router.canGoBack()?router.back():router.replace('/(tabs)/handeln'))} /></View>}
-      {mode === 'bin' && nfcSeen.length > 0 && <Text style={[T.small, { marginTop: 10 }]}>{rt('routes.recently_read_tags_value', { p1: nfcSeen.slice(-3).join(', ') })}</Text>}
     </Screen>
   );
 }

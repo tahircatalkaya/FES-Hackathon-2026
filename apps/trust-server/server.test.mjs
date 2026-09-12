@@ -177,7 +177,7 @@ test('Reuse client claims cannot award points; the fast-return bonus never doubl
 test('Return requires assigned merchant, exact loan and fresh proof; damage persists, concurrent replay awards once',async t=>{
   const f=await merchantFixture(t),store=f.stores[0].id;
   const l=await f.call('/reuse/loans',f.customer,{code:'CUP12345',kind:'cup',storeId:store});
-  assert.equal((await f.call('/reuse/loans',f.customer,{code:l.code,kind:'cup'})).id,l.id);
+  assert.match((await f.call('/reuse/loans',f.customer,{code:l.code,kind:'cup'},409)).error,/gerade ausgeliehen/);
   await f.call('/reuse/loans',f.outsider,{code:l.code,kind:'cup'},409);
   await f.call('/reuse/merchant/receipt',f.customer,{loanId:l.id,storeId:store},403);
   await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store},403);
@@ -256,20 +256,20 @@ test('Distribution posts are atomic; provider time slots cannot overlap and pend
   await f.call(`/offers/${offers[1].id}/request`,x,{slotStart:slot});
 });
 
-test('Personal food QR is restricted to agreed pickup and provider, expiring, one-time and private',async t=>{
+test('Provider food QR is restricted to agreed pickup and receiver, expiring, one-time and private',async t=>{
   const f=await fixture(t),p=await f.register('provider'),r=await f.register('receiver'),x=await f.register('outsider');
   const o=await f.offer(p,{slotMinutes:10});const h=await f.call(`/offers/${o.id}/request`,r,{slotStart:o.slots[0].startsAt});
-  await f.call(`/handoffs/${h.id}/ticket`,r,{},409);
+  await f.call(`/handoffs/${h.id}/ticket`,p,{},409);
   await f.call(`/handoffs/${h.id}/accept`,p,{});
-  await f.call(`/handoffs/${h.id}/ticket`,p,{},403);
-  const ticket=await f.call(`/handoffs/${h.id}/ticket`,r,{});
+  await f.call(`/handoffs/${h.id}/ticket`,r,{},403);
+  const ticket=await f.call(`/handoffs/${h.id}/ticket`,p,{});
   assert.ok(!JSON.stringify(await f.call('/handoffs',p)).includes(ticket.proof));
-  await f.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:ticket.proof},403);
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof},403);
   await f.call(`/handoffs/${h.id}/confirm-ticket`,x,{proof:ticket.proof},403);
-  f.advance(5*60000+1);await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof},409);
-  const fresh=await f.call(`/handoffs/${h.id}/ticket`,r,{});
-  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:fresh.proof});
-  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:fresh.proof});
+  f.advance(5*60000+1);await f.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:ticket.proof},409);
+  const fresh=await f.call(`/handoffs/${h.id}/ticket`,p,{});
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:fresh.proof});
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:fresh.proof});
   assert.equal((await f.call('/me',r)).awards.length,1);assert.equal((await f.call('/me',p)).awards.length,1);
   assert.equal((await f.call('/handoffs',r))[0].offer.address,undefined);
   await f.call(`/handoffs/${h.id}/review`,r,{satisfaction:5,reliability:4,respect:5});
@@ -311,9 +311,9 @@ test('Guest pickups need no registration and cannot farm either side’s points'
   const f=await fixture(t),p=await f.register('provider'),g=(await f.call('/guest',null,{})).token;
   const o=await f.offer(p),h=await f.call(`/offers/${o.id}/request`,g,{});
   await f.call(`/handoffs/${h.id}/accept`,p,{});
-  const ticket=await f.call(`/handoffs/${h.id}/ticket`,g,{});assert.match(ticket.code,/^\d{4}$/);
-  await f.call(`/handoffs/${h.id}/confirm-ticket`,g,{proof:ticket.code},403);
-  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.code});
+  const ticket=await f.call(`/handoffs/${h.id}/ticket`,p,{});assert.match(ticket.code,/^\d{4}$/);
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.code},403);
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,g,{proof:ticket.code});
   for(const actor of [p,g]){const me=await f.call('/me',actor);assert.equal(me.awards.length,1);assert.equal(me.awards[0].points,0);}
 });
 
@@ -321,15 +321,15 @@ test('Food PIN is scoped, expires, locks after five guesses across restarts and 
   const dir=mkdtempSync(join(tmpdir(),'mainsam-pin-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));
   const path=join(dir,'db.sqlite'),f=await fixture(t,path),p=await f.register('provider'),r=await f.register('receiver'),x=await f.register('other');
   const o=await f.offer(p),h=await f.call(`/offers/${o.id}/request`,r,{});await f.call(`/handoffs/${h.id}/accept`,p,{});
-  const ticket=await f.call(`/handoffs/${h.id}/ticket`,r,{});
+  const ticket=await f.call(`/handoffs/${h.id}/ticket`,p,{});
   await f.call(`/handoffs/${h.id}/confirm-ticket`,x,{proof:ticket.code},403);
-  for(let i=0;i<5;i++)await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:'0000'},422);
+  for(let i=0;i<5;i++)await f.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:'0000'},422);
   await new Promise(resolve=>f.server.close(resolve));
   const restarted=await fixture(t,path);
-  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.code},429);
-  await restarted.call(`/handoffs/${h.id}/ticket`,r,{},429);
-  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof});
-  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof});
+  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:ticket.code},429);
+  await restarted.call(`/handoffs/${h.id}/ticket`,p,{},429);
+  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:ticket.proof});
+  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,r,{proof:ticket.proof});
   assert.equal((await restarted.call('/me',r)).awards.length,1);
 });
 
@@ -368,4 +368,27 @@ test('Shelf QR alone and self-approval cannot award; authorized PIN proof is cap
   me=await f.call('/me',f.customer);assert.equal(me.awards.length,2);assert.equal(me.awards[1].points,0);
   assert.ok(!(JSON.stringify(await f.call(`/shelves/${point.id}`,null))).includes(ticket.code));
   assert.equal((await f.call('/me',f.staff)).shelfStores[0].id,point.id);
+});
+
+test('Cleanup points require a fresh QR from a different participant at the same place and time',async t=>{
+  assert.equal(award({type:'clean.signup',partner:'fes',status:'bestätigt',key:'join',title:'Test',at:Date.now()},[]).points,0);
+  assert.equal(award({type:'clean.participate',partner:'fes',status:'bestätigt',key:'fake',title:'Test',at:Date.now()},[]).points,0);
+  const f=await fixture(t),a=await f.register('cleana'),b=await f.register('cleanb');
+  const event={id:'own-10001',title:'Testaktion',lat:50.12,lon:8.65,start:f.now()-60000,end:f.now()+3600000,radiusM:200};
+  const state=await f.call('/cleanups/join',a,{event});
+  assert.equal((await f.call('/me',a)).awards.length,0);
+  const pos=()=>({lat:event.lat,lon:event.lon,accuracy:10,at:f.now()});
+  await f.call(`/cleanups/${state.id}/ticket`,a,{position:{...pos(),lat:50}},403);
+  const ticket=await f.call(`/cleanups/${state.id}/ticket`,a,{position:pos()});
+  await f.call('/cleanups/resolve',a,{proof:ticket.proof},403);
+  await f.call('/cleanups/resolve',b,{proof:'mainsam:cleanup:fake'},422);
+  assert.equal((await f.call('/cleanups/resolve',b,{proof:ticket.proof})).id,state.id);
+  assert.equal((await f.call('/me',b)).awards.length,0);
+  await f.call(`/cleanups/${state.id}/confirm`,a,{proof:ticket.proof,position:pos()},403);
+  await f.call(`/cleanups/${state.id}/confirm`,b,{proof:'PEER-FAKE',position:pos()},422);
+  f.advance(120001);await f.call(`/cleanups/${state.id}/confirm`,b,{proof:ticket.proof,position:pos()},409);
+  const fresh=await f.call(`/cleanups/${state.id}/ticket`,a,{position:pos()});
+  await f.call(`/cleanups/${state.id}/confirm`,b,{proof:fresh.proof,position:pos()});
+  await f.call(`/cleanups/${state.id}/confirm`,b,{proof:fresh.proof,position:pos()});
+  for(const actor of [a,b]){const me=await f.call('/me',actor);assert.equal(me.awards.length,1);assert.ok(me.awards[0].points>0);}
 });

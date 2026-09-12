@@ -14,6 +14,7 @@ import Reputation from '@/components/Reputation';
 import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
 import { trust, type Handoff, type TrustOffer, type TrustProfile } from '@/api/trust';
 import { useStore } from '@/store';
+import { useUI } from '@/store/ui';
 import { C, CONTEXT } from '@/theme';
 
 const col = CONTEXT.food.color;
@@ -43,9 +44,11 @@ export default function Handoffs() {
     try {
       if (!await trust.hasSession()) { setProfile(null); return; }
       const [me, list, mine] = await Promise.all([trust.me(), trust.offers(), trust.handoffs()]);
+      const newlyCompleted=noticed.current&&mine.find(h=>noticed.current![h.id]&&noticed.current![h.id]!=='completed'&&h.status==='completed');
       if(noticed.current) for(const h of mine) if(noticed.current[h.id] && noticed.current[h.id]!==h.status) useStore.getState().notify({title:STATUS[h.status],body:`${h.offer.title} · ${h.counterpart.name}`,ctx:'food'});
       noticed.current=Object.fromEntries(mine.map(h=>[h.id,h.status]));
       setProfile(me); setOffers(list); setHandoffs(mine); sync(me.awards); setError('');
+      if(newlyCompleted){const a=me.awards.find(a=>a.key===`trust:${newlyCompleted.id}:${me.user.id}`);if(a)useUI.getState().showToast(a);}
     } catch (e: any) { if (e.status === 401) { setProfile(null); sync([]); } setError(e.message); }
     finally { running.current = false; setReady(true); }
   }, [sync]);
@@ -61,7 +64,7 @@ export default function Handoffs() {
     <Header title={rt('routes.handoffs')} right={<FoodsharingLogo width={76} />} />
     <Card style={{ backgroundColor: '#EAF3E6', marginBottom: 16 }}>
       <Row style={{ gap: 10 }}><Ionicons name="shield-checkmark-outline" size={30} color={col} /><Text style={[T.h2, { flex: 1 }]}>{rt('routes.good_food_fair_collection')}</Text></Row>
-      <Text style={[T.body, { marginTop: 8 }]}>{rt('routes.see_what_remains_choose_your_portion_and_a_collection_time_on_sit')}</Text>
+      <Text style={[T.body, { marginTop: 8 }]}>{rt('updates.foodScanHint')}</Text>
     </Card>
     {!!error && <Text accessibilityRole="alert" style={[T.body, { color: C.danger, marginBottom: 12 }]}>{localize(error)}</Text>}
     {!ready ? <Text style={T.body}>{rt('routes.loading_your_handoffs')}</Text> : !profile ? <TrustAccount color={col} onReady={()=>void load()}/> : <>
@@ -145,14 +148,14 @@ function HandoffCard({h,busy,perform}:{h:Handoff;busy:boolean;perform:(action:()
     {h.offer.address ? <Text style={[T.body,{fontWeight:'700'}]}>{h.offer.address}</Text> : ['pending','accepted'].includes(h.status) && <Text style={T.small}>{rt('routes.wait_for_acceptance_and_the_time_window_do_not_arrive_unannounced')}</Text>}
     {h.status==='pending' && provider && <Button label={rt('routes.accept_collection')} color={col} disabled={busy} onPress={()=>act('accept')}/>}
     {h.status==='pending'&&<Text style={T.small}>{rt('routes.held_pending_acceptance_until_value_the_portion_becomes_available', { p1: time(h.reserveExpiresAt||h.offer.endsAt, locale) })}</Text>}
-    {h.status==='accepted' && provider && <>
-      <Text style={T.body}>{rt('routes.check_the_agreed_portion_and_scan_the_personal_collection_code_at')}</Text>
-      <Button label={rt('routes.scan_collection_qr_hand_over')} icon="qr-code" color={col} disabled={busy||clock<h.offer.startsAt||clock>h.offer.endsAt} onPress={()=>router.push({pathname:'/scan',params:{mode:'food-handover',id:h.id}})}/>
-    </>}
     {h.status==='accepted' && !provider && <>
-      <Text style={T.body}>{rt('routes.show_your_personal_code_only_on_site_when_your_agreed_portion_is_')}</Text>
-      {issued&&<ProofCode {...issued} label={rt('routes.your_personal_collection_code')}/>}
-      <Button label={issued?rt('routes.renew_collection_code'):rt('routes.my_portion_is_ready_show_code')} icon="qr-code" color={col} disabled={busy||clock<h.offer.startsAt||clock>h.offer.endsAt} onPress={()=>void perform(async()=>setIssued(await trust.ticket(h.id)))}/>
+      <Text style={T.body}>{rt('updates.foodScanHint')}</Text>
+      <Button label={rt('updates.scanProvider')} icon="qr-code" color={col} disabled={busy||clock<h.offer.startsAt||clock>h.offer.endsAt} onPress={()=>router.push({pathname:'/scan',params:{mode:'food-handover',id:h.id}})}/>
+    </>}
+    {h.status==='accepted' && provider && <>
+      <Text style={T.body}>{rt('updates.foodShowHint')}</Text>
+      {issued&&<ProofCode {...issued} label={rt('updates.providerCode')}/>}
+      <Button label={issued?rt('routes.renew_collection_code'):rt('updates.providerCode')} icon="qr-code" color={col} disabled={busy||clock<h.offer.startsAt||clock>h.offer.endsAt} onPress={()=>void perform(async()=>setIssued(await trust.ticket(h.id)))}/>
     </>}
     {h.status==='received' && (provider ? <><Text style={T.body}>{rt('routes.receipt_is_confirmed_have_you_handed_over_the_agreed_portion')}</Text><Button label={rt('routes.yes_complete_handoff')} color={col} disabled={busy} onPress={()=>act('complete')}/></> : <Text style={T.body}>{rt('routes.your_receipt_is_confirmed_the_provider_now_confirms_the_handoff_p')}</Text>)}
     {['pending','accepted'].includes(h.status) && <Button label={provider?rt('routes.decline_request'):rt('routes.cancel_collection')} variant="ghost" color={C.muted} disabled={busy} onPress={()=>act('cancel')}/>}

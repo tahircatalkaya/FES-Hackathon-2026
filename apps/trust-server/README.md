@@ -1,3 +1,11 @@
+## Aktuelle Änderungen
+
+Die Nutzeroberfläche enthält keine Rückgabeoption und keine Regalbetreuung mehr. Die unten beschriebenen Händler-/Betreuungsendpunkte bleiben für bestehende Belege erhalten. Der serverweite Schutz gegen doppelte offene Ausleihen gilt auch beim wiederholten Scan durch denselben Nutzer.
+
+`cleanups.mjs` ergänzt FES-Nachweise: Anmeldung ohne Punkte, zwei Minuten gültiger einmaliger QR, getrennte Nutzer, frischer GPS-Punkt beider Geräte im Gebiet/Zeitfenster, einmalige Gutschrift je Person/Aktion. `/cleanups/resolve` lädt eine geteilte Aktion anhand eines gültigen QR; allein das Auflösen gibt keine Punkte. Die Punkteberechnung läuft weiterhin über die zentrale Engine. Gäste bekommen keine einlösbaren Punkte. Selbst angegebene GPS-Daten sind kein manipulationssicherer oder offizieller FES-Nachweis.
+
+Foodsharing-Übergaben: **Verteiler zeigt QR/PIN, Abholer scannt/bestätigt**. Die additive Spalte `ticket_role` macht ältere QR-Tickets ungültig, ohne Zusagen/Belege zu löschen. Neu ausstellen genügt.
+
 # Zentrale Anmeldung, Gäste und QR-Codes
 
 Die App fragt Zugangsdaten nur am Einstieg ab. `/register` benötigt `name`, `email`, `password` (10–128 Zeichen); `/login` akzeptiert E-Mail oder Benutzername im Feld `name` plus Passwort. Bestehende Konten ohne E-Mail bleiben nutzbar. `/guest` erstellt eine pseudonyme Sitzung ohne Registrierung. Beim Registrieren mit einer gültigen Gastsitzung bleiben die Nutzer-ID, Zusagen und Meldungen erhalten; alle bisherigen Gastsitzungen werden dabei ungültig. Gastbelege geben keine einlösbaren Punkte, auch nicht an die Gegenseite einer Foodsharing-Übergabe.
@@ -13,7 +21,7 @@ node merchant.mjs grant-shelf BENUTZERNAME REGAL_ID
 node merchant.mjs revoke-shelf BENUTZERNAME REGAL_ID
 ```
 
-Das Konto muss regulär registriert sein. In der App unter **Profil → Regalmeldungen & Betreuung** erscheinen die zu prüfenden Aktionen. Ohne Betreuung darf weiterhin geteilt und abgeholt werden; es gibt dann keinen bestätigten Punktebeleg. Eine Bestätigung muss vor Ort auf tatsächlicher Beobachtung beruhen.
+Das Konto muss regulär registriert sein. Die Verwaltungsseite ist inzwischen aus der App entfernt; diese Endpunkte bleiben zur Kompatibilität mit bestehenden Belegen erhalten. Ohne Betreuung darf weiterhin geteilt und abgeholt werden; es gibt dann keinen bestätigten Punktebeleg. Eine Bestätigung muss vor Ort auf tatsächlicher Beobachtung beruhen.
 
 [Gesamter Ablauf, QR-Formate und Grenzen](../../docs/EINSTIEG-UND-QR-UEBERGABEN.md). Die folgenden Abschnitte dokumentieren die weiterhin unterstützten bisherigen QR-/Sechs-Ziffern-Endpunkte; die aktuelle Oberfläche nutzt vier Ziffern oder den persönlichen QR.
 
@@ -48,7 +56,7 @@ QR-Code mit Expo Go öffnen. Beide Prozesse laufen lassen. Die Entwicklungs-App 
 3. Stadtteil, privaten Treffpunkt und Beginn wählen. Zwei Stunden lang gibt es Termine alle fünf Minuten, nur eine Person pro Termin, auch über mehrere Angebote desselben Anbieters hinweg. Die Karte verwendet einen öffentlichen Haltestellenpunkt im Stadtteil, keine Wohnkoordinate. Entfernung vor der Zusage ist entsprechend nur ungefähr.
 4. Abholer wählen einen Posten und Termin. Eine Portion pro Person/Angebot, maximal eine offene Abholung je Konto. Der Bestand sinkt sofort für alle. Der Anbieter muss innerhalb von 15 Minuten zusagen; ansonsten wird die Portion wieder frei. Nach drei abgesagten/verfallenen Anfragen am Tag sind weitere Anfragen bis zum Ende der rollierenden 24 Stunden begrenzt.
 5. Der private Treffpunkt erscheint nur nach Zusage ab 15 Minuten vor dem persönlichen Termin, bis zu dessen Ende. Bitte nicht unangekündigt erscheinen. Absagen geben Portion und Termin frei; abgelaufene Zusagen ebenso. Bereits abgeschlossene Termine werden nicht nochmals vergeben.
-6. **Vor Ort:** Der Abholer prüft seine bereitliegende Portion und zeigt **seinen persönlichen Abhol-QR**. Der Anbieter scannt ihn über die zugehörige Zusage und bestätigt die tatsächliche Übergabe. Ein QR ist an diese beiden Konten und diesen Termin gebunden, höchstens fünf Minuten gültig und einmal wertbar. Er enthält keine Adresse. Ersatzweise lässt sich derselbe Textcode eingeben. Es gibt keinen universellen Beispiel-Code für Abschlüsse.
+6. **Vor Ort:** Der Anbieter zeigt **seinen persönlichen Übergabe-QR**. Die abholende Person scannt ihn über die zugehörige Zusage und bestätigt den tatsächlichen Empfang. Ein QR ist an diese beiden Konten und diesen Termin gebunden, höchstens fünf Minuten gültig und einmal wertbar. Er enthält keine Adresse. Ersatzweise lässt sich derselbe Textcode eingeben. Es gibt keinen universellen Beispiel-Code für Abschlüsse.
 7. Punkte und Belege entstehen auf dem Server genau einmal. Bewertungen bleiben möglich: Zufriedenheit, Zuverlässigkeit, Respekt/Menge; einmal je Person und abgeschlossenem Vorgang, binnen 14 Tagen. Blind bis beide bewerten oder 14 Tage vergehen. Öffentliche Mittelwerte erst ab drei verschiedenen Gegenübern; derselbe Bewerter zählt nur einmal. Private Hinweise und Widerspruch bleiben erhalten, keine automatische öffentliche Beschuldigung.
 
 Die bisherigen sechsstelligen Codes für schon bestehende Integrationen bleiben kompatibel: Anbieter-Code → Empfang → Abschluss. Neue Screens verwenden den kürzeren persönlichen QR-Ablauf. Ungeklärte alte Empfangsbestätigungen werden nach 24 Stunden nicht wieder als freier Bestand angeboten.

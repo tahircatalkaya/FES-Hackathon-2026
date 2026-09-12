@@ -1,4 +1,5 @@
 import { useT, useLocalize } from '@/i18n/useT';
+import type { Award } from '@/engine/types';
 import React, { useEffect, useState } from 'react';
 import { Image, Platform, Pressable, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -12,7 +13,7 @@ import { Button, Ring, Sheet, T, haptic } from './ui';
 type Phase = 'start' | 'analyzing' | 'result';
 
 /** Biotonnen-Check: Foto der eigenen Biotonne, Bilderkennung schlägt Fehlwürfe vor, Person bestätigt. */
-export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: { points: number; duplicate: boolean; status: string }) => void }) {
+export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: Award) => void }) {
   const t = useT();
   const localize = useLocalize();
   const { ledger, addAward } = useStore();
@@ -58,7 +59,7 @@ export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClos
     });
     haptic(a.duplicate ? 'warn' : 'success');
     onClose();
-    onDone?.({ points: a.points, duplicate: !!a.duplicate, status: a.status });
+    onDone?.(a);
   }
 
   const good = findings.length === 0;

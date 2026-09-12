@@ -54,7 +54,7 @@ export default function Profile() {
           <Pressable accessibilityRole="button" accessibilityLabel={t('tabs.languages')} accessibilityState={{ expanded: showLanguages }} onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 18 }}>🌐</Text>
           </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel={t('tabs.notifications')} onPress={() => { s.markRead(); router.push('/journal?tab=notices'); }} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable accessibilityRole="button" accessibilityLabel={t('tabs.notifications')} onPress={() => { s.markRead(); router.push('/mitteilungen'); }} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 18 }}>🔔</Text>
             {unread > 0 && <View style={{ position: 'absolute', top: 4, right: 4, backgroundColor: C.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontSize: 10, fontWeight: '900' }}>{unread}</Text></View>}
           </Pressable>
@@ -105,7 +105,6 @@ export default function Profile() {
 
       <View style={{ marginTop: 12, gap: 8 }}>
         <Button label={t('profile.rewards')} icon="gift" color={col} onPress={() => router.push('/belohnungen')} style={{ width: '100%', paddingVertical: 14 }} />
-        <Button label={t('tabs.profile.journal')} icon="journal" color={col} variant="soft" onPress={() => router.push('/journal')} style={{ width: '100%', paddingVertical: 14 }} />
       </View>
 
       <SectionTitle title={t('act.learn')} />
@@ -126,10 +125,10 @@ export default function Profile() {
       </Appear>
 
       <SectionTitle title={t('tabs.profile.privacy')} />
+      <Text style={[T.body,{marginBottom:12}]}>{t('updates.location')}</Text>
       <Appear delay={80}>
         <Card>
           {[
-            { k: 'tripOnlyLocation', t: t('tabs.profile.tripLocation'), s: t('tabs.profile.tripLocationHelp') },
             { k: 'shareAggregates', t: t('tabs.profile.aggregates'), s: t('tabs.profile.aggregatesHelp') },
             { k: 'notifications', t: t('tabs.notifications'), s: t('tabs.profile.notificationsHelp') },
             { k: 'quietHours', t: t('tabs.profile.quietHours'), s: t('tabs.profile.quietHoursHelp') },
@@ -139,7 +138,7 @@ export default function Profile() {
                 <View style={{ flex: 1 }}><Text style={T.h3}>{row.t}</Text><Text style={T.small}>{row.s}</Text></View>
                 <Switch value={(s.privacy as any)[row.k]} onValueChange={(v) => { haptic(); s.setPrivacy({ [row.k]: v } as any); }} trackColor={{ true: col, false: C.line }} thumbColor="#fff" />
               </Row>
-              {i < 3 && <Divider />}
+              {i < 2 && <Divider />}
             </View>
           ))}
         </Card>
@@ -155,7 +154,6 @@ export default function Profile() {
 
       <SectionTitle title={t('tabs.profile.foodsharing')} />
       <Button label={t('tabs.profile.handovers')} icon="🤝" variant="soft" color={col} onPress={() => router.push('/uebergaben')} style={{ marginBottom: 12 }} />
-      <Button label="Regalmeldungen & Betreuung" variant="soft" color={col} onPress={()=>router.push('/regalnachweise')} style={{ marginBottom: 12 }}/>
 
       <SectionTitle title={t('tabs.profile.about')} />
       <Button label={t('tabs.profile.partners')} icon="heart-circle-outline" variant="soft" color={col} onPress={() => router.push('/partner')} style={{ marginBottom: 12 }} />

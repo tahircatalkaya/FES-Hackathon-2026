@@ -1,3 +1,5 @@
+Aktuelle Änderungen und Einschränkungen stehen in der [Projekt-README](../../README.md#aktueller-stand-verkehrsplanung-qr-nachweise-und-feedback). Verkehrsplanung: `app/verkehrsdaten.tsx`; Quelldaten reproduzierbar mit `python3 tools/prep_planning.py`. Einheitliche Feedbackfenster: `CelebrationOverlay`. FES-Teilnahme: `CleanupProof` und `../trust-server/cleanups.mjs`.
+
 # App-Update: Einstieg und QR-Übergaben
 
 Start mit App und lokalem Server gemeinsam: **`npm run dev:lan`**. Alte Prozesse vorher mit Ctrl+C stoppen. Anmeldung mit Benutzername, E-Mail und Passwort nach dem Tutorial oder „Ohne Anmeldung weiter“. Zugangsdaten werden ausschließlich am App-Einstieg abgefragt. Innerhalb von Foodsharing und Mehrweg gelten dieselbe Sitzung und dieselben Rollen.
@@ -7,7 +9,7 @@ Ortscodes öffnen Regal/Angebot/Restaurant, persönliche QR-Codes oder vier Ziff
 # Mainsam – Frankfurt Impact Challenge (Team 01)
 
 Mobile-first Prototyp (Expo / React Native, iOS + Android + Web) für die FES Hackathon 2026 Aufgabe.
-Ein Chamäleon (Kai) führt durch fünf Bausteine: Ride2Impact (Transdev), Smart Mehrweg (Vytal),
+Ein Chamäleon (Leon) führt durch fünf Bausteine: Ride2Impact (Transdev), Smart Mehrweg (Vytal),
 Save2Share (Frankfurt foodsharing), Sauberes Frankfurt (FES), Mobilitätsimpact (traffiQ) + MainLastenrad.
 
 ## Auf dem iPhone starten (privater Hotspot/LAN)
@@ -75,17 +77,15 @@ Die Demo verwendet weiterhin öffentliche Client-Umgebungsvariablen für KI-Schl
 
 ## Bestätigte Foodsharing-Übergaben
 
-Neu: Profil → **Übergaben & Zuverlässigkeit**. Ein lokaler Server speichert getrennte Konten, Lebensmittelposten mit eigenen Portionszahlen, fünfminütige Abholtermine und Bewertungen. Der Abholer zeigt seinen persönlichen, kurz gültigen QR; der Anbieter scannt ihn bei der tatsächlichen Übergabe. Kamera und Audio bleiben zur Erfassung erhalten. Punkte erst nach Bestätigung beider Personen; keine automatischen Zusagen oder Selbst-Freigaben mehr.
+Neu: Profil → **Übergaben & Zuverlässigkeit**. Ein lokaler Server speichert getrennte Konten, Lebensmittelposten mit eigenen Portionszahlen, fünfminütige Abholtermine und Bewertungen. Der Anbieter zeigt den persönlichen, kurz gültigen Übergabe-QR; die abholende Person scannt ihn beim tatsächlichen Empfang. Kamera und Audio bleiben zur Erfassung erhalten. Punkte erst nach Bestätigung beider Personen; keine automatischen Zusagen oder Selbst-Freigaben mehr.
 
 Im App-Ordner zuerst `npm run trust:lan`, dann in einem zweiten Terminal `npm run start:lan`. Beide Geräte müssen dasselbe private Netz nutzen. Gäste erhalten automatisch einen pseudonymen Zugang; reguläre Konten werden am App-Einstieg eingerichtet. Der Treffpunkt erscheint nur nach Zusage, kurz vor dem Termin. [Ablauf, Tests und Grenzen](../trust-server/README.md).
 
 Angemeldete Personen teilen Regal-Meldungen mit allen Nutzern; aktuelle Momentaufnahmen und spätere Änderungen erscheinen am Ort. Offene Regal-Meldungen ohne Gegenüber bleiben Eigenangaben ohne Punkte und bestätigten Impact. Alte Foodsharing-Gutschriften aus Selbstbestätigungen werden entsprechend gekennzeichnet. Für echte Prämieneinlösung ist zusätzlich ein serverseitiges Prämiensystem nötig; der lokale Dienst ist kein öffentlicher Produktionsbetrieb.
 
-## Mehrweg-Rückgabe und Schäden
+## Mehrweg-Ausleihe und Schäden
 
-**Mehrweg → Meine Behälter** bietet die Rückgabe und die Schadensmeldung direkt am Behälter. Ein Schadenshinweis bleibt sichtbar, bis das Personal den Behälter prüft. Zur Rückgabe erstellt ein vom Serverbetreiber freigegebenes Ladenkonto nach der Annahme einen persönlichen QR-Beleg. Der Kunde scannt ihn; erst der geprüfte Beleg schließt die Ausleihe in Mainsam. Statische Aufkleber und ein eigener Knopfdruck reichen nicht.
-
-Der lokale Ablauf benötigt keine bezahlte API, aber getrennte Kunden-/Ladenkonten und die einmalige Betreiberfreigabe. Er beendet **keine echte Vytal-Ausleihe**, solange der geschützte Vytal-Adapter fehlt. [Einrichtung, Freigabebefehl und Grenzen](../trust-server/README.md#einmalige-freigabe-einer-lokalen-rücknahmestelle).
+„Behälter ausleihen“ öffnet unmittelbar den Scanner mit optionaler Codeeingabe. Ein bereits ausgeliehener Behälter wird für alle Konten abgewiesen. Schadens- und Verlustmeldungen bleiben am Behälter sichtbar. Die Rückgabeoption und die Prämie „Gratis-Ausleihe Vytal“ sind entfernt. Bestehende Serverbelege/Händlerendpunkte bleiben erhalten; die externe Vytal-Händler-API ist weiterhin nicht verbunden.
 
 ## Partner
 
@@ -95,7 +95,7 @@ Profil → **Partner** zeigt FES, foodsharing, Vytal, Transdev und traffiQ sowie
 
 Das überarbeitete Onboarding, die Sprachauswahl im Globus-Knopf, Profil-/Datenansicht, Wochenanzeige, Globus und Mobilitätsexport sind integriert. Partner, Foodsharing-Übergaben und Mehrweg-Belege bleiben zugänglich. Die dunkelblaue Tab-Markierung bewegt sich zeitgesteuert innerhalb fester Grenzen; Web-Tabs und zentraler Scan verwenden native Browser-Schaltflächen.
 
-Das Formular „Anmelden“ aus Main bearbeitet das lokale Profil. Der passwortgeschützte Serverzugang für Übergaben und Rückgaben ist davon getrennt. „Ausloggen“ beendet auch die Serversitzung und leert ihren Anzeigecache. Die lokale Löschfunktion entfernt keine Serverkonten und keine bestätigten Belege.
+Das Formular „Anmelden“ aus Main bearbeitet das lokale Profil. Der gemeinsame Serverzugang wird beim App-Einstieg eingerichtet; in den Funktionen gibt es keine weiteren Passwortformulare. „Ausloggen“ beendet auch die Serversitzung und leert ihren Anzeigecache. Die lokale Löschfunktion entfernt keine Serverkonten und keine bestätigten Belege.
 
 **Scan → Müll aufgehoben**: Vorher-Foto aufnehmen, 10–120 Minuten später ein Nachher-Foto. Jede Aufnahme braucht einen frischen, ausreichend genauen Standort; der Demo-Kartenpunkt zählt nicht. Gleiche oder bereits verwendete Bildfingerabdrücke werden abgelehnt. Kamera-/Standortfehler werden angezeigt. Die Prüfung gibt keine Punkte je Müllstück und ist keine externe FES-Bestätigung. Im Browser kann die Systemauswahl Dateien anbieten; native Geräte öffnen die Kamera. Native Bilddigests erkennen identische Dateien, keine neu abfotografierten Bilder.
 
@@ -130,7 +130,7 @@ QR-Kamera: Expo Go/native Builds mit Kamerafreigabe; im Web steht die Textcode-E
 ## Demo-Ablauf für den Pitch
 
 Siehe `DEMO.md`. Kurzfassung: Onboarding, Scan-Knopf in der Tab-Leiste, NFC-Tap-in für eine Fahrt,
-Fairteiler mit Foto-Erkennung, Mehrweg-Rückgabe, Impact-Seite mit Chamäleon und Frankfurt-Ziel.
+Fairteiler mit Foto-Erkennung, Mehrweg-Ausleihe, Impact-Seite mit Chamäleon und Frankfurt-Ziel.
 
 ## Struktur
 
@@ -145,7 +145,7 @@ app/                 Screens (expo-router)
 src/engine/          reward.ts (einzige Punktvergabe), impact.ts (Faktoren), matching.ts (GTFS-Abgleich)
 src/api/             foodsharing.ts, vytal.ts, nfc.ts, route.ts, opportunities.ts
 src/data/            transit.json (aus GTFS), traces.json, traffiQ-Aggregate, Snapshots, mock.ts
-src/store/           zustand + AsyncStorage (Journal, Reservierungen, Behälter, Einstellungen)
+src/store/           zustand + AsyncStorage (Punktekonto, Reservierungen, Behälter, Einstellungen)
 src/components/      Chameleon, Map (native + web), WhySheet, AwardToast, AiSheets, ui
 tools/               shot.py (Web-Screenshots), spa_server.py, flows.py, prep_gtfs.py
 ```

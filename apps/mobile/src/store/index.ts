@@ -104,7 +104,7 @@ const initial = {
   phone: '',
   address: '',
   paymentMethod: 'Keine',
-  chameleonName: 'Kai',
+  chameleonName: 'Leon',
   privacy: { tripOnlyLocation: true, notifications: true, quietHours: true, shareAggregates: true },
   ledger: [] as Award[],
   spent: 0,
@@ -139,7 +139,7 @@ export const useStore = create<State>()(
       setRadius: (radiusKm) => set({ radiusKm }),
       // Display cache only; the handover server owns these receipts and all food awards.
       syncFoodAwards: (receipts) => set({ ledger: [
-        ...receipts.filter(a => a.key.startsWith('trust:') && ['foodsharing','vytal'].includes(a.partner)),
+        ...receipts.filter(a => a.key.startsWith('trust:') && ['foodsharing','vytal','fes'].includes(a.partner)),
         ...get().ledger.filter(a => !a.key.startsWith('trust:')),
       ].sort((a, b) => b.at - a.at) }),
       addAward: (e) => {
@@ -186,9 +186,10 @@ export const useStore = create<State>()(
       addNfc: (id) => set({ nfcSeen: [...get().nfcSeen, id] }),
       resetAll: () => set({ ...initial }),
     }),
-    { name: 'mainsam-v1', version: 3, storage: createJSONStorage(() => AsyncStorage), migrate: (saved: any) => ({
+    { name: 'mainsam-v1', version: 4, storage: createJSONStorage(() => AsyncStorage), migrate: (saved: any) => ({
       ...saved,
-      ledger: (saved?.ledger ?? []).map((a: Award) => !a.key.startsWith('trust:') && (a.type.startsWith('food.')||a.type.startsWith('reuse.')) ? computeAward(a, []) : a),
+      chameleonName: !saved?.chameleonName || ['Kai','Leon'].includes(saved.chameleonName) ? 'Leon' : saved.chameleonName,
+      ledger: (saved?.ledger ?? []).map((a: Award) => !a.key.startsWith('trust:') && (a.type.startsWith('food.')||a.type.startsWith('reuse.')||a.type==='clean.signup'||a.type==='clean.participate') ? computeAward(a, []) : a),
       reservations: (saved?.reservations ?? []).map((r: Reservation) => ({ ...r, status: r.status === 'accepted' ? 'pending' : r.status, addressRevealed: undefined })),
     }) },
   ),

@@ -1,4 +1,5 @@
 import Constants from 'expo-constants';
+import { isNetworkError } from './network';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
@@ -19,13 +20,30 @@ export interface TrustProfile { user: TrustUser; shelfStores:{id:number;name:str
 const STORAGE_KEY = 'mainsam.trust.session.v1';
 const configured = process.env.EXPO_PUBLIC_TRUST_URL?.trim().replace(/\/$/, '');
 const isPrivate = (host: string) => /^(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)$/.test(host);
+function metroHost(): string | null {
+  if (Platform.OS === 'web') return typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+  const sources=[Constants.expoConfig?.hostUri,Constants.manifest2?.extra?.expoClient?.hostUri,Constants.expoGoConfig?.debuggerHost,Constants.linkingUri];
+  for(const source of sources){
+    if(typeof source!=='string')continue;
+    try{const host=new URL(source.includes('://')?source:`http://${source}`).hostname;if(isPrivate(host)&&!['localhost','127.0.0.1'].includes(host))return host;}catch{}
+  }
+  return null;
+}
 function serverUrl() {
+  const host=metroHost();
   if (configured) {
-    try { const url = new URL(configured); if (!url.username && !url.password && (url.protocol === 'https:' || (__DEV__ && url.protocol === 'http:' && isPrivate(url.hostname)))) return configured; } catch {}
+    try {
+      const url=new URL(configured);
+      if(url.username||url.password)return null;
+      // localhost on a phone is the phone itself, not the development computer.
+      if(__DEV__&&Platform.OS!=='web'&&url.protocol==='http:'&&['localhost','127.0.0.1'].includes(url.hostname)){
+        if(!host)return null;url.hostname=host;
+      }
+      if(url.protocol==='https:'||(__DEV__&&url.protocol==='http:'&&isPrivate(url.hostname)))return url.toString().replace(/\/$/,'');
+    } catch {}
     return null;
   }
-  // Same private LAN as Metro; do not infer or create a public tunnel.
-  const host = Platform.OS === 'web' ? (typeof window !== 'undefined' ? window.location.hostname : 'localhost') : Constants.expoConfig?.hostUri?.split(':')[0];
+  // Same private LAN as Metro; never probe another server with saved credentials.
   if (__DEV__ && host && isPrivate(host)) return `http://${host}:8787`;
   return null;
 }
@@ -58,19 +76,29 @@ function saveToken(value: string | null) {
 async function call<T>(path: string, body?: object, method = body ? 'POST' : 'GET', anonymous = false, timeoutMs=10000): Promise<T> {
   if (!TRUST_URL) throw new Error('Für bestätigte Übergaben ist noch kein Server verbunden.');
   const session = anonymous ? null : await token();
-  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const response = await fetch(TRUST_URL + path, { method, signal: ctrl.signal, headers: { 'Content-Type': 'application/json', ...(session ? { Authorization: `Bearer ${session}` } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
-    const result = await response.json();
-    if (!response.ok) {
-      if (response.status === 401 && !anonymous && session === memory) { if(useStore.getState().accessMode==='member') useStore.setState({sessionExpired:true}); await saveToken(null); }
-      throw Object.assign(new Error(result.error || 'Die Anfrage konnte nicht abgeschlossen werden.'), { status: response.status });
-    }
-    return result;
-  } catch (e: any) {
-    if (e.name === 'AbortError' || e instanceof TypeError) throw new Error('Übergaben gerade nicht erreichbar. Bitte Verbindung prüfen. Deine Anfrage wurde nicht als bestätigt gewertet.');
-    throw e;
-  } finally { clearTimeout(timer); }
+  // Only reads can be retried: a disconnected POST may already be saved by the server.
+  const attempts=method==='GET'?2:1;
+  for(let attempt=0;attempt<attempts;attempt++){
+    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),Math.max(500,timeoutMs/attempts));
+    try {
+      const response=await fetch(TRUST_URL+path,{method,signal:ctrl.signal,headers:{'Content-Type':'application/json',...(session?{Authorization:`Bearer ${session}`}:{})},...(body?{body:JSON.stringify(body)}:{})});
+      const result=await response.json();
+      if(!response.ok){
+        if(response.status===401&&!anonymous&&session===memory){if(useStore.getState().accessMode==='member')useStore.setState({sessionExpired:true});await saveToken(null);}
+        throw Object.assign(new Error(result.error||'Die Anfrage konnte nicht abgeschlossen werden.'),{status:response.status});
+      }
+      return result;
+    }catch(e:unknown){
+      if(!isNetworkError(e,ctrl.signal))throw e;
+      if(attempt+1<attempts){await new Promise(resolve=>setTimeout(resolve,200));continue;}
+      const hint=method==='GET'
+        ?'Server gerade nicht erreichbar. Bitte Verbindung prüfen und neu laden. Dein Zugang bleibt erhalten.'
+        :'Verbindung zum Server unterbrochen. Der Speicherstatus ist unklar. Bitte zuerst neu laden und den Stand prüfen, bevor du die Aktion wiederholst.';
+      throw Object.assign(new Error(hint),{code:'NETWORK_UNAVAILABLE',uncertain:method!=='GET'});
+    }finally{clearTimeout(timer);}
+  }
+  throw new Error('Server gerade nicht erreichbar. Bitte erneut verbinden.');
+
 }
 function ensureSession() {
   return changeSession(async()=>{
@@ -100,6 +128,11 @@ export const trust = {
   ticket:(id:string)=>call<ProofTicket>(`/handoffs/${id}/ticket`,{}),
   confirmTicket:(id:string,proof:string)=>call<Handoff>(`/handoffs/${id}/confirm-ticket`,{proof}),
   distribution:(draft:DistributionDraft)=>call<TrustOffer[]>('/distributions',draft),
+  cleanupResolve:(proof:string)=>call<{id:string;event:any;confirmed:boolean}>('/cleanups/resolve',{proof}),
+  cleanupJoin:(event:object)=>call<{id:string;event:any;confirmed:boolean}>('/cleanups/join',{event}),
+  cleanup:(id:string)=>call<{id:string;event:any;confirmed:boolean}>(`/cleanups/${encodeURIComponent(id)}`),
+  cleanupTicket:(id:string,position:object)=>call<{proof:string;expiresAt:number}>(`/cleanups/${encodeURIComponent(id)}/ticket`,{position}),
+  cleanupConfirm:(id:string,proof:string,position:object)=>call<{confirmed:boolean;duplicate?:boolean}>(`/cleanups/${encodeURIComponent(id)}/confirm`,{proof,position}),
   shelfActions:()=>call<ShelfAction[]>('/shelf-actions'),
   shelfTicket:(id:string)=>call<ProofTicket>(`/shelf-actions/${id}/ticket`,{}),
   confirmShelf:(id:string,proof:string)=>call<ShelfAction>(`/shelf-actions/${id}/confirm`,{proof}),

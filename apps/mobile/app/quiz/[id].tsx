@@ -11,7 +11,7 @@ import { CHAPTERS } from '@/data/mock';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
 
-/** Gamebook: Kai erzählt, du entscheidest. Jede Frage erklärt danach das Warum. */
+/** Gamebook: Leon erzählt, du entscheidest. Jede Frage erklärt danach das Warum. */
 export default function Quiz() {
   const rt = useT();
   const localize = useLocalize();

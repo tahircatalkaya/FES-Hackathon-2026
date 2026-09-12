@@ -21,7 +21,7 @@ export default function EntryAccount({initialRegister=false,onReady,color=C.ink}
     <Button label={busy?'Verbinde…':register?'Los geht’s':'Anmelden'} color={color} disabled={busy||!valid} onPress={()=>void submit()}/>
     <Button label={register?'Ich habe bereits einen Zugang':'Neuen Zugang anlegen'} color={color} variant="ghost" disabled={busy} onPress={()=>{setRegister(!register);setError('');}}/>
     <Button label="Ohne Anmeldung weiter" color={color} variant="soft" disabled={busy} onPress={()=>{setBusy(true);void trust.guest().then(()=>{useStore.getState().syncFoodAwards([]);useStore.getState().syncContainers([]);onReady();}).catch(e=>setError(e.message)).finally(()=>setBusy(false));}}/>
-    <Text style={T.small}>Als Gast kannst du Essen teilen und abholen, Regale melden und Rückgabebelege nutzen. Ohne Registrierung gibt es keine einlösbaren Übergabepunkte. Ein Gastzugang bleibt nur auf diesem Gerät verfügbar.</Text>
+    <Text style={T.small}>Als Gast kannst du Essen teilen und abholen, Regale melden und an Aktionen teilnehmen. Ohne Registrierung gibt es keine einlösbaren Übergabepunkte. Ein Gastzugang bleibt nur auf diesem Gerät verfügbar.</Text>
     {register&&<Text style={T.small}>E-Mail und Passwort bleiben privat. Die E-Mail wird noch nicht verifiziert; Passwort-Wiederherstellung ist noch nicht eingerichtet.</Text>}
   </View>;
 }

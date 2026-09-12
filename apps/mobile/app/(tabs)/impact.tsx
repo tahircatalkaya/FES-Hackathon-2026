@@ -8,7 +8,7 @@ import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import Globe, { CIRCUMFERENCE } from '@/components/Globe';
 import ScopeToggle from '@/components/ScopeToggle';
-import { Appear, Card, Counter, Divider, Row, SectionTitle, Stat, T } from '@/components/ui';
+import { Appear, Button, Card, Counter, Divider, Row, SectionTitle, Stat, T } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore, totalImpact, weekStats, chameleonStage, STAGES } from '@/store';
 import { useUI } from '@/store/ui';
@@ -57,6 +57,7 @@ export default function Impact() {
   return (
     <Screen>
       <ScopeToggle active="me" color={col} />
+      <Button label={t('updates.trafficLink')} color={CONTEXT.mobility.color} variant="soft" onPress={()=>router.push('/verkehrsdaten')} style={{marginVertical:12}}/>
       <Text style={[T.h1]}>{t('impact.title')}</Text>
 
       <SectionTitle title={t('tabs.impact.badges')} />

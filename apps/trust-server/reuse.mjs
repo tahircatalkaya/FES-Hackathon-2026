@@ -30,7 +30,7 @@ export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields,
       const code=text(body.code,32,6).toUpperCase();
       if(!/^[A-Z0-9]{6,32}$/.test(code)||!['cup','bowl'].includes(body.kind)|| (body.demo!==undefined && typeof body.demo!=='boolean')) fail(422,'Bitte einen gültigen Behältercode scannen.');
       const active=get('SELECT * FROM reuse_loans WHERE code=? AND returned IS NULL',code);
-      if(active) { if(active.owner!==actor) fail(409,'Dieser Behälter ist bereits einer offenen Ausleihe zugeordnet.'); return loanView(active); }
+      if(active) fail(409,'Dieser Behälter ist gerade ausgeliehen. Er kann erst nach bestätigter Rückgabe erneut ausgeliehen werden.');
       if(get('SELECT COUNT(*) AS n FROM reuse_loans WHERE owner=? AND returned IS NULL',actor).n>=10) fail(409,'Bitte zuerst deine offenen Behälter zurückbringen.');
       limit(`borrow:${actor}`,20,DAY);
       const store=catalog.find(s=>s.id===body.storeId);

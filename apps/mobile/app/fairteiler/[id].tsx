@@ -103,7 +103,6 @@ export default function Fairteiler() {
 
       {!!syncError&&<Text accessibilityRole="alert" style={[T.small,{marginTop:12,color:C.warn}]}>{localize(syncError)}</Text>}
       <View style={{marginTop:12}}><PlaceCode value={`mainsam:shelf:${pt.id}`} label="Regal-QR anzeigen"/></View>
-      {!!receiptId&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>Meldung geteilt</Text><Text style={T.body}>Eine Regalbetreuung ist vor Ort? Zeige ihr deinen persönlichen Code. Ohne Betreuung bleibt dein Eintrag eine Meldung ohne Punkte.</Text><Button label="Meinen Übergabecode öffnen" color={col} onPress={()=>router.push({pathname:'/regalnachweise',params:{id:receiptId}})}/></Card>}
       <Appear delay={60}>
         <Card style={{ marginTop: 14 }}>
           <Row style={{ justifyContent: 'space-between' }}>
@@ -132,7 +131,6 @@ export default function Fairteiler() {
       </Appear>
 
       {!!shared.length&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>{rt('routes.recent_local_reports')}</Text>{shared.slice(0,5).map(r=><Text key={r.id} style={T.small}>{new Date(r.at).toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'})} · {r.kind==='stock'?rt('routes.added'):r.kind==='pickup'?rt('routes.collected'):rt('routes.shelf_checked')}: {r.items.map(i=>`${i.qty} ${i.name}`).join(', ')||localize(r.fill)}</Text>)}</Card>}
-      <Button label="Meine Regalmeldungen & Betreuung" variant="soft" color={col} onPress={()=>router.push('/regalnachweise')} style={{ marginTop: 12 }}/>
       <Text style={[T.label, { marginTop: 18, marginBottom: 8 }]}>{rt('routes.what_are_you_doing')}</Text>
       <Row style={{ gap: 10 }}>
         <ActionTile icon="bag-handle" label={rt('routes.collect')} pts={15} color={col} onPress={() => setSheet('pickup')} />

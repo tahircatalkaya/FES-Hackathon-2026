@@ -23,7 +23,7 @@ Gäste erhalten eine zufällige, auf dem Gerät gespeicherte Sitzung ohne Eingab
 | `mainsam:shelf:<Regal-ID>` | Registriertes Regal öffnen | Nein |
 | `mainsam:offer:<Angebots-ID>` | Bestimmtes Angebot öffnen | Nein |
 | `mainsam:provider:<Nutzer-ID>` | Öffentliche Angebote eines Verteilers öffnen | Nein |
-| `mainsam:store:<Store-ID>` | Rückgabe am Restaurant öffnen | Nein |
+| `mainsam:store:<Store-ID>` | Mehrweg am Restaurant öffnen | Nein |
 | Persönlicher QR oder vier Ziffern | Genau eine bereits ausgewählte Übergabe/Meldung/Rückgabe bestätigen | Erst nach serverseitiger Prüfung |
 
 Die Ortscodes sind in der App an Regal/Angebot/Rücknahmestelle anzeigbar. Wer Angebote veröffentlicht, kann außerdem unter Übergaben den eigenen Verteiler-QR für alle Angebote zeigen. Sie werden unter „Scannen → Regal, Verteiler oder Restaurant scannen“ gelesen. Es sind interne Mainsam-Codes, keine universellen Links für die iPhone-Kamera und keine offiziellen foodsharing-/Vytal-Codes. Physische Aufkleber müssen die beteiligten Orte selbst bereitstellen. Der Scan lädt einen Ort, er beweist keine Anwesenheit.
@@ -32,8 +32,8 @@ Die Ortscodes sind in der App an Regal/Angebot/Rücknahmestelle anzeigbar. Wer A
 
 1. Ohne Passwortabfrage Angebot öffnen, Portion und ggf. Termin anfragen.
 2. Verteiler sagt zu; Bestand und Termine bleiben serverseitig reserviert.
-3. Abholende Person zeigt vor Ort ihren persönlichen QR oder nennt vier Ziffern.
-4. Verteiler öffnet diese Zusage, prüft die Portion und bestätigt mit dem Code.
+3. Verteilende Person zeigt vor Ort ihren Übergabe-QR oder nennt vier Ziffern.
+4. Abholende Person öffnet die Zusage, prüft die Portion, scannt den Code und bestätigt den Empfang.
 5. Beleg und Bewertungsmöglichkeit erscheinen. QR-Wiederholung erzeugt keinen zweiten Beleg. Dieselbe Personenkombination wird innerhalb von sieben Tagen nur einmal gewertet; Tagesgrenzen bleiben bestehen.
 
 Gastübergaben geben **beiden Seiten null einlösbare Punkte**. Sonst könnten Verteiler durch immer neue Gastzugänge Punkte sammeln. Das Essen bleibt trotzdem ohne Registrierung zugänglich. Gastbewertungen werden nicht in die öffentliche Zuverlässigkeitsstatistik eingerechnet; bekannte neutrale/zeitversetzte Bewertungsregeln bleiben erhalten.
@@ -42,25 +42,11 @@ Gastübergaben geben **beiden Seiten null einlösbare Punkte**. Sonst könnten V
 
 Orts-QR scannen → Abholen, Einstellen oder Regal melden → Foto, Audio oder Texteingabe wie bisher. Die Meldung wird mit anderen geteilt, auch als Gast. Foto/Audio helfen bei der Erfassung; sie werden nicht als automatische Beweise einer Übergabe ausgegeben.
 
-Ist eine freigegebene Betreuung vor Ort, zeigt die meldende Person innerhalb von 30 Minuten ihren persönlichen Code. Unter „Profil → Regalmeldungen & Betreuung“ prüft die Betreuung die konkrete Aktion und bestätigt mit QR oder vier Ziffern. Der Code selbst gilt höchstens fünf Minuten. Eigene Meldungen oder fremde Regale darf die Betreuung nicht bestätigen.
+Die zusätzliche Seite „Regalmeldungen & Betreuung“ wurde entfernt. Offene Regal-Einträge sind Eigenmeldungen ohne einlösbare Punkte. Ein Regal-Aufkleber kann beliebig erneut geöffnet werden, liefert aber keinen Beweis einer tatsächlichen Abholung. Bestehende bestätigte Belege werden nicht gelöscht. Kamera, Audio und manuelle Eingabe bleiben erhalten.
 
-Ohne Betreuung bleibt der Eintrag unbestätigt, ohne Punkte. Für dieselbe Person, denselben Ort und dieselbe Aktion gibt es innerhalb von 24 Stunden höchstens eine gewertete Meldung. Das Einlösen eines alten QR ist idempotent. Mengen bleiben Schätzungen; Einstellen erzeugt keinen zusätzlichen geretteten Lebensmittel-Impact neben der Abholung.
+## Restaurant und Mehrweg
 
-Betreiberfreigabe im Serververzeichnis:
-
-```bash
-node merchant.mjs shelves
-node merchant.mjs grant-shelf BENUTZERNAME REGAL_ID
-node merchant.mjs revoke-shelf BENUTZERNAME REGAL_ID
-```
-
-Es werden keine bestehenden Konten automatisch zur Betreuung ernannt. Ohne diese einmalige Zuordnung entstehen keine bestätigten Regalpunkte.
-
-## Restaurant-Rückgabe
-
-Restaurant-QR öffnet die Rückgabe. Gast oder Mitglied wählt seinen offenen Behälter. Freigegebenes Personal nimmt ihn entgegen, prüft einen ggf. gemeldeten Schaden und erstellt einen frischen Beleg. Die abgebende Person scannt ihn oder gibt vier Ziffern ein. Der Code gilt drei Minuten und nur für diese Ausleihe und deren Besitzer. Derselbe Behälter gibt innerhalb von 24 Stunden keine erneuten Rückgabepunkte. Schäden bleiben bei der Rücknahme sichtbar.
-
-Die bestehende Ladenfreigabe `node merchant.mjs grant BENUTZERNAME STORE_ID` bleibt erforderlich. Ein Mainsam-Beleg beendet weiterhin **keine echte Vytal-Leihfrist**; dafür fehlt der autorisierte externe Händleradapter.
+Der Restaurant-QR öffnet die Mehrweg-Ansicht. Zum Ausleihen wird nur der Behälter gescannt oder sein Code eingegeben. Derselbe Behälter ist bis zum Abschluss der Ausleihe serverweit gesperrt, auch für die ausleihende Person. Die Rückgabeoption ist aus der Nutzeroberfläche entfernt. Bestehende Belege und geschützte Händlerendpunkte bleiben als Backend-Kompatibilität erhalten, buchen jedoch keine echte Vytal-Rückgabe.
 
 ## Missbrauchsschutz und Grenzen
 

@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Screen } from '@/components/Screen';
-import { Appear, Card, Divider, Ring, Row, SectionTitle, Sheet, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Divider, Ring, Row, SectionTitle, Sheet, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
@@ -33,7 +33,7 @@ export default function Together() {
   const [period, setPeriod] = useState<Period>('week');
   const city = useMemo(() => cityImpact(period), [period]);
   const before = useMemo(() => previousCityImpact(period), [period]);
-  // Der eigene Beitrag kommt aus dem echten Journal und wird auf die Demo-Stadtwerte addiert.
+  // Der eigene Beitrag kommt aus dem gespeicherten Punktekonto und wird auf die Demo-Stadtwerte addiert.
   const mine = useMemo(() => ledger.filter((l) => l.at >= periodStart(period)).reduce((a, l) => addImpact(a, l.impact), emptyImpact()), [ledger, period]);
   const total = { co2_g: city.co2_g + mine.co2_g, food_g: city.food_g + mine.food_g, packaging: city.packaging + mine.packaging };
   const delta = before.co2_g ? (total.co2_g - before.co2_g) / before.co2_g : 0;
@@ -45,6 +45,7 @@ export default function Together() {
   return (
     <Screen>
       <ScopeToggle active="city" color={col} />
+      <Button label={t('updates.trafficLink')} color={CONTEXT.mobility.color} variant="soft" onPress={()=>router.push('/verkehrsdaten')} style={{marginVertical:12}}/>
       <Text style={[T.h1]}>{t('together.title')}</Text>
 
           <Appear delay={20}>

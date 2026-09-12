@@ -1,11 +1,13 @@
 import { useT, useLocalize } from '@/i18n/useT';
-import React, { useEffect, useMemo } from 'react';
-import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native';
-import Animated, { Easing, FadeIn, ZoomIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { AppState, Image, Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { VideoView, useVideoPlayer } from 'expo-video';
-import { C, R, S, shadow } from '@/theme';
-import { FUN_FACTS } from '@/data/fes';
-import { T } from './ui';
+import { C, shadow } from '@/theme';
+import { Button, Counter, T } from './ui';
+import { balance, useStore } from '@/store';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { VideoPlayer } from 'expo-video';
 
 /** Belohnungsclips je Bereich. Ratio ist Breite durch Höhe der Datei. */
 const CLIPS = {
@@ -43,9 +45,7 @@ const POSES = {
   calm: { src: require('../../assets/chami/calm.png'), ratio: 240 / 308, lid: undefined, lively: false, eyes: [] },
   coffee: { src: require('../../assets/chami/coffee.png'), ratio: 285 / 305, lid: 'rgb(155, 219, 15)', lively: false, eyes: [{ left: 0.2491, top: 0.2754, width: 0.1895, height: 0.2066 }, { left: 0.6491, top: 0.3377, width: 0.1965, height: 0.2066 }] },
   globe: {
-    src: require('../../assets/chami/globe-base.png'),
-    /** Der Globus liegt samt Händen auf einer eigenen Ebene und wackelt leicht. */
-    hand: { src: require('../../assets/chami/globe-hands.png'), pivotX: 0.6479, pivotY: 0.6845, swing: 4 },
+    src: require('../../assets/chami/globe.png'),
     ratio: 257 / 309,
     lid: undefined,
     lively: false,
@@ -70,13 +70,11 @@ const POSES = {
 
 export type Pose = keyof typeof POSES;
 
-/** Maskottchen: steht ruhig, atmet, blinzelt. Lebhafte Posen wippen zusätzlich leicht. */
+/** Maskottchen: steht ruhig und blinzelt. Die Weltgrafik bleibt vollständig unbewegt. */
 export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { pose?: Pose; size?: number; onPress?: () => void; style?: any }) {
   const p = POSES[pose] ?? POSES.classic;
   const width = size * p.ratio;
   const blink = useSharedValue(0);
-  const hand = useSharedValue(0);
-  const swing = 'hand' in p ? (p as any).hand.swing : 0;
 
   useEffect(() => {
     blink.value = withRepeat(
@@ -89,33 +87,14 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
       -1,
       false,
     );
-    hand.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 1400, easing: Easing.inOut(Easing.quad) }),
-        withTiming(0, { duration: 1400, easing: Easing.inOut(Easing.quad) }),
-      ),
-      -1,
-      false,
-    );
+
   }, []);
 
-  const handStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${-swing / 2 + swing * hand.value}deg` }] }));
   const lidStyle = useAnimatedStyle(() => ({ transform: [{ scaleY: blink.value }] }));
 
-  const layer = 'hand' in p ? (p as any).hand : null;
   const body = (
     <View style={[{ width, height: size }, style]}>
       <Animated.Image source={p.src} style={{ width, height: size }} resizeMode="contain" />
-      {layer ? (
-        <Animated.Image
-          source={layer.src}
-          resizeMode="contain"
-          style={[
-            { position: 'absolute', width, height: size, transformOrigin: `${layer.pivotX * width}px ${layer.pivotY * size}px` },
-            handStyle,
-          ]}
-        />
-      ) : null}
       {p.eyes.map((e, i) => (
         <Animated.View
           key={i}
@@ -141,120 +120,66 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
   return <Pressable onPress={onPress}>{body}</Pressable>;
 }
 
-/** Belohnungsclip zum Einbauen in andere Karten, spielt einmal ab. */
-export function ClipPlayer({ clip = 'clean', style }: { clip?: ClipName; style?: any }) {
-  const c = CLIPS[clip];
-  // Expo owns release/unmount. A later effect cleanup must not touch the released player.
-  const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; p.play(); });
-  return <VideoView player={player} style={[{ width: '100%', aspectRatio: c.ratio }, style]} contentFit="cover" nativeControls={false} />;
+/** Keep the four bundled clips ready before a feedback sheet opens. Expo owns release. */
+const ClipsContext = createContext<Record<ClipName, VideoPlayer> | null>(null);
+const setup = (p:VideoPlayer) => { p.muted=true; p.loop=false; };
+export function ClipPlaybackProvider({children}:{children:React.ReactNode}) {
+  const clean=useVideoPlayer(CLIPS.clean.src,setup),food=useVideoPlayer(CLIPS.food.src,setup);
+  const cup=useVideoPlayer(CLIPS.cup.src,setup),ride=useVideoPlayer(CLIPS.ride.src,setup);
+  const players=useMemo(()=>({clean,food,cup,ride}),[clean,food,cup,ride]);
+  useEffect(()=>{const subscription=AppState.addEventListener('change',state=>{if(state!=='active')Object.values(players).forEach(p=>p.pause());});return()=>subscription.remove();},[players]);
+  return <ClipsContext.Provider value={players}>{children}</ClipsContext.Provider>;
+}
+export function ClipPlayer({clip='clean',style}:{clip?:ClipName;style?:any}) {
+  const players=useContext(ClipsContext);
+  return players?<ReadyClip player={players[clip]} clip={clip} style={style}/>:<LocalClip clip={clip} style={style}/>;
+}
+function LocalClip({clip,style}:{clip:ClipName;style?:any}) {
+  const player=useVideoPlayer(CLIPS[clip].src,setup);
+  return <ReadyClip player={player} clip={clip} style={style}/>;
+}
+function ReadyClip({player,clip,style}:{player:VideoPlayer;clip:ClipName;style?:any}) {
+  const [frame,setFrame]=useState(false);
+  useEffect(()=>{setFrame(false);player.currentTime=0;player.play();},[player]);
+  // No player calls in cleanup: the owning Expo hook may already have released it.
+  return <View style={[{width:'100%',aspectRatio:CLIPS[clip].ratio,backgroundColor:'#F0F5E9'},style]}>
+    <VideoView player={player} style={{width:'100%',height:'100%'}} contentFit="contain" nativeControls={false} onFirstFrameRender={()=>setFrame(true)} />
+    {!frame&&<Image source={POSES[clip==='cup'?'coffee':clip==='ride'?'run':clip==='food'?'heart':'cheer'].src} resizeMode="contain" style={{position:'absolute',width:'100%',height:'100%'}}/>}
+  </View>;
 }
 
-/** Kachel im Stil einer Lernapp: farbiger Rahmen, Label oben, Wert groß. */
-function StatTile({ label, value, color, delay }: { label: string; value: string; color: string; delay: number }) {
-  return (
-    <Animated.View entering={ZoomIn.duration(240).delay(delay)} style={{ flex: 1, borderRadius: 18, backgroundColor: color, padding: 2 }}>
-      <View style={{ borderRadius: 16, backgroundColor: '#fff', paddingVertical: 10, paddingHorizontal: 12, alignItems: 'center' }}>
-        <Text style={{ fontSize: 11, fontWeight: '900', color, letterSpacing: 0.8 }}>{label}</Text>
-        <Text style={{ fontSize: 26, fontWeight: '900', color: C.ink, letterSpacing: -0.5, marginTop: 2 }}>{value}</Text>
-      </View>
-    </Animated.View>
-  );
-}
-
-/** Belohnung nach einer erledigten Tat: Clip, Bilanz in Kacheln, dazu ein Tipp für den Alltag. */
-export function CelebrationOverlay({
-  open,
-  points,
-  duplicate,
-  pending,
-  note,
-  headline: headlineOverride,
-  tileLabel,
-  tileValue,
-  clip = 'clean',
-  onClose,
-}: {
-  open: boolean;
-  points?: number;
-  duplicate?: boolean;
-  /** Gutschrift wartet auf eine Bestätigung, statt am Tagesdeckel zu hängen. */
-  pending?: boolean;
-  /** Eigene Erklärung, wenn null Punkte keinen der beiden Standardgründe haben. */
-  note?: string;
-  /** Eigene Überschrift und Kachel, etwa für eine bestätigte Fahrt ohne neue Punkte. */
-  headline?: string;
-  tileLabel?: string;
-  tileValue?: string;
-  clip?: ClipName;
-  onClose: () => void;
+/** One feedback layout: immediate clip, animated balance, explanations and an explicit close. */
+export function CelebrationOverlay({open,points=0,duplicate,pending,note,headline,tileLabel,tileValue,clip='clean',onClose,onWhy,continueLabel,onContinue}:{
+  open:boolean;points?:number;duplicate?:boolean;pending?:boolean;note?:string;headline?:string;
+  tileLabel?:string;tileValue?:string;clip?:ClipName;onClose:()=>void;onWhy?:()=>void;continueLabel?:string;onContinue?:()=>void;
 }) {
-  const t = useT();
-  const localize = useLocalize();
-  const { width } = useWindowDimensions();
-  const c = CLIPS[clip];
-  const boxWidth = Math.min(width - 2 * S.lg, 520);
-  const earned = points ?? 0;
-  /** Tipp zum Bereich der Gutschrift, allgemeine Tipps passen überall. */
-  const fact = useMemo(() => {
-    const pool = FUN_FACTS.filter((f) => !f.topic || f.topic === clip);
-    return pool[Math.floor(Math.random() * pool.length)];
-  }, [open, clip]);
-  const headline = headlineOverride ?? (duplicate ? t('components.celebration.already') : earned > 0 ? t('components.celebration.great') : t('components.celebration.saved'));
-  const tile = tileValue ? { label: tileLabel ?? t('components.why.impact'), value: tileValue } : { label: t('components.why.points'), value: duplicate ? '+0' : `+${earned}` };
-
-  useEffect(() => {
-    if (!open) return;
-    const stop = setTimeout(onClose, 9000);
-    return () => clearTimeout(stop);
-  }, [open, onClose]);
-
-  return (
-    <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable onPress={onClose} style={{ flex: 1, backgroundColor: 'rgba(15,20,15,0.72)', alignItems: 'center', justifyContent: 'center', padding: S.lg }}>
-        <Animated.View entering={ZoomIn.duration(240)} style={[{ width: boxWidth, backgroundColor: '#fff', borderRadius: R.xl, overflow: 'hidden' }, shadow(3)]}>
-          {open && <ClipPlayer key={clip} clip={clip} style={{ width: boxWidth, height: boxWidth / c.ratio }} />}
-
-          <View style={{ padding: S.lg, alignItems: 'center' }}>
-            <Animated.Text entering={FadeIn.delay(120)} style={{ fontSize: 24, fontWeight: '900', color: C.ink, letterSpacing: -0.4, textAlign: 'center' }}>
-              {localize(headline)}
-            </Animated.Text>
-
-            <View style={{ flexDirection: 'row', width: 172, marginTop: S.md }}>
-              <StatTile label={localize(tile.label)} value={tile.value} color="#FF6A00" delay={180} />
+  const t=useT(),localize=useLocalize(),{height,width}=useWindowDimensions(),insets=useSafeAreaInsets();
+  const total=useStore(balance),color=clip==='food'?C.food:clip==='cup'?C.reuse:clip==='ride'?C.mobility:C.clean;
+  if(!open)return null;
+  const earned=duplicate?0:points;
+  return <Modal visible transparent animationType="none" onRequestClose={onClose}>
+    <View style={{flex:1,backgroundColor:'rgba(15,20,15,0.66)',justifyContent:'center',alignItems:'center',paddingHorizontal:16,paddingTop:insets.top+12,paddingBottom:insets.bottom+12}}>
+      <View style={[{width:Math.min(width-32,440),maxHeight:height-insets.top-insets.bottom-24,backgroundColor:'#fff',borderRadius:24,overflow:'hidden'},shadow(3)]}>
+        <ScrollView bounces={false} contentContainerStyle={{paddingBottom:16}}>
+          <ClipPlayer clip={clip} style={{height:Math.min(220,height*0.29),aspectRatio:undefined}}/>
+          <View style={{paddingHorizontal:20,gap:14,paddingTop:14}}>
+            <Text style={[T.h2,{textAlign:'center'}]}>{localize(headline??(duplicate?t('components.celebration.already'):earned>0?t('components.celebration.great'):t('components.celebration.saved')))}</Text>
+            <View style={{flexDirection:'row',gap:10}}>
+              <View style={{flex:1,backgroundColor:color+'14',padding:12,borderRadius:16,alignItems:'center'}}><Text style={T.small}>{t('updates.pointsAction')}</Text><View style={{flexDirection:'row',alignItems:'center'}}><Text style={{fontSize:30,fontWeight:'900',color}}>+</Text><Counter value={earned} style={{fontSize:30,fontWeight:'900',color}}/></View></View>
+              <View style={{flex:1,backgroundColor:C.bg,padding:12,borderRadius:16,alignItems:'center'}}><Text style={T.small}>{t('updates.balance')}</Text><Counter value={total} style={{fontSize:30,fontWeight:'900',color:C.ink}}/></View>
             </View>
-
-            {tileValue ? (
-              note ? <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{localize(note)}</Text> : null
-            ) : duplicate ? (
-              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{t('components.celebration.once')}</Text>
-            ) : earned > 0 ? null : (
-              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>
-                {note
-                  ? localize(note)
-                  : pending
-                    ? t('components.celebration.pending')
-                    : t('components.celebration.cap')}
-              </Text>
-            )}
-
-            <Animated.View
-              entering={FadeIn.delay(460)}
-              style={{ flexDirection: 'row', gap: 10, alignSelf: 'stretch', marginTop: S.md, padding: S.md, borderRadius: R.md, backgroundColor: C.clean + '12' }}
-            >
-              <Text style={{ fontSize: 18 }}>{fact.icon}</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={T.label}>{localize(fact.label)}</Text>
-                <Text style={[T.body, { marginTop: 2 }]}>{localize(fact.text)}</Text>
-                {fact.source ? <Text style={[T.small, { marginTop: 4, color: C.muted }]}>{t('components.why.source', { source: localize(fact.source) })}</Text> : null}
-              </View>
-            </Animated.View>
-
-            <Text style={[T.small, { marginTop: 10, color: C.muted }]}>{t('components.celebration.close')}</Text>
+            {!!tileValue&&<View style={{alignItems:'center'}}><Text style={T.small}>{tileLabel}</Text><Text style={T.h2}>{tileValue}</Text></View>}
+            {!!note?<Text style={[T.body,{textAlign:'center'}]}>{localize(note)}</Text>:pending?<Text style={[T.body,{textAlign:'center'}]}>{t('components.celebration.pending')}</Text>:duplicate?<Text style={[T.body,{textAlign:'center'}]}>{t('components.celebration.once')}</Text>:null}
           </View>
-        </Animated.View>
-      </Pressable>
-    </Modal>
-  );
+        </ScrollView>
+        <View style={{padding:16,gap:8,borderTopWidth:1,borderColor:C.line}}>
+          {onWhy&&<Button label={t('why.title')} color={color} variant="soft" onPress={onWhy}/>}
+          {onContinue&&<Button label={continueLabel||t('common.next')} color={color} onPress={onContinue}/>}
+          <Button label={t('components.common.close')} color={color} variant={onContinue?'ghost':'solid'} onPress={onClose}/>
+        </View>
+      </View>
+    </View>
+  </Modal>;
 }
 
 export default ChamiMascot;

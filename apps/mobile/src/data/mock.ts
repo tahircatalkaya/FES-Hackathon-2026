@@ -15,15 +15,6 @@ export const CLEANUPS: Cleanup[] = [
   { id: 'cu0', title: 'Hafenpark Frühjahrsputz', lat: 50.1083, lon: 8.7078, district: 'Ostend', start: at(-6, 10), end: at(-6, 12), organizer: 'Skatepark-Crew', participants: 31, radiusM: 350, material: 'FES', fesConfirmed: true, description: '38 Säcke, von FES bestätigt.' },
 ];
 
-export interface Bin { id: string; lat: number; lon: number; kind: 'Papierkorb' | 'Glascontainer' | 'Altkleider' | 'Pfandring'; label: string }
-export const BINS: Bin[] = [
-  { id: 'bin-0421', lat: 50.1136, lon: 8.6789, kind: 'Papierkorb', label: 'Hauptwache Nord' },
-  { id: 'bin-0422', lat: 50.1151, lon: 8.6835, kind: 'Pfandring', label: 'Zeil / Brockhausbrunnen' },
-  { id: 'gl-0087', lat: 50.1188, lon: 8.6540, kind: 'Glascontainer', label: 'Leipziger Straße' },
-  { id: 'ak-0031', lat: 50.1071, lon: 8.6892, kind: 'Altkleider', label: 'Schweizer Platz' },
-  { id: 'bin-0980', lat: 50.1262, lon: 8.6994, kind: 'Papierkorb', label: 'Günthersburgpark Eingang' },
-];
-
 export const LASTENRAD = [
   { id: 'lr1', name: 'Lastenrad „Bocke“', lat: 50.1233, lon: 8.6489, station: 'Bockenheim, Leipziger Str.', free: true, next: 'heute ab 16:00' },
   { id: 'lr2', name: 'Lastenrad „Sachsi“', lat: 50.1033, lon: 8.6939, station: 'Sachsenhausen, Textorstr.', free: false, next: 'morgen 09:00' },
@@ -34,7 +25,7 @@ export interface QuizChapter { id: string; title: string; ctx: 'clean' | 'mobili
 export const CHAPTERS: QuizChapter[] = [
   {
     id: 'q1', title: 'Kapitel 1: Wohin damit?', ctx: 'clean',
-    intro: 'Kai steht vor drei Tonnen und hat einen Pizzakarton in der Hand. Fettig. Hilfst du ihm?',
+    intro: 'Leon steht vor drei Tonnen und hat einen Pizzakarton in der Hand. Fettig. Hilfst du ihm?',
     questions: [
       { q: 'Fettiger Pizzakarton, wohin?', options: ['Altpapier', 'Restmüll', 'Biotonne'], answer: 1, why: 'Stark verschmutzte Pappe stört das Recycling. Saubere Kartonteile dürfen ins Altpapier.' },
       { q: 'Kaffeebecher to go mit Kunststoffbeschichtung?', options: ['Altpapier', 'Gelbe Tonne', 'Restmüll'], answer: 2, why: 'Verbundmaterial, in Frankfurt Restmüll. Besser: Mehrwegbecher.' },
@@ -43,7 +34,7 @@ export const CHAPTERS: QuizChapter[] = [
   },
   {
     id: 'q2', title: 'Kapitel 2: Der Weg zur Arbeit', ctx: 'mobility',
-    intro: 'Kai vergleicht drei Wege von Bockenheim zur Hauptwache. Das Auto steht vor der Tür.',
+    intro: 'Leon vergleicht drei Wege von Bockenheim zur Hauptwache. Das Auto steht vor der Tür.',
     questions: [
       { q: 'Wie viel CO₂ spart die U-Bahn gegenüber dem Auto je Kilometer, ungefähr?', options: ['ca. 10 g', 'ca. 100 g', 'ca. 1 kg'], answer: 1, why: 'Pkw ca. 150 g, U-Bahn ca. 55 g je Personenkilometer (UBA-Richtwerte).' },
       { q: 'Ersetzt ein E-Scooter für 800 m meistens…', options: ['eine Autofahrt', 'einen Fußweg', 'eine Bahnfahrt'], answer: 1, why: 'Kurze Scooter-Fahrten ersetzen meist Gehen. Deshalb gibt es dafür in Mainsam keine Punkte.' },
@@ -51,7 +42,7 @@ export const CHAPTERS: QuizChapter[] = [
   },
   {
     id: 'q3', title: 'Kapitel 3: Der Fairteiler', ctx: 'food',
-    intro: 'Vor dem Fairteiler an der Ada-Kantine steht ein Karton mit Brot. Kai hat Hunger, aber auch Nachbarn.',
+    intro: 'Vor dem Fairteiler an der Ada-Kantine steht ein Karton mit Brot. Leon hat Hunger, aber auch Nachbarn.',
     questions: [
       { q: 'Was darf nicht in einen Fairteiler?', options: ['Backwaren vom Vortag', 'Rohes Hackfleisch', 'Ungeöffnete Konserven'], answer: 1, why: 'Rohes Fleisch, rohes Ei und Alkohol sind ausgeschlossen. Hygiene schützt alle.' },
       { q: 'Warum gibt es fürs Abholen keine Punkte?', options: ['Weil Abholen nichts bringt', 'Weil Essen bereits die Belohnung ist', 'Weil die App das nicht kann'], answer: 1, why: 'Punkte fürs Nehmen würden Hamstern belohnen. Der Impact zählt trotzdem voll.' },
@@ -59,7 +50,7 @@ export const CHAPTERS: QuizChapter[] = [
   },
   {
     id: 'q4', title: 'Kapitel 4: Die Schale', ctx: 'reuse',
-    intro: 'Kai bestellt Nudeln. Einweg oder Vytal-Schale?',
+    intro: 'Leon bestellt Nudeln. Einweg oder Vytal-Schale?',
     questions: [
       { q: 'Nach wie vielen Nutzungen ist eine Mehrwegschale ökologisch besser als Einweg (Größenordnung)?', options: ['nach 2–3', 'nach 10–20', 'nach 500'], answer: 1, why: 'Je nach Material und Spülung im Bereich von 10 bis 20 Umläufen. Deshalb belohnen wir das Zurückbringen.' },
     ],
@@ -68,17 +59,16 @@ export const CHAPTERS: QuizChapter[] = [
 
 export interface Reward { id: string; title: string; cost: number; partner: string; emoji: string; desc: string }
 export const REWARDS: Reward[] = [
-  { id: 'r1', title: 'Gratis-Ausleihe Vytal', cost: 200, partner: 'Vytal', emoji: '🥡', desc: 'Eine Ausleihe ohne Pfandhinterlegung bei allen Partnern.' },
-  { id: 'r6', title: 'Spende: 1 Baum für Frankfurt', cost: 300, partner: 'Grünflächenamt', emoji: '🌳', desc: 'Deine Punkte werden zu einem echten Baum. Nimmt Horte-Druck raus.' },
+  { id: 'r6', title: 'Spende: 1 Baum für Frankfurt', cost: 300, partner: 'Grünflächenamt', emoji: '🌳', desc: 'Deine Punkte werden zu einem echten Baum.' },
   { id: 'r2', title: 'Kaffee im Mehrwegbecher', cost: 350, partner: 'Partnercafé', emoji: '☕', desc: 'Ein Heißgetränk bei einem teilnehmenden Café.' },
   { id: 'r3', title: 'Kinoticket', cost: 500, partner: 'Kino im Cinema', emoji: '🎬', desc: 'Ein Ticket für eine Vorstellung deiner Wahl.' },
   { id: 'r4', title: 'Tageskarte RMV', cost: 800, partner: 'traffiQ', emoji: '🚊', desc: 'Eine Tageskarte für Frankfurt.' },
-  { id: 'r7', title: 'Sportstudio für einen Monat', cost: 1200, partner: 'Partnerstudios Frankfurt', emoji: '🏋️', desc: 'Vier Wochen Mitgliedschaft in einem teilnehmenden Studio. Rund zwei Monate regelmäßiger Nutzung.' },
-  { id: 'r8', title: 'Deutschlandticket für einen Monat', cost: 2000, partner: 'RMV · traffiQ', emoji: '🎫', desc: 'Ein Monat im ganzen Nahverkehr. Rund drei Monate regelmäßiger Nutzung, bei 50 Punkten am Tag sechs Wochen.' },
+  { id: 'r7', title: 'Sportstudio für einen Monat', cost: 1200, partner: 'Partnerstudios Frankfurt', emoji: '🏋️', desc: 'Vier Wochen Mitgliedschaft in einem teilnehmenden Studio.' },
+  { id: 'r8', title: 'Deutschlandticket für einen Monat', cost: 2000, partner: 'RMV · traffiQ', emoji: '🎫', desc: 'Ein Monat im ganzen Nahverkehr.' },
   { id: 'r9', title: 'Palmengarten-Jahreskarte', cost: 2500, partner: 'Palmengarten', emoji: '🌴', desc: 'Ein Jahr freier Eintritt, auch im Winter im Tropicarium.' },
   { id: 'r10', title: 'Heimspiel-Ticket', cost: 3000, partner: 'Eintracht Frankfurt', emoji: '🦅', desc: 'Ein Platz im Stadion bei einem Heimspiel der Saison.' },
   { id: 'r12', title: 'Baumpatenschaft mit Plakette', cost: 6000, partner: 'Grünflächenamt', emoji: '🪧', desc: 'Ein Baum in deinem Stadtteil, mit deinem Namen am Stamm. Etwa ein halbes Jahr.' },
-  { id: 'r13', title: 'Deutschlandticket für ein Jahr', cost: 10000, partner: 'RMV · traffiQ', emoji: '🏆', desc: 'Zwölf Monate Nahverkehr. Das größte Ziel der App, etwa ein Jahr regelmäßiger Nutzung.' },
+  { id: 'r13', title: 'Deutschlandticket für ein Jahr', cost: 10000, partner: 'RMV · traffiQ', emoji: '🏆', desc: 'Zwölf Monate Nahverkehr.' },
 ];
 
 export const DISTRICTS = [

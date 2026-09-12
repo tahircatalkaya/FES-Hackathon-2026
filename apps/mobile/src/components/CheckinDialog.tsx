@@ -6,7 +6,8 @@ import { C, CONTEXT, RIDE, shadow } from '@/theme';
 import { T, haptic } from './ui';
 import { nfcAvailable, readTag, demoTag, type TagInfo } from '@/api/nfc';
 import type { Award } from '@/engine/types';
-import { ClipPlayer } from './ChamiMascot';
+import { CelebrationOverlay } from './ChamiMascot';
+import { useUI } from '@/store/ui';
 import { BASE } from '@/engine/reward';
 
 const TERMINAL = require('../../assets/checkin/terminal.png');
@@ -18,7 +19,7 @@ const CHECKIN_POINTS = BASE['ride.checkin'];
 /**
  * Terminal-Check-in als Pop-up (portiert aus dem Web-Prototyp).
  * Stufe 1: Handy ans Lesefeld halten, Terminal und Handy animiert.
- * Stufe 2: Konfetti, gelesener Tag, fester Punktbetrag fuer den Check-in.
+ * Stufe 2: sofortiger Fahrtenclip und gemeinsames Punktefenster.
  * Gebucht wird ueber onCheckin, das intern award() aufruft. Angezeigt wird, was wirklich gutgeschrieben wurde.
  * Echtes NFC wird im Hintergrund gelesen, wenn das Gerät es kann, sonst Simulation.
  */
@@ -61,6 +62,7 @@ export default function CheckinDialog({
   function succeed(t: TagInfo) { setTag(t); setAward(onCheckin(t)); setStage('success'); haptic('success'); }
 
   if (!open) return null;
+  if(stage==='success')return <CelebrationOverlay open clip="ride" points={award?.points??0} duplicate={award?.duplicate} headline={t('components.checkin.success')} note={award?.formula} onClose={onClose} onWhy={award?()=>{onClose();useUI.getState().showWhy(award);}:undefined} continueLabel={continueLabel??t('act.ride')} onContinue={()=>{onClose();onContinue();}}/>;
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
       <View style={{ flex: 1, backgroundColor: 'rgba(16,43,84,0.43)', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
@@ -68,9 +70,9 @@ export default function CheckinDialog({
         <Pressable style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }} onPress={onClose} accessibilityLabel={t('components.common.close')} />
         <Appear>
           <View style={[{ backgroundColor: '#fff', borderRadius: 28, borderWidth: 1, borderColor: C.line, padding: 24 }, shadow(3)]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: stage === 'success' ? 0 : 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
               <Text style={{ fontSize: 13, fontWeight: '800', letterSpacing: 1.4, color: ACCENT }}>
-                {stage === 'success' ? t('components.checkin.simulation') : t('components.checkin.nfc')}
+                {t('components.checkin.nfc')}
               </Text>
               <Pressable onPress={onClose} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('components.common.close')}
                 style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}>
@@ -78,18 +80,7 @@ export default function CheckinDialog({
               </Pressable>
             </View>
 
-            {stage === 'terminal' ? (
-              <Terminal
-                real={real}
-                demoLine={demoLine}
-                headsign={headsign}
-                stopName={stopName}
-                onSimulate={() => succeed(demoTag(demoLine))}
-                onCancel={onClose}
-              />
-            ) : (
-              <Success tag={tag!} award={award} label={continueLabel ?? t('act.ride')} onContinue={() => { onClose(); onContinue(); }} />
-            )}
+            <Terminal real={real} demoLine={demoLine} headsign={headsign} stopName={stopName} onSimulate={()=>succeed(demoTag(demoLine))} onCancel={onClose}/>
           </View>
         </Appear>
       </View>
@@ -159,68 +150,6 @@ function Scene() {
       </Animated.View>
     </View>
   );
-}
-
-/* ---------- Stufe 2: Erfolg ---------- */
-const CONFETTI = [RIDE.red, RIDE.grey, C.gold, RIDE.graphite];
-
-function Success({ tag, award, label, onContinue }: { tag: TagInfo; award: Award | null; label: string; onContinue: () => void }) {
-  const t = useT();
-  const localize = useLocalize();
-  const pieces = useMemo(() => Array.from({ length: 24 }, (_, i) => ({
-    x: 5 + ((i * 37) % 90), drift: ((i * 29) % 80) - 40, turn: (i % 2 ? 1 : -1) * (180 + i * 21),
-    delay: (i % 6) * 65, color: CONFETTI[i % 4], round: i % 3 === 2,
-  })), []);
-  const pop = useSharedValue(0.8);
-  useEffect(() => { pop.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) }); }, []);
-  const popSt = useAnimatedStyle(() => ({ transform: [{ scale: pop.value }] }));
-
-  return (
-    <View style={{ alignItems: 'center' }}>
-      <View style={{ width: '100%', alignItems: 'center', marginBottom: 12 }}>
-        <View style={{ position: 'absolute', top: -12, left: 0, right: 0, height: 160, overflow: 'hidden', zIndex: 2 }} pointerEvents="none">
-          {pieces.map((c, i) => <Confetti key={i} {...c} />)}
-        </View>
-        {/* Belohnungsclip: dieselbe Figur wie in den anderen Bereichen. */}
-        <Animated.View style={[{ width: '100%', borderRadius: 18, overflow: 'hidden' }, popSt]}>
-          <ClipPlayer clip="ride" />
-        </Animated.View>
-      </View>
-
-      <Text style={{ fontSize: 25, fontWeight: '800', color: C.ink, letterSpacing: -0.5, textAlign: 'center', marginBottom: 10 }}>{t('components.checkin.success')}</Text>
-      <Text style={{ fontSize: 15, lineHeight: 22, color: C.ink2, textAlign: 'center', maxWidth: 270 }}>{t('components.checkin.thanks')}</Text>
-      <Text style={{ fontSize: 14, lineHeight: 20, color: C.ink2, textAlign: 'center', marginTop: 10 }}>
-        {t('components.checkin.detected', { line: tag.line, vehicle: tag.vehicle })}
-      </Text>
-
-      <View style={{ alignSelf: 'stretch', alignItems: 'center', gap: 2, backgroundColor: C.bg, borderWidth: 1, borderColor: C.line, borderRadius: 18, padding: 14, marginTop: 22, marginBottom: 10 }}>
-        <Text style={{ fontSize: 48, lineHeight: 52, fontWeight: '800', letterSpacing: -2, color: C.success }}>+{award?.points ?? CHECKIN_POINTS}</Text>
-        <Text style={{ fontSize: 15, color: C.ink2, textAlign: 'center' }}>{t('components.checkin.points')}</Text>
-      </View>
-      <Text style={[T.small, { textAlign: 'center', marginBottom: 16 }]}>
-        {award && award.points < CHECKIN_POINTS ? localize(award.formula) : t('components.checkin.fixed')}
-      </Text>
-
-      <Pressable onPress={onContinue} style={({ pressed }) => ({ alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, backgroundColor: ACCENT, borderRadius: 16, paddingVertical: 14, paddingHorizontal: 18, opacity: pressed ? 0.85 : 1 })}>
-        <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>{label}</Text>
-        <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>→</Text>
-      </Pressable>
-    </View>
-  );
-}
-
-function Confetti({ x, drift, turn, delay, color, round }: { x: number; drift: number; turn: number; delay: number; color: string; round: boolean }) {
-  const p = useSharedValue(0);
-  useEffect(() => { p.value = withDelay(delay, withTiming(1, { duration: 1500, easing: Easing.out(Easing.quad) })); }, []);
-  const st = useAnimatedStyle(() => ({
-    opacity: interpolate(p.value, [0, 0.12, 0.65, 1], [0, 1, 1, 0]),
-    transform: [
-      { translateX: interpolate(p.value, [0, 1], [0, drift]) },
-      { translateY: interpolate(p.value, [0, 1], [-12, 170]) },
-      { rotate: `${interpolate(p.value, [0, 1], [0, turn])}deg` },
-    ],
-  }));
-  return <Animated.View style={[{ position: 'absolute', top: 0, left: `${x}%`, width: round ? 7 : 6, height: round ? 7 : 11, borderRadius: round ? 4 : 2, backgroundColor: color }, st]} />;
 }
 
 /** checkin-appear: 180 ms, leicht von unten. */

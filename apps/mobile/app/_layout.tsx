@@ -8,6 +8,7 @@ import { useStore } from '@/store';
 import { trust } from '@/api/trust';
 import { useUI } from '@/store/ui';
 import AwardToast from '@/components/AwardToast';
+import { ClipPlaybackProvider } from '@/components/ChamiMascot';
 import WhySheet from '@/components/WhySheet';
 import { C, CONTEXT } from '@/theme';
 import { useT, useLocale, useIsRTL } from '@/i18n/useT';
@@ -65,7 +66,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <ClipPlaybackProvider><View style={{ flex: 1, backgroundColor: C.bg }}>
           <StatusBar style="dark" />
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: C.bg }, animation: 'slide_from_right' }}>
             <Stack.Screen name="(tabs)" />
@@ -81,7 +82,6 @@ export default function RootLayout() {
             <Stack.Screen name="melden" />
             <Stack.Screen name="quiz/[id]" />
             <Stack.Screen name="belohnungen" />
-            <Stack.Screen name="journal" />
             <Stack.Screen name="daten" />
             <Stack.Screen name="partner" />
             <Stack.Screen name="uebergaben" />
@@ -89,7 +89,7 @@ export default function RootLayout() {
           </Stack>
           <AwardToast award={toast} onWhy={(a) => showWhy(a)} onDone={() => showToast(null)} color={CONTEXT[ctx].color} />
           <WhySheet award={why} onClose={() => showWhy(null)} />
-        </View>
+        </View></ClipPlaybackProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
