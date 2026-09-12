@@ -8,7 +8,11 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": { "image": "./assets/splash-icon.png", "resizeMode": "contain", "backgroundColor": "#0F2A5C" },
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F2A5C"
+    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "de.frankfurt.mainsam",
@@ -26,17 +30,39 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "CAMERA", "NFC"],
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "NFC"
+      ],
       "predictiveBackGestureEnabled": false
     },
-    "web": { "favicon": "./assets/favicon.png", "bundler": "metro", "output": "single" },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
     "plugins": [
       "expo-router",
-      ["expo-location", { "locationWhenInUsePermission": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt." }],
-      ["expo-camera", { "cameraPermission": "Zum Scannen von QR-Codes und für Regal-Fotos." }],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Zum Scannen von QR-Codes und für Regal-Fotos."
+        }
+      ],
       "expo-localization",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-video"
     ],
-    "experiments": { "typedRoutes": false }
+    "experiments": {
+      "typedRoutes": false
+    }
   }
 }

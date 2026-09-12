@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
-import Chameleon from '@/components/Chameleon';
+import { ChamiClip, ChamiMascot } from '@/components/ChamiMascot';
 import { FesLogo } from '@/components/FesLogo';
 import { Appear, Button, Card, Ring, SectionTitle, T, Tag, haptic } from '@/components/ui';
 import { BingoSheet } from '@/components/BingoSheet';
@@ -20,11 +20,16 @@ import { BINGO, bingoIndexFor, dayKey } from '@/data/fes';
 export default function Act() {
   const router = useRouter();
   const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
-  const { setCtx, mood } = useUI();
+  const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
-  const [poke, setPoke] = useState(0);
+  const [celebrating, setCelebrating] = useState(false);
   const [showAll, setShowAll] = useState(false);
   useEffect(() => { setCtx('clean'); }, []);
+  const seen = React.useRef(ledger.length);
+  useEffect(() => {
+    if (ledger.length > seen.current) setCelebrating(true);
+    seen.current = ledger.length;
+  }, [ledger.length]);
 
   const st = chameleonStage(ledger);
   const wk = weekStats(ledger);
@@ -67,10 +72,9 @@ export default function Act() {
       <Appear delay={60}>
         <Card style={{ marginTop: S.lg, overflow: 'hidden', paddingVertical: 12 }}>
           <LinearGradient colors={[C.clean + '18', '#fff']} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Pressable onPress={() => { haptic(); setPoke((p) => p + 1); }}>
-              <Chameleon color={C.clean} size={140} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} />
-            </Pressable>
+          {celebrating && <ChamiClip onDone={() => setCelebrating(false)} />}
+          <View style={{ flexDirection: 'row', alignItems: 'center', display: celebrating ? 'none' : 'flex' }}>
+            <ChamiMascot size={140} onPress={() => { haptic(); setCelebrating(true); }} />
             <View style={{ flex: 1, paddingLeft: 4 }}>
               <Text style={T.h3}>{chameleonName} · {st.label}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 10 }}>
