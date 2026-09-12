@@ -11,6 +11,7 @@ const CLIPS = {
   clean: { src: require('../../assets/chami-celebrate.mp4'), ratio: 848 / 480 },
   food: { src: require('../../assets/chami-food.mp4'), ratio: 1 },
   cup: { src: require('../../assets/chami-cup.mp4'), ratio: 1 },
+  ride: { src: require('../../assets/chami-ride.mp4'), ratio: 848 / 480 },
 } as const;
 export type ClipName = keyof typeof CLIPS;
 
@@ -156,12 +157,15 @@ export function CelebrationOverlay({
   open,
   points,
   duplicate,
+  pending,
   clip = 'clean',
   onClose,
 }: {
   open: boolean;
   points?: number;
   duplicate?: boolean;
+  /** Gutschrift wartet auf eine Bestätigung, statt am Tagesdeckel zu hängen. */
+  pending?: boolean;
   clip?: ClipName;
   onClose: () => void;
 }) {
@@ -202,7 +206,11 @@ export function CelebrationOverlay({
             {duplicate ? (
               <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Diese Challenge zählt einmal pro Tag. Morgen wieder.</Text>
             ) : earned > 0 ? null : (
-              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Die Punkte kommen, sobald die Teilnahme bestätigt ist.</Text>
+              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>
+                {pending
+                  ? 'Die Punkte kommen, sobald die Teilnahme bestätigt ist.'
+                  : 'Für heute ist der Deckel in dieser Kategorie erreicht. Morgen zählt es wieder voll.'}
+              </Text>
             )}
 
             <Animated.View

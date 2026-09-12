@@ -85,7 +85,7 @@ export function timeOptions() {
  * `topic` passt den Tipp zum Bereich: clean (FES), food (Foodsharing), cup (Mehrweg).
  * Ohne topic passt der Tipp überall.
  */
-export const FUN_FACTS: { icon: string; label: string; text: string; source?: string; topic?: 'clean' | 'food' | 'cup' }[] = [
+export const FUN_FACTS: { icon: string; label: string; text: string; source?: string; topic?: 'clean' | 'food' | 'cup' | 'ride' }[] = [
   { icon: '🚬', label: 'Wusstest du?', text: 'Eine Kippe belastet bis zu 40 Liter Wasser.', source: 'Umweltbundesamt', topic: 'clean' },
   { icon: '🌱', label: 'Tipp', text: 'Bioabfall in Papier wickeln, nie in Plastik.', topic: 'clean' },
   { icon: '🍕', label: 'Trenn-Tipp', text: 'Pizzakarton: Deckel ins Altpapier, fettiger Boden in den Restmüll.', topic: 'clean' },
@@ -106,4 +106,8 @@ export const FUN_FACTS: { icon: string; label: string; text: string; source?: st
   { icon: '🍽️', label: 'Wusstest du?', text: 'Größere Gastrobetriebe müssen Mehrweg zur Wahl anbieten.', source: 'Verpackungsgesetz', topic: 'cup' },
   { icon: '⏱️', label: 'Tipp', text: 'Schale früh zurückbringen, dann ist sie schneller wieder im Umlauf.', topic: 'cup' },
   { icon: '🎒', label: 'Tipp', text: 'Falt-Box in der Tasche: Reste vom Essen gehen nicht in Einweg.', topic: 'cup' },
+  { icon: '🚋', label: 'Wusstest du?', text: 'Eine Bahnfahrt spart gegenüber dem Auto rund zwei Drittel CO₂ je Kilometer.', source: 'UBA-Richtwerte', topic: 'ride' },
+  { icon: '🚲', label: 'Tipp', text: 'Unter 2 km ist das Rad meist schneller als Auto plus Parkplatzsuche.', topic: 'ride' },
+  { icon: '🎫', label: 'Tipp', text: 'Deutschlandticket gilt im ganzen RMV, auch für spontane Umwege.', topic: 'ride' },
+  { icon: '🚏', label: 'Wusstest du?', text: 'Umsteigen zählt als eine Fahrt, solange du in der Verbindung bleibst.', topic: 'ride' },
 ];
