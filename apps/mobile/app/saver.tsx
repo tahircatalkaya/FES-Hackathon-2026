@@ -74,7 +74,7 @@ export default function Saver() {
               <Text style={[T.h2, { color: '#fff' }]}>{isVerified ? 'Verifizierter Saver' : 'Noch nicht verifiziert'}</Text>
               <Text style={[T.small, { color: '#ffffffcc' }]}>Saver werden Leute, die den Prozess durchlaufen haben: Quiz, drei Einführungsabholungen, Freigabe.</Text>
             </View>
-            <Chameleon color="#fff" size={90} branch={false} mood={isVerified ? 'excited' : 'thinking'} />
+            <Chameleon pose={isVerified ? 'backpack' : 'think'} size={90} />
           </Row>
         </Card>
       </Appear>

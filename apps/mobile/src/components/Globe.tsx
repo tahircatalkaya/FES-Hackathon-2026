@@ -41,7 +41,7 @@ export default function Globe({ km, size = 220, color = C.community, label }: { 
           <Circle cx={size * 0.35} cy={size * 0.3} r={r * 0.5} fill="#ffffff" opacity={0.08} />
         </Svg>
       </View>
-      <View style={{ position: 'absolute', top: -6, left: size / 2 - 40 }}><Chameleon color={color} size={80} branch={false} lookX={0.8} /></View>
+      <View style={{ position: 'absolute', top: -6, left: size / 2 - 40 }}><Chameleon pose="cheer" size={80} /></View>
       <View style={{ position: 'absolute', bottom: -4, alignItems: 'center' }}>
         <Text style={{ fontWeight: '900', fontSize: 20, color: C.ink }}>{km.toLocaleString('de-DE', { maximumFractionDigits: 0 })} km</Text>
         <Text style={{ fontSize: 12, color: C.muted, fontWeight: '700' }}>{label ?? `${laps.toFixed(2)}× um die Erde`}</Text>

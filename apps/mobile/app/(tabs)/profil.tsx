@@ -43,7 +43,7 @@ export default function Profile() {
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg }}>
           <Row>
-            <Chameleon color={col} size={110} stage={st.stage as any} />
+            <Chameleon pose="cool" size={110} />
             <View style={{ flex: 1 }}>
               {editName ? (
                 <Row><TextInput value={nm} onChangeText={setNm} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, padding: 8, fontWeight: '800', color: C.ink }} maxLength={24} /><Button label="OK" color={col} onPress={() => { s.setProfile({ name: nm.trim() || s.name }); setEditName(false); }} style={{ paddingVertical: 8, paddingHorizontal: 12 }} /></Row>

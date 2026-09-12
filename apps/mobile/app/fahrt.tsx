@@ -113,7 +113,7 @@ export default function Ride() {
                 <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>Antippen, einsteigen, aussteigen. Den Rest prüft die App.</Text>
                 <Text style={[T.small, { color: '#ffffffcc', marginTop: 6 }]}>Standort nur während der Fahrt, nur auf deinem Gerät.</Text>
               </View>
-              <Chameleon color="#fff" size={96} branch={false} lookX={-0.6} />
+              <Chameleon pose="run" size={96} />
             </View>
           </Card>
         </Appear>
@@ -169,7 +169,7 @@ export default function Ride() {
         <View style={{ position: 'absolute', left: S.lg, right: S.lg, bottom: insets.bottom + 16 }}>
           <Card style={{ gap: 10 }}>
             <Row>
-              <Chameleon color={col} size={70} lookX={0.8} mood="thinking" />
+              <Chameleon pose="think" size={70} />
               <View style={{ flex: 1 }}>
                 <Text style={T.h3}>{station?.name ?? 'Unterwegs'} {tag ? `· ${tag.line}` : ''}</Text>
                 <Text style={T.small}>{Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, '0')} · {tracker.points.length} GPS-Punkte · nur auf dem Gerät</Text>
@@ -237,7 +237,7 @@ export default function Ride() {
       ) : (
         <Appear>
           <Card style={{ borderLeftWidth: 6, borderLeftColor: C.muted }}>
-            <Row><Chameleon color={C.muted} size={80} mood="thinking" /><View style={{ flex: 1 }}><Text style={T.h3}>Nicht zuordenbar</Text><Text style={T.small}>{result?.reason}</Text></View></Row>
+            <Row><Chameleon pose="shock" size={80} /><View style={{ flex: 1 }}><Text style={T.h3}>Nicht zuordenbar</Text><Text style={T.small}>{result?.reason}</Text></View></Row>
             <Divider />
             <Text style={T.body}>Das ist Absicht: Eine Autofahrt neben der Linie, eine zu kurze Spur oder eine Fahrt außerhalb des Fahrplans bekommen keine Punkte. Du kannst die Linie manuell angeben (Nachweis „selbst angegeben“, ×0,3).</Text>
             <StatusBadge status="nicht zuordenbar" />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { ChamiMascot } from './ChamiMascot';
+import { ChamiMascot, type Pose } from './ChamiMascot';
 
 export function shade(hex: string, amt: number) {
   const h = hex.replace('#', '');
@@ -20,17 +20,19 @@ interface Props {
   style?: any;
   branch?: boolean;
   poke?: number;
+  /** Pose aus dem Maskottchen-Sheet, passend zum Screen gewählt. */
+  pose?: Pose;
 }
 
 /**
- * Chami, das Maskottchen. Es gibt nur noch eine Figur in der App: die gezeichnete Vorlage
- * aus assets/chami.png. Farbe, Stimmung und Blickrichtung sind im Bild festgelegt, die alten
- * Props bleiben nur erhalten, damit die Aufrufstellen unverändert bleiben.
+ * Chami, das Maskottchen. Es gibt nur noch eine Figur in der App: die gezeichneten Posen
+ * aus assets/chami. Farbe und Blickrichtung stecken im Bild, die alten Props bleiben nur
+ * erhalten, damit die Aufrufstellen unverändert bleiben.
  */
-export default function Chameleon({ size = 180, style }: Props) {
+export default function Chameleon({ size = 180, style, pose = 'stand' }: Props) {
   return (
     <View style={[{ alignItems: 'center', justifyContent: 'center' }, style]}>
-      <ChamiMascot size={size} />
+      <ChamiMascot pose={pose} size={size} />
     </View>
   );
 }

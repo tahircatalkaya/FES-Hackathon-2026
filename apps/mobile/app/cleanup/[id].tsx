@@ -130,7 +130,7 @@ function CleanupList() {
               <Text style={[T.label, { color: '#ffffffaa' }]}>Mehr als eine Meldeplattform</Text>
               <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>Organisieren, gegenseitig bestätigen, richtig entsorgen, lernen.</Text>
             </View>
-            <Chameleon color="#fff" size={90} branch={false} lookX={-0.4} />
+            <Chameleon pose="leaf" size={90} />
           </Row>
         </Card>
       </Appear>

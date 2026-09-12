@@ -51,7 +51,7 @@ export default function Impact() {
               </Row>
               <Row style={{ gap: 6 }}><Tag label={t('impact.estimated')} color="#fff" /><Tag label="Formel antippbar" color="#fff" /></Row>
             </View>
-            <Chameleon color="#fff" size={110} branch={false} mood={mood} stage={st.stage as any} />
+            <Chameleon pose="globe" size={110} />
           </Row>
           <Divider />
           <Row style={{ gap: 8 }}>
@@ -65,7 +65,7 @@ export default function Impact() {
       {empty ? (
         <Appear delay={100}>
           <Card style={{ marginTop: 14, alignItems: 'center', paddingVertical: 24 }}>
-            <Chameleon color={col} size={160} mood="sleepy" />
+            <Chameleon pose="calm" size={160} />
             <Text style={[T.h3, { marginTop: 8 }]}>Noch nichts erfasst</Text>
             <Text style={[T.body, { textAlign: 'center' }]}>Starte eine Fahrt, melde ein Regal oder bring eine Schale zurück. Jede Gutschrift erklärt sich selbst.</Text>
             <Pressable onPress={() => router.push('/handeln')} style={{ marginTop: 12 }}><Text style={{ color: col, fontWeight: '800' }}>Zu den Aktionen ›</Text></Pressable>
@@ -137,7 +137,7 @@ export default function Impact() {
           <Row style={{ gap: 12 }}>
             {[1, 2, 3, 4].map((s) => (
               <View key={s} style={{ flex: 1, alignItems: 'center', opacity: s <= st.stage ? 1 : 0.35 }}>
-                <Chameleon color={s <= st.stage ? col : C.muted} size={64} stage={s as any} branch={false} />
+                <Chameleon pose="stand" size={64} style={{ opacity: s <= st.stage ? 1 : 0.35 }} />
                 <Text style={[T.small, { fontWeight: '700', color: s === st.stage ? C.ink : C.muted }]}>{['Schlüpfling', 'Entdecker', 'Kletterer', 'Stadt'][s - 1]}</Text>
               </View>
             ))}

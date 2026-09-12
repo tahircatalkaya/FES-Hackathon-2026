@@ -26,7 +26,7 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
     return (
       <Animated.View entering={FadeInUp.springify().damping(14)} exiting={FadeOutUp} style={{ position: 'absolute', top: 54, left: S.lg, right: S.lg, zIndex: 50 }}>
         <Pressable onPress={() => { setA(null); onWhy(a); }} style={[{ backgroundColor: '#fff', borderRadius: R.lg, padding: S.md, flexDirection: 'row', alignItems: 'center', gap: 12, borderLeftWidth: 6, borderLeftColor: a.duplicate ? C.muted : color }, shadow(3)]}>
-          <Chameleon color={a.duplicate ? C.muted : color} size={54} branch={false} mood={a.duplicate ? 'sleepy' : 'happy'} />
+          <Chameleon pose={a.duplicate ? 'calm' : 'thumbs'} size={54} />
           <View style={{ flex: 1 }}>
             <Text style={T.h3} numberOfLines={1}>{a.duplicate ? 'Schon gewertet' : 'Danke!'}</Text>
             <Text style={T.small} numberOfLines={2}>{a.duplicate ? 'Keine Doppelbelohnung. Tippen für Details.' : `${a.title} · ohne Punkte, aber gezählt. Tippen: warum.`}</Text>
@@ -43,7 +43,7 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
         <Leaves color={color} />
         <Pop>
           <View style={[{ backgroundColor: '#fff', borderRadius: R.xl, padding: S.xl, alignItems: 'center', maxWidth: 420, width: '100%', alignSelf: 'center' }, shadow(3)]}>
-            <Chameleon color={color} size={170} mood="excited" />
+            <Chameleon pose="cheer" size={170} />
             <Text style={[T.label, { marginTop: 4 }]}>Geschafft</Text>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
               <Text style={{ fontSize: 56, fontWeight: '900', color, letterSpacing: -2 }}>+</Text>

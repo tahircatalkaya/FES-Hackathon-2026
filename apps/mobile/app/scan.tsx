@@ -120,7 +120,7 @@ function ScanInner() {
         </View>
       ) : (
         <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
-          <Chameleon color={color} size={140} mood={done ? 'excited' : 'happy'} />
+          <Chameleon pose={done ? 'thumbs' : 'stand'} size={140} />
           <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>{done ?? (mode === 'litter' ? 'Tippe unten, wenn du etwas aufgehoben und richtig entsorgt hast.' : Platform.OS === 'web' ? 'Kamera-Scan läuft auf dem Handy. Hier: Code eingeben oder Demo.' : 'Kamera-Freigabe fehlt. Code eingeben oder Demo.')}</Text>
         </Card>
       )}

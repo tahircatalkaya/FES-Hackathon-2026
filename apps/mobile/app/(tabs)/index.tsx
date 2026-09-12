@@ -68,7 +68,7 @@ export default function Discover() {
         <LinearGradient colors={['rgba(246,245,239,0.96)', 'rgba(246,245,239,0)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 100 }} pointerEvents="none" />
         <View pointerEvents="box-none" style={{ position: 'absolute', top: insets.top + 6, left: S.lg, right: S.lg }}>
           <View pointerEvents="box-none" style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Pressable onPress={() => router.push('/handeln')}><Chameleon color={ctxColor} size={64} mood={mood} lookX={0.7} /></Pressable>
+            <Pressable onPress={() => router.push('/handeln')}><Chameleon pose="wave" size={64} /></Pressable>
             <View style={{ flex: 1 }}>
               <Text style={[T.h2]} numberOfLines={1}>{t('home.greeting')} {name || 'du'} 👋</Text>
               <Text style={T.small}>{t('home.nearby')}{isDemo ? ' · Bockenheimer Warte' : ''}</Text>
