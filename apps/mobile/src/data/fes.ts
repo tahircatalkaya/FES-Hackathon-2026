@@ -1,4 +1,4 @@
-/** Tages-Challenges für das Mülleimer-Bingo. Ein Feld je Kalendertag, 16 Felder im Umlauf. */
+/** Tages-Challenges für das Mülleimer-Bingo. Ein Feld je Kalendertag, neun Felder im Umlauf. */
 export interface BingoChallenge { icon: string; title: string; short: string }
 
 export const BINGO: BingoChallenge[] = [
@@ -8,16 +8,9 @@ export const BINGO: BingoChallenge[] = [
   { icon: '🥡', title: 'Fast-Food-Verpackung wegräumen', short: 'Verpackung' },
   { icon: '📦', title: 'Karton vom Gehweg räumen', short: 'Karton' },
   { icon: '📰', title: 'Zeitung oder Werbung aufheben', short: 'Papier' },
-  { icon: '🃏', title: 'Joker: was auch immer herumliegt', short: 'Joker' },
   { icon: '🥤', title: 'Trinkbecher aufheben', short: 'Becher' },
-  { icon: '🍫', title: 'Schokoriegel-Papier aufheben', short: 'Riegel' },
   { icon: '🧃', title: 'Saftpäckchen entsorgen', short: 'Saft' },
-  { icon: '♻️', title: 'Pfandflasche in den Pfandring stellen', short: 'Pfandring' },
-  { icon: '🍬', title: 'Bonbon- oder Kaugummipapier aufheben', short: 'Bonbon' },
-  { icon: '🥢', title: 'Einwegbesteck oder Strohhalm aufheben', short: 'Besteck' },
-  { icon: '🐕', title: 'Hundebeutel richtig entsorgen', short: 'Beutel' },
   { icon: '🧾', title: 'Kassenbon aufheben', short: 'Bon' },
-  { icon: '🌿', title: 'Grünabfall richtig entsorgen', short: 'Grünes' },
 ];
 
 /** Tag → Feld. Über den Tag im Jahr, damit jeder Kalendertag genau ein Feld trifft. */

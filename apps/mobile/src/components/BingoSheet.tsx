@@ -8,7 +8,7 @@ import { BINGO, bingoIndexFor, dayKey } from '@/data/fes';
 import { useStore } from '@/store';
 import { Button, Sheet, T, haptic } from './ui';
 
-/** Bingo-Karte: 16 Felder, ein Feld je Kalendertag. Melden braucht die Entsorgung an einem Mülleimer. */
+/** Bingo-Karte: 3×3 Felder, ein Feld je Kalendertag. Melden braucht die Entsorgung an einem Mülleimer. */
 export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: { points: number; duplicate: boolean; status: string }) => void }) {
   const { ledger, addAward } = useStore();
   const [before, setBefore] = useState<string | null>(null);
@@ -68,10 +68,10 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
         {BINGO.map((c, i) => {
           const done = filled.has(i);
           return (
-            <Animated.View key={c.short} entering={FadeIn.delay(i * 25)} style={{ width: '25%', padding: 4 }}>
+            <Animated.View key={c.short} entering={FadeIn.delay(i * 25)} style={{ width: '33.333%', padding: 5 }}>
               <View style={{ aspectRatio: 1, borderRadius: R.sm, borderWidth: i === today ? 2.5 : 1.5, borderColor: i === today ? C.clean : done ? C.leaf : C.line, backgroundColor: done ? C.leaf + '1F' : '#fff', alignItems: 'center', justifyContent: 'center', opacity: done || i === today ? 1 : 0.5 }}>
-                <Text style={{ fontSize: 22 }}>{c.icon}</Text>
-                <Text style={{ fontSize: 9, fontWeight: '800', color: done ? '#3F7A25' : C.muted, marginTop: 2 }} numberOfLines={1}>{c.short}</Text>
+                <Text style={{ fontSize: 30 }}>{c.icon}</Text>
+                <Text style={{ fontSize: 11, fontWeight: '800', color: done ? '#3F7A25' : C.muted, marginTop: 3 }} numberOfLines={1}>{c.short}</Text>
                 {done && (
                   <Animated.View entering={ZoomIn} style={{ position: 'absolute', top: -5, right: -5, width: 20, height: 20, borderRadius: 10, backgroundColor: C.success, alignItems: 'center', justifyContent: 'center' }}>
                     <Ionicons name="checkmark" size={13} color="#fff" />
