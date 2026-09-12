@@ -111,6 +111,7 @@ const copy = {
     quizCard: "FES-Wissen",
     quizCardSub: "5 Fragen zu Müll, Mehrweg und Mobilität.",
     bingoDoneToday: "Heute erledigt",
+    bingoShow: "Bingo-Karte ansehen",
     bioCheck: "Biotonnen-Check",
     bioCheckSub: "Foto deiner grünen Tonne — der Check erkennt Fehlwürfe.",
     bioCheckOpen: "Tonne prüfen",
@@ -278,6 +279,7 @@ const copy = {
     quizCard: "FES knowledge",
     quizCardSub: "5 questions on waste, reuse and mobility.",
     bingoDoneToday: "Done today",
+    bingoShow: "View bingo card",
     bioCheck: "Organic bin check",
     bioCheckSub: "Photograph your green bin — the check spots wrong items.",
     bioCheckOpen: "Check the bin",
@@ -597,11 +599,16 @@ function bingoStreak(dates) {
   }
   return streak;
 }
-function bingoCard() {
+function bingoState() {
   const dates = bingoDates();
-  const todayIndex = challengeIndexForDate(todayBerlin());
-  const done = new Set([...dates].map(challengeIndexForDate));
-  const doneToday = dates.has(todayBerlin());
+  return {
+    todayIndex: challengeIndexForDate(todayBerlin()),
+    done: new Set([...dates].map(challengeIndexForDate)),
+    doneToday: dates.has(todayBerlin()),
+  };
+}
+function bingoGrid() {
+  const { todayIndex, done } = bingoState();
   const texts = BIN_CHALLENGES[state.lang];
   const pop = state.bingoPop;
   state.bingoPop = false;
@@ -614,7 +621,15 @@ function bingoCard() {
     if (isToday && pop) classes.push("pop");
     return `<span class="${classes.join(" ")}" style="--i:${i}" title="${esc(texts[i])}"><span class="bingo-emoji" aria-hidden="true">${BIN_CHALLENGES.icons[i]}</span><span class="bingo-label">${esc(BIN_CHALLENGES.short[state.lang][i])}</span>${isDone ? '<span class="bingo-check" aria-hidden="true">✓</span>' : ""}</span>`;
   }).join("");
-  return `<section class="card tint"><h3>${t("binBingo")}</h3><div class="challenge-hero"><span class="challenge-emoji" aria-hidden="true">${BIN_CHALLENGES.icons[todayIndex]}</span><div><span class="quiet">${t("todayChallenge")}</span><strong>${esc(texts[todayIndex])}</strong></div></div><div class="bingo-grid" role="img" aria-label="${t("binBingo")}">${cells}</div><div class="progress"><span style="width:${(done.size / 16) * 100}%"></span></div><p class="quiet">${done.size} / 16 ${t("bingoFields")}</p>${doneToday ? `<p class="done-pill">✓ ${t("bingoDoneToday")}</p>` : button("binBingoOpen", "bin_bingo_open", "block")}</section>`;
+  return `<div class="bingo-grid" role="img" aria-label="${t("binBingo")}">${cells}</div><div class="progress"><span style="width:${(done.size / 16) * 100}%"></span></div><p class="quiet">${done.size} / 16 ${t("bingoFields")}</p>`;
+}
+function bingoCard() {
+  const { todayIndex, done, doneToday } = bingoState();
+  const texts = BIN_CHALLENGES[state.lang];
+  return `<section class="card tint"><div class="card-head"><h3>${t("binBingo")}</h3><span class="pill-count">${done.size}/16</span></div><button class="challenge-button ${doneToday ? "done" : ""}" data-action="bin_bingo_open"><span class="challenge-icon" aria-hidden="true">${BIN_CHALLENGES.icons[todayIndex]}</span><span class="challenge-text"><small>${t(doneToday ? "bingoDoneToday" : "todayChallenge")}</small><strong>${esc(texts[todayIndex])}</strong></span><span class="challenge-arrow" aria-hidden="true">${doneToday ? "✓" : "›"}</span></button><div class="progress"><span style="width:${(done.size / 16) * 100}%"></span></div><p class="quiet">${done.size} / 16 ${t("bingoFields")}</p></section>`;
+}
+function quizCard() {
+  return `<section class="card"><h3>${t("quizCard")}</h3><p>${t("quizCardSub")}</p>${button("learn", "quiz", "block")}</section>`;
 }
 const ACTIONS_DEMO = [
   {
@@ -889,13 +904,16 @@ function bioDialog() {
 function together() {
   const streak = bingoStreak(bingoDates());
   const next = joinedAction();
-  return `<img class="fes-mark" src="/fes-logo.svg" alt="FES" title="${t("sponsor")}"><section class="hero"><div><h1>${t("fesTitle")}</h1><div class="streak"><span aria-hidden="true">🔥</span><strong>${streak}</strong> ${t(streak === 1 ? "streakLabelOne" : "streakLabel")}</div>${next ? `<p class="next-action"><span aria-hidden="true">📍</span> ${t("nextAction")}: <strong>${esc(next.when)} · ${esc(next.place)}</strong></p>` : ""}${button("ctaStart", "action_open", "block")}</div><div class="world"><div class="planet"><img src="/gecko.svg" alt="Gecko"></div></div></section><div class="twocol">${bingoCard()}<div class="stack">${bioCard()}<section class="card"><h3>${t("quizCard")}</h3><p>${t("quizCardSub")}</p>${button("learn", "quiz", "block")}</section>${actionsCard()}</div></div>`;
+  return `<img class="fes-mark" src="/fes-logo.svg" alt="FES" title="${t("sponsor")}"><section class="hero"><div><h1>${t("fesTitle")}</h1><div class="streak"><span aria-hidden="true">🔥</span><strong>${streak}</strong> ${t(streak === 1 ? "streakLabelOne" : "streakLabel")}</div>${next ? `<p class="next-action"><span aria-hidden="true">📍</span> ${t("nextAction")}: <strong>${esc(next.when)} · ${esc(next.place)}</strong></p>` : ""}${button("ctaStart", "action_open", "block")}</div><div class="world"><div class="planet"><img src="/gecko.svg" alt="Gecko"></div></div></section><div class="cardflow">${bioCard()}${bingoCard()}${quizCard()}${actionsCard()}</div>`;
 }
 function binBingoDialog() {
   state.dialog = "bin_bingo";
   const index = challengeIndexForDate(todayBerlin());
+  const form = bingoState().doneToday
+    ? `<p class="done-pill">✓ ${t("bingoDoneToday")}</p>`
+    : `<div class="photo-row"><label class="photo-tile" for="bingo-before"><input type="file" accept="image/*" capture="environment" id="bingo-before" data-preview="bingo-before-preview"><img id="bingo-before-preview" class="photo-preview" hidden alt=""><span class="photo-tile-inner"><span class="photo-icon" aria-hidden="true">📷</span>${t("beforePhoto")}</span></label><label class="photo-tile" for="bingo-after"><input type="file" accept="image/*" capture="environment" id="bingo-after" data-preview="bingo-after-preview"><img id="bingo-after-preview" class="photo-preview" hidden alt=""><span class="photo-tile-inner"><span class="photo-icon" aria-hidden="true">✨</span>${t("afterPhoto")}</span></label></div><p class="quiet">${t("binBingoPhotoNote")}</p><label class="check-tile"><input type="checkbox" id="bingo-confirm"><span class="check-box" aria-hidden="true"></span><span>${t("binBingoConfirm")}</span></label>${button("submitBingo", "bin_bingo", "block")}<p id="bingo-error" class="quiet"></p>`;
   showDialog(
-    `<h2>${t("binBingo")}</h2><div class="challenge-hero"><span class="challenge-emoji" aria-hidden="true">${BIN_CHALLENGES.icons[index]}</span><div><span class="quiet">${t("todayChallenge")}</span><strong>${esc(BIN_CHALLENGES[state.lang][index])}</strong></div></div><div class="photo-row"><label class="photo-tile" for="bingo-before"><input type="file" accept="image/*" capture="environment" id="bingo-before" data-preview="bingo-before-preview"><img id="bingo-before-preview" class="photo-preview" hidden alt=""><span class="photo-tile-inner"><span class="photo-icon" aria-hidden="true">📷</span>${t("beforePhoto")}</span></label><label class="photo-tile" for="bingo-after"><input type="file" accept="image/*" capture="environment" id="bingo-after" data-preview="bingo-after-preview"><img id="bingo-after-preview" class="photo-preview" hidden alt=""><span class="photo-tile-inner"><span class="photo-icon" aria-hidden="true">✨</span>${t("afterPhoto")}</span></label></div><p class="quiet">${t("binBingoPhotoNote")}</p><label class="check-tile"><input type="checkbox" id="bingo-confirm"><span class="check-box" aria-hidden="true"></span><span>${t("binBingoConfirm")}</span></label>${button("submitBingo", "bin_bingo", "block")}<p id="bingo-error" class="quiet"></p>`,
+    `<h2>${t("binBingo")}</h2><div class="challenge-hero"><span class="challenge-emoji" aria-hidden="true">${BIN_CHALLENGES.icons[index]}</span><div><span class="quiet">${t("todayChallenge")}</span><strong>${esc(BIN_CHALLENGES[state.lang][index])}</strong></div></div>${bingoGrid()}${form}`,
   );
 }
 function food() {
@@ -1147,8 +1165,8 @@ async function submit(fixture, el) {
     if (fixture === "bin_bingo" && !result.duplicate) state.bingoPop = true;
     render();
     if (!result.duplicate && result.points_added > 0) celebrate();
-    if (fixture === "bin_bingo" || fixture === "bio_check")
-      document.querySelector("#account").close();
+    if (fixture === "bin_bingo") binBingoDialog();
+    if (fixture === "bio_check") document.querySelector("#account").close();
   } catch {
     toast(t("error"));
   } finally {

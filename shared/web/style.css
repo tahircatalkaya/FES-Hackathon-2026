@@ -745,6 +745,94 @@ summary {
     transition: none !important;
   }
 }
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.card-head h3 {
+  margin: 0;
+}
+.pill-count {
+  background: #fff;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+}
+button.challenge-button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  color: inherit;
+  border: 2px solid transparent;
+  border-radius: 18px;
+  padding: 13px;
+  box-shadow: none;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+button.challenge-button:hover {
+  filter: none;
+  border-color: #c9d9ea;
+  transform: translateY(-2px);
+}
+button.challenge-button:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+button.challenge-button.done {
+  background: #f6fcf1;
+  border-color: #8fd45a;
+}
+.challenge-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: #eef3f9;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.challenge-button.done .challenge-icon {
+  background: #e4f7d4;
+}
+.challenge-text {
+  flex: 1;
+  min-width: 0;
+}
+.challenge-text small {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7d93;
+  margin-bottom: 2px;
+}
+.challenge-button.done .challenge-text small {
+  color: #3f7a25;
+}
+.challenge-text strong {
+  font-size: 16px;
+  line-height: 1.25;
+}
+.challenge-arrow {
+  font-size: 22px;
+  font-weight: 800;
+  color: #9fb0c4;
+  flex-shrink: 0;
+}
+.challenge-button.done .challenge-arrow {
+  color: #4caf37;
+}
 .challenge-hero {
   display: flex;
   align-items: center;
@@ -786,10 +874,15 @@ summary {
   height: auto;
   margin: 0 0 20px;
 }
-.stack {
-  display: grid;
-  gap: 24px;
-  align-content: start;
+.cardflow {
+  columns: 2;
+  column-gap: 24px;
+}
+.cardflow > section {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 24px;
+  break-inside: avoid;
 }
 .score {
   display: flex;
@@ -1223,6 +1316,9 @@ button.block {
   }
   .twocol {
     grid-template-columns: 1fr;
+  }
+  .cardflow {
+    columns: 1;
   }
   .stats {
     gap: 10px;
