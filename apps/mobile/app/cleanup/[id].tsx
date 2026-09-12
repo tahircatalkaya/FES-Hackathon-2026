@@ -156,7 +156,7 @@ function CleanupList() {
         })}
         <Card onPress={() => { const k = `organize:${Date.now()}`; showToast(addAward({ type: 'clean.organize', partner: 'fes', status: 'ausstehend', key: k, at: Date.now(), title: 'Eigene Aktion angelegt', meta: { source: 'app', evidence: ['Aktion angelegt, FES-Material angefragt', 'Punkte folgen nach FES-Bestätigung der Sackabholung'] } })); }} style={{ borderStyle: 'dashed', borderWidth: 2, borderColor: col, backgroundColor: 'transparent' }}>
           <Text style={[T.h3, { color: col }]}>+ Eigene Aktion anlegen</Text>
-          <Text style={T.small}>Gebiet, Zeitfenster, Material von FES. 100 Punkte nach FES-Bestätigung.</Text>
+          <Text style={T.small}>Gebiet, Zeitfenster, Material von FES. 40 Punkte nach FES-Bestätigung.</Text>
         </Card>
       </View>
       {past.length > 0 && <><Text style={[T.h2, { marginTop: S.xl }]}>Vergangen</Text>{past.map((c) => <Card key={c.id} style={{ marginTop: 10, opacity: 0.8 }}><Text style={T.h3}>{c.title}</Text><Text style={T.small}>{c.participants} Personen · {c.description}</Text><StatusBadge status="bestätigt" small /></Card>)}</>}

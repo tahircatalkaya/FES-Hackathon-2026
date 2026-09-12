@@ -3,30 +3,35 @@ import { emptyImpact, impactFor } from './impact.ts';
 
 /** Basispunkte je Aktion (vor Multiplikator). Siehe konzept/02-PUNKTE-UND-ANTI-FEHLANREIZ.md */
 export const BASE: Record<ActionType, number> = {
-  'ride.checkin': 10,
+  // Mobilität: die Entscheidung mit dem größten Hebel, deshalb die höchsten Beträge.
+  'ride.checkin': 20,
   'ride.transit': 0,
-  'ride.active': 10,
-  'ride.sharing_feeder': 10,
+  'ride.active': 12,
+  'ride.sharing_feeder': 8,
   'ride.scooter_short': 0,
-  'ride.correction': 5,
-  'reuse.return': 30,
-  'reuse.return_fast': 10,
-  'food.stock': 40,
-  'food.report': 15,
-  'food.offer': 25,
-  'food.distribute': 60,
-  'food.pickup': 15,
-  'food.pickup_for_other': 15,
-  'food.reservation_kept': 5,
-  'clean.participate': 60,
-  'clean.organize': 100,
-  'clean.report': 25,
-  'clean.bin_checkin': 5,
-  'clean.bin_quality': 15,
-  'clean.quiz': 5,
+  'ride.correction': 3,
+  // Mehrweg: kleiner Aufwand, kleiner Betrag. Eine Rückgabe ist kein halber Tag.
+  'reuse.return': 8,
+  'reuse.return_fast': 3,
+  // Foodsharing: ehrenamtliche Arbeit zählt mehr als das Abholen für sich selbst.
+  'food.stock': 15,
+  'food.report': 5,
+  'food.offer': 10,
+  'food.distribute': 25,
+  'food.pickup': 5,
+  'food.pickup_for_other': 5,
+  'food.reservation_kept': 2,
+  // FES: Organisieren und Teilnehmen sind Tagesereignisse, die Tages-Challenges Kleinvieh.
+  'clean.participate': 25,
+  'clean.organize': 40,
+  'clean.report': 10,
+  'clean.bin_checkin': 3,
+  'clean.bin_quality': 5,
+  'clean.quiz': 2,
   'clean.litter_solo': 0,
-  'rhythm.weekly_goal': 50,
-  'rhythm.four_weeks': 100,
+  // Rhythmus: liegt außerhalb des Tagesdeckels, sonst frisst ein guter Tag den Bonus.
+  'rhythm.weekly_goal': 25,
+  'rhythm.four_weeks': 50,
 };
 
 /**
@@ -41,7 +46,8 @@ export const DAILY_COUNT_CAP: Partial<Record<ActionType, number>> = {
   'ride.transit': 2,
   'ride.active': 2,
   'ride.sharing_feeder': 1,
-  'ride.correction': 3,
+  'ride.correction': 2,
+  'reuse.return': 3,
   'clean.bin_checkin': 3,
   'clean.bin_quality': 1,
   'clean.quiz': 3,
@@ -64,16 +70,22 @@ export const MULTIPLIER: Record<VerificationStatus, number> = {
 };
 
 export const DEGRESSION = [1, 0.6, 0.3, 0];
-export const DAILY_POINT_CAP = 150;
+export const DAILY_POINT_CAP = 50;
+
+/**
+ * Aktionen außerhalb des Tagesdeckels. Der Wochenbonus belohnt Regelmäßigkeit,
+ * er darf nicht daran scheitern, dass der Tag ohnehin voll war.
+ */
+export const CAP_EXEMPT = new Set<ActionType>(['rhythm.weekly_goal', 'rhythm.four_weeks']);
 
 export const WHY_BASE: Record<ActionType, string> = {
-  'ride.checkin': 'Check-in am Terminal. Fester Betrag für die Entscheidung, mit Bus und Bahn zu fahren.',
+  'ride.checkin': 'Check-in am Terminal. Fester Betrag für die Entscheidung, mit Bus und Bahn zu fahren. Der höchste Einzelbetrag der App.',
   'ride.transit': 'Fahrt geprüft und dem Fahrplan zugeordnet. Punkte gab es bereits beim Check-in, hier zählt der Impact.',
   'ride.active': 'Weg über 1 km zu Fuß oder mit dem Rad statt mit dem Auto.',
   'ride.sharing_feeder': 'Sharing-Fahrt als Zubringer zur Haltestelle, ersetzt eine Autofahrt.',
   'ride.scooter_short': 'Kurze E-Scooter-Fahrt ersetzt meistens Gehen, deshalb keine Punkte. Wir zeigen das ehrlich.',
   'ride.correction': 'Du hast eine falsche Zuordnung korrigiert. Das macht die Daten für alle besser.',
-  'reuse.return': 'Bestätigte Mehrweg-Rückgabe. Zurückbringen ist die Leistung, nicht Ausleihen.',
+  'reuse.return': 'Bestätigte Mehrweg-Rückgabe. Zurückbringen ist die Leistung, nicht Ausleihen. Kleiner Aufwand, kleiner Betrag.',
   'reuse.return_fast': 'Rückgabe innerhalb von 48 Stunden. Schneller Umlauf, mehr Nutzung je Behälter.',
   'food.stock': 'Du hast Lebensmittel eingestellt und damit ein Angebot für andere geschaffen.',
   'food.report': 'Regal-Status gemeldet. Andere fahren nicht umsonst hin.',
@@ -167,9 +179,9 @@ export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { ve
   }
 
   let points = countCapped ? 0 : flat ? base : Math.round(base * mult * deg);
-  const todayPoints = todays.reduce((s, l) => s + l.points, 0);
+  const todayPoints = todays.filter((l) => !CAP_EXEMPT.has(l.type)).reduce((s, l) => s + l.points, 0);
   let capped = 0;
-  if (todayPoints + points > DAILY_POINT_CAP) {
+  if (!CAP_EXEMPT.has(event.type) && todayPoints + points > DAILY_POINT_CAP) {
     capped = todayPoints + points - DAILY_POINT_CAP;
     points = Math.max(0, DAILY_POINT_CAP - todayPoints);
     reasons.push(`Harter Tagesdeckel von ${DAILY_POINT_CAP} Punkten: ${capped} Punkte verfallen. Gewohnheit schlägt Farmen.`);

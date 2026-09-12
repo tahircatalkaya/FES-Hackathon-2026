@@ -55,7 +55,7 @@ export default function Act() {
             <Pressable onPress={() => { haptic(); setPoke((p) => p + 1); }}><Chameleon color={C.home} size={150} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} /></Pressable>
             <View style={{ flex: 1, paddingLeft: 4 }}>
               <Text style={T.h3}>{chameleonName} · {st.label}</Text>
-              <Text style={[T.small, { marginBottom: 10 }]}>{st.next ? `Nächste Stufe: ${st.next}` : 'Höchste Stufe erreicht'}</Text>
+              <Text style={[T.small, { marginBottom: 10 }]}>{st.next ? `Noch ${st.next}` : 'Diamant erreicht'}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                 <Ring progress={wk.activeDays / wk.goal} size={70} stroke={9} color={C.leaf}>
                   <Text style={{ fontWeight: '900', fontSize: 16, color: C.ink }}>{wk.activeDays}/{wk.goal}</Text>
@@ -63,7 +63,7 @@ export default function Act() {
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontWeight: '800', color: C.ink }}>{t('week.goal')}</Text>
                   <Text style={T.small}>{wk.activeDays >= wk.goal ? 'Geschafft, Los gesichert 🎟️' : `${wk.goal - wk.activeDays} ${t('week.days')} fehlen`}</Text>
-                  <Text style={T.small}>Heute {todayPts}/150 Punkte</Text>
+                  <Text style={T.small}>Heute {todayPts}/50 Punkte</Text>
                 </View>
               </View>
             </View>
@@ -147,7 +147,7 @@ export default function Act() {
         <Appear delay={480}>
           <Card onPress={() => router.push('/melden')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 26 }}>📸</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Volle Tonne oder wilde Kippe melden</Text><Text style={T.small}>Foto, Ort, fertig. 25 Punkte.</Text></View>
+            <View style={{ flex: 1 }}><Text style={T.h3}>Volle Tonne oder wilde Kippe melden</Text><Text style={T.small}>Foto, Ort, fertig. 10 Punkte.</Text></View>
           </Card>
         </Appear>
         <Appear delay={540}>

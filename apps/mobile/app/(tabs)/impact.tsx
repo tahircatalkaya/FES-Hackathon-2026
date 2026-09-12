@@ -18,12 +18,16 @@ import { FRANKFURT_GOAL } from '@/data/mock';
 
 const WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
+/**
+ * Abzeichen nach gesammelten Punkten. Die Schwellen folgen dem Tagesdeckel von
+ * 50 Punkten: Bronze in der ersten Woche, Diamant erst nach Monaten.
+ */
 const MEDALS = [
-  { name: 'Bronze', points: 15, color: '#B87333' },
-  { name: 'Silber', points: 50, color: '#9DA5AE' },
-  { name: 'Gold', points: 100, color: '#D4A017' },
-  { name: 'Platin', points: 200, color: '#7A8C93' },
-  { name: 'Diamant', points: 350, color: '#52A9C7' },
+  { name: 'Bronze', points: 100, color: '#B87333' },
+  { name: 'Silber', points: 400, color: '#9DA5AE' },
+  { name: 'Gold', points: 1000, color: '#D4A017' },
+  { name: 'Platin', points: 2500, color: '#7A8C93' },
+  { name: 'Diamant', points: 5000, color: '#52A9C7' },
 ];
 
 export default function Impact() {
@@ -50,7 +54,7 @@ export default function Impact() {
       <ScopeToggle active="me" color={col} />
       <Text style={[T.h1]}>{t('impact.title')}</Text>
 
-      <SectionTitle title="Rangliste" />
+      <SectionTitle title="Deine Abzeichen" />
       <Appear delay={20}>
         <Card style={{ paddingVertical: 18 }}>
           <Row style={{ alignItems: 'flex-start', gap: 4 }}>
@@ -119,15 +123,15 @@ export default function Impact() {
             <Text style={[T.label, { color: '#ffffff99' }]}>{chameleonName} wächst mit dir</Text>
             <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{st.label}</Text>
           </Row>
-          <Row style={{ gap: 8, marginTop: 6 }}>
+          <Row style={{ gap: 4, marginTop: 6 }}>
             {STAGES.map((stage, i) => (
               <View key={stage.name} style={{ flex: 1, alignItems: 'center', opacity: i + 1 <= st.stage ? 1 : 0.32 }}>
-                <Chameleon pose={stage.pose} size={48} />
-                <Text numberOfLines={1} style={{ fontSize: 10, fontWeight: '700', color: i + 1 === st.stage ? '#fff' : '#ffffff88' }}>{stage.name}</Text>
+                <Chameleon pose={stage.pose} size={42} />
+                <Text numberOfLines={1} style={{ fontSize: 9, fontWeight: '700', color: i + 1 === st.stage ? '#fff' : '#ffffff88' }}>{stage.name}</Text>
               </View>
             ))}
           </Row>
-          <Text style={[T.small, { color: '#ffffff99', marginTop: 8 }]}>Stufen kommen mit aktiven Wochen, nicht mit Punktemengen. {st.next ? `Nächste Stufe: ${st.next}.` : 'Du bist ganz oben.'}</Text>
+          <Text style={[T.small, { color: '#ffffff99', marginTop: 8 }]}>{st.earned} Punkte gesammelt. {st.next ? `Noch ${st.next}.` : 'Diamant erreicht, höher geht es nicht.'}</Text>
         </Card>
       </Appear>
 

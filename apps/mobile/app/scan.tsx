@@ -29,7 +29,7 @@ import { checkLitterProof, PROOF, type LitterVerdict } from '@/engine/litterproo
 type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'vytal-return' | 'food-handover' | 'litter';
 const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTEXT; hint: string }> = {
   ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Die Punkte gibt es beim Check-in.' },
-  bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 5 Punkte, bis zu dreimal am Tag.' },
+  bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 3 Punkte, bis zu dreimal am Tag.' },
   peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Ihr bestätigt euch gegenseitig vor Ort.' },
   vytal: { title: 'Mehrweg-Behälter', sub: 'Code auf dem Behälter', ctx: 'reuse', hint: 'Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte.' },
   'vytal-return': {title:'Rückgabe-QR scannen',sub:'Frischer Code vom Personal',ctx:'reuse',hint:'Gib den Behälter ab. Das Personal stellt danach einen einmaligen Rückgabe-QR für genau diesen Behälter aus.'},

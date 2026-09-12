@@ -49,29 +49,29 @@ Punkte als Handlungen, die einem selbst nutzen.
 ### Mobilität (Transdev / traffiQ)
 | Aktion | Punkte | Deckel |
 |---|---:|---|
-| Erkannte OEPNV-Fahrt | 20 | max. 2 gewertete Fahrten/Tag |
-| Fuss-/Radweg > 1 km statt Auto | 10 | max. 2/Tag |
-| E-Scooter/Bike-Sharing als Zubringer zu OEPNV-Halt | 10 | max. 1/Tag |
+| Terminal-Check-in (fest) | 20 | max. 2 gewertete Fahrten/Tag |
+| Fuss-/Radweg > 1 km statt Auto | 12 | max. 2/Tag |
+| E-Scooter/Bike-Sharing als Zubringer zu OEPNV-Halt | 8 | max. 1/Tag |
 | E-Scooter-Fahrt < 1,5 km ohne OEPNV-Anschluss | **0** | ersetzt typischerweise Gehen, kein Gewinn |
-| Fehlerkorrektur melden ("das war nicht Linie 12") | 5 | max. 3/Tag |
+| Fehlerkorrektur melden ("das war nicht Linie 12") | 3 | max. 2/Tag |
 
 ### Mehrweg (Vytal)
 | Aktion | Punkte | Regel |
 |---|---:|---|
-| Bestätigte Rückgabe | 30 | genau einmal je `event_id`/`transaction_id`, idempotent |
+| Bestätigte Rückgabe | 8 | genau einmal je `event_id`/`transaction_id`, idempotent |
 | Rückgabe innerhalb 48 h statt kurz vor Frist | +10 | belohnt schnellen Umlauf, nicht Menge |
 | Ausleihe | 0 | Ausleihen ist keine Leistung, Zurückbringen ist die Leistung |
 
 ### Foodsharing (Save2Share)
 | Aktion | Punkte | Begründung |
 |---|---:|---|
-| Lebensmittel in Fairteiler **einstellen** | 40 | erzeugt Angebot für andere |
-| Regal-Status melden (Foto + Kategorien) | 15 | max. 1 je Fairteiler/6 h, verhindert Leerfahrten anderer |
-| Korb anbieten | 25 | |
-| Verteilung als Saver ankündigen und durchführen | 60 | ehrenamtliche Arbeit, höchster Gemeinnutzen |
+| Lebensmittel in Fairteiler **einstellen** | 15 | erzeugt Angebot für andere |
+| Regal-Status melden (Foto + Kategorien) | 5 | max. 1 je Fairteiler/6 h, verhindert Leerfahrten anderer |
+| Korb anbieten | 10 | |
+| Verteilung als Saver ankündigen und durchführen | 25 | ehrenamtliche Arbeit, höchster Gemeinnutzen |
 | Lebensmittel **abholen** | **15** | max. 2 je Tag, danach 0. Nachweis per Foto vor Ort |
-| Abholung für dritte Person mitnehmen | 15 | bestätigt durch Empfänger-QR |
-| Reservierung eingehalten | 5 | belohnt Verlässlichkeit statt Menge |
+| Abholung für dritte Person mitnehmen | 5 | bestätigt durch Empfänger-QR |
+| Reservierung eingehalten | 2 | belohnt Verlässlichkeit statt Menge |
 
 Die **Deckelung beim Abholen** gehört in den Pitch. Abholen bekommt Punkte, weil gerettetes
 Essen der eigentliche Zweck ist und weil sonst niemand den Weg zum Fairteiler macht. Aber nur
@@ -82,18 +82,18 @@ die dritte Tüte nichts mehr, während Einstellen (40) und Melden (15) unveränd
 ### Stadtsauberkeit (FES)
 | Aktion | Punkte | Nachweis |
 |---|---:|---|
-| Teilnahme an angemeldeter Clean-up-Aktion | 60 | Geofence + Zeitfenster + Peer-Check-in |
-| Organisation einer Clean-up-Aktion | 100 | FES bestätigt Sackabholung |
-| Meldung (volle Tonne, wilde Kippe) die zu FES-Ticket führt | 25 | erste Meldung je Ort/72 h |
-| Richtige Entsorgung am FES-Papierkorb/Container (NFC/QR) | 5 | max. 3/Tag, Cooldown 60 min je Behälter |
-| Lernmodul/Quiz | 5 je Frage | max. 15/Tag |
+| Teilnahme an angemeldeter Clean-up-Aktion | 25 | Geofence + Zeitfenster + Peer-Check-in |
+| Organisation einer Clean-up-Aktion | 40 | FES bestätigt Sackabholung |
+| Meldung (volle Tonne, wilde Kippe) die zu FES-Ticket führt | 10 | erste Meldung je Ort/72 h |
+| Richtige Entsorgung am FES-Papierkorb/Container (NFC/QR) | 3 | max. 3/Tag, Cooldown 60 min je Behälter |
+| Lernmodul/Quiz | 2 je Frage | max. 3 Kapitel/Tag |
 | **Einzelnes Müllstück aufheben** | **0 Punkte** | siehe Abschnitt 5 |
 
 ### Rhythmus statt Rekord
 | | Punkte |
 |---|---:|
-| Wochenziel erreicht (3 aktive Tage von 7) | +50 |
-| Vier Wochen in Folge Wochenziel | +100, einmalig pro Monat |
+| Wochenziel erreicht (3 aktive Tage von 7) | +25, ausserhalb des Tagesdeckels |
+| Vier Wochen in Folge Wochenziel | +50, einmalig pro Monat, ausserhalb des Tagesdeckels |
 
 **Kein Tagesstreak.** Ein Tagesstreak nach Duolingo-Vorbild erzeugt um 23:50 sinnlose
 Busfahrten, nur um die Serie zu halten. Wir zählen Wochen, das Wochenziel ist 3 von 7,
@@ -112,7 +112,7 @@ Innerhalb einer Kategorie pro Tag:
 | 3. | 30 % |
 | ab 4. | 0 % (Impact wird weiter voll gezählt) |
 
-Harter Tagesdeckel: **150 Punkte/Tag**. Begründung für die Jury: Wir wollen, dass
+Harter Tagesdeckel: **50 Punkte/Tag** (Rhythmus-Bonus ausgenommen). Begründung für die Jury: Wir wollen, dass
 Menschen ihre Gewohnheiten ändern, nicht dass sie einen Nachmittag lang die App
 farmen. Die Kurve macht den 5. Fairteiler-Besuch am Tag wertlos, die 3 Tage pro Woche
 über Monate aber sehr wertvoll.

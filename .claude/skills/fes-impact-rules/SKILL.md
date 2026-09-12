@@ -26,20 +26,30 @@ Der Multiplikator steht sichtbar an jeder Gutschrift, mit Begründung.
 
 ## Basispunkte (vor Multiplikator)
 
-Mobilität: OEPNV-Fahrt 20 (max 2/Tag), Fuss/Rad >1 km statt Auto 10 (max 2/Tag),
-Sharing als OEPNV-Zubringer 10, E-Scooter <1,5 km ohne Anschluss **0**,
-Fehlerkorrektur melden 5.
-Vytal: bestätigte Rückgabe 30 (idempotent je event_id), Rückgabe <48 h +10, Ausleihe 0.
-Foodsharing: einstellen 40, Regal-Status melden 15, Korb anbieten 25,
-Verteilung als Saver 60, **abholen 0**, für Dritte mitnehmen 15, Reservierung eingehalten 5.
-FES: Clean-up-Teilnahme 60, Organisation 100, Meldung mit Ticket 25,
-Entsorgung am Behälter 5 (max 3/Tag), Quiz 5/Frage (max 15/Tag).
-Rhythmus: Wochenziel 3 von 7 Tagen +50, vier Wochen in Folge +100.
+Der Tagesdeckel liegt bei **50 Punkten**, deshalb sind die Beträge klein und nach
+Hebel gestaffelt: Mobilität oben, Mehrweg unten. Quelle im Code:
+`apps/mobile/src/engine/reward.ts` (`BASE`), das ist die verbindliche Fassung.
+
+Mobilität: Terminal-Check-in 20 (fest, max 2/Tag), Fuss/Rad >1 km statt Auto 12
+(max 2/Tag), Sharing als OEPNV-Zubringer 8, E-Scooter <1,5 km ohne Anschluss **0**,
+Fehlerkorrektur melden 3. Die geprüfte Fahrt selbst gibt 0 Punkte, sie bucht Nachweis
+und Impact.
+Vytal: bestätigte Rückgabe 8 (idempotent je event_id, max 3/Tag), Rückgabe <48 h +3,
+Ausleihe 0.
+Foodsharing: einstellen 15, Regal-Status melden 5 (max 4/Tag), Korb anbieten 10,
+Verteilung als Saver 25, abholen 5 (max 2/Tag), für Dritte mitnehmen 5,
+Reservierung eingehalten 2.
+FES: Clean-up-Teilnahme 25, Organisation 40, Meldung mit Ticket 10,
+Entsorgung am Behälter 3 (max 3/Tag), Biotonnen-Check 5 (max 1/Tag),
+Quiz 2/Frage (max 3 Kapitel/Tag).
+Rhythmus: Wochenziel 3 von 7 Tagen +25, vier Wochen in Folge +50.
 
 ## Deckel und Degression
 
 Pro Kategorie und Tag: 1. Aktion 100 %, 2. 60 %, 3. 30 %, ab 4. 0 %.
-Impact zählt immer voll weiter. Harter Tagesdeckel 150 Punkte.
+Impact zählt immer voll weiter. Harter Tagesdeckel **50 Punkte**.
+Der Rhythmus-Bonus liegt ausserhalb des Deckels (`CAP_EXEMPT`), sonst frisst ein
+guter Tag die Belohnung für Regelmässigkeit.
 
 ## Verboten
 

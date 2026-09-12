@@ -225,19 +225,28 @@ export function weekStats(ledger: Award[]) {
  * Impact-Tab dieselbe Figur zeigen: Die Figur kennt keine Wachstumsstufen mehr,
  * unterschieden wird ueber die Pose.
  */
+/** Stufen des Maskottchens, nach gesammelten Punkten. Diamant ist das Fernziel. */
 export const STAGES = [
-  { name: 'Schlüpfling', pose: 'calm' as const },
-  { name: 'Entdecker', pose: 'hello' as const },
-  { name: 'Kletterer', pose: 'backpack' as const },
-  { name: 'Stadt', pose: 'cool' as const },
+  { name: 'Schlüpfling', pose: 'calm' as const, at: 0 },
+  { name: 'Entdecker', pose: 'hello' as const, at: 150 },
+  { name: 'Kletterer', pose: 'backpack' as const, at: 600 },
+  { name: 'Stadtchamäleon', pose: 'cool' as const, at: 2000 },
+  { name: 'Diamant', pose: 'globe' as const, at: 5000 },
 ];
 
-/** Entwicklungsstufe des Chamäleons: nach aktiven Wochen, nicht nach Punktemenge. */
+/**
+ * Entwicklungsstufe des Chamäleons: nach allen je gesammelten Punkten.
+ * Eingelöste Punkte zählen weiter mit, sonst schrumpft die Figur beim Einlösen.
+ */
 export function chameleonStage(ledger: Award[]) {
-  const weeks = new Set(ledger.filter((l) => l.points > 0).map((l) => weekKeyOf(new Date(l.at)))).size;
-  const actions = ledger.filter((l) => l.points > 0).length;
-  if (weeks >= 4) return { stage: 4, label: 'Stadtchamäleon', next: null as null | string };
-  if (weeks >= 2) return { stage: 3, label: 'Kletterer', next: 'vier aktive Wochen' };
-  if (actions >= 3) return { stage: 2, label: 'Entdecker', next: 'zwei aktive Wochen' };
-  return { stage: 1, label: 'Schlüpfling', next: 'drei Aktionen' };
+  const earned = ledger.reduce((a, l) => a + l.points, 0);
+  let i = 0;
+  for (let k = 0; k < STAGES.length; k++) if (earned >= STAGES[k].at) i = k;
+  const up = STAGES[i + 1];
+  return {
+    stage: i + 1,
+    label: STAGES[i].name,
+    earned,
+    next: up ? `${up.at - earned} Punkte bis ${up.name}` : (null as null | string),
+  };
 }

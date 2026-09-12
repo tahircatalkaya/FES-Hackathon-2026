@@ -114,7 +114,7 @@ export default function Profile() {
             <Text style={[T.label, { color: '#ffffff99' }]}>FES-Wissen · mit {s.chameleonName}</Text>
             <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
             <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
-            <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{nextQuiz.questions.length} Fragen · +{nextQuiz.questions.length * 5} Punkte</Text>
+            <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{nextQuiz.questions.length} Fragen · +{nextQuiz.questions.length * 2} Punkte</Text>
           </Card>
         ) : (
           <Card>

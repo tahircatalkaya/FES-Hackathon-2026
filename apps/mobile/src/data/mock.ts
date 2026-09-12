@@ -72,12 +72,12 @@ export const REWARDS: Reward[] = [
   { id: 'r3', title: 'Kinoticket', cost: 500, partner: 'Kino im Cinema', emoji: '🎬', desc: 'Ein Ticket für eine Vorstellung deiner Wahl.' },
   { id: 'r5', title: 'Lastenrad-Tag', cost: 600, partner: 'MainLastenrad', emoji: '🚲', desc: 'Ein Tag mit einem Lastenrad deiner Wahl.' },
   { id: 'r4', title: 'Tageskarte RMV', cost: 800, partner: 'traffiQ', emoji: '🚊', desc: 'Eine Tageskarte für Frankfurt.' },
-  { id: 'r7', title: 'Sportstudio für einen Monat', cost: 1200, partner: 'Partnerstudios Frankfurt', emoji: '🏋️', desc: 'Vier Wochen Mitgliedschaft in einem teilnehmenden Studio. Etwa zwei Wochen aktiver Nutzung.' },
-  { id: 'r8', title: 'Deutschlandticket für einen Monat', cost: 2000, partner: 'RMV · traffiQ', emoji: '🎫', desc: 'Ein Monat im ganzen Nahverkehr. Realistisch nach etwa vier Wochen mit erreichtem Wochenziel.' },
+  { id: 'r7', title: 'Sportstudio für einen Monat', cost: 1200, partner: 'Partnerstudios Frankfurt', emoji: '🏋️', desc: 'Vier Wochen Mitgliedschaft in einem teilnehmenden Studio. Rund zwei Monate regelmäßiger Nutzung.' },
+  { id: 'r8', title: 'Deutschlandticket für einen Monat', cost: 2000, partner: 'RMV · traffiQ', emoji: '🎫', desc: 'Ein Monat im ganzen Nahverkehr. Rund drei Monate regelmäßiger Nutzung, bei 50 Punkten am Tag sechs Wochen.' },
   { id: 'r9', title: 'Palmengarten-Jahreskarte', cost: 2500, partner: 'Palmengarten', emoji: '🌴', desc: 'Ein Jahr freier Eintritt, auch im Winter im Tropicarium.' },
   { id: 'r10', title: 'Heimspiel-Ticket', cost: 3000, partner: 'Eintracht Frankfurt', emoji: '🦅', desc: 'Ein Platz im Stadion bei einem Heimspiel der Saison.' },
-  { id: 'r12', title: 'Baumpatenschaft mit Plakette', cost: 6000, partner: 'Grünflächenamt', emoji: '🪧', desc: 'Ein Baum in deinem Stadtteil, mit deinem Namen am Stamm. Mehrere Monate Arbeit.' },
-  { id: 'r13', title: 'Deutschlandticket für ein Jahr', cost: 10000, partner: 'RMV · traffiQ', emoji: '🏆', desc: 'Zwölf Monate Nahverkehr. Das größte Ziel der App, zu schaffen in etwa einem halben Jahr.' },
+  { id: 'r12', title: 'Baumpatenschaft mit Plakette', cost: 6000, partner: 'Grünflächenamt', emoji: '🪧', desc: 'Ein Baum in deinem Stadtteil, mit deinem Namen am Stamm. Etwa ein halbes Jahr.' },
+  { id: 'r13', title: 'Deutschlandticket für ein Jahr', cost: 10000, partner: 'RMV · traffiQ', emoji: '🏆', desc: 'Zwölf Monate Nahverkehr. Das größte Ziel der App, etwa ein Jahr regelmäßiger Nutzung.' },
 ];
 
 export const DISTRICTS = [
