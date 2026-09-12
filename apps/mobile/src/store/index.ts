@@ -20,6 +20,9 @@ interface State {
   name: string;
   lang: Lang;
   district: string;
+  email: string;
+  phone: string;
+  address: string;
   chameleonName: string;
   privacy: { tripOnlyLocation: boolean; notifications: boolean; quietHours: boolean; shareAggregates: boolean };
   ledger: Award[];
@@ -41,7 +44,7 @@ interface State {
   nfcSeen: string[];
 
   setOnboarded: (v: boolean) => void;
-  setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'chameleonName'>>) => void;
+  setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'email' | 'phone' | 'address' | 'chameleonName'>>) => void;
   setPrivacy: (p: Partial<State['privacy']>) => void;
   addAward: (e: ActionEvent) => Award;
   redeem: (r: Omit<Redemption, 'id' | 'at'>) => boolean;
@@ -77,6 +80,9 @@ const initial = {
   name: '',
   lang: 'de' as Lang,
   district: 'Bockenheim',
+  email: '',
+  phone: '',
+  address: '',
   chameleonName: 'Kai',
   privacy: { tripOnlyLocation: true, notifications: true, quietHours: true, shareAggregates: true },
   ledger: [] as Award[],

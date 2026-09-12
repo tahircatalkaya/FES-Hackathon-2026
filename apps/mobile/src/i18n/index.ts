@@ -49,11 +49,11 @@ const de = {
   'common.cancel': 'Abbrechen',
   'common.demo': 'Demo-Daten',
   'onb.1.title': 'Frankfurt, gemeinsam.',
-  'onb.1.body': 'Bus, Mehrweg, Lebensmittel und saubere Straßen in einer App. Du siehst, was in deiner Nähe möglich ist.',
+  'onb.1.body': 'Bus, Mehrweg, Lebensmittel und saubere Straßen in einer App.\nDu siehst, was in deiner Nähe möglich ist.',
   'onb.2.title': 'Ehrlich statt abstrakt.',
   'onb.2.body': 'Jede Aktion bekommt einen Nachweis-Status und eine Begründung. Du siehst immer, warum Punkte entstehen.',
   'onb.3.title': 'Dein Standort gehört dir.',
-  'onb.3.body': 'GPS nur, wenn du eine Fahrt bewusst startest. Kein Hintergrund-Tracking, keine exakten Adressen.',
+  'onb.3.body': 'GPS nur, wenn du eine Fahrt bewusst startest.\nKein Hintergrund-Tracking, keine exakten Adressen.',
   'onb.name': 'Wie sollen wir dich nennen?',
   'onb.start': 'Los geht’s',
 };

@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen, Header } from '@/components/Screen';
-import { Card, Divider, Row, T, Tag } from '@/components/ui';
-import { C, S } from '@/theme';
+import { Card, Divider, Pill, Row, SectionTitle, T, Tag } from '@/components/ui';
+import { C, CONTEXT, S } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
+import { DISTRICTS } from '@/data/mock';
+
+const col = CONTEXT.home.color;
 
 /** Was die App speichert, was nicht, und was aggregiert an Frankfurt geht. */
 export default function Daten() {
@@ -13,17 +16,29 @@ export default function Daten() {
   const { setCtx } = useUI();
   useEffect(() => { setCtx('home'); }, []);
   const rows = [
-    { i: 'person', t: 'Anzeigename und Stadtteil', v: `${s.name || '–'} · ${s.district}` },
     { i: 'journal', t: 'Gutschriften', v: `${s.ledger.length} Einträge, jede mit Begründung` },
     { i: 'cafe', t: 'Mehrweg-Behälter', v: `${s.containers.length} erfasst` },
     { i: 'bookmark', t: 'Reservierungen', v: `${s.reservations.length + s.itemReservations.length}` },
     { i: 'camera', t: 'Fotos und Sprachnotizen', v: 'nur als Nachweis, ohne Ortsdaten im Bild' },
     { i: 'navigate', t: 'GPS-Rohspuren', v: 'keine. Nach der Prüfung einer Fahrt gelöscht' },
-    { i: 'mail', t: 'E-Mail, Telefon, Adresse', v: 'keine' },
   ];
+  const inputStyle = { marginTop: 6, paddingVertical: 10, paddingHorizontal: 12, borderWidth: 1, borderColor: C.line, borderRadius: 12, backgroundColor: C.bg, color: C.ink };
   return (
     <Screen tabBar={false}>
-      <Header title="Meine Daten" subtitle="Was gespeichert wird und was nicht" />
+      <Header title="Meine Daten" />
+      <Card>
+        <Text style={T.h3}>Persönliche Angaben</Text>
+        <Text style={[T.small, { marginTop: 4 }]}>Diese Angaben werden nur auf deinem Gerät gespeichert.</Text>
+        <Text style={[T.label, { marginTop: 16 }]}>Stadtteil</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{DISTRICTS.map((district) => <Pill key={district.name} label={district.name} active={s.district === district.name} color={col} onPress={() => s.setProfile({ district: district.name })} />)}</ScrollView>
+        <Text style={[T.label, { marginTop: 16 }]}>E-Mail</Text>
+        <TextInput value={s.email} onChangeText={(email) => s.setProfile({ email })} placeholder="name@beispiel.de" keyboardType="email-address" autoCapitalize="none" autoComplete="email" style={inputStyle} />
+        <Text style={[T.label, { marginTop: 16 }]}>Telefonnummer</Text>
+        <TextInput value={s.phone} onChangeText={(phone) => s.setProfile({ phone })} placeholder="Deine Telefonnummer" keyboardType="phone-pad" autoComplete="tel" style={inputStyle} />
+        <Text style={[T.label, { marginTop: 16 }]}>Adresse</Text>
+        <TextInput value={s.address} onChangeText={(address) => s.setProfile({ address })} placeholder="Straße und Hausnummer" autoComplete="street-address" style={inputStyle} />
+      </Card>
+      <SectionTitle title="Weitere gespeicherte Informationen" />
       <Card>
         {rows.map((r, i) => (
           <View key={r.t}>
@@ -42,9 +57,7 @@ export default function Daten() {
         ))}
       </Card>
       <Text style={[T.h2, { marginTop: S.xl }]}>Was an Frankfurt geht</Text>
-      <Card style={{ marginTop: 10, backgroundColor: C.ink }}>
-        <Text style={[T.body, { color: '#fff' }]}>Nur Summen: Linie, Stunde, Anzahl Fahrten. Nie dein Name, nie deine Route. Erst ab fünf Personen pro Gruppe. {s.privacy.shareAggregates ? 'Du machst mit.' : 'Du machst nicht mit.'}</Text>
-      </Card>
+      <Text style={[T.small, { marginTop: 6, color: C.muted }]}>Nur Summen: Linie, Stunde, Anzahl Fahrten. Nie dein Name, nie deine Route. Erst ab fünf Personen pro Gruppe. {s.privacy.shareAggregates ? 'Du machst mit.' : 'Du machst nicht mit.'}</Text>
     </Screen>
   );
 }

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, Switch, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Appear, Button, Card, Divider, Pill, Row, SectionTitle, Stat, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Divider, Row, SectionTitle, Stat, T, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore, balance, weekStats, chameleonStage } from '@/store';
 import { useUI } from '@/store/ui';
 import { LANGS } from '@/i18n';
 import { useT } from '@/i18n/useT';
-import { DISTRICTS } from '@/data/mock';
 
 const col = CONTEXT.home.color;
 
@@ -20,6 +19,7 @@ export default function Profile() {
   const { setCtx } = useUI();
   const [editName, setEditName] = useState(false);
   const [nm, setNm] = useState(s.name);
+  const [showLanguages, setShowLanguages] = useState(false);
   useEffect(() => { setCtx('home'); }, []);
   const bal = balance(s), wk = weekStats(s.ledger), st = chameleonStage(s.ledger);
   const unread = s.notices.filter((n) => !n.read).length;
@@ -33,11 +33,32 @@ export default function Profile() {
     <Screen>
       <Row style={{ justifyContent: 'space-between' }}>
         <Text style={T.h1}>{t('tab.profile')}</Text>
-        <Pressable onPress={() => { s.markRead(); router.push('/journal?tab=notices'); }} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: 18 }}>🔔</Text>
-          {unread > 0 && <View style={{ position: 'absolute', top: 4, right: 4, backgroundColor: C.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontSize: 10, fontWeight: '900' }}>{unread}</Text></View>}
-        </Pressable>
+        <Row style={{ gap: 8 }}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Sprachen" onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 18 }}>🌐</Text>
+          </Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel="Mitteilungen" onPress={() => { s.markRead(); router.push('/journal?tab=notices'); }} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 18 }}>🔔</Text>
+            {unread > 0 && <View style={{ position: 'absolute', top: 4, right: 4, backgroundColor: C.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontSize: 10, fontWeight: '900' }}>{unread}</Text></View>}
+          </Pressable>
+        </Row>
       </Row>
+
+      {showLanguages && (
+        <Card style={{ marginTop: 8 }}>
+          {LANGS.filter((language) => language.code !== 'leicht').map((language, index, languages) => (
+            <View key={language.code}>
+              <Pressable accessibilityRole="button" accessibilityState={{ selected: s.lang === language.code }} onPress={() => { s.setProfile({ lang: language.code }); setShowLanguages(false); }} style={{ paddingVertical: 10 }}>
+                <Row style={{ justifyContent: 'space-between' }}>
+                  <Text style={T.body}>{language.flag} {language.label}</Text>
+                  {s.lang === language.code && <Text style={{ color: col, fontWeight: '900' }}>✓</Text>}
+                </Row>
+              </Pressable>
+              {index < languages.length - 1 && <Divider />}
+            </View>
+          ))}
+        </Card>
+      )}
 
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg }}>
@@ -50,7 +71,7 @@ export default function Profile() {
                 <Pressable onPress={() => setEditName(true)}><Text style={T.h2}>{s.name || 'Du'} ✎</Text></Pressable>
               )}
               <Text style={T.small}>{s.district} · mit {s.chameleonName}, {st.label}</Text>
-              <Row style={{ gap: 6, marginTop: 6, flexWrap: 'wrap' }}><Tag label="Anzeigename" /><Tag label="keine Adresse" /><Tag label="keine Telefonnummer" /></Row>
+              <Button label="Meine Daten" variant="soft" color={col} onPress={() => router.push('/daten')} style={{ marginTop: 10, paddingVertical: 9, paddingHorizontal: 12 }} />
             </View>
           </Row>
           <Divider />
@@ -62,26 +83,18 @@ export default function Profile() {
         </Card>
       </Appear>
 
-      <Row style={{ marginTop: 12, gap: 8 }}>
-        <Button label="Belohnungen" icon="🎁" color={col} onPress={() => router.push('/belohnungen')} style={{ flex: 1, paddingVertical: 12 }} />
-        <Button label="Journal" icon="📒" color={col} variant="soft" onPress={() => router.push('/journal')} style={{ flex: 1, paddingVertical: 12 }} />
-      </Row>
-
-      <SectionTitle title="Sprache" />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>{LANGS.map((l) => <Pill key={l.code} label={`${l.flag} ${l.label}`} active={s.lang === l.code} color={col} onPress={() => s.setProfile({ lang: l.code })} />)}</ScrollView>
-      <Text style={[T.small, { marginTop: 8 }]}>Leichte Sprache ist eine eigene Stufe, nicht nur eine Übersetzung. Für eine Stadt-App das stärkere Inklusionsargument.</Text>
-
-      <SectionTitle title="Stadtteil" />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>{DISTRICTS.map((d) => <Pill key={d.name} label={d.name} active={s.district === d.name} color={col} onPress={() => s.setProfile({ district: d.name })} />)}</ScrollView>
+      <View style={{ marginTop: 12 }}>
+        <Button label="Belohnungen" icon="🎁" color={col} onPress={() => router.push('/belohnungen')} style={{ width: '100%', paddingVertical: 14 }} />
+      </View>
 
       <SectionTitle title="Datenschutz" />
       <Appear delay={80}>
         <Card>
           {[
-            { k: 'tripOnlyLocation', t: 'Standort nur während bewusst gestarteter Fahrt', s: 'Kein Hintergrund-Tracking. Matching läuft auf dem Gerät.' },
-            { k: 'shareAggregates', t: 'Aggregierte Daten ans Frankfurt-Ziel', s: 'Linie, Stunde, Richtung, Anzahl. k ≥ 5, keine Rohspur.' },
-            { k: 'notifications', t: 'Mitteilungen', s: 'Angebote in der Nähe, Rückgabe-Erinnerungen, Zusagen.' },
-            { k: 'quietHours', t: 'Ruhezeit 22–7 Uhr', s: 'Voreingestellt. Max. 5 Mitteilungen am Tag.' },
+            { k: 'tripOnlyLocation', t: 'Standort während einer Fahrt', s: 'Die App nutzt deinen Standort nur, wenn du eine Fahrt startest.' },
+            { k: 'shareAggregates', t: 'Daten für das Frankfurt-Ziel', s: 'Zusammengefasste Daten. Dein Name und deine Route werden nicht geteilt.' },
+            { k: 'notifications', t: 'Mitteilungen', s: 'Erinnerungen und wichtige Hinweise aus der App.' },
+            { k: 'quietHours', t: 'Ruhezeit von 22 bis 7 Uhr', s: 'In dieser Zeit bleiben Mitteilungen aus.' },
           ].map((row, i) => (
             <View key={row.k}>
               <Row style={{ justifyContent: 'space-between' }}>
@@ -94,16 +107,9 @@ export default function Profile() {
         </Card>
       </Appear>
       <View style={{ marginTop: 10, gap: 8 }}>
-        <Button label="Meine Daten ansehen (Export)" variant="soft" color={col} onPress={() => router.push('/daten')} style={{ paddingVertical: 12 }} />
         <Button label="Alle Daten löschen" variant="ghost" color={C.danger} onPress={reset} style={{ paddingVertical: 12 }} />
-        <Text style={[T.small, { textAlign: 'center' }]}>Löschen funktioniert wirklich, auch in der Demo. Es steht hier und nicht im Support-Formular.</Text>
       </View>
 
-      <SectionTitle title="Über Mainsam" />
-      <Card>
-        <Text style={T.body}>Mainsam bündelt Ride2Impact (Transdev), Smart Mehrweg (Vytal), Save2Share (Frankfurt foodsharing), Sauberes Frankfurt (FES) und den Mobilitätsimpact (traffiQ) in einer Journey. Punkte gibt es für Entscheidungen, nicht für Mengen. Jede Gutschrift erklärt sich selbst.</Text>
-        <Row style={{ gap: 6, marginTop: 8, flexWrap: 'wrap' }}><Tag label="FES Hackathon 2026" color={col} /><Tag label="Team 01" /><Tag label="Prototyp" /></Row>
-      </Card>
     </Screen>
   );
 }

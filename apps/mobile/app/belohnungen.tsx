@@ -20,7 +20,7 @@ export default function Rewards() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Belohnungen" subtitle="Schwellen für alle, Lose statt Rang" color={col} />
+      <Header title="Belohnungen" color={col} />
       <Appear>
         <Card style={{ backgroundColor: col }}>
           <Row>
@@ -38,12 +38,10 @@ export default function Rewards() {
         <Card style={{ marginTop: 14, borderWidth: 2, borderColor: C.gold }}>
           <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>🎟️ Deutschlandticket-Verlosung</Text><Tag label={`${s.lose} Lose`} color={C.gold} /></Row>
           <Text style={[T.body, { marginTop: 6 }]}>Jede Woche mit erreichtem Wochenziel gibt ein Los, maximal vier im Monat. Verlost wird ein Deutschlandticket am {nextDraw.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}.</Text>
-          <Text style={[T.small, { marginTop: 6 }]}>Warum Lose: Die Aufgabe verlangt, nicht nur die Besten zu belohnen. Wer zehnmal mehr Punkte sammelt, hat trotzdem maximal vier Lose. Verlässlichkeit zählt, Menge nicht.</Text>
         </Card>
       </Appear>
 
       <Text style={[T.h2, { marginTop: S.xl }]}>Einlösen</Text>
-      <Text style={T.small}>Alles hier ist für alle erreichbar, unabhängig vom Platz. Einlösung ist Demo.</Text>
       <View style={{ marginTop: 10, gap: 10 }}>
         {REWARDS.map((r, i) => {
           const ok = bal >= r.cost;
