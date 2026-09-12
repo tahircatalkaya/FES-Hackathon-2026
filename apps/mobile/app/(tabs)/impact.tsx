@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Rect, Text as SText } from 'react-native-svg';
 import { Screen } from '@/components/Screen';
@@ -15,6 +16,14 @@ import { comparisons, fmtCo2, FACTORS } from '@/engine/impact';
 import { useT } from '@/i18n/useT';
 import { FRANKFURT_GOAL } from '@/data/mock';
 
+const MEDALS = [
+  { name: 'Bronze', points: 15, color: '#B87333' },
+  { name: 'Silber', points: 50, color: '#9DA5AE' },
+  { name: 'Gold', points: 100, color: '#D4A017' },
+  { name: 'Platin', points: 200, color: '#7A8C93' },
+  { name: 'Diamant', points: 350, color: '#52A9C7' },
+];
+
 export default function Impact() {
   const router = useRouter();
   const t = useT();
@@ -24,6 +33,7 @@ export default function Impact() {
   const total = totalImpact(ledger);
   const wk = weekStats(ledger);
   const st = chameleonStage(ledger);
+  const earnedPoints = ledger.reduce((sum, entry) => sum + Math.max(0, entry.points), 0);
   const comp = comparisons(total.co2_g);
   const byMode = useMemo(() => {
     const m: Record<string, { km: number; co2: number; n: number }> = {};
@@ -38,6 +48,33 @@ export default function Impact() {
     <Screen>
       <ScopeToggle active="me" color={col} />
       <Text style={[T.h1]}>{t('impact.title')}</Text>
+
+      <SectionTitle title="Rangliste" />
+      <Appear delay={20}>
+        <Card style={{ paddingVertical: 18 }}>
+          <Row style={{ alignItems: 'flex-start', gap: 4 }}>
+            {MEDALS.map((medal) => {
+              const unlocked = earnedPoints >= medal.points;
+              const medalColor = unlocked ? medal.color : '#AEB2AD';
+              return (
+                <View key={medal.name} style={{ flex: 1, alignItems: 'center' }}>
+                  <View style={{ width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: unlocked ? medal.color + '1F' : '#E7E8E5', borderWidth: 2, borderColor: medalColor }}>
+                    <Ionicons name="medal-outline" size={27} color={medalColor} />
+                    {!unlocked && (
+                      <View style={{ position: 'absolute', right: -3, bottom: -3, width: 19, height: 19, borderRadius: 10, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: C.line }}>
+                        <Ionicons name="lock-closed" size={10} color={C.muted} />
+                      </View>
+                    )}
+                  </View>
+                  <Text style={[T.small, { marginTop: 7, color: unlocked ? C.ink : C.muted, fontWeight: '800', textAlign: 'center' }]}>{medal.name}</Text>
+                  <Text style={{ marginTop: 2, color: C.muted, fontSize: 10, fontWeight: '700' }}>{medal.points} Blätter</Text>
+                </View>
+              );
+            })}
+          </Row>
+          <Text style={[T.small, { marginTop: 14, textAlign: 'center' }]}>{earnedPoints} Blätter gesammelt</Text>
+        </Card>
+      </Appear>
 
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg, overflow: 'hidden', backgroundColor: C.ink }}>
