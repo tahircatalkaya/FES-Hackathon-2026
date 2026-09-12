@@ -82,6 +82,7 @@ die dritte Tüte nichts mehr, während Einstellen (40) und Melden (15) unveränd
 ### Stadtsauberkeit (FES)
 | Aktion | Punkte | Nachweis |
 |---|---:|---|
+| Anmeldung zu einer Aktion | 1 | fester Betrag, max. 2/Tag |
 | Teilnahme an angemeldeter Clean-up-Aktion | 15 | Geofence + Zeitfenster + Peer-Check-in |
 | Organisation einer Clean-up-Aktion | 20 | FES bestätigt Sackabholung |
 | Meldung (volle Tonne, wilde Kippe) die zu FES-Ticket führt | 10 | erste Meldung je Ort/72 h |

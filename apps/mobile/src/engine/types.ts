@@ -26,6 +26,7 @@ export type ActionType =
   | 'food.pickup_for_other'
   | 'food.reservation_kept'
   // FES
+  | 'clean.signup' // Anmeldung zu einer Aktion, fester Kleinbetrag
   | 'clean.participate'
   | 'clean.organize'
   | 'clean.report'

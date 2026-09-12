@@ -40,7 +40,8 @@ Ausleihe 0.
 Foodsharing: einstellen 15, Regal-Status melden 5 (max 4/Tag), Korb anbieten 10,
 Verteilung als Saver 25, abholen 5 (max 2/Tag), für Dritte mitnehmen 5,
 Reservierung eingehalten 2.
-FES: Clean-up-Teilnahme 15, Organisation 20, Meldung mit Ticket 10,
+FES: Anmeldung zu einer Aktion 1 (fest, max 2/Tag), Clean-up-Teilnahme 15,
+Organisation 20, Meldung mit Ticket 10,
 Entsorgung am Behälter 3 (max 3/Tag), Biotonnen-Check 5 (max 1/Tag),
 Quiz 2/Frage (max 3 Kapitel/Tag).
 Rhythmus: Wochenziel 3 von 7 Tagen +25, vier Wochen in Folge +50.

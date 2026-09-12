@@ -22,6 +22,7 @@ export const BASE: Record<ActionType, number> = {
   'food.pickup_for_other': 5,
   'food.reservation_kept': 2,
   // FES: Organisieren und Teilnehmen sind Tagesereignisse, die Tages-Challenges Kleinvieh.
+  'clean.signup': 1,
   'clean.participate': 15,
   'clean.organize': 20,
   'clean.report': 10,
@@ -38,7 +39,7 @@ export const BASE: Record<ActionType, number> = {
  * Aktionen mit festem Punktbetrag: kein Nachweis-Multiplikator, keine Degression.
  * Der Check-in ist eine reine Entscheidung, deshalb ist der Betrag fest.
  */
-export const FLAT = new Set<ActionType>(['ride.checkin']);
+export const FLAT = new Set<ActionType>(['ride.checkin', 'clean.signup']);
 
 /** Tagesdeckel je Aktion (Anzahl gewerteter Aktionen). */
 export const DAILY_COUNT_CAP: Partial<Record<ActionType, number>> = {
@@ -47,6 +48,7 @@ export const DAILY_COUNT_CAP: Partial<Record<ActionType, number>> = {
   'ride.sharing_feeder': 1,
   'ride.correction': 2,
   'reuse.return': 3,
+  'clean.signup': 2,
   'clean.bin_checkin': 3,
   'clean.bin_quality': 1,
   'clean.quiz': 3,
@@ -93,6 +95,7 @@ export const WHY_BASE: Record<ActionType, string> = {
   'food.pickup': 'Lebensmittel abgeholt, bevor sie weggeworfen werden. Zweimal am Tag gewertet, damit für alle etwas übrig bleibt.',
   'food.pickup_for_other': 'Abholung für eine andere Person, per QR bestätigt.',
   'food.reservation_kept': 'Reservierung eingehalten. Verlässlichkeit hilft allen.',
+  'clean.signup': 'Anmeldung zu einer Aktion. Ein Punkt für die Zusage, höchstens zwei Anmeldungen am Tag. Die Teilnahme selbst zählt vor Ort.',
   'clean.participate': 'Teilnahme an einer angemeldeten Clean-up-Aktion, Anwesenheit gegenseitig bestätigt.',
   'clean.organize': 'Clean-up organisiert. FES hat die Sackabholung bestätigt.',
   'clean.report': 'Meldung, die zu einem FES-Ticket geführt hat. Erste Meldung je Ort in 72 h.',

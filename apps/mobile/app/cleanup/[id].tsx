@@ -70,7 +70,15 @@ export default function CleanupScreen() {
       <Text style={[T.small, { marginTop: 6 }]}>{fmtDist(dist)} entfernt · {inFence ? 'du bist im Aktionsgebiet' : 'außerhalb des Gebiets'}</Text>
 
       {!joined ? (
-        <Appear delay={60}><View style={{ marginTop: 14 }}><Button label="Mitmachen" color={col} icon="hand-right" onPress={() => { joinCleanup(cu.id); haptic('success'); }} /></View></Appear>
+        <Appear delay={60}><View style={{ marginTop: 14 }}><Button label="Mitmachen" color={col} icon="hand-right" onPress={() => {
+              joinCleanup(cu.id);
+              showToast(addAward({
+                type: 'clean.signup', partner: 'fes', status: 'bestätigt', key: `cleanup-join:${cu.id}`, at: Date.now(),
+                title: `Angemeldet: ${cu.title}`,
+                meta: { source: 'user', evidence: ['Anmeldung in der App erfasst.', 'Ein Punkt für die Zusage, höchstens zwei Anmeldungen am Tag. Die Teilnahme selbst wird vor Ort bestätigt.'] },
+              }));
+              haptic('success');
+            }} /></View></Appear>
       ) : (
         <View style={{ marginTop: 14, gap: 10 }}>
           <Appear>

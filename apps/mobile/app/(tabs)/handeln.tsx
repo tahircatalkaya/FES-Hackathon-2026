@@ -47,13 +47,13 @@ export default function Act() {
   function join(id: string, title: string) {
     joinCleanup(id);
     const a = addAward({
-      type: 'clean.participate',
+      type: 'clean.signup',
       partner: 'fes',
-      status: 'ausstehend',
+      status: 'bestätigt',
       key: `cleanup-join:${id}`,
       at: Date.now(),
       title: `Angemeldet: ${title}`,
-      meta: { source: 'user', evidence: ['Anmeldung erfasst. Punkte erst nach bestätigter Teilnahme vor Ort.'] },
+      meta: { source: 'user', evidence: ['Anmeldung in der App erfasst.', 'Ein Punkt für die Zusage, höchstens zwei Anmeldungen am Tag. Die Teilnahme selbst wird vor Ort bestätigt.'] },
     });
     haptic('success');
     setReward({ points: a.points, duplicate: !!a.duplicate, status: a.status });
