@@ -15,6 +15,8 @@ export interface Notice { id: string; at: number; title: string; body: string; c
 export interface Friend { id: string; name: string; emoji: string; activeDays: number; goal: number; district: string }
 export interface ItemReservation { id: string; placeId: string; placeTitle: string; item: string; qty: string; at: number; expiresAt: number; kind: 'fairteiler' | 'verteilung'; href: string }
 export interface Redemption { id: string; at: number; title: string; cost: number }
+/** Offener Vorher/Nachher-Nachweis. Ueberlebt das Schliessen der App, sonst waere das Zeitfenster nutzlos. */
+export interface LitterProof { at: number; lat: number; lon: number; hash: string; kind: 'ahash' | 'digest' }
 
 interface State {
   onboarded: boolean;
@@ -43,6 +45,9 @@ interface State {
   notices: Notice[];
   friends: Friend[];
   litterThanks: number;
+  litterProof: LitterProof | null;
+  /** Fingerabdruecke abgeschlossener Nachweise, gegen Wiedervorlage. */
+  photoHashes: string[];
   demoMode: boolean;
   nfcSeen: string[];
 
@@ -66,6 +71,9 @@ interface State {
   notify: (n: Omit<Notice, 'id' | 'at'>) => void;
   markRead: () => void;
   thankLitter: () => void;
+  startLitterProof: (p: LitterProof) => void;
+  finishLitterProof: (hashes: string[]) => void;
+  cancelLitterProof: () => void;
   setDemoMode: (v: boolean) => void;
   addNfc: (id: string) => void;
   resetAll: () => void;
@@ -106,6 +114,8 @@ const initial = {
   notices: [] as Notice[],
   friends: DEFAULT_FRIENDS,
   litterThanks: 0,
+  litterProof: null as LitterProof | null,
+  photoHashes: [] as string[],
   demoMode: true,
   nfcSeen: [] as string[],
 };
@@ -158,6 +168,10 @@ export const useStore = create<State>()(
       notify: (n) => set({ notices: [{ ...n, id: `${Date.now()}-${Math.random()}`, at: Date.now() }, ...get().notices].slice(0, 50) }),
       markRead: () => set({ notices: get().notices.map((n) => ({ ...n, read: true })) }),
       thankLitter: () => set({ litterThanks: get().litterThanks + 1 }),
+      startLitterProof: (litterProof) => set({ litterProof }),
+      // Beide Fingerabdruecke merken, damit keines der Fotos noch einmal durchgeht. Deckel bei 200.
+      finishLitterProof: (hashes) => set({ litterProof: null, photoHashes: [...hashes, ...get().photoHashes].slice(0, 200) }),
+      cancelLitterProof: () => set({ litterProof: null }),
       setDemoMode: (v) => set({ demoMode: v }),
       addNfc: (id) => set({ nfcSeen: [...get().nfcSeen, id] }),
       resetAll: () => set({ ...initial }),
@@ -182,14 +196,36 @@ export function weekKeyOf(d = new Date()) {
 
 export function weekStats(ledger: Award[]) {
   const weekKey = weekKeyOf();
-  const start = new Date(weekKey).getTime();
+  // Montag lokal rechnen statt aus weekKey zu parsen: "YYYY-MM-DD" gilt als UTC-Mitternacht
+  // und liegt in Zeitzonen hinter UTC einen Tag zu frueh.
+  const monday = new Date(); monday.setHours(0, 0, 0, 0);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const start = monday.getTime();
   const days = new Set<string>();
   let points = 0;
   for (const l of ledger) {
     if (l.at >= start && l.points > 0) { days.add(new Date(l.at).toDateString()); points += l.points; }
   }
-  return { weekKey, activeDays: days.size, goal: 3, points };
+  // Montag bis Sonntag: an welchen Tagen dieser Woche gab es eine Gutschrift?
+  const week = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    return days.has(d.toDateString());
+  });
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  return { weekKey, activeDays: days.size, goal: 3, points, week, todayIdx };
 }
+
+/**
+ * Die vier Stufen mit ihrer Pose. Steht hier und nicht im Screen, damit Profil und
+ * Impact-Tab dieselbe Figur zeigen: Die Figur kennt keine Wachstumsstufen mehr,
+ * unterschieden wird ueber die Pose.
+ */
+export const STAGES = [
+  { name: 'Schlüpfling', pose: 'calm' as const },
+  { name: 'Entdecker', pose: 'hello' as const },
+  { name: 'Kletterer', pose: 'backpack' as const },
+  { name: 'Stadt', pose: 'cool' as const },
+];
 
 /** Entwicklungsstufe des Chamäleons: nach aktiven Wochen, nicht nach Punktemenge. */
 export function chameleonStage(ledger: Award[]) {

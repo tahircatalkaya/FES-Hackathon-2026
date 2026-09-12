@@ -47,7 +47,7 @@ export default function Reuse() {
 
   async function borrowDemo(s: VytalStore | null) {
     router.push(`/scan?mode=vytal${s ? `&store=${s.id}` : ''}`);
-    await remind('Vytal-Erinnerung', 'Deine Schale möchte in 14 Tagen zurück. Rückgabe in 48 h gibt +10 Punkte.', 'reuse', 60);
+    await remind('Vytal-Erinnerung', 'Dein Behälter möchte in 14 Tagen zurück. Rückgabe in 48 h gibt +10 Punkte.', 'reuse', 60);
   }
 
   return (

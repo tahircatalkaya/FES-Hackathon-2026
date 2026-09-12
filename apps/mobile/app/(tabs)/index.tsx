@@ -22,7 +22,6 @@ const LAYERS: { key: Layer | 'all'; label: string; ctx: ContextKey; icon: string
   { key: 'food', label: 'Essen', ctx: 'food', icon: 'nutrition' },
   { key: 'reuse', label: 'Mehrweg', ctx: 'reuse', icon: 'cafe' },
   { key: 'clean', label: 'Sauber', ctx: 'clean', icon: 'sparkles' },
-  { key: 'lastenrad', label: 'Lastenrad', ctx: 'mobility', icon: 'bicycle' },
 ];
 const AVAIL: Record<string, { l: string; c: string }> = { offen: { l: 'offen', c: C.success }, reserviert: { l: 'reserviert', c: C.warn }, voll: { l: 'voll', c: C.danger }, jetzt: { l: 'jetzt', c: C.success }, bald: { l: 'bald', c: C.info }, unbekannt: { l: '', c: C.muted } };
 

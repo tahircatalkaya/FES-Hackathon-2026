@@ -4,8 +4,7 @@ import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withSpring, withTiming, withRepeat, withSequence } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { C, CONTEXT, shadow } from '@/theme';
-import { useUI } from '@/store/ui';
+import { C, NAVY, shadow } from '@/theme';
 import { useT } from '@/i18n/useT';
 import { haptic } from '@/components/ui';
 
@@ -31,8 +30,6 @@ function TabBar({ state, navigation }: any) {
   const { width } = useWindowDimensions();
   const t = useT();
   const router = useRouter();
-  const ctx = useUI((s) => s.ctx);
-  const color = CONTEXT[ctx].color;
   const pad = 14, w = Math.min(width, 520) - pad * 2;
   const slots = 5, cell = w / slots; // 2 Tabs, Scan, 2 Tabs
   const activeName = state.routes[state.index].name === 'gemeinsam' ? 'impact' : state.routes[state.index].name;
@@ -83,9 +80,9 @@ function TabBar({ state, navigation }: any) {
             return (
               <React.Fragment key="scan-slot">
                 <Pressable onPress={() => { haptic(); router.push('/scan'); }} style={{ width: cell, alignItems: 'center', justifyContent: 'center', height: 58 }}>
-                  <Animated.View style={[{ width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', marginTop: -26, borderWidth: 4, borderColor: '#fff' }, shadow(2), scanSt]}>
+                  <View style={[{ width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', marginTop: -26, borderWidth: 4, borderColor: '#fff', backgroundColor: NAVY }, shadow(2)]}>
                     <Ionicons name="scan" size={26} color="#fff" />
-                  </Animated.View>
+                  </View>
                   <Text style={{ fontSize: 10.5, fontWeight: '800', color: C.muted, marginTop: 2 }}>Scan</Text>
                 </Pressable>
                 {tab}
