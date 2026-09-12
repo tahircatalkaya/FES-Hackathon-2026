@@ -41,6 +41,7 @@ const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTE
 
 export default function Scan() {
   const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
+  if(p.mode==='shelf-handover')return <ProofScanner kind="shelf" id={p.id||''}/>;
   if (!p.mode || !(p.mode in TITLES)) return <Chooser />;
   if(p.mode==='food-handover'||p.mode==='vytal-return')return <ProofScanner key={`${p.mode}:${p.id}`} kind={p.mode==='food-handover'?'food':'return'} id={p.id||''}/>;
   if(p.mode==='litter')return <LitterProofScreen />;
@@ -62,6 +63,7 @@ function Chooser() {
   return (
     <Screen tabBar={false}>
       <Header title={rt('routes.scan')} subtitle={rt('routes.what_is_in_front_of_you')} />
+      <Button label="Regal, Verteiler oder Restaurant scannen" icon="qr-code" color={C.food} onPress={()=>router.push('/ort-scannen')} style={{marginBottom:14}}/>
       <View style={{ gap: 10 }}>
         {items.map((it, i) => (
           <Card key={it.mode} onPress={() => router.replace((it.href ?? `/scan?mode=${it.mode}`) as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
@@ -92,7 +94,7 @@ function ScanInner() {
   const lock = useRef(false);
   const [signed,setSigned]=useState<boolean|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
   const needsAccount=mode==='vytal';
-  async function loadAccount(){try{setSigned(await trust.hasSession());}catch(e:any){setError(e.message);}}
+  async function loadAccount(){try{setSigned(await trust.hasSession());}catch(e:any){setSigned(false);setError(e.message);}}
   useEffect(()=>{if(needsAccount)void loadAccount();},[mode,p.id]);
 
   const { addAward, attest, nfcSeen } = useStore();

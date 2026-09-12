@@ -4,6 +4,27 @@
 Ein Chamäleon (Kai) führt durch Bus und Bahn (Transdev/traffiQ), Mehrweg (Vytal), Lebensmittelrettung
 (foodsharing) und Sauberkeit (FES). Der lauffähige Code liegt in **`apps/mobile/`**.
 
+## Neu: ein Einstieg, Gastmodus und kurze Übergabecodes
+
+Nach dem Tutorial: **Benutzername, E-Mail und Passwort** für einen gemeinsamen Mainsam-Zugang oder **Ohne Anmeldung weiter**. Innerhalb von Foodsharing und Mehrweg gibt es keine weiteren Passwortformulare. Bestehende Serverkonten funktionieren weiter mit Benutzername und Passwort; E-Mail ist bei neuen Registrierungen erforderlich und bleibt privat. Gastmeldungen/Zusagen bleiben beim späteren Einrichten eines Kontos erhalten.
+
+- **Orts-QR:** Regal, Angebot oder Restaurant direkt unter „Scannen → Regal, Verteiler oder Restaurant scannen“ öffnen. Der Aufkleber gibt allein keine Punkte.
+- **Übergabe:** Persönlichen QR zeigen oder vier Ziffern nennen. Der Code gilt nur für die ausgewählte Aktion, verfällt nach wenigen Minuten und kann nur vom berechtigten Gegenüber eingelöst werden. Fünf falsche PIN-Versuche sperren diese PIN-Prüfung; die Zähler überleben Neustarts.
+- **Regal:** Foto, Audio oder manueller Eintrag bleiben verfügbar, auch als Gast. Punkte erst nach beobachteter Bestätigung durch eine freigegebene Regalbetreuung; ohne Betreuung bleibt es eine Eigenmeldung. Gleicher Ort und gleiche Aktion: höchstens einmal innerhalb von 24 Stunden gewertet.
+- **Gäste:** Essen teilen/abholen und Belege nutzen ohne Registrierung. Gastübergaben erzeugen für beide Seiten keine einlösbaren Punkte; sonst ließen sich mit immer neuen Gastzugängen Punkte sammeln. Dies ersetzt weder Identitätsprüfung noch eine Sperre gegen abgesprochene Täuschungen.
+- **Video:** Der Expo-Video-Hook übernimmt die Freigabe. Die App ruft beim Unmount kein `pause()` auf einem bereits freigegebenen Player mehr auf; der Belohnungsclip wird nur bei geöffnetem Overlay erstellt.
+
+Ein gemeinsamer Startbefehl (alte Expo-/Server-Terminals zuvor mit **Ctrl+C** stoppen):
+
+```bash
+cd apps/mobile
+npm run dev:lan
+```
+
+Das startet den lokalen Server und Expo gemeinsam. Beide werden mit Ctrl+C beendet. Das Handy bleibt im selben privaten WLAN/Hotspot. Alternativ funktionieren weiterhin die zwei Terminals unten. Nach Änderungen am Server **auch den Server neu starten**, Expo-Neuladen allein genügt nicht.
+
+[Einrichtung der Regalbetreuung, QR-Formate und Testgrenzen](docs/EINSTIEG-UND-QR-UEBERGABEN.md).
+
 ## Gemeinsamer App-Stand · 12. September 2026
 
 Der Main-Stand mit neuem Profil, Onboarding, Impact-/Frankfurt-Ansichten, Mobilitätsexport und Müll-Fotonachweis ist mit den Foodsharing- und Mehrweg-Änderungen aus `imad` zusammengeführt. Die Übergaben, Partnerseite und der bisherige Aktionsüberblick bleiben erreichbar. Die Navigation übernimmt die einheitliche dunkelblaue Gestaltung aus Main und die begrenzte Animation samt zuverlässiger Web-Bedienung aus imad.
@@ -38,7 +59,7 @@ Die [App-Anleitung](apps/mobile/README.md) beschreibt Mikrofonrechte, KI und Sta
 
 ## Zugänge, Ladenfreigabe und bestehende Daten
 
-Das Profilformular aus Main speichert Angaben lokal auf dem Gerät; es authentifiziert kein Partnerkonto. Für bestätigte Abholungen, Rückgaben und Bewertungen verwendet jede Person einen eigenen **Mainsam-Serverzugang mit Passwort**. Derselbe Zugang gilt für Foodsharing und Mehrweg. **Ausloggen** im Profil beendet jetzt auch diese Serversitzung und entfernt deren Anzeigecache. „Lokale Daten löschen“ löscht keine Konten oder Belege auf dem Server.
+Die Anmeldung am App-Einstieg authentifiziert den **Mainsam-Serverzugang**. Das zusätzliche Formular „Meine Daten“ bleibt ein lokales Profilformular und ändert keine Server-Zugangsdaten. Gäste erhalten eine pseudonyme Geräte-Sitzung ohne E-Mail oder Passwort. Derselbe Zugang gilt für Foodsharing und Mehrweg. **Ausloggen** im Profil beendet jetzt auch diese Serversitzung und entfernt deren Anzeigecache. „Lokale Daten löschen“ löscht keine Konten oder Belege auf dem Server.
 
 Ein Ladenkonto muss einmal vom Betreiber einem Store zugeordnet werden. Ohne Freigabe kann es keine Rückgabe-QRs ausstellen. [Einrichtung und genaue Befehle](apps/trust-server/README.md#einmalige-freigabe-einer-lokalen-rücknahmestelle).
 

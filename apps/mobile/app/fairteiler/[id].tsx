@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
 import { trust, type SharedShelfUpdate } from '@/api/trust';
-import TrustAccount from '@/components/TrustAccount';
+import PlaceCode from '@/components/PlaceCode';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { Appear, Button, Card, Row, T, Tag, haptic } from '@/components/ui';
 import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
@@ -30,12 +30,11 @@ export default function Fairteiler() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { loc } = useLocation();
-  const [shared,setShared]=useState<SharedShelfUpdate[]>([]),[syncError,setSyncError]=useState(''),[login,setLogin]=useState(false);
+  const [shared,setShared]=useState<SharedShelfUpdate[]>([]),[syncError,setSyncError]=useState(''),[receiptId,setReceiptId]=useState('');
   const refresh=useCallback(async()=>{try{setShared(await trust.shelf(Number(id)));setSyncError('');}catch{setSyncError('Gemeinsamer Regalstand gerade nicht erreichbar. Lokale Meldungen bleiben erhalten.');}},[id]);
   useFocusEffect(useCallback(()=>{void refresh();const t=setInterval(()=>void refresh(),15000);return()=>clearInterval(t);},[refresh]));
   async function publish(kind:'shelf'|'stock'|'pickup',r:ActionResult){
-    if(!await trust.hasSession()){setSyncError('Auf diesem Gerät gespeichert. Bitte anmelden, um die Meldung mit anderen zu teilen.');setLogin(true);return;}
-    try{await trust.updateShelf(Number(id),{kind,fill:r.fill,items:r.items,requestKey:`shelf-${Date.now()}-${Math.random().toString(36).slice(2)}`});await refresh();}catch(e:any){setSyncError(`Lokal gespeichert. Teilen fehlgeschlagen: ${e.message}`);}
+    try{if(!await trust.hasSession())return;const result=await trust.updateShelf(Number(id),{kind,fill:r.fill,items:r.items,requestKey:`shelf-${Date.now()}-${Math.random().toString(36).slice(2)}`});setReceiptId(result.id);await refresh();}catch(e:any){setSyncError(`Lokal gespeichert. Teilen fehlgeschlagen: ${e.message}`);}
   }
   const [pt, setPt] = useState<FoodSharePoint | null>(null);
   const [sheet, setSheet] = useState<null | 'shelf' | 'stock' | 'pickup'>(null);
@@ -79,7 +78,7 @@ export default function Fairteiler() {
   async function onPickup(r: ActionResult) {
     void publish('pickup',r);
     let st = status(r); const ev = [`Mitgenommen: ${r.items.map((i) => i.name).join(', ')} (ca. ${(r.grams / 1000).toFixed(1)} kg)`, ...proof(r)];
-    try { await fs.pickup({ food_share_point_id: pt!.id }); ev.push('Eigene Meldung beim verbundenen Dienst; kein unabhängiger Nachweis'); } catch { ev.push('Nur auf diesem Gerät gespeichert'); }
+    ev.push('Eigene Meldung; ein Orts-QR allein bestätigt keine Abholung.');
     myRes.forEach((x) => releaseItem(x.id));
     showToast(addAward({ type: 'food.pickup', partner: 'foodsharing', status: st, key: `pickup:fsp:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Abgeholt: ${title}`, meta: { food_g: r.grams, source: srcOf(r), evidence: ev } }));
   }
@@ -103,7 +102,8 @@ export default function Fairteiler() {
       </Row>
 
       {!!syncError&&<Text accessibilityRole="alert" style={[T.small,{marginTop:12,color:C.warn}]}>{localize(syncError)}</Text>}
-      {login&&<TrustAccount onReady={()=>{setLogin(false);setSyncError('Angemeldet. Bitte die aktuelle Regalmeldung erneut erfassen, um sie zu teilen.');void refresh();}}/>}
+      <View style={{marginTop:12}}><PlaceCode value={`mainsam:shelf:${pt.id}`} label="Regal-QR anzeigen"/></View>
+      {!!receiptId&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>Meldung geteilt</Text><Text style={T.body}>Eine Regalbetreuung ist vor Ort? Zeige ihr deinen persönlichen Code. Ohne Betreuung bleibt dein Eintrag eine Meldung ohne Punkte.</Text><Button label="Meinen Übergabecode öffnen" color={col} onPress={()=>router.push({pathname:'/regalnachweise',params:{id:receiptId}})}/></Card>}
       <Appear delay={60}>
         <Card style={{ marginTop: 14 }}>
           <Row style={{ justifyContent: 'space-between' }}>
@@ -132,6 +132,7 @@ export default function Fairteiler() {
       </Appear>
 
       {!!shared.length&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>{rt('routes.recent_local_reports')}</Text>{shared.slice(0,5).map(r=><Text key={r.id} style={T.small}>{new Date(r.at).toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'})} · {r.kind==='stock'?rt('routes.added'):r.kind==='pickup'?rt('routes.collected'):rt('routes.shelf_checked')}: {r.items.map(i=>`${i.qty} ${i.name}`).join(', ')||localize(r.fill)}</Text>)}</Card>}
+      <Button label="Meine Regalmeldungen & Betreuung" variant="soft" color={col} onPress={()=>router.push('/regalnachweise')} style={{ marginTop: 12 }}/>
       <Text style={[T.label, { marginTop: 18, marginBottom: 8 }]}>{rt('routes.what_are_you_doing')}</Text>
       <Row style={{ gap: 10 }}>
         <ActionTile icon="bag-handle" label={rt('routes.collect')} pts={15} color={col} onPress={() => setSheet('pickup')} />

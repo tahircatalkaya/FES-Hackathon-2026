@@ -1,12 +1,13 @@
 import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useCallback, useRef, useState } from 'react';
 import { AppState, Linking, Text, TextInput, View } from 'react-native';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { reuseTrust, trust, type ReuseLoan } from '@/api/trust';
 import { useStore } from '@/store';
 import { cancelReturnReminder } from '@/api/notify';
 import { Button, Card, FeeText, Pill, Row, T, Tag } from './ui';
 import TrustAccount from './TrustAccount';
+import stores from '@/data/vytal-stores.json';
 import { C } from '@/theme';
 import { fmtDue, fmtFee, loanStatus, settleFee, LOAN_SOURCE, LOAN_TERMS, SETTLE_REASONS, type LoanState, type SettleReason } from '@/engine/loan';
 
@@ -24,6 +25,8 @@ export default function ReuseInventory({returnOnly=false}:{returnOnly?:boolean})
   const localize = useLocalize();
   const locale = useLocale();
   const router=useRouter();
+  const params=useLocalSearchParams<{store?:string}>();
+  const location=stores.find(s=>s.id===params.store);
   const [loans,setLoans]=useState<ReuseLoan[]>([]),[ready,setReady]=useState(false),[signed,setSigned]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[merchant,setMerchant]=useState(false);
   const running=useRef(false);
   const load=useCallback(async()=>{if(running.current)return;running.current=true;try{const has=await trust.hasSession();setSigned(has);if(!has)return;const r=await syncReuse();setLoans(r.loans);setMerchant(!!r.profile.merchantStores.length);setError('');}catch(e:any){setError(e.message);if(e.status===401)setSigned(false);}finally{setReady(true);running.current=false;}},[]);
@@ -33,6 +36,7 @@ export default function ReuseInventory({returnOnly=false}:{returnOnly?:boolean})
   const fees=overdue.reduce((sum,l)=>sum+loanStatus(l.borrowedAt).fee,0);
   const legacy=useStore(s=>s.containers).filter(c=>!c.txId.startsWith('trust:')&&!c.returnedAt&&!loans.some(l=>l.code===c.code));
   return <View style={{gap:12}}>
+    {location&&<Card><Text style={T.h3}>{location.name}</Text><Text style={T.body}>Du hast den Restaurant-QR geöffnet. Gib deinen Behälter beim Personal ab; danach erhältst du den persönlichen Rückgabecode.</Text></Card>}
     <Card style={{backgroundColor:C.reuse,gap:8}}><Text style={[T.h2,{color:'#fff'}]}>{returnOnly?t('components.reuse.return'):t('components.reuse.count', { open: open.length, returned: returned.length })}</Text><Text style={[T.body,{color:'#fff'}]}>{t('components.reuse.hint')}</Text><FeeText text={LOAN_TERMS} style={[T.small,{color:'#fff'}]} color="#fff"/>{!!overdue.length&&<Text style={[T.body,{color:'#fff',fontWeight:'900'}]}>{overdue.length} überfällig · {fmtFee(fees)} Gebühr offen</Text>}</Card>
     {!!error&&<><Text accessibilityRole="alert" style={[T.body,{color:C.danger}]}>{localize(error)}</Text><Button label={t('components.common.reload')} variant="soft" onPress={()=>void load()}/></>}
     {!ready?<Text style={T.body}>{t('components.reuse.loading')}</Text>:!signed?<TrustAccount color={C.reuse} onReady={()=>void load()}/>:<>

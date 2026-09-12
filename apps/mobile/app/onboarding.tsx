@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
+import EntryAccount from '@/components/EntryAccount';
 import Chameleon from '@/components/Chameleon';
-import { Button, Card, Divider, Row, T, haptic } from '@/components/ui';
+import { Appear, Button, Card, Divider, Row, T, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { LANGS } from '@/i18n';
 import { useT } from '@/i18n/useT';
@@ -21,10 +22,9 @@ export default function Onboarding() {
   const t = useT();
   const { lang, setProfile, setOnboarded, setPrivacy } = useStore();
   const [i, setI] = useState(0);
-  const [name, setName] = useState('');
   const [consent, setConsent] = useState(false);
   const [showLanguages, setShowLanguages] = useState(false);
-  const last = i === SLIDES.length; // Name-Schritt
+  const last = i === SLIDES.length; // Gemeinsamer Zugang oder Gastmodus
   const ctx = last ? 'community' : SLIDES[i].ctx;
   const color = CONTEXT[ctx].color;
 
@@ -55,7 +55,7 @@ export default function Onboarding() {
         <View style={{ alignItems: 'center', marginTop: 28 }}>
           <Chameleon pose={last ? 'cheer' : i % 2 ? 'hello' : 'wave'} size={230} />
         </View>
-        <Animated.View key={i} entering={FadeInDown.duration(240)} exiting={FadeOut} style={{ marginTop: 24, minHeight: 190 }}>
+        <Appear key={i} style={{ marginTop: 24, minHeight: 190 }}>
           {!last ? (
             <>
               {i === 1 && lang === 'de' ? (
@@ -78,22 +78,14 @@ export default function Onboarding() {
               )}
             </>
           ) : (
-            <>
-              <Text style={[T.h1]}>{t('onb.name')}</Text>
-              <TextInput value={name} onChangeText={setName} placeholder={t('data.username')} placeholderTextColor={C.muted} style={{ marginTop: 14, backgroundColor: '#fff', borderRadius: 16, padding: 16, fontSize: 18, fontWeight: '700', color: C.ink, borderWidth: 2, borderColor: color + '55' }} autoFocus maxLength={24} />
-              <Text style={[T.small, { marginTop: 10 }]}>{t('data.namePrivacy')}</Text>
-            </>
+            <EntryAccount initialRegister color={color} onReady={()=>{haptic('success');setPrivacy({shareAggregates:consent});setOnboarded(true);}}/>
           )}
-        </Animated.View>
+        </Appear>
         <View style={{ flex: 1 }} />
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: 18 }}>
           {[...SLIDES, null].map((_, k) => <Animated.View key={k} entering={FadeIn} style={{ width: k === i ? 22 : 7, height: 7, borderRadius: 4, backgroundColor: k === i ? color : C.line }} />)}
         </View>
-        <Button color={color} label={last ? t('onb.start') : t('common.next')} disabled={(i === 2 && !consent) || (last && name.trim().length < 2)} onPress={() => {
-          if (!last) { setI(i + 1); return; }
-          haptic('success');
-          setProfile({ name: name.trim() }); setPrivacy({ shareAggregates: consent }); setOnboarded(true);
-        }} />
+        {!last&&<Button color={color} label={t('common.next')} disabled={i===2&&!consent} onPress={()=>setI(i+1)}/>}
         {i > 0 && !last && <Pressable onPress={() => setI(i - 1)} style={{ alignSelf: 'center', marginTop: 12 }}><Text style={{ color: C.muted, fontWeight: '700' }}>{t('common.back')}</Text></Pressable>}
       </ScrollView>
     </View>

@@ -18,7 +18,7 @@ async function fixture(t, dbPath=':memory:') {
     const res=await fetch(base+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{ }),...extra},...(body?{body:JSON.stringify(body)}:{})});
     const data=await res.json(); assert.equal(res.status,expected,`${path}: ${data.error||'unexpected status'}`);return data;
   }
-  const register=async name=>(await call('/register',null,{name,password:'Only-a-test-password-123'})).token;
+  const register=async name=>(await call('/register',null,{name,email:`${name}@example.test`,password:'Only-a-test-password-123'})).token;
   const offer=(token,patch={})=>call('/offers',token,{title:'Brot und Äpfel',items:[{name:'Brot',qty:'1 Stück',cat:'Backwaren',grams:500}],portions:1,area:'Bockenheim',address:'Privater Treffpunkt 12',startsAt:timestamp,endsAt:timestamp+3600000,requestKey:crypto.randomUUID(),...patch});
   async function complete(provider,receiver,o) {
     const h=await call(`/offers/${o.id}/request`,receiver,{});
@@ -39,7 +39,7 @@ test('Food self-reports cannot award points or inflate impact, regardless of cal
 
 test('Separate accounts, owner-only acceptance, privacy, two-party proof and idempotent receipts',async t=>{
   const f=await fixture(t), p=await f.register('provider'), r=await f.register('receiver'), x=await f.register('outsider');
-  await f.call('/offers',null,undefined,401);await f.call('/login',null,{name:'receiver',password:'Wrong-password-123'},401);
+  assert.equal((await f.call('/offers',null)).length,0);await f.call('/login',null,{name:'receiver',password:'Wrong-password-123'},401);
   const o=await f.offer(p,{startsAt:f.now()+30*60000,endsAt:f.now()+90*60000});
   assert.equal((await f.call('/offers',r))[0].address,undefined);
   await f.call(`/offers/${o.id}/request`,p,{},403);
@@ -63,7 +63,7 @@ test('Separate accounts, owner-only acceptance, privacy, two-party proof and ide
   await f.call(`/handoffs/${h.id}/complete`,p,{});
   await f.call(`/handoffs/${h.id}/complete`,p,{});
   await f.call(`/handoffs/${h.id}/receive`,r,{code},409);
-  const me=await f.call('/me',r);assert.equal(me.awards.length,1);assert.equal(me.awards[0].points,15);assert.equal(me.awards[0].impact.food_g,500);
+  const me=await f.call('/me',r);assert.equal(me.awards.length,1);assert.equal(me.awards[0].points,5);assert.equal(me.awards[0].impact.food_g,500);
   const owner=await f.call('/me',p);assert.equal(owner.awards[0].impact.food_g,0);assert.equal(owner.awards.length,1);
   await f.call('/offers',r,undefined,403,'GET',{Origin:'https://evil.example'});
 });
@@ -288,4 +288,84 @@ test('Public shelf updates are shared, idempotent and remain self-reports withou
   assert.equal((await f.call(`/shelves/${point}`,null)).length,2);
   assert.equal((await f.call('/shelves',null))[0].kind,'shelf');
   assert.equal((await f.call('/me',p)).awards.length,0);
+});
+
+test('One app account accepts email login, protects private fields, upgrades guests and preserves handoffs',async t=>{
+  const f=await fixture(t),p=await f.register('provider');
+  await f.call('/register',null,{name:'incomplete',password:'Password-123'},422);
+  const guest=await f.call('/guest',null,{});
+  assert.equal(guest.user.guest,true);assert.ok(!JSON.stringify(guest).includes('password'));
+  const o=await f.offer(p),h=await f.call(`/offers/${o.id}/request`,guest.token,{});
+  assert.equal((await f.call('/offers',null))[0].address,undefined);
+  const upgraded=await f.call('/register',guest.token,{name:'alice',email:'Alice@Example.test',password:' Password-123 '});
+  assert.equal(upgraded.user.id,guest.user.id);assert.equal(upgraded.user.guest,false);
+  await f.call('/me',guest.token,undefined,401);
+  const logged=await f.call('/login',null,{name:'ALICE@example.test',password:' Password-123 '});
+  assert.equal((await f.call('/handoffs',logged.token))[0].id,h.id);
+  await f.call('/login',null,{name:'alice',password:'Password-123'},401);
+  await f.call('/register',null,{name:'alice2',email:'alice@example.test',password:'Password-123'},409);
+  const publicData=JSON.stringify(await f.call('/offers',null));assert.ok(!publicData.includes('example.test'));assert.ok(!publicData.includes('salt'));
+});
+
+test('Guest pickups need no registration and cannot farm either side’s points',async t=>{
+  const f=await fixture(t),p=await f.register('provider'),g=(await f.call('/guest',null,{})).token;
+  const o=await f.offer(p),h=await f.call(`/offers/${o.id}/request`,g,{});
+  await f.call(`/handoffs/${h.id}/accept`,p,{});
+  const ticket=await f.call(`/handoffs/${h.id}/ticket`,g,{});assert.match(ticket.code,/^\d{4}$/);
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,g,{proof:ticket.code},403);
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.code});
+  for(const actor of [p,g]){const me=await f.call('/me',actor);assert.equal(me.awards.length,1);assert.equal(me.awards[0].points,0);}
+});
+
+test('Food PIN is scoped, expires, locks after five guesses across restarts and QR remains usable',async t=>{
+  const dir=mkdtempSync(join(tmpdir(),'mainsam-pin-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));
+  const path=join(dir,'db.sqlite'),f=await fixture(t,path),p=await f.register('provider'),r=await f.register('receiver'),x=await f.register('other');
+  const o=await f.offer(p),h=await f.call(`/offers/${o.id}/request`,r,{});await f.call(`/handoffs/${h.id}/accept`,p,{});
+  const ticket=await f.call(`/handoffs/${h.id}/ticket`,r,{});
+  await f.call(`/handoffs/${h.id}/confirm-ticket`,x,{proof:ticket.code},403);
+  for(let i=0;i<5;i++)await f.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:'0000'},422);
+  await new Promise(resolve=>f.server.close(resolve));
+  const restarted=await fixture(t,path);
+  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.code},429);
+  await restarted.call(`/handoffs/${h.id}/ticket`,r,{},429);
+  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof});
+  await restarted.call(`/handoffs/${h.id}/confirm-ticket`,p,{proof:ticket.proof});
+  assert.equal((await restarted.call('/me',r)).awards.length,1);
+});
+
+test('Merchant return PIN needs exact owner and current receipt; guesses persist outside rollback',async t=>{
+  const f=await merchantFixture(t),store=f.stores[0].id;f.grant('staff',store);
+  const l=await f.call('/reuse/loans',f.customer,{code:'PIN12345',kind:'cup'});
+  const ticket=await f.call('/reuse/merchant/receipt',f.staff,{loanId:l.id,storeId:store});assert.match(ticket.code,/^\d{4}$/);
+  await f.call('/reuse/return',f.outsider,{loanId:l.id,proof:ticket.code},403);
+  for(let i=0;i<5;i++)await f.call('/reuse/return',f.customer,{loanId:l.id,proof:'0000'},422);
+  await f.call('/reuse/return',f.customer,{loanId:l.id,proof:ticket.code},429);
+  const good=await f.call('/reuse/return',f.customer,{loanId:l.id,proof:ticket.proof});assert.ok(good.loan.returnedAt);
+  const another=await f.call('/reuse/loans',f.customer,{code:'PIN67890',kind:'cup'});
+  const receipt=await f.call('/reuse/merchant/receipt',f.staff,{loanId:another.id,storeId:store});
+  f.advance(180001);await f.call('/reuse/return',f.customer,{loanId:another.id,proof:receipt.code},409);
+  const fresh=await f.call('/reuse/merchant/receipt',f.staff,{loanId:another.id,storeId:store});
+  assert.ok((await f.call('/reuse/return',f.customer,{loanId:another.id,proof:fresh.code})).loan.returnedAt);
+  await f.call('/reuse/return',f.customer,{loanId:another.id,proof:fresh.code},409);
+});
+
+test('Shelf QR alone and self-approval cannot award; authorized PIN proof is capped per place and action',async t=>{
+  const f=await merchantFixture(t),{DatabaseSync}=await import('node:sqlite'),{readFileSync}=await import('node:fs');
+  const point=JSON.parse(readFileSync(new URL('../mobile/src/data/fairteiler.json',import.meta.url),'utf8'))[0];
+  const db=new DatabaseSync(f.dbPath);const user=db.prepare('SELECT id FROM users WHERE name=?').get('staff');db.prepare('INSERT INTO shelf_staff VALUES(?,?)').run(user.id,point.id);db.close();
+  const data={kind:'pickup',fill:'mittel',items:[{name:'Brot',qty:'1',cat:'Backwaren',grams:500}],requestKey:'shelf-action-one'};
+  const r=await f.call(`/shelves/${point.id}`,f.customer,data);assert.equal((await f.call('/me',f.customer)).awards.length,0);
+  assert.equal((await f.call(`/shelves/${point.id}`,f.customer,data)).id,r.id);
+  const ticket=await f.call(`/shelf-actions/${r.id}/ticket`,f.customer,{});
+  await f.call(`/shelf-actions/${r.id}/confirm`,f.customer,{proof:ticket.code},403);
+  await f.call(`/shelf-actions/${r.id}/confirm`,f.outsider,{proof:ticket.code},403);
+  await f.call(`/shelf-actions/${r.id}/confirm`,f.staff,{proof:`mainsam:shelf:${point.id}`},422);
+  await f.call(`/shelf-actions/${r.id}/confirm`,f.staff,{proof:ticket.code});
+  await f.call(`/shelf-actions/${r.id}/confirm`,f.staff,{proof:ticket.proof});
+  let me=await f.call('/me',f.customer);assert.equal(me.awards.length,1);assert.equal(me.awards[0].points,5);
+  const second=await f.call(`/shelves/${point.id}`,f.customer,{...data,requestKey:'shelf-action-two'}),t2=await f.call(`/shelf-actions/${second.id}/ticket`,f.customer,{});
+  await f.call(`/shelf-actions/${second.id}/confirm`,f.staff,{proof:t2.code});
+  me=await f.call('/me',f.customer);assert.equal(me.awards.length,2);assert.equal(me.awards[1].points,0);
+  assert.ok(!(JSON.stringify(await f.call(`/shelves/${point.id}`,null))).includes(ticket.code));
+  assert.equal((await f.call('/me',f.staff)).shelfStores[0].id,point.id);
 });

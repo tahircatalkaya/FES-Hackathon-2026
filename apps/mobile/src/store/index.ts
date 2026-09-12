@@ -20,6 +20,8 @@ export interface LitterProof { at: number; lat: number; lon: number; accuracy?: 
 
 interface State {
   onboarded: boolean;
+  accessMode: 'guest' | 'member';
+  sessionExpired: boolean;
   name: string;
   lang: Lang;
   district: string;
@@ -54,7 +56,7 @@ interface State {
   radiusKm: number;
 
   setOnboarded: (v: boolean) => void;
-  setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'email' | 'phone' | 'address' | 'paymentMethod' | 'chameleonName'>>) => void;
+  setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'email' | 'phone' | 'address' | 'paymentMethod' | 'chameleonName' | 'accessMode' | 'sessionExpired'>>) => void;
   setPrivacy: (p: Partial<State['privacy']>) => void;
   setRadius: (km: number) => void;
   addAward: (e: ActionEvent) => Award;
@@ -93,6 +95,8 @@ const DEFAULT_FRIENDS: Friend[] = [
 
 const initial = {
   onboarded: false,
+  accessMode: 'guest' as 'guest' | 'member',
+  sessionExpired: false,
   name: '',
   lang: 'de' as Lang,
   district: 'Bockenheim',

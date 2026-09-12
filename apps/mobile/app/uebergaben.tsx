@@ -5,6 +5,8 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Header, Screen } from '@/components/Screen';
 import { Button, Card, Divider, Pill, Row, T, Tag } from '@/components/ui';
+import TrustAccount from '@/components/TrustAccount';
+import PlaceCode from '@/components/PlaceCode';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { DISTRICTS } from '@/data/mock';
 import ProofCode from '@/components/ProofCode';
@@ -24,12 +26,12 @@ export default function Handoffs() {
   const rt = useT();
   const localize = useLocalize();
   const locale = useLocale();
-  const params = useLocalSearchParams<{ create?: string; area?: string; mine?: string }>();
+  const router=useRouter();
+  const params = useLocalSearchParams<{ create?: string; area?: string; mine?: string; offer?:string; provider?:string }>();
   const sync = useStore(s => s.syncFoodAwards);
   const [profile, setProfile] = useState<TrustProfile | null>(null);
   const [offers, setOffers] = useState<TrustOffer[]>([]), [handoffs, setHandoffs] = useState<Handoff[]>([]);
   const [ready, setReady] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState('');
-  const [register, setRegister] = useState(false), [name, setName] = useState(''), [password, setPassword] = useState('');
   const [tab, setTab] = useState<'offers'|'mine'|'create'>(params.create ? 'create' : params.mine ? 'mine' : 'offers');
   const [filterArea,setFilterArea]=useState(params.area||'Alle');
   const [selectedSlots,setSelectedSlots]=useState<Record<string,number>>({});
@@ -62,22 +64,17 @@ export default function Handoffs() {
       <Text style={[T.body, { marginTop: 8 }]}>{rt('routes.see_what_remains_choose_your_portion_and_a_collection_time_on_sit')}</Text>
     </Card>
     {!!error && <Text accessibilityRole="alert" style={[T.body, { color: C.danger, marginBottom: 12 }]}>{localize(error)}</Text>}
-    {!ready ? <Text style={T.body}>{rt('routes.loading_your_handoffs')}</Text> : !profile ? <Card style={{ gap: 12 }}>
-      <Text style={T.h2}>{register ? rt('routes.create_account') : rt('routes.sign_in_for_handoffs')}</Text>
-      <Text style={T.body}>{rt('routes.your_own_account_protects_acceptances_and_reviews_your_public_nam')}</Text>
-      <TextInput accessibilityLabel={rt('routes.username_for_handoffs')} placeholder={rt('routes.username')} value={name} onChangeText={setName} autoCapitalize="none" autoCorrect={false} maxLength={24} style={field} />
-      <TextInput accessibilityLabel={rt('routes.password_for_handoffs')} placeholder={rt('routes.password_at_least_10_characters')} secureTextEntry value={password} onChangeText={setPassword} autoCapitalize="none" autoCorrect={false} maxLength={128} style={field} />
-      <Button label={busy ? rt('routes.connecting') : register ? rt('routes.create_account') : rt('routes.sign_in')} color={col} disabled={busy || name.trim().length < 3 || password.length < 10} onPress={() => void perform(async () => { await trust.login(name.trim(), password, register); setPassword(''); })} />
-      <Button label={register ? rt('routes.i_already_have_an_account') : rt('routes.create_a_new_account')} color={col} variant="ghost" disabled={busy} onPress={() => setRegister(!register)} />
-      <Text style={T.small}>{rt('routes.keep_your_password_safe_email_recovery_is_not_available')}</Text>
-    </Card> : <>
-      <Row style={{ justifyContent: 'space-between', marginBottom: 10 }}><Text style={T.h3}>{profile.user.name}</Text><Pressable accessibilityRole="button" onPress={() => void perform(async () => { await trust.logout(); setProfile(null); setOffers([]); setHandoffs([]); sync([]); useStore.getState().syncContainers([]); })}><Text style={{ color: col, fontWeight: '700' }}>{rt('routes.sign_out')}</Text></Pressable></Row>
+    {!ready ? <Text style={T.body}>{rt('routes.loading_your_handoffs')}</Text> : !profile ? <TrustAccount color={col} onReady={()=>void load()}/> : <>
+      <Text style={T.h3}>{profile.user.name}{profile.user.guest?' · Gast':''}</Text>
+      {profile.user.guest&&<Text style={T.small}>Ohne Registrierung mitmachen. Gastübergaben geben beiden Seiten einen Beleg, aber keine einlösbaren Punkte.</Text>}
+      <Button label="Verteiler- oder Regal-QR scannen" icon="qr-code" color={col} variant="soft" onPress={()=>router.push('/ort-scannen')}/>
       <Reputation data={profile.reputation} />
+      {offers.some(o=>o.ownerId===profile.user.id)&&<PlaceCode value={`mainsam:provider:${profile.user.id}`} label="Mein Verteiler-QR"/>}
       <Row style={{ gap: 7, marginVertical: 16, flexWrap: 'wrap' }}>{([['offers',rt('routes.offers')],['mine',rt('routes.my_handoffs')],['create',rt('routes.offer_food')]] as const).map(([id,label]) => <Pill key={id} label={label} color={col} active={tab===id} onPress={() => setTab(id)} />)}</Row>
       {tab === 'create' ? <OfferForm area={params.area} busy={busy} onCreate={draft => perform(async () => { await trust.distribution(draft); setTab('offers'); })} /> : tab === 'offers' ? <View style={{ gap: 12 }}>
         {!offers.length && <Card><Text style={T.body}>{rt('routes.no_offers_yet_record_the_first_portion_using_photo_audio_or_text')}</Text></Card>}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>{['Alle',...Array.from(new Set(offers.map(o=>o.area)))].map(area=><Pill key={area} label={area === 'Alle' ? rt('routes.all') : area} active={filterArea===area} color={col} onPress={()=>setFilterArea(area)}/>)}</ScrollView>
-        {offers.filter(o=>filterArea==='Alle'||o.area===filterArea).map(o => <Card key={o.id} style={{ gap: 10 }}>
+        {offers.filter(o=>(!params.offer||o.id===params.offer)&&(!params.provider||o.ownerId===params.provider)&&(filterArea==='Alle'||o.area===filterArea)).map(o => <Card key={o.id} style={{ gap: 10 }}>
           <Row style={{ justifyContent: 'space-between' }}><Text style={[T.h3,{flex:1}]}>{o.title}</Text><Tag label={o.remaining?rt('routes.value_of_value_available', { p1: o.remaining, p2: o.portions }):rt('routes.all_taken')} color={col} /></Row>
           <Text style={T.small}>{o.area} · {time(o.startsAt, locale)}–{new Date(o.endsAt).toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'})}</Text>
           <Text style={T.body}>{o.items.map(i => `${i.qty} ${i.name}`).join(' · ')}</Text>
@@ -88,7 +85,7 @@ export default function Handoffs() {
             <Button label={o.remaining?rt('routes.request_portion_time'):rt('routes.all_taken')} color={col} disabled={busy || o.remaining < 1 || o.endsAt < Date.now() || (!!o.slots?.length&&!o.slots.some(slot=>slot.available&&slot.startsAt===selectedSlots[o.id]))} onPress={() => void perform(async () => { await trust.request(o.id,selectedSlots[o.id]); setTab('mine'); })}/>
             <Text style={T.small}>{rt('routes.reserved_for_15_minutes_pending_acceptance_the_exact_address_appe')}</Text>
           </>}
-          {o.ownerId === profile.user.id && <Button label={rt('routes.view_requests')} color={col} variant="soft" onPress={() => setTab('mine')} />}
+          {o.ownerId === profile.user.id && <><PlaceCode value={`mainsam:offer:${o.id}`} label="QR für dieses Angebot"/><Button label={rt('routes.view_requests')} color={col} variant="soft" onPress={() => setTab('mine')} /></>}
         </Card>)}
       </View> : <View style={{ gap: 14 }}>
         {!handoffs.length && <Card><Text style={T.body}>{rt('routes.your_requests_and_acceptances_appear_here_nobody_is_accepted_auto')}</Text></Card>}
@@ -131,7 +128,7 @@ function HandoffCard({h,busy,perform}:{h:Handoff;busy:boolean;perform:(action:()
   const localize = useLocalize();
   const locale = useLocale();
   const router=useRouter();
-  const [issued,setIssued]=useState<{proof:string;expiresAt:number}|null>(null);
+  const [issued,setIssued]=useState<{proof:string;code:string;expiresAt:number}|null>(null);
   const [review,setReview]=useState(false), [concern,setConcern]=useState(false);
   const [scores,setScores]=useState<Record<string,number>>({});
   const [clock,setClock]=useState(Date.now());

@@ -149,8 +149,13 @@ export default function Profile() {
         <Text style={T.small}>{t('tabs.profile.serverDataRetained')}</Text>
       </View>
 
+      <SectionTitle title="Dein Zugang" />
+      <Text style={T.body}>{s.accessMode==='guest'?'Du nutzt Mainsam als Gast. Essen bleibt ohne Registrierung zugänglich.':'Ein Zugang gilt für alle Bereiche der App. Deine E-Mail bleibt privat.'}</Text>
+      {s.accessMode==='guest'&&<Button label="Zugang einrichten" variant="soft" color={col} onPress={()=>router.push('/anmelden?register=1')} style={{ marginBottom: 12 }}/>}
+
       <SectionTitle title={t('tabs.profile.foodsharing')} />
       <Button label={t('tabs.profile.handovers')} icon="🤝" variant="soft" color={col} onPress={() => router.push('/uebergaben')} style={{ marginBottom: 12 }} />
+      <Button label="Regalmeldungen & Betreuung" variant="soft" color={col} onPress={()=>router.push('/regalnachweise')} style={{ marginBottom: 12 }}/>
 
       <SectionTitle title={t('tabs.profile.about')} />
       <Button label={t('tabs.profile.partners')} icon="heart-circle-outline" variant="soft" color={col} onPress={() => router.push('/partner')} style={{ marginBottom: 12 }} />

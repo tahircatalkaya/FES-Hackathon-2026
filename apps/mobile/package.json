@@ -66,7 +66,9 @@
     "trust:lan": "node ../trust-server/server.mjs --lan",
     "trust:test": "node --test ../trust-server/server.test.mjs",
     "test:i18n": "node --test src/i18n/i18n.test.mjs",
-    "test:proofs": "node --test src/engine/litterproof.test.mjs"
+    "test:proofs": "node --test src/engine/litterproof.test.mjs",
+    "dev:lan": "node tools/dev-lan.cjs",
+    "test:session": "node tools/check-trust.cjs"
   },
   "private": true
 }

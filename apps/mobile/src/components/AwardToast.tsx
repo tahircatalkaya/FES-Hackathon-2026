@@ -30,7 +30,7 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
   /** Foodsharing, Vytal und der ÖPNV haben je einen Clip, der wie im FES-Bereich als Belohnung läuft. */
   const clip = a.partner === 'foodsharing' ? 'food' : a.partner === 'vytal' ? 'cup' : a.partner === 'transdev' ? 'ride' : null;
   if (clip) {
-    return <CelebrationOverlay open points={a.points} duplicate={a.duplicate} pending={a.status === 'ausstehend'} clip={clip} onClose={close} />;
+    return <CelebrationOverlay open points={a.points} duplicate={a.duplicate} pending={a.status === 'ausstehend'} note={a.points===0&&!a.duplicate ? a.reasons.at(-1)||a.formula : undefined} clip={clip} onClose={close} />;
   }
 
   if (a.points === 0) {

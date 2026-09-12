@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { View, Platform, Text as RNText, ScrollView, Pressable } from 'react-native';
 import { useStore } from '@/store';
+import { trust } from '@/api/trust';
 import { useUI } from '@/store/ui';
 import AwardToast from '@/components/AwardToast';
 import WhySheet from '@/components/WhySheet';
@@ -15,6 +16,7 @@ export default function RootLayout() {
   const locale = useLocale();
   const rtl = useIsRTL();
   const onboarded = useStore((s) => s.onboarded);
+  const sessionExpired = useStore(s=>s.sessionExpired);
   const [hydrated, setHydrated] = useState(false);
   const router = useRouter();
   const segments = useSegments();
@@ -31,9 +33,19 @@ export default function RootLayout() {
     if (!hydrated) return;
     const inOnb = segments[0] === 'onboarding';
     const inAuth = inOnb || segments[0] === 'anmelden';
+    if (sessionExpired && !inAuth) { router.replace('/anmelden'); return; }
     if (!onboarded && !inAuth) router.replace('/onboarding');
     if (onboarded && inOnb) router.replace('/(tabs)');
-  }, [onboarded, segments[0], hydrated]);
+  }, [onboarded, segments[0], hydrated, sessionExpired]);
+
+  useEffect(() => {
+    if (!hydrated || !onboarded) return;
+    // Check an existing access at entry; an offline server must not block guest browsing.
+    void (async()=>{
+      if(await trust.savedSession()) await trust.me();
+      else if(useStore.getState().accessMode==='member') useStore.setState({sessionExpired:true});
+    })().catch(()=>{});
+  }, [hydrated, onboarded]);
 
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
