@@ -153,7 +153,7 @@ export default function Act() {
         })}
       </View>
 
-      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} status={reward?.status} onClose={() => setReward(null)} />
+      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} onClose={() => setReward(null)} />
       <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} onDone={setReward} />
       <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} onDone={setReward} />
       <NewActionSheet open={sheet === 'new'} onClose={() => setSheet(null)} />

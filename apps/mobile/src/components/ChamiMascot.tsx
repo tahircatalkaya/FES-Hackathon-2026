@@ -91,13 +91,11 @@ export function CelebrationOverlay({
   open,
   points,
   duplicate,
-  status,
   onClose,
 }: {
   open: boolean;
   points?: number;
   duplicate?: boolean;
-  status?: string;
   onClose: () => void;
 }) {
   const { width } = useWindowDimensions();
@@ -131,9 +129,7 @@ export function CelebrationOverlay({
 
             {duplicate ? (
               <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Diese Challenge zählt einmal pro Tag. Morgen wieder.</Text>
-            ) : earned > 0 ? (
-              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Nachweis: {status ?? 'selbst angegeben'}</Text>
-            ) : (
+            ) : earned > 0 ? null : (
               <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Die Punkte kommen, sobald die Teilnahme bestätigt ist.</Text>
             )}
 
