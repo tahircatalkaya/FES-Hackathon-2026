@@ -70,7 +70,6 @@ export const REWARDS: Reward[] = [
   { id: 'r6', title: 'Spende: 1 Baum für Frankfurt', cost: 300, partner: 'Grünflächenamt', emoji: '🌳', desc: 'Deine Punkte werden zu einem echten Baum. Nimmt Horte-Druck raus.' },
   { id: 'r2', title: 'Kaffee im Mehrwegbecher', cost: 350, partner: 'Partnercafé', emoji: '☕', desc: 'Ein Heißgetränk bei einem teilnehmenden Café.' },
   { id: 'r3', title: 'Kinoticket', cost: 500, partner: 'Kino im Cinema', emoji: '🎬', desc: 'Ein Ticket für eine Vorstellung deiner Wahl.' },
-  { id: 'r5', title: 'Lastenrad-Tag', cost: 600, partner: 'MainLastenrad', emoji: '🚲', desc: 'Ein Tag mit einem Lastenrad deiner Wahl.' },
   { id: 'r4', title: 'Tageskarte RMV', cost: 800, partner: 'traffiQ', emoji: '🚊', desc: 'Eine Tageskarte für Frankfurt.' },
   { id: 'r7', title: 'Sportstudio für einen Monat', cost: 1200, partner: 'Partnerstudios Frankfurt', emoji: '🏋️', desc: 'Vier Wochen Mitgliedschaft in einem teilnehmenden Studio. Rund zwei Monate regelmäßiger Nutzung.' },
   { id: 'r8', title: 'Deutschlandticket für einen Monat', cost: 2000, partner: 'RMV · traffiQ', emoji: '🎫', desc: 'Ein Monat im ganzen Nahverkehr. Rund drei Monate regelmäßiger Nutzung, bei 50 Punkten am Tag sechs Wochen.' },

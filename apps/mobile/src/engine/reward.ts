@@ -4,14 +4,14 @@ import { emptyImpact, impactFor } from './impact.ts';
 /** Basispunkte je Aktion (vor Multiplikator). Siehe konzept/02-PUNKTE-UND-ANTI-FEHLANREIZ.md */
 export const BASE: Record<ActionType, number> = {
   // Mobilität: die Entscheidung mit dem größten Hebel, deshalb die höchsten Beträge.
-  'ride.checkin': 20,
+  'ride.checkin': 5,
   'ride.transit': 0,
-  'ride.active': 12,
-  'ride.sharing_feeder': 8,
+  'ride.active': 0,
+  'ride.sharing_feeder': 3,
   'ride.scooter_short': 0,
   'ride.correction': 3,
   // Mehrweg: kleiner Aufwand, kleiner Betrag. Eine Rückgabe ist kein halber Tag.
-  'reuse.return': 8,
+  'reuse.return': 5,
   'reuse.return_fast': 3,
   // Foodsharing: ehrenamtliche Arbeit zählt mehr als das Abholen für sich selbst.
   'food.stock': 15,
@@ -22,8 +22,8 @@ export const BASE: Record<ActionType, number> = {
   'food.pickup_for_other': 5,
   'food.reservation_kept': 2,
   // FES: Organisieren und Teilnehmen sind Tagesereignisse, die Tages-Challenges Kleinvieh.
-  'clean.participate': 25,
-  'clean.organize': 40,
+  'clean.participate': 15,
+  'clean.organize': 20,
   'clean.report': 10,
   'clean.bin_checkin': 3,
   'clean.bin_quality': 5,
@@ -42,9 +42,8 @@ export const FLAT = new Set<ActionType>(['ride.checkin']);
 
 /** Tagesdeckel je Aktion (Anzahl gewerteter Aktionen). */
 export const DAILY_COUNT_CAP: Partial<Record<ActionType, number>> = {
-  'ride.checkin': 2,
-  'ride.transit': 2,
-  'ride.active': 2,
+  'ride.checkin': 3,
+  'ride.transit': 3,
   'ride.sharing_feeder': 1,
   'ride.correction': 2,
   'reuse.return': 3,
@@ -79,13 +78,13 @@ export const DAILY_POINT_CAP = 50;
 export const CAP_EXEMPT = new Set<ActionType>(['rhythm.weekly_goal', 'rhythm.four_weeks']);
 
 export const WHY_BASE: Record<ActionType, string> = {
-  'ride.checkin': 'Check-in am Terminal. Fester Betrag für die Entscheidung, mit Bus und Bahn zu fahren. Der höchste Einzelbetrag der App.',
+  'ride.checkin': 'Check-in am Terminal. Fester Betrag für die Entscheidung, mit Bus und Bahn zu fahren, bis zu drei Fahrten am Tag.',
   'ride.transit': 'Fahrt geprüft und dem Fahrplan zugeordnet. Punkte gab es bereits beim Check-in, hier zählt der Impact.',
-  'ride.active': 'Weg über 1 km zu Fuß oder mit dem Rad statt mit dem Auto.',
-  'ride.sharing_feeder': 'Sharing-Fahrt als Zubringer zur Haltestelle, ersetzt eine Autofahrt.',
+  'ride.active': 'Zu Fuß oder mit dem Rad unterwegs. Das lässt sich nicht nachweisen, deshalb gibt es dafür keine Punkte, nur den Impact.',
+  'ride.sharing_feeder': 'Leihrad oder E-Scooter auf dem Weg zur Haltestelle, belegt durch den Anbieter. Kleiner Betrag, weil die Bahnfahrt danach den eigentlichen Hebel hat.',
   'ride.scooter_short': 'Kurze E-Scooter-Fahrt ersetzt meistens Gehen, deshalb keine Punkte. Wir zeigen das ehrlich.',
   'ride.correction': 'Du hast eine falsche Zuordnung korrigiert. Das macht die Daten für alle besser.',
-  'reuse.return': 'Bestätigte Mehrweg-Rückgabe. Zurückbringen ist die Leistung, nicht Ausleihen. Kleiner Aufwand, kleiner Betrag.',
+  'reuse.return': 'Bestätigte Mehrweg-Rückgabe. Zurückbringen ist die Leistung, nicht Ausleihen.',
   'reuse.return_fast': 'Rückgabe innerhalb von 48 Stunden. Schneller Umlauf, mehr Nutzung je Behälter.',
   'food.stock': 'Du hast Lebensmittel eingestellt und damit ein Angebot für andere geschaffen.',
   'food.report': 'Regal-Status gemeldet. Andere fahren nicht umsonst hin.',

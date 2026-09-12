@@ -30,16 +30,17 @@ Der Tagesdeckel liegt bei **50 Punkten**, deshalb sind die Beträge klein und na
 Hebel gestaffelt: Mobilität oben, Mehrweg unten. Quelle im Code:
 `apps/mobile/src/engine/reward.ts` (`BASE`), das ist die verbindliche Fassung.
 
-Mobilität: Terminal-Check-in 20 (fest, max 2/Tag), Fuss/Rad >1 km statt Auto 12
-(max 2/Tag), Sharing als OEPNV-Zubringer 8, E-Scooter <1,5 km ohne Anschluss **0**,
-Fehlerkorrektur melden 3. Die geprüfte Fahrt selbst gibt 0 Punkte, sie bucht Nachweis
-und Impact.
-Vytal: bestätigte Rückgabe 8 (idempotent je event_id, max 3/Tag), Rückgabe <48 h +3,
+Mobilität: Terminal-Check-in 5 (fest, max 3/Tag), Leihrad/E-Scooter als Zubringer
+zur Haltestelle 3 nur mit Anbieterbeleg, E-Scooter <1,5 km ohne Anschluss **0**,
+Fehlerkorrektur melden 3. Fuss und Rad geben **0** Punkte: nicht nachweisbar, der
+Impact wird trotzdem gezählt. Die geprüfte Fahrt selbst gibt 0 Punkte, sie bucht
+Nachweis und Impact.
+Vytal: bestätigte Rückgabe 5 (idempotent je event_id, max 3/Tag), Rückgabe <48 h +3,
 Ausleihe 0.
 Foodsharing: einstellen 15, Regal-Status melden 5 (max 4/Tag), Korb anbieten 10,
 Verteilung als Saver 25, abholen 5 (max 2/Tag), für Dritte mitnehmen 5,
 Reservierung eingehalten 2.
-FES: Clean-up-Teilnahme 25, Organisation 40, Meldung mit Ticket 10,
+FES: Clean-up-Teilnahme 15, Organisation 20, Meldung mit Ticket 10,
 Entsorgung am Behälter 3 (max 3/Tag), Biotonnen-Check 5 (max 1/Tag),
 Quiz 2/Frage (max 3 Kapitel/Tag).
 Rhythmus: Wochenziel 3 von 7 Tagen +25, vier Wochen in Folge +50.

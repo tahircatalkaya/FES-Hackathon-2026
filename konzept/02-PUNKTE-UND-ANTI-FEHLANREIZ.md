@@ -49,16 +49,16 @@ Punkte als Handlungen, die einem selbst nutzen.
 ### Mobilität (Transdev / traffiQ)
 | Aktion | Punkte | Deckel |
 |---|---:|---|
-| Terminal-Check-in (fest) | 20 | max. 2 gewertete Fahrten/Tag |
-| Fuss-/Radweg > 1 km statt Auto | 12 | max. 2/Tag |
-| E-Scooter/Bike-Sharing als Zubringer zu OEPNV-Halt | 8 | max. 1/Tag |
+| Terminal-Check-in (fest) | 5 | max. 3 gewertete Fahrten/Tag |
+| Fuss-/Radweg > 1 km statt Auto | 0 | nicht nachweisbar, nur Impact |
+| E-Scooter/Bike-Sharing als Zubringer zu OEPNV-Halt | 3 | max. 1/Tag |
 | E-Scooter-Fahrt < 1,5 km ohne OEPNV-Anschluss | **0** | ersetzt typischerweise Gehen, kein Gewinn |
 | Fehlerkorrektur melden ("das war nicht Linie 12") | 3 | max. 2/Tag |
 
 ### Mehrweg (Vytal)
 | Aktion | Punkte | Regel |
 |---|---:|---|
-| Bestätigte Rückgabe | 8 | genau einmal je `event_id`/`transaction_id`, idempotent |
+| Bestätigte Rückgabe | 5 | genau einmal je `event_id`/`transaction_id`, idempotent |
 | Rückgabe innerhalb 48 h statt kurz vor Frist | +10 | belohnt schnellen Umlauf, nicht Menge |
 | Ausleihe | 0 | Ausleihen ist keine Leistung, Zurückbringen ist die Leistung |
 
@@ -82,8 +82,8 @@ die dritte Tüte nichts mehr, während Einstellen (40) und Melden (15) unveränd
 ### Stadtsauberkeit (FES)
 | Aktion | Punkte | Nachweis |
 |---|---:|---|
-| Teilnahme an angemeldeter Clean-up-Aktion | 25 | Geofence + Zeitfenster + Peer-Check-in |
-| Organisation einer Clean-up-Aktion | 40 | FES bestätigt Sackabholung |
+| Teilnahme an angemeldeter Clean-up-Aktion | 15 | Geofence + Zeitfenster + Peer-Check-in |
+| Organisation einer Clean-up-Aktion | 20 | FES bestätigt Sackabholung |
 | Meldung (volle Tonne, wilde Kippe) die zu FES-Ticket führt | 10 | erste Meldung je Ort/72 h |
 | Richtige Entsorgung am FES-Papierkorb/Container (NFC/QR) | 3 | max. 3/Tag, Cooldown 60 min je Behälter |
 | Lernmodul/Quiz | 2 je Frage | max. 3 Kapitel/Tag |
