@@ -9,7 +9,7 @@ import { useStore, balance, weekStats, chameleonStage } from '@/store';
 import { useUI } from '@/store/ui';
 import { LANGS } from '@/i18n';
 import { useT } from '@/i18n/useT';
-import { DISTRICTS } from '@/data/mock';
+import { CHAPTERS, DISTRICTS } from '@/data/mock';
 
 const col = CONTEXT.home.color;
 
@@ -23,6 +23,7 @@ export default function Profile() {
   useEffect(() => { setCtx('home'); }, []);
   const bal = balance(s), wk = weekStats(s.ledger), st = chameleonStage(s.ledger);
   const unread = s.notices.filter((n) => !n.read).length;
+  const nextQuiz = CHAPTERS.find((c) => !s.quizDone.includes(c.id));
 
   function reset() {
     const go = () => { s.resetAll(); router.replace('/onboarding'); };
@@ -42,7 +43,7 @@ export default function Profile() {
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg }}>
           <Row>
-            <Chameleon color={col} size={110} stage={st.stage as any} />
+            <Chameleon pose="cool" size={110} />
             <View style={{ flex: 1 }}>
               {editName ? (
                 <Row><TextInput value={nm} onChangeText={setNm} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, padding: 8, fontWeight: '800', color: C.ink }} maxLength={24} /><Button label="OK" color={col} onPress={() => { s.setProfile({ name: nm.trim() || s.name }); setEditName(false); }} style={{ paddingVertical: 8, paddingHorizontal: 12 }} /></Row>
@@ -66,6 +67,23 @@ export default function Profile() {
         <Button label="Belohnungen" icon="gift" color={col} onPress={() => router.push('/belohnungen')} style={{ flex: 1, paddingVertical: 12 }} />
         <Button label="Journal" icon="journal" color={col} variant="soft" onPress={() => router.push('/journal')} style={{ flex: 1, paddingVertical: 12 }} />
       </Row>
+
+      <SectionTitle title="Lernen" />
+      <Appear delay={60}>
+        {nextQuiz ? (
+          <Card onPress={() => router.push(`/quiz/${nextQuiz.id}` as any)} style={{ backgroundColor: C.ink }}>
+            <Text style={[T.label, { color: '#ffffff99' }]}>FES-Wissen · mit {s.chameleonName}</Text>
+            <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
+            <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
+            <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{nextQuiz.questions.length} Fragen · +{nextQuiz.questions.length * 5} Punkte</Text>
+          </Card>
+        ) : (
+          <Card>
+            <Text style={T.h3}>Alle Kapitel geschafft</Text>
+            <Text style={T.small}>Neue Lerninhalte kommen mit dem nächsten Update.</Text>
+          </Card>
+        )}
+      </Appear>
 
       <SectionTitle title="Sprache" />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>{LANGS.map((l) => <Pill key={l.code} label={`${l.flag} ${l.label}`} active={s.lang === l.code} color={col} onPress={() => s.setProfile({ lang: l.code })} />)}</ScrollView>

@@ -18,7 +18,7 @@ import { hav } from '@/api/foodsharing';
 
 type Mode = 'ride' | 'bin' | 'peer' | 'vytal' | 'litter';
 const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTEXT; hint: string }> = {
-  ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Volle Punkte.' },
+  ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Die Punkte gibt es beim Check-in.' },
   bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 5 Punkte, bis zu dreimal am Tag.' },
   peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Ihr bestätigt euch gegenseitig vor Ort.' },
   vytal: { title: 'Vytal-Behälter', sub: 'Code auf Schale oder Becher', ctx: 'reuse', hint: 'Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte.' },
@@ -36,7 +36,7 @@ function Chooser() {
   const { setCtx } = useUI();
   useEffect(() => { setCtx('home'); }, []);
   const items: { mode: Mode; icon: string; t: string; s: string; href?: string }[] = [
-    { mode: 'ride', icon: 'train', t: 'Bus & Bahn', s: 'NFC-Tag im Fahrzeug antippen', href: '/fahrt?nfc=1' },
+    { mode: 'ride', icon: 'train', t: 'Bus & Bahn', s: 'Am Terminal einchecken', href: '/fahrt?nfc=1' },
     { mode: 'vytal', icon: 'cafe', t: 'Mehrweg-Schale', s: 'Code auf der Schale scannen' },
     { mode: 'bin', icon: 'trash', t: 'FES-Behälter', s: 'Aufkleber am Papierkorb antippen' },
     { mode: 'peer', icon: 'people', t: 'Clean-up-Partner', s: 'Code vom anderen Handy scannen' },
@@ -120,7 +120,7 @@ function ScanInner() {
         </View>
       ) : (
         <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
-          <Chameleon color={color} size={140} mood={done ? 'excited' : 'happy'} />
+          <Chameleon pose={done ? 'thumbs' : mode === 'vytal' ? 'coffee' : mode === 'ride' ? 'run' : 'leaf'} size={140} />
           <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>{done ?? (mode === 'litter' ? 'Tippe unten, wenn du etwas aufgehoben und richtig entsorgt hast.' : Platform.OS === 'web' ? 'Kamera-Scan läuft auf dem Handy. Hier: Code eingeben oder Demo.' : 'Kamera-Freigabe fehlt. Code eingeben oder Demo.')}</Text>
         </Card>
       )}

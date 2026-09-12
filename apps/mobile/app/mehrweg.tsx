@@ -61,7 +61,7 @@ export default function Reuse() {
               <Text style={[T.h2, { color: '#fff' }]}>{open.length} unterwegs · {returned} zurück</Text>
               <Text style={[T.small, { color: '#ffffffcc' }]}>Zurückbringen ist die Leistung, nicht Ausleihen. Jede bestätigte Rückgabe genau einmal.</Text>
             </View>
-            <Chameleon color="#fff" size={90} branch={false} lookX={-0.5} />
+            <Chameleon pose="coffee" size={90} />
           </Row>
         </Card>
       </Appear>

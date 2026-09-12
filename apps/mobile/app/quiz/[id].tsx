@@ -49,7 +49,7 @@ export default function Quiz() {
       {step === -1 && (
         <Appear>
           <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
-            <Chameleon color={col} size={190} mood="thinking" lookX={-0.4} />
+            <Chameleon pose="think" size={190} />
             <View style={{ backgroundColor: col + '18', borderRadius: 18, padding: 14, marginTop: 8 }}><Text style={[T.body, { fontSize: 16, lineHeight: 23 }]}>{ch.intro}</Text></View>
             {wasDone && <Tag label="schon abgeschlossen, keine weiteren Punkte" />}
             <View style={{ marginTop: 16, width: '100%' }}><Button label="Los" color={col} onPress={next} /></View>
@@ -61,7 +61,7 @@ export default function Quiz() {
         <Animated.View key={step} entering={FadeInRight.springify().damping(16)}>
           <Card>
             <Row style={{ alignItems: 'flex-start' }}>
-              <Chameleon color={col} size={70} branch={false} mood={picked === null ? 'thinking' : picked === q.answer ? 'excited' : 'sleepy'} />
+              <Chameleon pose={picked === null ? 'think' : picked === q.answer ? 'cheer' : 'shock'} size={70} />
               <Text style={[T.h3, { flex: 1, fontSize: 18 }]}>{q.q}</Text>
             </Row>
             <View style={{ marginTop: 14, gap: 8 }}>
@@ -88,7 +88,7 @@ export default function Quiz() {
       {done && (
         <Appear>
           <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
-            <Chameleon color={col} size={170} mood="excited" />
+            <Chameleon pose="cheer" size={170} />
             <Text style={[T.h2, { marginTop: 8 }]}>{correct}/{ch.questions.length} richtig</Text>
             <Row style={{ marginTop: 6, gap: 6 }}><Text style={T.small}>5 Punkte je richtige Antwort, max 3 Kapitel/Tag</Text></Row>
             <View style={{ marginTop: 16, width: '100%', gap: 8 }}>

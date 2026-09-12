@@ -1,17 +1,30 @@
 import { Platform } from 'react-native';
 
+/**
+ * Ride2Impact traegt die Farben der Partner. Rot und Grau sind aus den Logodateien
+ * in assets/partner/ gemessen, nicht geschaetzt. `graphite` ist das traffiQ-Grau
+ * abgedunkelt (Faktor 0,45) fuer grosse Flaechen, auf denen weisse Schrift steht.
+ */
+export const RIDE = {
+  red: '#FE0202',      // Transdev
+  grey: '#818B91',     // traffiQ
+  graphite: '#3A3E41',
+};
+
 /** Kontextfarben. Das Chamäleon nimmt die Farbe des aktiven Kontexts an. */
 export const CONTEXT = {
   home: { color: '#0F2A5C', soft: '#E3E9F7', name: 'Mainsam' },
-  mobility: { color: '#2F6BFF', soft: '#E4ECFF', name: 'Ride2Impact' },
+  mobility: { color: RIDE.red, soft: '#FDEAEA', name: 'Ride2Impact' },
   food: { color: '#2FB55C', soft: '#E1F6E8', name: 'Save2Share' },
   reuse: { color: '#12B5B0', soft: '#DDF6F4', name: 'Smart Mehrweg' },
-  clean: { color: '#FF8A2A', soft: '#FFEBDD', name: 'Sauberes Frankfurt' },
+  clean: { color: '#17427F', soft: '#E4EAF6', name: 'Sauberes Frankfurt' },
   community: { color: '#7C4DFF', soft: '#ECE5FF', name: 'Gemeinsam' },
 } as const;
 export type ContextKey = keyof typeof CONTEXT;
 
 export const C = {
+  /** Akzentblau fuer Links und den Nachweis "plausibel". Nicht die Markenfarbe der Mobilitaet. */
+  info: '#2F6BFF',
   bg: '#F6F5EF',
   card: '#FFFFFF',
   ink: '#141A14',

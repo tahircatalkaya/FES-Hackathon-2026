@@ -1,0 +1,40 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gecko">
+  <g>
+    <!-- tail -->
+    <path d="M150 140 C 178 140 182 118 166 110 C 152 103 152 122 164 124 C 174 126 176 112 164 108"
+      fill="none" stroke="#4caf37" stroke-width="14" stroke-linecap="round" />
+    <!-- back legs -->
+    <ellipse cx="122" cy="168" rx="11" ry="16" fill="#4caf37" transform="rotate(18 122 168)" />
+    <ellipse cx="66" cy="168" rx="11" ry="16" fill="#4caf37" transform="rotate(-18 66 168)" />
+    <!-- body -->
+    <ellipse cx="94" cy="140" rx="52" ry="38" fill="#7ed957" />
+    <!-- belly -->
+    <ellipse cx="94" cy="150" rx="34" ry="22" fill="#f3f6c4" />
+    <!-- front legs -->
+    <ellipse cx="132" cy="150" rx="10" ry="15" fill="#4caf37" transform="rotate(25 132 150)" />
+    <!-- waving arm -->
+    <path d="M52 128 C 30 118 20 90 30 74" fill="none" stroke="#4caf37" stroke-width="13" stroke-linecap="round" />
+    <ellipse cx="29" cy="70" rx="10" ry="10" fill="#7ed957" />
+    <!-- head -->
+    <circle cx="96" cy="88" r="46" fill="#7ed957" />
+    <!-- crest bumps -->
+    <circle cx="96" cy="42" r="6" fill="#4caf37" />
+    <circle cx="78" cy="46" r="5" fill="#4caf37" />
+    <circle cx="114" cy="46" r="5" fill="#4caf37" />
+    <!-- spots -->
+    <circle cx="120" cy="66" r="5" fill="#4caf37" />
+    <circle cx="128" cy="82" r="4" fill="#4caf37" />
+    <!-- eyes -->
+    <circle cx="76" cy="82" r="19" fill="#ffffff" />
+    <circle cx="118" cy="82" r="19" fill="#ffffff" />
+    <circle cx="80" cy="86" r="9" fill="#173515" />
+    <circle cx="114" cy="86" r="9" fill="#173515" />
+    <circle cx="83" cy="82" r="2.6" fill="#ffffff" />
+    <circle cx="117" cy="82" r="2.6" fill="#ffffff" />
+    <!-- nostrils -->
+    <circle cx="90" cy="104" r="1.6" fill="#173515" />
+    <circle cx="102" cy="104" r="1.6" fill="#173515" />
+    <!-- smile -->
+    <path d="M84 110 Q96 118 108 110" fill="none" stroke="#173515" stroke-width="3" stroke-linecap="round" />
+  </g>
+</svg>

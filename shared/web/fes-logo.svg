@@ -1,0 +1,14 @@
+<svg viewBox="0 0 660 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FES">
+  <g fill="#17427f">
+    <text
+      x="52"
+      y="236"
+      font-family="Arial Black, Arial, Helvetica, sans-serif"
+      font-weight="900"
+      font-size="220"
+      letter-spacing="-4"
+      transform="skewX(-12)"
+    >FES</text>
+    <path d="M 632,52 A 348,302 0 0 1 92,300 A 362,280 0 0 0 572,18 Z" />
+  </g>
+</svg>

@@ -29,7 +29,7 @@ export default function Rewards() {
               <Text style={{ fontSize: 40, fontWeight: '900', color: '#fff' }}>{bal} 🍃</Text>
               <Text style={[T.small, { color: '#ffffffcc' }]}>Punkte verfallen nicht. Wochenziele resetten.</Text>
             </View>
-            <Chameleon color="#fff" size={96} branch={false} mood="excited" />
+            <Chameleon pose="heart" size={96} />
           </Row>
         </Card>
       </Appear>
