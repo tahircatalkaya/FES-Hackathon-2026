@@ -4,9 +4,10 @@
 
 - `imad`: `3ebd27c`, Arbeitsverzeichnis zu Beginn sauber.
 - Abgerufenes `origin/main`: `f45ce3a` (neun noch nicht in imad enthaltene Commits).
+- Abschließender Abruf: `13d0690`; die zwei während der Prüfung hinzugekommenen Commits ergänzen ausschließlich IDE-/Gitignore-Dateien und wurden ebenfalls integriert. Der Ausschluss der lokalen Serverdatenbank bleibt erhalten.
 - Sicherungen: `codex/backup-imad-before-team-merge-20260912` und `codex/backup-main-before-team-merge-20260912`.
 
-Main wurde zuerst in imad integriert und dort geprüft. Der gemeinsame Stand wird anschließend ohne Überschreiben vorhandener Historie nach main übernommen. Die alten Commits bleiben erreichbar; kein Rebase, Squash oder Force-Push.
+Main wurde zuerst in imad integriert und dort geprüft. Die Übernahme nach main erfolgt als Merge ohne Überschreiben vorhandener Historie. Die alten Commits bleiben erreichbar; kein Rebase, Squash oder Force-Push. Beide Branches erhalten denselben gemeinsamen Stand.
 
 ## Zusammengeführte Bereiche
 
