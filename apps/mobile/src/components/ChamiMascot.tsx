@@ -48,6 +48,16 @@ const POSES = {
   backpack: { src: require('../../assets/chami/backpack.png'), ratio: 242 / 291, lid: 'rgb(153, 219, 14)', lively: false, eyes: [{ left: 0.3264, top: 0.2543, width: 0.2355, height: 0.2062 }, { left: 0.781, top: 0.3024, width: 0.1653, height: 0.1959 }] },
   run: { src: require('../../assets/chami/run.png'), ratio: 289 / 291, lid: 'rgb(154, 219, 15)', lively: true, eyes: [{ left: 0.4671, top: 0.354, width: 0.1903, height: 0.2027 }, { left: 0.8339, top: 0.323, width: 0.128, height: 0.1959 }] },
   shock: { src: require('../../assets/chami/shock.png'), ratio: 222 / 282, lid: 'rgb(155, 221, 18)', lively: false, eyes: [{ left: 0.1622, top: 0.2979, width: 0.2477, height: 0.2128 }, { left: 0.6667, top: 0.2979, width: 0.2477, height: 0.2128 }] },
+  car: {
+    src: require('../../assets/chami/car.png'),
+    ratio: 560 / 371,
+    lid: 'rgb(155, 219, 11)',
+    lively: false,
+    eyes: [
+      { left: 0.4786, top: 0.1806, width: 0.0821, height: 0.1348 },
+      { left: 0.65, top: 0.2291, width: 0.0839, height: 0.1429 },
+    ],
+  },
   cool: { src: require('../../assets/chami/cool.png'), ratio: 259 / 291, lid: undefined, lively: false, eyes: [] },
 } as const;
 
