@@ -69,14 +69,15 @@ Punkte als Handlungen, die einem selbst nutzen.
 | Regal-Status melden (Foto + Kategorien) | 15 | max. 1 je Fairteiler/6 h, verhindert Leerfahrten anderer |
 | Korb anbieten | 25 | |
 | Verteilung als Saver ankündigen und durchführen | 60 | ehrenamtliche Arbeit, höchster Gemeinnutzen |
-| Lebensmittel **abholen** | **0** | Impact ja, Punkte nein |
+| Lebensmittel **abholen** | **15** | max. 2 je Tag, danach 0. Nachweis per Foto vor Ort |
 | Abholung für dritte Person mitnehmen | 15 | bestätigt durch Empfänger-QR |
 | Reservierung eingehalten | 5 | belohnt Verlässlichkeit statt Menge |
 
-Das "0 Punkte fürs Abholen" ist bewusst und gehört in den Pitch: Wer Essen mitnimmt,
-bekommt bereits Essen. Punkte zusätzlich dafür zu geben wäre exakt das Hamstern, das
-die Aufgabenstellung ausschliesst. Der **Impact** (kg gerettet) wird trotzdem voll
-angezeigt und zaehlt aufs Frankfurt-Ziel ein.
+Die **Deckelung beim Abholen** gehört in den Pitch. Abholen bekommt Punkte, weil gerettetes
+Essen der eigentliche Zweck ist und weil sonst niemand den Weg zum Fairteiler macht. Aber nur
+zweimal am Tag, danach null. So lohnt sich Hamstern nicht: Wer ein Regal leerräumt, bekommt für
+die dritte Tüte nichts mehr, während Einstellen (40) und Melden (15) unverändert zählen. Der
+**Impact** (kg gerettet) wird immer voll angezeigt und zaehlt aufs Frankfurt-Ziel ein.
 
 ### Stadtsauberkeit (FES)
 | Aktion | Punkte | Nachweis |
@@ -158,7 +159,7 @@ Instrument. Punkte sind teuer, also brauchen sie einen harten Nachweis.
 | Punkte pro km lässt Vielfahrer gewinnen | Punkte an Entscheidung gekoppelt, nicht an Distanz |
 | E-Scooter ersetzt Gehen statt Auto | 0 Punkte unter 1,5 km ohne OEPNV-Anschluss |
 | Müll hinwerfen und aufheben | keine Punkte je Müllstück, nur Anwesenheit + Peer + FES-Bestätigung |
-| Fairteiler leerräumen (Hamstern) | 0 Punkte fürs Abholen, Punkte fürs Einstellen und Melden |
+| Fairteiler leerräumen (Hamstern) | Abholen nur 2x je Tag gutgeschrieben, danach 0. Punkte bleiben beim Einstellen und Melden |
 | Alles reservieren, nichts abholen | max. 1 offene Reservierung, TTL 45 min, Teilmengen, No-Show-Sperre |
 | Doppelbelohnung Vytal | Idempotenz-Key auf `event_id`, serverseitige Dedupe-Tabelle |
 | Mehrfach-Accounts (Sybil) | ein Konto je Gerät + Telefonnummer, kein Punktetransfer, Einladungsbonus einmalig und klein |

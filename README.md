@@ -1,52 +1,57 @@
-# MainWandel – gemeinsame Integrationsdemo
+# Team 01 – Frankfurt Impact Challenge (FES Hackathon 2026)
 
-Lokale, ausführbare Grundlage für die Frankfurt Impact Challenge. Branch: `codex/plattform-grundlagen`. Es handelt sich um eine **Integrationsdemo**, noch keine vollständige Android-/iOS-App. Öffentliche Partnerorte stammen aus geprüften API-Abrufen, Aktionsnachweise sind eigene Fixtures. Keine echten Gutscheine oder schreibenden Partnertransaktionen.
+**Mainsam** ist unsere App: eine Anwendung für Frankfurt, die nachhaltiges Verhalten sichtbar macht und belohnt.
+Ein Chamäleon (Kai) führt durch Bus und Bahn (Transdev/traffiQ), Mehrweg (Vytal), Lebensmittelrettung
+(foodsharing) und Sauberkeit (FES). Der lauffähige Code liegt in **`apps/mobile/`**.
 
-## Start
+## App starten
 
-Im Projektordner unter PowerShell:
+Voraussetzungen: Node 20 oder neuer, npm, ein Handy mit **Expo Go** und ein kostenloses Konto von [expo.dev](https://expo.dev/signup).
 
-```powershell
-.\START.ps1
+```bash
+cd apps/mobile
+npm install
+npx expo login      # einmalig, mit dem Expo-Konto
+npx expo start      # QR-Code mit Expo Go scannen
 ```
 
-Dann [lokale Demo öffnen](http://127.0.0.1:8765). Python 3.11+ genügt; das Startskript nutzt auf diesem Rechner die gebündelte Python-Laufzeit. Auf einem anderen Rechner Python installieren und bei fehlender Zeitzonendatenbank `python -m pip install -r requirements-dev.txt` ausführen.
+In Expo Go muss dasselbe Konto eingeloggt sein wie im Terminal. Handy und Rechner müssen im selben Netz sein.
+Uni- und Gäste-WLAN trennen Geräte oft voneinander, dann einfach den Handy-Hotspot nutzen.
 
-```powershell
-python -m shared.server
-python -m unittest discover -s tests -v
-python -m shared.demo
+Ohne Handy geht auch `npx expo start --web`.
+
+Startet die App nicht oder schließt sie sich sofort wieder: die Tabelle in
+[`apps/mobile/README.md`](apps/mobile/README.md) deckt alle bisher aufgetretenen Fälle ab.
+Kurzversion für den häufigsten Fall:
+
+```bash
+cd apps/mobile && rm -rf node_modules && npm install && npx expo start -c
 ```
 
-Frischer Zustand ohne Löschen alter Daten: Server mit Strg+C beenden, `./START.ps1 -Database .runtime/probe-02.sqlite` mit einem **neuen** Dateinamen starten. Gleicher Dateiname erhält Historie und Replay-Schutz. Alle Demodaten bleiben lokal in `.runtime/`. Der Server bindet nur `127.0.0.1`; nicht ins Internet freigeben. Er ist kein produktives Authentifizierungssystem.
+Die Versionen in `apps/mobile/package.json` sind teilweise bewusst ohne `^` gepinnt, weil Expo Go diese
+Module nativ in genau einer Version mitbringt. Bitte nicht eigenmächtig hochziehen.
 
-## Arbeitsergebnisse und Grenzen
+## Wo was liegt
 
-- [Aktueller Status und tatsächlich ausgeführte Tests](docs/STATUS_UND_TESTS.md)
-- [Gesicherte Befunde, Scope, Stackvorschlag und Zeitplan](docs/ENTSCHEIDUNGEN.md)
-- [Alle 422 Auftragspassagen und Prioritäten](docs/ANFORDERUNGEN.md), [maschinenlesbar](docs/anforderungen.json)
-- [Architektur, Adapterverträge und sechs Modulübergaben](docs/VERTRAEGE.md)
-- [Punkte, Missbrauchsschutz, Impact und Budget](docs/REWARDS_UND_WIRKUNG.md)
-- [Nutzerabläufe, Gestaltung, Pitch und Pilot](docs/UX_UND_DEMO.md)
+| Ordner | Inhalt |
+| --- | --- |
+| `apps/mobile/` | Die App (Expo / React Native, iOS + Android + Web). Eigene README mit Details |
+| `konzept/` | Review und Entscheidungen, Master-Prompt, Punktemodell und Anti-Fehlanreiz-Regeln |
+| `docs/` | Status, Verträge, Anforderungen, Quellenprüfungen der Vorarbeit |
+| `Foodsharing API/`, `Mobilitätsdaten/` | Partnerdokumentation und Rohdaten des Veranstalters |
+| `shared/`, `tests/`, `tools/`, `START.ps1` | Ältere Python-Integrationsdemo der Vorarbeit, nicht die App |
 
-Die Modul-/Personenzuordnung fehlt noch. Deshalb wurden keine fremden Fachmodule implementiert. Native NFC-/GPS-Funktionen, vollständige Partneraktionen, private Adressfreigabe, echte Rewards, Freunde/Top 100 und Push sind offen beziehungsweise spezifiziert. **18 automatisierte Tests bestanden**; mobiler Browser wurde geprüft, echte Android-/iOS-Geräte noch nicht.
+Die Punkte- und Fairnessregeln stehen in [`konzept/02-PUNKTE-UND-ANTI-FEHLANREIZ.md`](konzept/02-PUNKTE-UND-ANTI-FEHLANREIZ.md).
+Arbeitsregeln für das Repo und die Bewertungskriterien der Jury stehen in [`CLAUDE.md`](CLAUDE.md).
 
-## Reproduzierbare Quellenprüfung
+## Ältere Integrationsdemo (Python)
 
-```powershell
-python tools/inspect_sources.py
-python tools/probe_partners.py
-# Optional: eigener Team-Key wird ausschließlich serverseitig gelesen.
-python tools/probe_partners.py --auth
-```
+Aus der Vorarbeit liegt zusätzlich eine lokale Python-Demo im Repo. Sie ist **nicht** die App und wird für den
+Pitch nicht gebraucht. Start unter PowerShell mit `.\START.ps1`, danach <http://127.0.0.1:8765>.
+Details und Grenzen: [Status und Tests](docs/STATUS_UND_TESTS.md), [Entscheidungen](docs/ENTSCHEIDUNGEN.md),
+[Anforderungen](docs/ANFORDERUNGEN.md), [Verträge](docs/VERTRAEGE.md), [Rewards und Wirkung](docs/REWARDS_UND_WIRKUNG.md),
+[UX und Demo](docs/UX_UND_DEMO.md).
 
-Die Probe liest nur öffentliche Standorte und optional eigene Testnutzer/deren Historien. Keine Reservierungen, Ausleihen, Verifikationsänderungen oder Partnernachrichten. Ergebnisse ohne Schlüssel unter `docs/generated/`. Onlinezugang nötig; bei Netzfehler bleibt die Demo mit den vorhandenen Snapshots nutzbar.
-
-Für die GTFS-Prüfung das geprüfte Archiv nach `.runtime/gtfs/` entpacken (`tar -xf "Mobilitätsdaten/GTFS_gefiltert_Frankfurt+30km.7z" -C .runtime/gtfs`) und `python tools/audit_gtfs.py` ausführen. Es werden nur kleine Aggregationsberichte ausgegeben, kein GTFS in den Client geladen.
-
-**Korrektur des unten erhaltenen älteren Datenhandouts:** Der tatsächlich gelieferte EFA-Bestand hat 50 Zeilen und ist bytegleich mit der Originalsicherung. Die dort beschriebenen 5.699 Zeilen existieren in diesem Checkout nicht. `compose.yaml`, `database/` und der ältere Umsetzungsplan sind ebenfalls nicht vorhanden. Verbindlicher Iststand: [Datenprüfung](docs/generated/data-audit.json), [GTFS-Prüfung](docs/generated/gtfs-audit.json).
-
----
 
 # Daten und API-Dokumentationen für den Hackathon
 
