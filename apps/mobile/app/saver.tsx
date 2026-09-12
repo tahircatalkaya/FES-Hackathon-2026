@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen, Header } from '@/components/Screen';
+import FoodsharingLogo from '@/components/FoodsharingLogo';
 import Chameleon from '@/components/Chameleon';
 import { Appear, Button, Card, Divider, Pill, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
@@ -65,7 +66,7 @@ export default function Saver() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Saver werden" subtitle="Quiz, drei Einführungsabholungen, Freigabe" color={col} />
+      <Header right={<FoodsharingLogo width={76} />} title="Saver werden" subtitle="Quiz, drei Einführungsabholungen, Freigabe" color={col} />
       <Appear>
         <Card style={{ backgroundColor: isVerified ? C.success : col }}>
           <Row>

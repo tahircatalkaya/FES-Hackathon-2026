@@ -34,6 +34,7 @@
       "expo-router",
       ["expo-location", { "locationWhenInUsePermission": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt." }],
       ["expo-camera", { "cameraPermission": "Zum Scannen von QR-Codes und für Regal-Fotos." }],
+      ["expo-audio", { "microphonePermission": "Mainsam nimmt deine Sprachnotiz auf, wenn du die Aufnahme startest.", "enableBackgroundRecording": false, "enableBackgroundPlayback": false }],
       "expo-localization",
       "expo-notifications"
     ],

@@ -7,6 +7,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
+import FoodsharingLogo from '@/components/FoodsharingLogo';
 import Chameleon from '@/components/Chameleon';
 import { Pill, T, haptic } from '@/components/ui';
 import { C, CONTEXT, S, shadow, type ContextKey } from '@/theme';
@@ -94,10 +95,10 @@ export default function Discover() {
               <Text style={[T.h2]} numberOfLines={1}>{t('home.greeting')} {name || 'du'} 👋</Text>
               <Text style={T.small}>{t('home.nearby')}{isDemo ? ' · Bockenheimer Warte' : ''}</Text>
             </View>
-            <Pressable onPress={() => router.push('/handeln')} style={[{ backgroundColor: '#fff', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 8, alignItems: 'center' }, shadow(1)]}>
+            {layer === 'food' ? <FoodsharingLogo width={88} /> : <Pressable onPress={() => router.push('/handeln')} style={[{ backgroundColor: '#fff', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 8, alignItems: 'center' }, shadow(1)]}>
               <Text style={{ fontWeight: '900', color: ctxColor, fontSize: 16 }}>{wk.activeDays}/{wk.goal}</Text>
               <Text style={{ fontSize: 10, color: C.muted, fontWeight: '700' }}>{t('week.days')}</Text>
-            </Pressable>
+            </Pressable>}
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 12 }} contentContainerStyle={{ paddingRight: 20 }}>
             {LAYERS.map((l) => (

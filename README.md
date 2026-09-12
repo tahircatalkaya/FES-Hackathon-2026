@@ -6,30 +6,17 @@ Ein Chamäleon (Kai) führt durch Bus und Bahn (Transdev/traffiQ), Mehrweg (Vyta
 
 ## App starten
 
-Voraussetzungen: Node 20 oder neuer, npm, ein Handy mit **Expo Go** und ein kostenloses Konto von [expo.dev](https://expo.dev/signup).
+Mit aktueller Expo Go-App (SDK 57) auf dem Handy und Node 22 LTS oder neuer auf dem Mac:
 
 ```bash
 cd apps/mobile
-npm install
-npx expo login      # einmalig, mit dem Expo-Konto
-npx expo start      # QR-Code mit Expo Go scannen
+npm install --include=optional
+npm run start:lan
 ```
 
-In Expo Go muss dasselbe Konto eingeloggt sein wie im Terminal. Handy und Rechner müssen im selben Netz sein.
-Uni- und Gäste-WLAN trennen Geräte oft voneinander, dann einfach den Handy-Hotspot nutzen.
+Den Mac mit dem persönlichen Hotspot des iPhones oder beide Geräte mit demselben privaten WLAN verbinden. In den iPhone-Einstellungen für Expo Go **Lokales Netzwerk** erlauben. Den neuen QR-Code mit der iPhone-Kamera scannen und in Expo Go öffnen. Den einmaligen Entwicklerhinweis mit **Continue** schließen. Das Terminal bleibt geöffnet. Öffentliches WLAN kann Verbindungen zwischen Geräten blockieren.
 
-Ohne Handy geht auch `npx expo start --web`.
-
-Startet die App nicht oder schließt sie sich sofort wieder: die Tabelle in
-[`apps/mobile/README.md`](apps/mobile/README.md) deckt alle bisher aufgetretenen Fälle ab.
-Kurzversion für den häufigsten Fall:
-
-```bash
-cd apps/mobile && rm -rf node_modules && npm install && npx expo start -c
-```
-
-Die Versionen in `apps/mobile/package.json` sind teilweise bewusst ohne `^` gepinnt, weil Expo Go diese
-Module nativ in genau einer Version mitbringt. Bitte nicht eigenmächtig hochziehen.
+Die [App-Anleitung](apps/mobile/README.md) erklärt Startfehler, Mikrofonrechte, Google Free Tier und die neuen Partnerkarten. Den vorhandenen Schlüssel in `apps/mobile/.env` nicht überschreiben. Die nativen Paketversionen sind passend zu Expo Go gepinnt.
 
 ## Wo was liegt
 

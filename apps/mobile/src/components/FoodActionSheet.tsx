@@ -4,6 +4,7 @@ import Animated, { Easing, FadeIn, FadeInDown, useAnimatedStyle, useSharedValue,
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { C, R, S, shadow } from '@/theme';
+import VoiceStep from './VoiceStep';
 import { Button, Pill, Row, T, haptic } from './ui';
 import { CATS, aiProvider, analyzeAudio, analyzePhoto, estimateGrams, type AiMode, type Fill, type FoodItem } from '@/api/ai';
 
@@ -69,7 +70,7 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
       setItems(res.items); setFill(res.fill); setNote(res.foodVisible ? res.note : 'Auf dem Foto sind keine Lebensmittel zu erkennen. Trag ein, was du siehst.'); setUsedAi(true);
       haptic('success');
     } catch (e: any) {
-      setNote(`Bilderkennung gerade nicht erreichbar (${String(e?.message ?? e).slice(0, 60)}). Trag es kurz selbst ein.`);
+      setNote(`Bilderkennung: ${String(e?.message ?? e)} Du kannst den Inhalt selbst eintragen.`);
     }
     setStep('result');
   }
@@ -85,7 +86,7 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
       setNote(res.items.length ? res.note : 'Ich habe keine Lebensmittel verstanden. Trag sie kurz selbst ein.');
       haptic('success');
     } catch (e: any) {
-      setNote(`Transkription gerade nicht erreichbar (${String(e?.message ?? e).slice(0, 60)}). Trag es kurz selbst ein.`);
+      setNote(`Spracherkennung: ${String(e?.message ?? e)} Du kannst den Inhalt selbst eintragen.`);
     }
     setStep('result');
   }
@@ -130,10 +131,11 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
                 </Animated.View>
               )}
 
-              {step === 'voice' && <VoiceStep key="voice" color={color} ai={!!ai} error={error} onDone={onVoiceDone} />}
+              {open && step === 'voice' && <VoiceStep key="voice" color={color} ai={!!ai} error={error} onDone={onVoiceDone} />}
 
               {step === 'manual' && (
                 <Animated.View key="manual" entering={FadeIn}>
+                  <Text style={[T.small, { marginBottom: 10 }]}>Kostenlos ohne KI: Du kannst auch das Mikrofon deiner Handy-Tastatur zum Diktieren nutzen.</Text>
                   <ItemEditor items={items} setItems={setItems} color={color} autoFocus />
                   {mode === 'shelf' && <FillPicker fill={fill} setFill={setFill} color={color} />}
                   <View style={{ marginTop: 14 }}><Button label={items.length ? `Weiter · ${items.length} Posten` : 'Weiter'} color={color} disabled={!canFinish} onPress={() => { haptic(); setStep('result'); }} /></View>
@@ -232,49 +234,6 @@ function ItemEditor({ items, setItems, color, autoFocus }: { items: FoodItem[]; 
         </Pressable>
       </View>
     </View>
-  );
-}
-
-/** Aufnahme: gedrückt halten, sprechen, loslassen. Liefert Datei-URI und MIME an den Aufrufer. */
-function VoiceStep({ color, ai, error, onDone }: { color: string; ai: boolean; error: string | null; onDone: (uri: string | undefined, mime: string) => void }) {
-  const [rec, setRec] = useState(false);
-  const [localErr, setLocalErr] = useState<string | null>(null);
-  const recorder = useRef<any>(null);
-  const mime = useRef('audio/mp4');
-
-  async function start() {
-    haptic(); setLocalErr(null); setRec(true);
-    try {
-      const A = require('expo-audio');
-      const perm = await A.requestRecordingPermissionsAsync?.();
-      if (perm && perm.granted === false) { setLocalErr('Ohne Mikrofon geht nur Foto oder Eintragen.'); setRec(false); return; }
-      await A.setAudioModeAsync?.({ allowsRecording: true, playsInSilentMode: true });
-      const base = A.RecordingPresets.HIGH_QUALITY;
-      let opts = base;
-      if (Platform.OS === 'ios') { opts = { ...base, extension: '.wav', sampleRate: 16000, numberOfChannels: 1, bitRate: 256000, ios: { ...base.ios, outputFormat: 'lpcm', linearPCMBitDepth: 16, linearPCMIsBigEndian: false, linearPCMIsFloat: false } }; mime.current = 'audio/wav'; }
-      else if (Platform.OS === 'android') { opts = { ...base, extension: '.aac', sampleRate: 16000, numberOfChannels: 1, android: { ...base.android, extension: '.aac', outputFormat: 'aac_adts', audioEncoder: 'aac' } }; mime.current = 'audio/aac'; }
-      else { opts = { ...base, web: { mimeType: 'audio/webm', bitsPerSecond: 128000 } }; mime.current = 'audio/webm'; }
-      const r = new A.AudioRecorder(opts);
-      await r.prepareToRecordAsync(); r.record(); recorder.current = r;
-    } catch (e: any) { recorder.current = null; setLocalErr('Aufnahme konnte nicht gestartet werden.'); setRec(false); }
-  }
-  async function stop() {
-    if (!rec) return;
-    haptic(); setRec(false);
-    let uri: string | undefined;
-    try { if (recorder.current) { await recorder.current.stop(); uri = recorder.current.uri ?? undefined; } } catch {}
-    onDone(uri, mime.current);
-  }
-  return (
-    <Animated.View entering={FadeIn} style={{ alignItems: 'center' }}>
-      <Text style={[T.body, { textAlign: 'center' }]}>{rec ? 'Ich höre zu' : ai ? 'Gedrückt halten und sprechen, zum Beispiel: „Zwei Tüten Brötchen und drei Joghurt.“' : 'Die Sprachnotiz wird gespeichert. Den Inhalt trägst du danach ein.'}</Text>
-      <Bars active={rec} color={color} />
-      <Pressable onPressIn={start} onPressOut={stop} style={[{ width: 96, height: 96, borderRadius: 48, backgroundColor: rec ? C.danger : color, alignItems: 'center', justifyContent: 'center' }, shadow(2)]}>
-        <Ionicons name="mic" size={42} color="#fff" />
-      </Pressable>
-      <Text style={[T.small, { marginTop: 10 }]}>{rec ? 'Loslassen zum Beenden' : 'Halten zum Aufnehmen'}</Text>
-      {(localErr || error) && <Text style={[T.small, { color: C.warn, marginTop: 10, textAlign: 'center' }]}>{localErr || error}</Text>}
-    </Animated.View>
   );
 }
 

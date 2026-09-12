@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
+import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { Appear, Button, Card, Divider, Pill, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { SAVER_DISTRIBUTIONS } from '@/data/mock';
@@ -62,7 +63,7 @@ export default function Verteilung() {
 
   return (
     <Screen tabBar={false}>
-      <Header title={`Verteilung bei ${d.saver}`} subtitle={`${d.district} · ${d.badge}`} color={col} />
+      <Header right={<FoodsharingLogo width={76} />} title={`Verteilung bei ${d.saver}`} subtitle={`${d.district} · ${d.badge}`} color={col} />
       <View style={{ height: 180, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={circle} spanKm={1.3} userLocation={loc} interactive={false} circles={revealed ? [] : [{ lat: circle.lat, lon: circle.lon, radius: 300, color: col }]} markers={revealed ? [{ id: 'd', lat: d.lat, lon: d.lon, color: col, emoji: '🏠', selected: true }] : []} />
       </View>

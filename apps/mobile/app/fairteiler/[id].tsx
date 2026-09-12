@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
+import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { Appear, Card, Row, T, Tag, haptic } from '@/components/ui';
 import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
 import { C, CONTEXT, S } from '@/theme';
@@ -34,7 +35,7 @@ export default function Fairteiler() {
     fs.foodSharePoints().then((r) => { const live = r.items.find((p) => String(p.id) === id); if (live) setPt(live); }).catch(() => {});
   }, [id]);
 
-  if (!pt) return <Screen tabBar={false}><Header title="Fairteiler" /><Text style={T.body}>Lade…</Text></Screen>;
+  if (!pt) return <Screen tabBar={false}><Header right={<FoodsharingLogo width={76} />} title="Fairteiler" /><Text style={T.body}>Lade…</Text></Screen>;
   const dist = hav(loc.lat, loc.lon, pt.lat, pt.lon);
   const near = dist < 200;
   const reports = shelfReports.filter((r) => r.pointId === pt.id).sort((a, b) => b.at - a.at);
@@ -71,7 +72,7 @@ export default function Fairteiler() {
 
   return (
     <Screen tabBar={false}>
-      <Header title={title} subtitle={pt.name.toLowerCase().includes('abgabe') ? 'Abgabestelle' : 'Fairteiler'} color={col} />
+      <Header right={<FoodsharingLogo width={76} />} title={title} subtitle={pt.name.toLowerCase().includes('abgabe') ? 'Abgabestelle' : 'Fairteiler'} color={col} />
       <View style={{ height: 190, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={{ lat: pt.lat, lon: pt.lon }} spanKm={1.2} userLocation={loc} markers={[{ id: 'p', lat: pt.lat, lon: pt.lon, color: col, emoji: '🥕', selected: true }]} interactive={false} />
       </View>

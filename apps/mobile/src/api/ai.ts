@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { File } from 'expo-file-system';
 
 /**
  * Echte Bild- und Spracherkennung für Foodsharing.
@@ -15,9 +16,9 @@ export type AiMode = 'shelf' | 'stock' | 'pickup';
 
 export const CATS = ['Backwaren', 'Obst & Gemüse', 'Milchprodukte', 'Konserven', 'Gekochtes', 'Getränke', 'Sonstiges'];
 
-const GEMINI_KEY = process.env.EXPO_PUBLIC_GEMINI_KEY ?? '';
-const OPENAI_KEY = process.env.EXPO_PUBLIC_OPENAI_KEY ?? '';
-const GEMINI_MODEL = process.env.EXPO_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_KEY = (process.env.EXPO_PUBLIC_GEMINI_KEY ?? '').trim();
+const OPENAI_KEY = (process.env.EXPO_PUBLIC_OPENAI_KEY ?? '').trim();
+const GEMINI_MODEL = process.env.EXPO_PUBLIC_GEMINI_MODEL || 'gemini-3.6-flash';
 const OPENAI_MODEL = process.env.EXPO_PUBLIC_OPENAI_MODEL || 'gpt-4o-mini';
 
 export type AiProvider = 'gemini' | 'openai' | null;
@@ -65,12 +66,30 @@ export function estimateGrams(qty: string, cat: string): number {
   return Math.round(num * (per[cat] ?? 300));
 }
 
+/** Keine Schlüssel oder rohen Serverantworten in Fehlermeldungen anzeigen. */
+async function aiRequest(provider: string, url: string, init: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 45000);
+  try {
+    const r = await fetch(url, { ...init, signal: controller.signal });
+    if (r.ok) return r;
+    if (r.status === 429) throw new Error(`${provider}: API-Limit erreicht. Später erneut versuchen oder kostenlos selbst eintragen. Kontingent in AI Studio prüfen.`);
+    if (r.status === 401 || r.status === 403) throw new Error(`${provider}: API-Schlüssel oder Berechtigung ungültig. Den Schlüssel im Anbieter-Konto prüfen.`);
+    if (r.status === 404) throw new Error(`${provider}: Das eingestellte KI-Modell ist nicht verfügbar. Modellkonfiguration aktualisieren.`);
+    if (r.status === 400 || r.status === 413) throw new Error(`${provider}: Datei oder Anfrage nicht unterstützt. Eine kurze neue Aufnahme oder ein kleineres Foto versuchen.`);
+    throw new Error(`${provider} ist gerade nicht verfügbar (HTTP ${r.status}). Bitte später erneut versuchen.`);
+  } catch (e) {
+    if (controller.signal.aborted) throw new Error('Die KI hat nach 45 Sekunden nicht geantwortet. Erneut versuchen oder selbst eintragen.');
+    if (e instanceof TypeError) throw new Error('Keine Verbindung zur KI. Internetverbindung prüfen oder selbst eintragen.');
+    throw e;
+  } finally { clearTimeout(timeout); }
+}
+
 async function gemini(parts: any[]): Promise<string> {
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+  const r = await aiRequest('Gemini', `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
     body: JSON.stringify({ contents: [{ role: 'user', parts }], generationConfig: { responseMimeType: 'application/json', temperature: 0.2 } }),
   });
-  if (!r.ok) throw new Error(`Gemini ${r.status}: ${(await r.text()).slice(0, 200)}`);
   const j = await r.json();
   const text = j?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? '').join('') ?? '';
   if (!text) throw new Error('Gemini: leere Antwort');
@@ -78,11 +97,10 @@ async function gemini(parts: any[]): Promise<string> {
 }
 
 async function openaiChat(content: any[]): Promise<string> {
-  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+  const r = await aiRequest('OpenAI', 'https://api.openai.com/v1/chat/completions', {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_KEY}` },
     body: JSON.stringify({ model: OPENAI_MODEL, temperature: 0.2, response_format: { type: 'json_object' }, messages: [{ role: 'user', content }] }),
   });
-  if (!r.ok) throw new Error(`OpenAI ${r.status}: ${(await r.text()).slice(0, 200)}`);
   const j = await r.json();
   return j?.choices?.[0]?.message?.content ?? '';
 }
@@ -131,13 +149,18 @@ async function whisper(uri: string, mime: string): Promise<string> {
   if (Platform.OS === 'web') { const blob = await (await fetch(uri)).blob(); fd.append('file', blob, `note.${ext}`); }
   else fd.append('file', { uri, name: `note.${ext}`, type: mime } as any);
   fd.append('model', 'whisper-1'); fd.append('language', 'de');
-  const r = await fetch('https://api.openai.com/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: `Bearer ${OPENAI_KEY}` }, body: fd });
-  if (!r.ok) throw new Error(`Whisper ${r.status}: ${(await r.text()).slice(0, 200)}`);
+  const r = await aiRequest('Whisper', 'https://api.openai.com/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: `Bearer ${OPENAI_KEY}` }, body: fd });
   return (await r.json()).text ?? '';
 }
 
 /** Liest eine lokale Datei (file://, blob:, content://) als base64 ohne data:-Präfix. */
 export async function fileToBase64(uri: string): Promise<string> {
+  if (Platform.OS !== 'web') {
+    const file = new File(uri);
+    if (!file.exists || file.size === 0) throw new Error('Die Aufnahme ist leer. Bitte erneut aufnehmen.');
+    if (file.size > 14 * 1024 * 1024) throw new Error('Die Datei ist zu groß. Bitte eine kürzere Aufnahme verwenden.');
+    return file.base64();
+  }
   const blob = await (await fetch(uri)).blob();
   return await new Promise<string>((resolve, reject) => {
     const fr = new FileReader();

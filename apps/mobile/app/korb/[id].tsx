@@ -3,6 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
+import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { Appear, Button, Card, Divider, Pill, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { fs, DEMO_BASKETS, hav, type Basket } from '@/api/foodsharing';
@@ -45,7 +46,7 @@ export default function KorbScreen() {
   }, [id]);
 
   const circle = useMemo(() => (b ? fuzz(b.lat, b.lon, b.id) : null), [b?.id]);
-  if (!b) return <Screen tabBar={false}><Header title="Korb" /><Text style={T.body}>{err ?? 'Lade…'}</Text></Screen>;
+  if (!b) return <Screen tabBar={false}><Header right={<FoodsharingLogo width={76} />} title="Korb" /><Text style={T.body}>{err ?? 'Lade…'}</Text></Screen>;
   const dist = hav(loc.lat, loc.lon, b.lat, b.lon);
   const expired = b.expires_at ? new Date(b.expires_at).getTime() < Date.now() : false;
   const revealed = res && (res.status === 'accepted' || res.status === 'picked_up');
@@ -85,7 +86,7 @@ export default function KorbScreen() {
 
   return (
     <Screen tabBar={false}>
-      <Header title={b.title} subtitle="Korb aus der Nachbarschaft" color={col} />
+      <Header right={<FoodsharingLogo width={76} />} title={b.title} subtitle="Korb aus der Nachbarschaft" color={col} />
       <View style={{ height: 210, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={circle!} spanKm={1.4} userLocation={loc} interactive={false}
           circles={revealed ? [] : [{ lat: circle!.lat, lon: circle!.lon, radius: 300, color: col }]}

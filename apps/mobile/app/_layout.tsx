@@ -52,6 +52,7 @@ export default function RootLayout() {
             <Stack.Screen name="belohnungen" />
             <Stack.Screen name="journal" />
             <Stack.Screen name="daten" />
+            <Stack.Screen name="partner" />
             <Stack.Screen name="scan" options={{ animation: 'slide_from_bottom' }} />
           </Stack>
           <AwardToast award={toast} onWhy={(a) => showWhy(a)} onDone={() => showToast(null)} color={CONTEXT[ctx].color} />

@@ -4,71 +4,78 @@ Mobile-first Prototyp (Expo / React Native, iOS + Android + Web) für die FES Ha
 Ein Chamäleon (Kai) führt durch fünf Bausteine: Ride2Impact (Transdev), Smart Mehrweg (Vytal),
 Save2Share (Frankfurt foodsharing), Sauberes Frankfurt (FES), Mobilitätsimpact (traffiQ) + MainLastenrad.
 
-## Schnellstart
+## Auf dem iPhone starten (privater Hotspot/LAN)
 
-Voraussetzungen: Node 20 oder neuer, npm, ein Handy mit **Expo Go** (App Store / Play Store) und ein kostenloses Expo-Konto von [expo.dev](https://expo.dev/signup).
+Voraussetzungen: Node 22 LTS oder neuer, npm und die aktuelle **Expo Go**-App mit Unterstützung für **SDK 57**. Dein Screenshot zeigt bereits SDK 57.
 
-```bash
-git clone <repo-url>
-cd team-01/apps/mobile
-npm install
-npx expo login          # einmalig, mit dem Expo-Konto
-npx expo start
-```
-
-Danach den QR-Code scannen: iPhone mit der normalen Kamera-App, Android mit dem Scanner in Expo Go.
-
-**Wichtig:** In Expo Go muss dasselbe Konto eingeloggt sein wie im Terminal. Sonst bleibt die App bei "Opening project" hängen oder verlangt einen Login.
-
-Browser-Demo ohne Handy:
+Den Mac mit dem persönlichen Hotspot des iPhones verbinden oder beide Geräte mit demselben privaten WLAN verbinden. Auf dem iPhone unter Einstellungen → Apps → Expo Go **Lokales Netzwerk** erlauben. Im Mac-Terminal:
 
 ```bash
-npx expo start --web
+cd "/Users/imad.azizi/Desktop/FES Hackathon 2026/team-01/apps/mobile"
+npm install --include=optional
+npm run start:lan
 ```
 
-### Erstes Öffnen in Expo Go
+Der Startbefehl verwendet `expo start --go --lan --clear`. Scanne den **neuen** QR-Code mit der iPhone-Kamera und öffne ihn in Expo Go. Beim einmaligen Entwicklerhinweis auf **Continue** tippen. Terminal und Mac müssen während der Nutzung weiterlaufen.
 
-Beim ersten Start zeigt Expo Go einmalig ein Entwicklermenü ("This is the developer menu"). Einfach auf **Continue** tippen. Danach lädt Mainsam mit dem Onboarding.
+Öffentliches WLAN kann direkte Verbindungen zwischen Geräten blockieren. Ein Handy-Hotspot löst außerdem keinen App-Absturz. Deshalb wurde zusätzlich die native Startanimation korrigiert.
 
-## Wenn es nicht startet
+Optional ist `npm run start:phone` für einen öffentlichen Expo/ngrok-Tunnel vorhanden. Der Befehl prüft und repariert eine fehlende ngrok-Programmdatei. Ein Tunnel benötigt Internet auf beiden Geräten und muss erst **Tunnel ready** melden. Beim Test war der Tunnel wegen eines Verbindungs-Timeouts nicht verfügbar; für diese Demo bleibt es wie gewünscht beim privaten Hotspot/LAN.
 
-| Symptom | Ursache | Lösung |
-|---|---|---|
-| "Opening project" lädt ewig, Handy findet den Rechner nicht | Uni-, Gäste- oder Firmen-WLAN trennt Geräte voneinander (Client Isolation) | Handy-Hotspot aufmachen, Rechner damit verbinden, `npx expo start` neu starten |
-| Expo Go verlangt einen Login | Konto im Terminal und in Expo Go stimmen nicht überein | `npx expo login` auf dem Rechner, in Expo Go dasselbe Konto |
-| App startet kurz und schließt sich sofort wieder | Native Paketversionen passen nicht zu der Version, die Expo Go fest eingebaut hat | `rm -rf node_modules && npm install && npx expo start -c`. Versionen in `package.json` bitte **nicht** eigenmächtig hochziehen |
-| Roter oder blauer Fehlerscreen | JS-Fehler | Meldung lesen, sie zeigt Datei und Zeile. Der ErrorBoundary in `app/_layout.tsx` fängt das ab, statt die App zu schließen |
-| Karte bleibt leer | Kein Netz auf dem Handy | Karte lädt OpenStreetMap-Kacheln über Leaflet, ein Kartenschlüssel ist **nicht** nötig |
-| Änderungen kommen nicht an | Metro-Cache | `npx expo start -c` |
+### Fehler eindeutig unterscheiden
 
-Prüfen, ob alle Versionen zum SDK passen:
+| Symptom | Was tun? |
+|---|---|
+| Chamäleon erscheint, dann schließt Expo Go | Native Animation korrigiert: `shade()` ist jetzt ein Worklet. App vollständig schließen und den neuen QR-Code scannen. Die Versionen der nativen Module passen zu SDK 57. |
+| `file argument … null` beim Tunnelstart | Fehlendes ngrok-Binärpaket. `npm run start:phone` repariert es; falls weiterhin fehlerhaft: `npm ci --include=optional` im App-Ordner. |
+| `ngrok tunnel took too long to connect` | Tunnel wurde nicht erstellt. Noch keinen alten QR-Code scannen. Internetzugang/Captive Portal prüfen; Mac über Handy-Hotspot verbinden und Start erneut ausführen. |
+| Tunnel nicht verfügbar, beide Geräte im selben privaten Netz | `npm run start:lan`. iPhone: Einstellungen → Apps → Expo Go → Lokales Netzwerk erlauben. Mac muss eingehende Verbindungen für Node erlauben. |
+| Schwarzer Bildschirm hinter dem Expo-Hinweis | Erst Continue tippen. Schließt die App danach weiter: das ist ein separater Laufzeitfehler, nicht der Hinweis selbst. |
+| Browseraufnahme über `http://192.168…` | Browser-Mikrofon benötigt HTTPS oder localhost. Für die Handy-Demo Expo Go verwenden. |
+| Roter/blauer Fehlerscreen | Fehlermeldung prüfen; der Render-ErrorBoundary kann keine nativen Prozessabstürze abfangen. |
 
-```bash
-npx expo-doctor
-```
-
-### Versionen bewusst gepinnt
+Browser auf dem Mac: `npm run web`. Paketprüfung: `npx expo install --check`.
 
 `react-native-reanimated`, `react-native-worklets`, `react-native-svg`, `react-native-webview` und
-`@react-native-async-storage/async-storage` stehen ohne `^` in der `package.json`. Expo Go bringt diese
-Module nativ in genau einer Version mit. Zieht npm eine neuere JS-Version, stürzt die App beim Start
-kommentarlos ab. Also bitte so lassen, solange wir mit Expo Go demonstrieren.
+AsyncStorage sind passend zu Expo Go gepinnt. Nicht unabhängig vom Expo SDK aktualisieren.
 
-## Bild- und Spracherkennung (Foodsharing)
+## Foto, Mikrofon und Google-KI
 
-Beim Fairteiler gibt es drei Aktionen (Abholen, Einstellen, Regal melden) und jeweils drei Wege:
-Foto, Sprachnotiz oder selbst eintragen. Foto und Sprachnotiz werden von einer echten KI ausgewertet,
-das Ergebnis ist immer editierbar. Dafür braucht die App einen Schlüssel:
+**Aufnehmen benötigt kein Google-Abo.** Behoben wurden der falsche `AudioRecorder`-Konstruktor und der Wettlauf zwischen langem Drücken, Berechtigungsdialog und Stoppen. Die App nutzt jetzt den offiziellen `useAudioRecorder`-Hook mit Start-/Stopp-Taste, Aufnahmedauer, Berechtigungsprüfung und maximal 60 Sekunden. Native Aufnahmen werden als M4A gelesen; Safari kann MP4, andere Browser WebM verwenden. Zurück/Schließen beendet eine laufende Aufnahme.
+
+iPhone: **Einstellungen → Apps → Expo Go → Mikrofon** einschalten. In eigenen Builds setzt das `expo-audio`-Plugin die Mikrofonberechtigung; Konfigurationsänderungen an Berechtigungen erfordern dort einen neuen Build.
+
+Der vorhandene Google-Schlüssel bleibt in `.env`. **Nicht mit `.env.example` überschreiben.** Google hat für diesen Zugang `gemini-2.5-flash` mit HTTP 404 abgewiesen. Der Standard ist deshalb jetzt `gemini-3.6-flash`; dessen Endpunkt wurde mit dem vorhandenen Schlüssel geprüft. Optional überschreibbar mit `EXPO_PUBLIC_GEMINI_MODEL`. Nach `.env`-Änderungen Expo neu starten.
+
+Google AI Pro bietet Vorteile in Gemini und AI Studio, ist aber kein pauschales unbegrenztes API-Kontingent für diese App. Entscheidend sind das Projekt und dessen API-Limits in [AI Studio](https://aistudio.google.com/apikey). Ein 429 bedeutet ausgeschöpftes Kontingent, 403 einen Schlüssel-/Berechtigungsfehler, 404 ein nicht verfügbares Modell; 503 kann vorübergehende Überlastung sein. Die App zeigt diese Fälle verständlich an und lässt die manuelle Eingabe offen. Eine Anfrage läuft maximal 45 Sekunden.
+
+Kostenlose Optionen:
+
+- Aufnahme, Kamera und selbst eintragen funktionieren ohne bezahlte KI.
+- Im Eingabefeld das **Mikrofon der Handy-Tastatur** nutzen: Diktieren ohne API-Schlüssel für Mainsam, danach Menge/Kategorie bestätigen.
+- **Gemini API Free Tier** für Bild und Audio, innerhalb der im eigenen Projekt verfügbaren Limits. Google AI Pro ist dafür keine Voraussetzung. Keine Bezahlabrechnung aktivieren, wenn die Nutzung strikt kostenlos bleiben soll. [Aktuelle Preise und Free Tier](https://ai.google.dev/gemini-api/docs/pricing).
+
+KI-Ergebnisse immer prüfen: Auch eine erfolgreiche Transkription kann Lebensmittel verwechseln. Im Funktionstest wurde beispielsweise „Äpfel“ als „Brezeln“ verstanden. Posten lassen sich entfernen und neu eintragen.
+
+Weitere Quellen: [Expo Audio](https://docs.expo.dev/versions/v57.0.0/sdk/audio/), [Expo Tunnel](https://docs.expo.dev/more/expo-cli/#tunneling), [Google Audioformate](https://ai.google.dev/gemini-api/docs/audio), [Google AI Pro und AI Studio](https://blog.google/innovation-and-ai/technology/developers-tools/google-one-ai-studio/).
+
+Die Demo verwendet weiterhin öffentliche Client-Umgebungsvariablen für KI-Schlüssel. Vor einer Veröffentlichung gehört die KI-Anbindung auf einen Server; bei einem offenen Entwicklungs-Tunnel nur den benötigten Testzeitraum laufen lassen.
+
+## Partner
+
+Profil → **Partner** zeigt FES, foodsharing, Vytal, Transdev und traffiQ sowie Main-Lastenrad als Initiative aus der Region. Jede Karte öffnet die offizielle Website. Das foodsharing-Original-Logo liegt lokal unter `assets/partners/foodsharing.png` und erscheint auch im Essen-Filter sowie in Fairteiler-, Korb-, Verteilungs- und Saver-Kopfzeilen. Quelle: [offizielle Presse-Mediendatenbank](https://foodsharing.de/content?sub=presse).
+
+## Gezielte Prüfungen
 
 ```bash
-cp .env.example .env      # dann EXPO_PUBLIC_GEMINI_KEY eintragen (kostenlos: https://aistudio.google.com/apikey)
-npx expo start -c         # Schlüssel wird beim Bundlen eingesetzt, deshalb neu starten
+npm run typecheck
+node tools/check-ai.cjs
+npx expo export --platform ios --platform android --platform web
+# Optional: kleine echte API-Anfragen mit dem vorhandenen Schlüssel
+node tools/check-ai.cjs --live
 ```
 
-Alternativ `EXPO_PUBLIC_OPENAI_KEY` (Vision + Whisper). Ohne Schlüssel bleibt alles bedienbar:
-Foto und Sprachnotiz werden als Nachweis gespeichert, den Inhalt trägt man dann selbst ein.
-Es wird nichts vorgetäuscht. Der Schlüssel liegt für den Hackathon im Client, für einen Store-Build
-gehört er hinter einen kleinen Server.
+Die automatisierten Adaptertests prüfen Upload/MIME, leere Dateien, API-Limits, fehlende Berechtigungen, nicht verfügbare Modelle und Verbindungsfehler. Ein Export ersetzt keinen Test des physischen iPhone-Mikrofons.
 
 ## Was echt ist, was simuliert
 
