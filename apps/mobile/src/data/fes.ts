@@ -79,3 +79,19 @@ export function timeOptions() {
   for (let m = 8 * 60; m <= 20 * 60; m += 30) out.push(`${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`);
   return out;
 }
+
+/** Kurze Fakten und Alltagstipps, die nach einer Gutschrift eingeblendet werden. */
+export const FUN_FACTS: { icon: string; label: string; text: string; source?: string }[] = [
+  { icon: '🚬', label: 'Wusstest du?', text: 'Eine weggeworfene Kippe kann bis zu 40 Liter Wasser mit Schadstoffen belasten. Ein Taschenascher passt in jede Jackentasche.', source: 'Umweltbundesamt' },
+  { icon: '🌱', label: 'Tipp für morgen', text: 'Bioabfall ohne Plastiktüte sammeln. Zeitungspapier oder eine Papiertüte tun es auch und stören die Kompostierung nicht.' },
+  { icon: '🍕', label: 'Richtig trennen', text: 'Pizzakarton: sauberer Deckel ins Altpapier, der durchgefettete Boden in den Restmüll.' },
+  { icon: '🧾', label: 'Wusstest du?', text: 'Kassenbons sind meist Thermopapier. Die gehören in den Restmüll, nicht ins Altpapier.' },
+  { icon: '🔋', label: 'Tipp für morgen', text: 'Batterien nie in den Hausmüll. Jeder Laden, der Batterien verkauft, nimmt sie kostenlos zurück.' },
+  { icon: '☕', label: 'Kleine Gewohnheit', text: 'Eigener Becher statt To-go-Becher. Viele Frankfurter Cafés füllen ihn ohne Nachfrage.' },
+  { icon: '🍾', label: 'Richtig trennen', text: 'Blaues Glas kommt zum Grünglas. Grün verträgt Fehlfarben am besten.' },
+  { icon: '🛋️', label: 'Wusstest du?', text: 'Sperrmüll holt die FES nach Anmeldung ab. Einfach an die Straße stellen ist eine illegale Ablagerung.' },
+  { icon: '🕖', label: 'Kleine Gewohnheit', text: 'Altglas erst ab 7 Uhr einwerfen. Ruhezeiten gelten auch für Container.' },
+  { icon: '🗑️', label: 'Tipp für morgen', text: 'Viele Frankfurter Straßenmülleimer haben einen Ascher am Deckel. Kippe oben ablegen statt auf den Boden.' },
+  { icon: '🍂', label: 'Kleine Gewohnheit', text: 'Laub vom Gully vor der Tür wegkehren. Bei Starkregen läuft das Wasser dann ab, statt sich zu stauen.' },
+  { icon: '📦', label: 'Richtig trennen', text: 'Kartons flach falten, bevor sie ins Altpapier gehen. Sonst ist die Tonne voll, obwohl kaum etwas drin ist.' },
+];
