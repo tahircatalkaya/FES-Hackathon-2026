@@ -1,160 +1,185 @@
-import React, { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Appear, Card, Ring, Row, SectionTitle, T, Tag, haptic } from '@/components/ui';
-import { C, CONTEXT, S, shadow } from '@/theme';
-import { useStore, weekStats, chameleonStage, balance } from '@/store';
+import { Appear, Button, Card, Ring, SectionTitle, T, Tag, haptic } from '@/components/ui';
+import { BingoSheet } from '@/components/BingoSheet';
+import { BinCheckSheet } from '@/components/BinCheckSheet';
+import { NewActionSheet } from '@/components/NewActionSheet';
+import { C, R, S } from '@/theme';
+import { useStore, chameleonStage, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
-import { useT } from '@/i18n/useT';
-import { CHAPTERS } from '@/data/mock';
+import { CHAPTERS, CLEANUPS } from '@/data/mock';
+import { BINGO, bingoIndexFor, dayKey } from '@/data/fes';
 
+/** FES-Bereich: jeden Tag eine kleine Sache, dazu Biotonnen-Check, Lernen und Aktionen im Viertel. */
 export default function Act() {
   const router = useRouter();
-  const t = useT();
-  const { ledger, name, chameleonName, quizDone, containers, reservations, itemReservations } = useStore();
+  const { ledger, chameleonName, quizDone, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx, mood } = useUI();
-  const wk = weekStats(ledger);
-  const st = chameleonStage(ledger);
+  const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
   const [poke, setPoke] = useState(0);
-  useEffect(() => { setCtx('home'); }, []);
-  const openContainers = containers.filter((c) => !c.returnedAt);
-  const openRes = reservations.filter((r) => r.status === 'pending' || r.status === 'accepted');
-  const openItems = itemReservations.filter((r) => r.expiresAt > Date.now());
-  const nextQuiz = CHAPTERS.find((c) => !quizDone.includes(c.id));
-  const todayPts = ledger.filter((l) => new Date(l.at).toDateString() === new Date().toDateString()).reduce((a, l) => a + l.points, 0);
+  const [showAll, setShowAll] = useState(false);
+  useEffect(() => { setCtx('clean'); }, []);
 
-  const usage: Record<string, number> = { mobility: 0, food: 0, reuse: 0, clean: 0 };
-  for (const l of ledger) { const k = l.type.startsWith('ride') ? 'mobility' : l.type.startsWith('food') ? 'food' : l.type.startsWith('reuse') ? 'reuse' : l.type.startsWith('clean') ? 'clean' : ''; if (k) usage[k]++; }
-  const actions = ([
-    { key: 'mobility', title: t('act.ride'), sub: t('act.ride.sub'), emoji: '🚇', href: '/fahrt', partner: 'Transdev' },
-    { key: 'food', title: t('act.food'), sub: t('act.food.sub'), emoji: '🥕', href: '/(tabs)?layer=food', partner: 'foodsharing' },
-    { key: 'reuse', title: t('act.reuse'), sub: t('act.reuse.sub'), emoji: '🥡', href: '/mehrweg', partner: 'Vytal' },
-    { key: 'clean', title: t('act.clean'), sub: t('act.clean.sub'), emoji: '🧹', href: '/cleanup/list', partner: 'FES' },
-  ] as const).slice().sort((a, b) => usage[b.key] - usage[a.key]);
-  const favorite = ledger.length >= 3 && usage[actions[0].key] > 0 ? actions[0].key : null;
+  const st = chameleonStage(ledger);
+  const wk = weekStats(ledger);
+  const todayIndex = bingoIndexFor();
+
+  const bingo = useMemo(() => {
+    const days = ledger.filter((l) => l.key.startsWith('bingo:')).map((l) => l.key.slice(6));
+    return { filled: new Set(days.map((d) => bingoIndexFor(new Date(d)))).size, doneToday: days.includes(dayKey()), days };
+  }, [ledger]);
+
+  /** Streak: aufeinanderfolgende Tage mit gemeldeter Challenge, gestern zählt weiter. */
+  const streak = useMemo(() => {
+    const set = new Set(bingo.days);
+    const cursor = new Date();
+    if (!set.has(dayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+    let n = 0;
+    while (set.has(dayKey(cursor))) { n++; cursor.setDate(cursor.getDate() - 1); }
+    return n;
+  }, [bingo.days]);
+
+  const binDone = ledger.some((l) => l.key === `bincheck:${dayKey()}`);
+  const nextQuiz = CHAPTERS.find((c) => c.ctx === 'clean' && !quizDone.includes(c.id)) ?? CHAPTERS.find((c) => !quizDone.includes(c.id));
+  const nearby = [...ownCleanups, ...CLEANUPS]
+    .filter((c) => c.end > Date.now())
+    .sort((a, b) => (a.district === district ? -1 : b.district === district ? 1 : a.start - b.start));
+  const shown = showAll ? nearby : nearby.slice(0, 3);
+
+  function join(id: string, title: string) {
+    joinCleanup(id);
+    addAward({
+      type: 'clean.participate',
+      partner: 'fes',
+      status: 'ausstehend',
+      key: `cleanup-join:${id}`,
+      at: Date.now(),
+      title: `Angemeldet: ${title}`,
+      meta: { source: 'user', evidence: ['Anmeldung erfasst. Punkte erst nach bestätigter Teilnahme vor Ort.'] },
+    });
+    haptic('success');
+  }
 
   return (
     <Screen>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <View style={{ flex: 1 }}>
-          <Text style={T.label}>{new Date().toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long' })}</Text>
-          <Text style={[T.h1, { marginTop: 4 }]}>{t('act.title')}</Text>
-        </View>
-      </View>
+      <Text style={T.label}>FES · Sauberes Frankfurt</Text>
+      <Text style={[T.h1, { marginTop: 4 }]}>Frankfurt bleibt sauber.</Text>
 
-      {/* Wochenziel + Chamäleon */}
+      {/* Kopf: Chamäleon, Streak, eigene Aktion anlegen */}
       <Appear delay={60}>
         <Card style={{ marginTop: S.lg, overflow: 'hidden', paddingVertical: 12 }}>
-          <LinearGradient colors={[C.home + '14', '#fff']} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
+          <LinearGradient colors={[C.clean + '18', '#fff']} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Pressable onPress={() => { haptic(); setPoke((p) => p + 1); }}><Chameleon color={C.home} size={150} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} /></Pressable>
+            <Pressable onPress={() => { haptic(); setPoke((p) => p + 1); }}>
+              <Chameleon color={C.clean} size={140} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} />
+            </Pressable>
             <View style={{ flex: 1, paddingLeft: 4 }}>
-              <Text style={T.h3}>{chameleonName} · {st.label}</Text>
-              <Text style={[T.small, { marginBottom: 10 }]}>{st.next ? `Nächste Stufe: ${st.next}` : 'Höchste Stufe erreicht'}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <Ring progress={wk.activeDays / wk.goal} size={70} stroke={9} color={C.leaf}>
-                  <Text style={{ fontWeight: '900', fontSize: 16, color: C.ink }}>{wk.activeDays}/{wk.goal}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={{ fontSize: 18 }}>🔥</Text>
+                <Text style={{ fontSize: 22, fontWeight: '900', color: C.ink }}>{streak}</Text>
+                <Text style={T.small}>{streak === 1 ? 'Tag' : 'Tage'} Streak</Text>
+              </View>
+              <Text style={[T.small, { marginTop: 2 }]}>{chameleonName} · {st.label}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 10 }}>
+                <Ring progress={wk.activeDays / wk.goal} size={58} stroke={8} color={C.clean}>
+                  <Text style={{ fontWeight: '900', fontSize: 13, color: C.ink }}>{wk.activeDays}/{wk.goal}</Text>
                 </Ring>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontWeight: '800', color: C.ink }}>{t('week.goal')}</Text>
-                  <Text style={T.small}>{wk.activeDays >= wk.goal ? 'Geschafft, Los gesichert 🎟️' : `${wk.goal - wk.activeDays} ${t('week.days')} fehlen`}</Text>
-                  <Text style={T.small}>Heute {todayPts}/150 Punkte</Text>
-                </View>
+                <Text style={[T.small, { flex: 1 }]}>Aktive Tage diese Woche</Text>
               </View>
             </View>
+          </View>
+          <Button label="Aktion starten" icon="🧹" onPress={() => setSheet('new')} color={C.clean} style={{ marginTop: S.md }} />
+        </Card>
+      </Appear>
+
+      {/* Biotonnen-Check zuerst: ganz oben erreichbar */}
+      <Appear delay={120}>
+        <Card onPress={() => setSheet('bin')} style={{ marginTop: S.md, flexDirection: 'row', alignItems: 'center', gap: 14, borderWidth: 2, borderColor: binDone ? C.leaf : 'transparent' }}>
+          <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: binDone ? C.leaf + '26' : C.clean + '18', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 27 }}>♻️</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={T.label}>{binDone ? 'Heute geprüft' : 'Foto reicht'}</Text>
+            <Text style={T.h3}>Biotonnen-Check</Text>
+            <Text style={T.small} numberOfLines={2}>Die Bilderkennung schlägt Fehlwürfe vor, du bestätigst.</Text>
+          </View>
+          <Ionicons name={binDone ? 'checkmark-circle' : 'chevron-forward'} size={binDone ? 26 : 20} color={binDone ? C.success : C.muted} />
+        </Card>
+      </Appear>
+
+      {/* Bingo kompakt, Karte liegt im Pop-up */}
+      <Appear delay={180}>
+        <Card onPress={() => setSheet('bingo')} style={{ marginTop: S.md, borderWidth: 2, borderColor: bingo.doneToday ? C.leaf : 'transparent' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: S.md }}>
+            <Text style={T.h3}>Mülleimer-Bingo</Text>
+            <View style={{ backgroundColor: C.clean + '18', borderRadius: R.pill, paddingHorizontal: 11, paddingVertical: 4 }}>
+              <Text style={{ fontWeight: '900', fontSize: 12, color: C.clean }}>{bingo.filled}/{BINGO.length}</Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+            <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: bingo.doneToday ? C.leaf + '26' : '#F3F2EC', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 25 }}>{BINGO[todayIndex].icon}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={T.label}>{bingo.doneToday ? 'Heute erledigt' : 'Heutige Challenge'}</Text>
+              <Text style={T.h3} numberOfLines={2}>{BINGO[todayIndex].title}</Text>
+            </View>
+            <Ionicons name={bingo.doneToday ? 'checkmark-circle' : 'chevron-forward'} size={bingo.doneToday ? 26 : 20} color={bingo.doneToday ? C.success : C.muted} />
+          </View>
+          <View style={{ height: 8, borderRadius: 5, backgroundColor: C.line, marginTop: S.md, overflow: 'hidden' }}>
+            <View style={{ width: `${(bingo.filled / BINGO.length) * 100}%`, height: '100%', backgroundColor: C.clean }} />
           </View>
         </Card>
       </Appear>
 
-      {/* Offene Dinge */}
-      {(openContainers.length > 0 || openRes.length > 0 || openItems.length > 0) && (
-        <Appear delay={120}>
-          <View style={{ marginTop: S.md, gap: 8 }}>
-            {openContainers.map((c) => {
-              const left = Math.max(0, 14 * 24 - (Date.now() - c.borrowedAt) / 3600e3);
-              return (
-                <Card key={c.code} onPress={() => router.push('/mehrweg')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.reuse }}>
-                  <Text style={{ fontSize: 24 }}>🥡</Text>
-                  <View style={{ flex: 1 }}><Text style={T.h3}>Vytal-{c.kind === 'cup' ? 'Becher' : 'Schale'} unterwegs</Text><Text style={T.small}>{c.storeName} · noch {Math.floor(left / 24)} Tage, {left < 48 ? '+10 Punkte bei schneller Rückgabe' : 'zurückbringen für 30 Punkte'}</Text></View>
-                  <Text style={{ color: C.reuse, fontWeight: '800' }}>›</Text>
-                </Card>
-              );
-            })}
-            {openItems.map((r) => (
-              <Card key={r.id} onPress={() => router.push(r.href as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.food }}>
-                <Ionicons name="bookmark" size={24} color={C.food} />
-                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.item} · {r.placeTitle}</Text><Text style={T.small}>Reserviert bis {new Date(r.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text></View>
-                <Text style={{ color: C.food, fontWeight: '800' }}>›</Text>
-              </Card>
-            ))}
-            {openRes.map((r) => (
-              <Card key={r.basketId} onPress={() => router.push(`/korb/${r.basketId}` as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.food }}>
-                <Text style={{ fontSize: 24 }}>🧺</Text>
-                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.title}</Text><Text style={T.small}>Reserviert bis {new Date(r.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} · {r.status}</Text></View>
-                <Text style={{ color: C.food, fontWeight: '800' }}>›</Text>
-              </Card>
-            ))}
-          </View>
+      {/* Lernen */}
+      {nextQuiz && (
+        <Appear delay={240}>
+          <Card onPress={() => router.push(`/quiz/${nextQuiz.id}` as any)} style={{ marginTop: S.md, backgroundColor: C.ink }}>
+            <Text style={[T.label, { color: '#ffffff99' }]}>FES-Wissen · mit {chameleonName}</Text>
+            <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
+            <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
+            <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{nextQuiz.questions.length} Fragen · +{nextQuiz.questions.length * 5} Punkte</Text>
+          </Card>
         </Appear>
       )}
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: S.md }}>
-        {[{ e: 'radio', l: 'NFC-Tap', h: '/fahrt?nfc=1', c: C.mobility }, { e: 'scan', l: 'Scannen', h: '/scan', c: C.ink }, { e: 'map', l: 'Karte', h: '/(tabs)', c: C.food }].map((q, i) => (
-          <Appear key={q.l} delay={100 + i * 40} style={{ flex: 1 }}>
-            <Card onPress={() => router.push(q.h as any)} style={{ alignItems: 'center', paddingVertical: 14, backgroundColor: q.c }}>
-              <Ionicons name={q.e as any} size={26} color="#fff" />
-              <Text style={{ color: '#fff', fontWeight: '800', marginTop: 6 }}>{q.l}</Text>
-            </Card>
-          </Appear>
-        ))}
+      {/* Aktionen im Viertel */}
+      <SectionTitle title="Aktionen in deiner Nähe" action={nearby.length > 3 ? (showAll ? 'Weniger' : `Alle ${nearby.length}`) : undefined} onAction={() => setShowAll((v) => !v)} />
+      <View style={{ gap: 10 }}>
+        {shown.map((c, i) => {
+          const joined = joinedCleanups.includes(c.id);
+          return (
+            <Appear key={c.id} delay={300 + i * 50}>
+              <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 }}>
+                <Pressable onPress={() => router.push(`/cleanup/${c.id}` as any)} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                  <Text style={{ fontSize: 24 }}>🧹</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={T.h3} numberOfLines={1}>{c.title}</Text>
+                    <Text style={T.small} numberOfLines={1}>
+                      {c.district} · {new Date(c.start).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })}, {new Date(c.start).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} · {c.participants} dabei
+                    </Text>
+                    {c.fesConfirmed ? <Tag label="FES bestätigt" color={C.success} /> : null}
+                  </View>
+                </Pressable>
+                <Pressable onPress={() => (joined ? router.push(`/cleanup/${c.id}` as any) : join(c.id, c.title))} style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: R.pill, backgroundColor: joined ? C.leaf + '26' : C.clean }}>
+                  <Text style={{ fontWeight: '800', fontSize: 13, color: joined ? '#3F7A25' : '#fff' }}>{joined ? 'Angemeldet' : 'Mitmachen'}</Text>
+                </Pressable>
+              </Card>
+            </Appear>
+          );
+        })}
       </View>
+      <Text style={[T.small, { marginTop: S.md }]}>Anmelden gibt noch keine Punkte. Die Teilnahme wird vor Ort gegenseitig bestätigt, dann zählt sie.</Text>
 
-      <SectionTitle title="Kernaktionen" />
-      <View style={{ gap: 12 }}>
-        {actions.map((a, i) => (
-          <Appear key={a.key} delay={160 + i * 60}>
-            <Card onPress={() => router.push(a.href as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 14, borderWidth: 1, borderColor: CONTEXT[a.key].color + '22' }}>
-              <View style={{ width: 58, height: 58, borderRadius: 18, backgroundColor: CONTEXT[a.key].soft, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 28 }}>{a.emoji}</Text></View>
-              <View style={{ flex: 1 }}>
-                <Text style={T.h3}>{a.title}</Text>
-                <Text style={T.small}>{a.sub}</Text>
-                <Row style={{ gap: 6 }}><Tag label={`mit ${a.partner}`} color={CONTEXT[a.key].color} />{favorite === a.key && <Tag label="dein Favorit" color={C.gold} />}</Row>
-              </View>
-              <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: CONTEXT[a.key].color, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontWeight: '900' }}>›</Text></View>
-            </Card>
-          </Appear>
-        ))}
-      </View>
-
-      <SectionTitle title="Heute für dich" />
-      <View style={{ gap: 12 }}>
-        {nextQuiz && (
-          <Appear delay={420}>
-            <Card onPress={() => router.push(`/quiz/${nextQuiz.id}` as any)} style={{ backgroundColor: C.ink }}>
-              <Text style={[T.label, { color: '#ffffff99' }]}>Tagesmission · Lernen mit {chameleonName}</Text>
-              <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
-              <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
-              <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>+{nextQuiz.questions.length * 5} Punkte · 2 Minuten</Text>
-            </Card>
-          </Appear>
-        )}
-        <Appear delay={480}>
-          <Card onPress={() => router.push('/melden')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <Text style={{ fontSize: 26 }}>📸</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Volle Tonne oder wilde Kippe melden</Text><Text style={T.small}>Foto, Ort, fertig. 25 Punkte.</Text></View>
-          </Card>
-        </Appear>
-        <Appear delay={540}>
-          <Card onPress={() => router.push('/scan?mode=litter')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <Text style={{ fontSize: 26 }}>🫶</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Müll aufgehoben?</Text><Text style={T.small}>Ohne Punkte, aber {chameleonName} freut sich.</Text></View>
-          </Card>
-        </Appear>
-      </View>
+      <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} />
+      <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} />
+      <NewActionSheet open={sheet === 'new'} onClose={() => setSheet(null)} />
     </Screen>
   );
 }

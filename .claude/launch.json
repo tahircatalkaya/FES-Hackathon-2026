@@ -5,7 +5,16 @@
       "name": "mainwandel-server",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "shared.server"],
-      "port": 8765
+      "port": 8765,
+      "autoPort": true
+    },
+    {
+      "name": "mainsam-expo-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "web", "--", "--port", "8081"],
+      "cwd": "apps/mobile",
+      "port": 8081,
+      "autoPort": true
     }
   ]
 }

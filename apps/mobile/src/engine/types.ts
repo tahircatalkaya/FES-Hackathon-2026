@@ -29,6 +29,7 @@ export type ActionType =
   | 'clean.organize'
   | 'clean.report'
   | 'clean.bin_checkin'
+  | 'clean.bin_quality' // Biotonnen-Check per Foto
   | 'clean.quiz'
   | 'clean.litter_solo' // 0 Punkte, nur Anerkennung
   // Rhythmus

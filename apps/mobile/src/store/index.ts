@@ -5,6 +5,7 @@ import type { ActionEvent, Award, Impact } from '@/engine/types';
 import { award as computeAward } from '@/engine/reward';
 import { addImpact, emptyImpact } from '@/engine/impact';
 import type { Lang } from '@/i18n';
+import type { Cleanup } from '@/data/mock';
 
 export interface Container { code: string; storeId: string; storeName: string; borrowedAt: number; returnedAt?: number; txId: string; kind: 'bowl' | 'cup' }
 export interface Reservation { basketId: number; title: string; at: number; expiresAt: number; status: 'pending' | 'accepted' | 'picked_up' | 'cancelled' | 'expired'; addressRevealed?: string }
@@ -32,6 +33,7 @@ interface State {
   shelfReports: ShelfReport[];
   cleanReports: CleanReport[];
   joinedCleanups: string[];
+  ownCleanups: Cleanup[];
   attested: Record<string, string[]>; // cleanupId -> peer ids
   quizDone: string[];
   notices: Notice[];
@@ -54,6 +56,7 @@ interface State {
   addShelfReport: (r: ShelfReport) => void;
   addCleanReport: (r: CleanReport) => void;
   joinCleanup: (id: string) => void;
+  addCleanup: (c: Cleanup) => void;
   attest: (cleanupId: string, peer: string) => void;
   finishQuiz: (id: string) => void;
   notify: (n: Omit<Notice, 'id' | 'at'>) => void;
@@ -89,6 +92,7 @@ const initial = {
   shelfReports: [] as ShelfReport[],
   cleanReports: [] as CleanReport[],
   joinedCleanups: [] as string[],
+  ownCleanups: [] as Cleanup[],
   attested: {} as Record<string, string[]>,
   quizDone: [] as string[],
   notices: [] as Notice[],
@@ -140,6 +144,7 @@ export const useStore = create<State>()(
       addShelfReport: (r) => set({ shelfReports: [r, ...get().shelfReports] }),
       addCleanReport: (r) => set({ cleanReports: [r, ...get().cleanReports] }),
       joinCleanup: (id) => set({ joinedCleanups: Array.from(new Set([...get().joinedCleanups, id])) }),
+      addCleanup: (c) => set({ ownCleanups: [c, ...get().ownCleanups], joinedCleanups: Array.from(new Set([...get().joinedCleanups, c.id])) }),
       attest: (cleanupId, peer) => set({ attested: { ...get().attested, [cleanupId]: Array.from(new Set([...(get().attested[cleanupId] ?? []), peer])) } }),
       finishQuiz: (id) => set({ quizDone: Array.from(new Set([...get().quizDone, id])) }),
       notify: (n) => set({ notices: [{ ...n, id: `${Date.now()}-${Math.random()}`, at: Date.now() }, ...get().notices].slice(0, 50) }),

@@ -8,6 +8,7 @@ import csv
 from datetime import datetime,timezone
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 import json
+import os
 from pathlib import Path
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
@@ -90,7 +91,7 @@ def handler(ledger,port):
     return Handler
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=8765);parser.add_argument('--db',default='.runtime/web-demo.sqlite');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=int(os.environ.get('PORT','8765')));parser.add_argument('--db',default='.runtime/web-demo.sqlite');args=parser.parse_args()
     ledger=Ledger(args.db)
     server=ThreadingHTTPServer(('127.0.0.1',args.port),handler(ledger,args.port))
     print(f'Local integration demo: http://127.0.0.1:{args.port}',flush=True)
