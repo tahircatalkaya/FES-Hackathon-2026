@@ -153,7 +153,6 @@ export default function Act() {
           );
         })}
       </View>
-      <Text style={[T.small, { marginTop: S.md }]}>Anmelden gibt noch keine Punkte. Die Teilnahme wird vor Ort gegenseitig bestätigt, dann zählt sie.</Text>
 
       <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} />
       <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} />
