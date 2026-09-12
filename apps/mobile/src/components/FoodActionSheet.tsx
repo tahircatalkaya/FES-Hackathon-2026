@@ -16,7 +16,7 @@ type Method = 'photo' | 'voice' | 'manual';
 
 const COPY: Record<AiMode, { title: string; hint: string; photo: string; voice: string; manual: string }> = {
   pickup: { title: 'Was nimmst du mit?', hint: 'Damit andere wissen, was noch da ist.', photo: 'Fotografiere, was du in der Hand hast', voice: 'Sag kurz, was du mitnimmst', manual: 'Posten selbst eintragen' },
-  stock: { title: 'Was hast du eingestellt?', hint: 'Leute in der Nähe sehen sofort, was neu ist.', photo: 'Fotografiere, was du reingelegt hast', voice: 'Sag kurz, was du eingestellt hast', manual: 'Posten selbst eintragen' },
+  stock: { title: 'Welche Lebensmittel teilst du?', hint: 'Erfasse die Lebensmittel und prüfe die vorgeschlagenen Mengen.', photo: 'Fotografiere deine Lebensmittel', voice: 'Sag kurz, welche Lebensmittel du teilst', manual: 'Posten selbst eintragen' },
   shelf: { title: 'Was ist im Regal?', hint: 'Ein aktueller Stand erspart anderen den Weg umsonst.', photo: 'Fotografiere das Regal', voice: 'Sag kurz, was drin ist', manual: 'Inhalt selbst eintragen' },
 };
 

@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
-import { Appear, Card, Row, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Row, T, Tag, haptic } from '@/components/ui';
 import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
 import { C, CONTEXT, S } from '@/theme';
 import { fs, hav, type FoodSharePoint } from '@/api/foodsharing';
@@ -44,7 +44,7 @@ export default function Fairteiler() {
   const ageMin = latest ? Math.round((Date.now() - latest.at) / 60000) : null;
   const myRes = itemReservations.filter((r) => r.placeId === `fsp-${pt.id}` && r.expiresAt > Date.now());
   const proof = (r: ActionResult) => [
-    r.photo ? 'Foto mit Zeitstempel gespeichert' : r.audio ? 'Sprachnotiz gespeichert' : 'Selbst eingetragen',
+    r.photo ? 'Foto als eigene Dokumentation gespeichert' : r.audio ? 'Sprachnotiz als eigene Dokumentation gespeichert' : 'Selbst eingetragen',
     r.ai ? (r.method === 'photo' ? 'Inhalt per Bilderkennung erfasst, von dir bestätigt' : 'Sprachnotiz transkribiert, von dir bestätigt') : null,
     near ? `Standort ${Math.round(dist)} m vom Fairteiler` : `Standort ${Math.round(dist)} m entfernt`,
   ].filter(Boolean) as string[];
@@ -60,14 +60,14 @@ export default function Fairteiler() {
   }
   async function onPickup(r: ActionResult) {
     let st = status(r); const ev = [`Mitgenommen: ${r.items.map((i) => i.name).join(', ')} (ca. ${(r.grams / 1000).toFixed(1)} kg)`, ...proof(r)];
-    try { await fs.pickup({ food_share_point_id: pt!.id }); st = 'plausibel'; ev.push('Abholung bei foodsharing registriert'); } catch {}
+    try { await fs.pickup({ food_share_point_id: pt!.id }); ev.push('Eigene Meldung beim verbundenen Dienst; kein unabhängiger Nachweis'); } catch { ev.push('Nur auf diesem Gerät gespeichert'); }
     myRes.forEach((x) => releaseItem(x.id));
     showToast(addAward({ type: 'food.pickup', partner: 'foodsharing', status: st, key: `pickup:fsp:${pt!.id}:${Date.now()}`, at: Date.now(), title: `Abgeholt: ${title}`, meta: { food_g: r.grams, source: srcOf(r), evidence: ev } }));
   }
   function hold(item: { name: string; qty: string }) {
     haptic('success');
     reserveItem({ placeId: `fsp-${pt!.id}`, placeTitle: title, item: item.name, qty: item.qty, expiresAt: Date.now() + HOLD_MIN * 60000, kind: 'fairteiler', href: `/fairteiler/${pt!.id}` });
-    remind('Reserviert', `${item.name} am ${title} ist ${HOLD_MIN} Minuten für dich markiert.`, 'food');
+    remind('Merkliste', `${item.name} am ${title} ist für ${HOLD_MIN} Minuten auf deiner lokalen Merkliste. Es ist nicht für andere gesperrt.`, 'food');
   }
 
   return (
@@ -100,7 +100,7 @@ export default function Fairteiler() {
                   return (
                     <Row key={it.name} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 10 }}>
                       <View style={{ flex: 1 }}><Text style={[T.body, { fontWeight: '700', color: C.ink }]}>{it.name}</Text><Text style={T.small}>{it.qty} · {it.cat}</Text></View>
-                      {held ? <Tag label={`für dich bis ${new Date(held.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`} color={C.success} /> : <Pressable onPress={() => hold(it)} style={{ backgroundColor: col + '18', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999 }}><Text style={{ color: col, fontWeight: '800' }}>{HOLD_MIN} min halten</Text></Pressable>}
+                      {held ? <Tag label={`für dich bis ${new Date(held.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`} color={C.success} /> : <Pressable onPress={() => hold(it)} style={{ backgroundColor: col + '18', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999 }}><Text style={{ color: col, fontWeight: '800' }}>{HOLD_MIN} min merken</Text></Pressable>}
                     </Row>
                   );
                 })}
@@ -116,8 +116,9 @@ export default function Fairteiler() {
         <ActionTile icon="add-circle" label="Einstellen" pts={40} color={col} onPress={() => setSheet('stock')} />
         <ActionTile icon="eye" label="Regal melden" pts={15} color={col} onPress={() => setSheet('shelf')} />
       </Row>
-      <Text style={[T.small, { marginTop: 8, textAlign: 'center' }]}>Per Foto, Sprachnotiz oder selbst eintragen. Du entscheidest.</Text>
+      <Text style={[T.small, { marginTop: 8, textAlign: 'center' }]}>Foto, Audio und Texteingabe bleiben verfügbar. Deine Erfassung ist noch kein Übergabenachweis und gibt allein keine Punkte.</Text>
 
+      <Card style={{ marginTop: 16, gap: 10 }}><Text style={T.h3}>Mit einer Person übergeben</Text><Text style={T.body}>Für persönliche Übergaben gibt es feste Portionen, Zusagen und einen Übergabecode. Am offenen Regal ohne Gegenüber bleibt deine Meldung eine Eigenangabe.</Text><Button label="Übergaben & Zuverlässigkeit" color={col} onPress={() => router.push({ pathname: '/uebergaben', params: { area: title } })} /></Card>
       <FoodActionSheet open={sheet === 'shelf'} mode="shelf" onClose={() => setSheet(null)} onDone={onReport} color={col} />
       <FoodActionSheet open={sheet === 'stock'} mode="stock" onClose={() => setSheet(null)} onDone={onStock} color={col} />
       <FoodActionSheet open={sheet === 'pickup'} mode="pickup" onClose={() => setSheet(null)} onDone={onPickup} color={col} />
@@ -130,7 +131,7 @@ function ActionTile({ icon, label, pts, color, onPress }: { icon: any; label: st
     <Pressable onPress={() => { haptic(); onPress(); }} style={({ pressed }) => [{ flex: 1, alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingVertical: 16, paddingHorizontal: 6, borderWidth: 1.5, borderColor: pressed ? color : C.line, transform: [{ scale: pressed ? 0.97 : 1 }] }]}>
       <View style={{ width: 52, height: 52, borderRadius: 18, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={icon} size={26} color="#fff" /></View>
       <Text style={[T.h3, { marginTop: 8, fontSize: 14 }]} numberOfLines={1}>{label}</Text>
-      <Text style={{ color, fontWeight: '800', fontSize: 12, marginTop: 2 }}>+{pts} P</Text>
+      <Text style={{ color, fontWeight: '800', fontSize: 12, marginTop: 2 }}>Erfassen</Text>
     </Pressable>
   );
 }

@@ -44,6 +44,7 @@ interface State {
   setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'chameleonName'>>) => void;
   setPrivacy: (p: Partial<State['privacy']>) => void;
   addAward: (e: ActionEvent) => Award;
+  syncFoodAwards: (receipts: Award[]) => void;
   redeem: (r: Omit<Redemption, 'id' | 'at'>) => boolean;
   addContainer: (c: Container) => void;
   returnContainer: (code: string, returnedAt: number) => Container | undefined;
@@ -105,6 +106,11 @@ export const useStore = create<State>()(
       setOnboarded: (v) => set({ onboarded: v }),
       setProfile: (p) => set(p),
       setPrivacy: (p) => set({ privacy: { ...get().privacy, ...p } }),
+      // Display cache only; the handover server owns these receipts and all food awards.
+      syncFoodAwards: (receipts) => set({ ledger: [
+        ...receipts.filter(a => a.key.startsWith('trust:') && a.partner === 'foodsharing'),
+        ...get().ledger.filter(a => !a.key.startsWith('trust:')),
+      ].sort((a, b) => b.at - a.at) }),
       addAward: (e) => {
         const a = computeAward(e, get().ledger);
         if (!a.duplicate) {
@@ -149,12 +155,16 @@ export const useStore = create<State>()(
       addNfc: (id) => set({ nfcSeen: [...get().nfcSeen, id] }),
       resetAll: () => set({ ...initial }),
     }),
-    { name: 'mainsam-v1', storage: createJSONStorage(() => AsyncStorage) },
+    { name: 'mainsam-v1', version: 2, storage: createJSONStorage(() => AsyncStorage), migrate: (saved: any) => ({
+      ...saved,
+      ledger: (saved?.ledger ?? []).map((a: Award) => a.type.startsWith('food.') ? computeAward(a, []) : a),
+      reservations: (saved?.reservations ?? []).map((r: Reservation) => ({ ...r, status: r.status === 'accepted' ? 'pending' : r.status, addressRevealed: undefined })),
+    }) },
   ),
 );
 
 export function balance(s: Pick<State, 'ledger' | 'spent'>) {
-  return s.ledger.reduce((a, l) => a + l.points, 0) - s.spent;
+  return Math.max(0, s.ledger.reduce((a, l) => a + l.points, 0) - s.spent);
 }
 
 export function totalImpact(ledger: Award[]): Impact {

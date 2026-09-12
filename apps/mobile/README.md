@@ -61,6 +61,14 @@ Weitere Quellen: [Expo Audio](https://docs.expo.dev/versions/v57.0.0/sdk/audio/)
 
 Die Demo verwendet weiterhin öffentliche Client-Umgebungsvariablen für KI-Schlüssel. Vor einer Veröffentlichung gehört die KI-Anbindung auf einen Server; bei einem offenen Entwicklungs-Tunnel nur den benötigten Testzeitraum laufen lassen.
 
+## Bestätigte Foodsharing-Übergaben
+
+Neu: Profil → **Übergaben & Zuverlässigkeit**. Ein lokaler Server speichert getrennte Konten, echte Zusagen, kurz gültige Übergabecodes und Bewertungen. Kamera und Audio bleiben zur Erfassung erhalten. Punkte erst nach Bestätigung beider Personen; keine automatischen Zusagen oder Selbst-Freigaben mehr.
+
+Im App-Ordner zuerst `npm run trust:lan`, dann in einem zweiten Terminal `npm run start:lan`. Beide Geräte müssen dasselbe private Netz nutzen. Jede Person legt einen eigenen Zugang an. Der Treffpunkt erscheint nur nach Zusage, kurz vor dem Termin. [Ablauf, Tests und Grenzen](../trust-server/README.md).
+
+Offene Regal-Meldungen ohne Gegenüber bleiben Eigenangaben ohne Punkte und bestätigten Impact. Alte Foodsharing-Gutschriften aus Selbstbestätigungen werden entsprechend gekennzeichnet. Für echte Prämieneinlösung ist zusätzlich ein serverseitiges Prämiensystem nötig; der lokale Dienst ist kein öffentlicher Produktionsbetrieb.
+
 ## Partner
 
 Profil → **Partner** zeigt FES, foodsharing, Vytal, Transdev und traffiQ sowie Main-Lastenrad als Initiative aus der Region. Jede Karte öffnet die offizielle Website. Das foodsharing-Original-Logo liegt lokal unter `assets/partners/foodsharing.png` und erscheint auch im Essen-Filter sowie in Fairteiler-, Korb-, Verteilungs- und Saver-Kopfzeilen. Quelle: [offizielle Presse-Mediendatenbank](https://foodsharing.de/content?sub=presse).
@@ -81,7 +89,7 @@ Die automatisierten Adaptertests prüfen Upload/MIME, leere Dateien, API-Limits,
 
 | Baustein | Echt | Simuliert |
 |---|---|---|
-| Foodsharing | Live-API (Fairteiler, Körbe, Anfragen, Abholungen, Saver-Verifikation), Bild- und Spracherkennung mit Schlüssel | Verteilungen, Zusage des Anbieters (Demo-Timer) |
+| Foodsharing | Fairteiler/Korb-API, Bild-/Spracherkennung, eigener Übergaben-Server mit Zusagen, Codes und Bewertungen | Historische Verteilungsbeispiele; keine automatische Zusage und keine Punkte für Selbstbestätigungen |
 | Transdev | GTFS RMV (U/S/Tram), Abfahrten, Matching on-device mit Konfidenz | GPS-Testspuren (aus shapes.txt erzeugt), Demo-NFC-Tag in Expo Go |
 | Vytal | Store-Suche (GraphQL, mit Snapshot-Fallback) | Ausleihe/Rückgabe-Bestätigung (Store-seitig) |
 | traffiQ | CSVs aus dem Repo (Heatmap, Tagesgang, Auslastung, Relationen, Sharing) | Daten teils synthetisch |

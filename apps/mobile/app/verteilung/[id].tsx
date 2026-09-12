@@ -54,16 +54,13 @@ export default function Verteilung() {
   }
   function cancel() { haptic('warn'); mine.forEach((m) => releaseItem(m.id)); }
   function pickedUp() {
-    const g = mine.reduce((a, m) => a + totalOf(m.qty) * 400, 0);
-    mine.forEach((m) => releaseItem(m.id));
-    showToast(addAward({ type: 'food.pickup', partner: 'foodsharing', status: 'plausibel', key: `dist:${d.id}:${Date.now()}`, at: Date.now(), title: `Abholung bei ${d.saver}`, meta: { food_g: g || 1200, source: 'saver', evidence: ['Übergabe vom Saver bestätigt', 'Slot eingehalten'] } }));
-    setTimeout(() => showToast(addAward({ type: 'food.reservation_kept', partner: 'foodsharing', status: 'bestätigt', key: `kept:dist:${d.id}:${Date.now()}`, at: Date.now(), title: 'Slot eingehalten', meta: { source: 'app' } })), 4500);
-    router.replace('/(tabs)/impact');
+    router.push('/uebergaben');
   }
 
   return (
     <Screen tabBar={false}>
       <Header right={<FoodsharingLogo width={76} />} title={`Verteilung bei ${d.saver}`} subtitle={`${d.district} · ${d.badge}`} color={col} />
+      <Card style={{ marginBottom: 14, gap: 10 }}><Tag label="Beispielangebot" color={C.muted} /><Text style={T.body}>Dieses Beispiel hat keine angebundene anbietende Person. Echte Anfragen, Zusagen und Bewertungen findest du unter Übergaben.</Text><Button label="Echte Übergabe vereinbaren" color={col} onPress={() => router.push('/uebergaben')} /></Card>
       <View style={{ height: 180, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={circle} spanKm={1.3} userLocation={loc} interactive={false} circles={revealed ? [] : [{ lat: circle.lat, lon: circle.lon, radius: 300, color: col }]} markers={revealed ? [{ id: 'd', lat: d.lat, lon: d.lon, color: col, emoji: '🏠', selected: true }] : []} />
       </View>
@@ -111,8 +108,8 @@ export default function Verteilung() {
             <Row style={{ flexWrap: 'wrap', gap: 6 }}>
               {slots.map((s) => <Pill key={s.i} label={new Date(s.t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} active={slot === s.i} color={s.taken ? C.muted : col} onPress={s.taken ? undefined : () => setSlot(s.i)} />)}
             </Row>
-            <Button label="Reservieren" color={col} disabled={slot === null || !Object.values(qty).some((v) => v > 0) || d.taken >= d.slots} onPress={book} />
-            <Text style={T.small}>Gilt bis {TTL_MIN} Minuten nach deinem Slot. Zwei Mal nicht erschienen heißt 24 Stunden Pause.</Text>
+            <Button label="Beispiel-Reservierung ansehen" color={col} disabled={slot === null || !Object.values(qty).some((v) => v > 0) || d.taken >= d.slots} onPress={book} />
+            <Text style={T.small}>Gilt bis {TTL_MIN} Minuten nach deinem Slot. Eine bestätigte Übergabe braucht eine Zusage von beiden Personen.</Text>
           </Card>
         </Appear>
       ) : (
@@ -121,9 +118,9 @@ export default function Verteilung() {
             <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>Dein Slot: {mySlot !== null && mySlot >= 0 ? new Date(slots[mySlot].t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '–'} Uhr</Text><Tag label="reserviert" color={C.success} /></Row>
             {revealed ? <View style={{ backgroundColor: C.ink, borderRadius: 16, padding: 14 }}><Text style={[T.label, { color: '#ffffff99' }]}>Adresse</Text><Text style={{ color: '#fff', fontWeight: '800', fontSize: 17 }}>{EXACT[d.id]}</Text></View> : <Text style={T.body}>Die Adresse erscheint {minsToStart > 15 ? `in ${minsToStart - 15} Minuten` : 'jetzt gleich'}.</Text>}
             <Divider />
-            <Button label="Übergabe bestätigen" color={col} onPress={pickedUp} />
+            <Button label="Echte Übergabe vereinbaren" color={col} onPress={pickedUp} />
             <Button label="Reservierung aufheben" variant="ghost" color={C.muted} onPress={cancel} style={{ paddingVertical: 10 }} />
-            <Text style={[T.small, { textAlign: 'center' }]}>Abholung 15 P · Slot eingehalten +5</Text>
+            <Text style={[T.small, { textAlign: 'center' }]}>Keine Punkte ohne beidseitige Bestätigung.</Text>
           </Card>
         </Appear>
       )}

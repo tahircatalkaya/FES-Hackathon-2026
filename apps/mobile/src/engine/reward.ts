@@ -1,5 +1,5 @@
 import type { ActionEvent, ActionType, Award, VerificationStatus } from './types';
-import { impactFor } from './impact';
+import { emptyImpact, impactFor } from './impact.ts';
 
 /** Basispunkte je Aktion (vor Multiplikator). Siehe konzept/02-PUNKTE-UND-ANTI-FEHLANREIZ.md */
 export const BASE: Record<ActionType, number> = {
@@ -97,7 +97,17 @@ function sameDay(a: number, b: number) {
  * Einzige Stelle, die Punkte vergibt.
  * Idempotent über `event.key`, mit Multiplikator, Degression, Zähl- und Punktedeckel.
  */
-export function award(event: ActionEvent, ledger: LedgerLike[]): Award {
+export function award(event: ActionEvent, ledger: LedgerLike[], authority?: { verifiedFood: true }): Award {
+  // A photo, GPS reading, API self-report or caller-supplied status is not a handover.
+  // Only the authenticated server calls this with authority after both parties finish.
+  if (event.type.startsWith('food.') && !authority?.verifiedFood) {
+    return {
+      ...event, status: 'ausstehend', base: BASE[event.type], multiplier: 0, degression: 0,
+      capped: 0, points: 0, impact: emptyImpact(), duplicate: ledger.some(l => l.key === event.key),
+      reasons: ['Erfassung gespeichert. Foto und Audio beschreiben Lebensmittel, beweisen aber keine Übergabe.', 'Ohne beidseitig bestätigte Übergabe keine Punkte und kein bestätigter Impact.'],
+      formula: 'Nachweis ausstehend → 0 Punkte',
+    };
+  }
   const reasons: string[] = [];
   const impact = impactFor(event);
   const base = BASE[event.type];
@@ -118,7 +128,7 @@ export function award(event: ActionEvent, ledger: LedgerLike[]): Award {
   reasons.push(`Nachweis: ${event.status} → Multiplikator ×${mult.toFixed(1)}`);
 
   const todays = ledger.filter((l) => sameDay(l.at, event.at));
-  const sameCat = todays.filter((l) => CATEGORY[l.type] === CATEGORY[event.type]);
+  const sameCat = todays.filter((l) => CATEGORY[l.type] === CATEGORY[event.type] && l.points > 0);
   const nth = sameCat.length; // 0-basiert
   const deg = DEGRESSION[Math.min(nth, DEGRESSION.length - 1)];
   if (nth > 0) reasons.push(`${nth + 1}. Aktion in der Kategorie „${CATEGORY[event.type]}“ heute → ${Math.round(deg * 100)} % der Basispunkte`);

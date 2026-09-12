@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Appear, Card, Ring, Row, SectionTitle, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Ring, Row, SectionTitle, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S, shadow } from '@/theme';
 import { useStore, weekStats, chameleonStage, balance } from '@/store';
 import { useUI } from '@/store/ui';
@@ -113,6 +113,7 @@ export default function Act() {
         ))}
       </View>
 
+      <Button label="Foodsharing: Übergaben & Bewertungen" color={CONTEXT.food.color} onPress={() => router.push('/uebergaben')} style={{ marginTop: 14 }} />
       <SectionTitle title="Kernaktionen" />
       <View style={{ gap: 12 }}>
         {actions.map((a, i) => (

@@ -22,6 +22,7 @@
     "expo-location": "~57.0.17",
     "expo-notifications": "~57.0.18",
     "expo-router": "~57.0.21",
+    "expo-secure-store": "~57.0.4",
     "expo-splash-screen": "~57.0.9",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.4",
@@ -59,7 +60,10 @@
     "export:web": "expo export --platform web",
     "prestart:phone": "node tools/check-tunnel.cjs",
     "start:phone": "expo start --go --tunnel --clear",
-    "start:lan": "expo start --go --lan --clear"
+    "start:lan": "expo start --go --lan --clear",
+    "trust:start": "node ../trust-server/server.mjs",
+    "trust:lan": "node ../trust-server/server.mjs --lan",
+    "trust:test": "node --test ../trust-server/server.test.mjs"
   },
   "private": true
 }

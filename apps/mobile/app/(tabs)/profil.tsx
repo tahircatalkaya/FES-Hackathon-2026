@@ -99,11 +99,14 @@ export default function Profile() {
         <Text style={[T.small, { textAlign: 'center' }]}>Löschen funktioniert wirklich, auch in der Demo. Es steht hier und nicht im Support-Formular.</Text>
       </View>
 
+      <SectionTitle title="Foodsharing" />
+      <Button label="Übergaben & Zuverlässigkeit" icon="🤝" variant="soft" color={col} onPress={() => router.push('/uebergaben')} style={{ marginBottom: 12 }} />
+
       <SectionTitle title="Über Mainsam" />
       <Button label="Partner" icon="heart-circle-outline" variant="soft" color={col} onPress={() => router.push('/partner')} style={{ marginBottom: 12 }} />
       <Card>
         <Text style={T.body}>Mainsam bündelt Ride2Impact (Transdev), Smart Mehrweg (Vytal), Save2Share (Frankfurt foodsharing), Sauberes Frankfurt (FES) und den Mobilitätsimpact (traffiQ) in einer Journey. Punkte gibt es für Entscheidungen, nicht für Mengen. Jede Gutschrift erklärt sich selbst.</Text>
-        <Row style={{ gap: 6, marginTop: 8, flexWrap: 'wrap' }}><Tag label="FES Hackathon 2026" color={col} /><Tag label="Team 01" /><Tag label="Prototyp" /></Row>
+        <Row style={{ gap: 6, marginTop: 8, flexWrap: 'wrap' }}><Tag label="Frankfurt gemeinsam" color={col} /><Tag label="Ressourcen teilen" /></Row>
       </Card>
     </Screen>
   );

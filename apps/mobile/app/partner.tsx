@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Screen, Header } from '@/components/Screen';
-import FoodsharingLogo from '@/components/FoodsharingLogo';
+import PartnerLogo from '@/components/PartnerLogo';
 import { Row, T, haptic } from '@/components/ui';
 import { C, R, shadow } from '@/theme';
 import { PARTNERS } from '@/data/partners';
@@ -14,33 +15,22 @@ export default function Partners() {
     try { await Linking.openURL(url); }
     catch { setError('Die Website konnte nicht geöffnet werden. Bitte deine Internetverbindung prüfen.'); }
   }
-  return (
-    <Screen tabBar={false}>
-      <Header title="Partner" subtitle="FES Hackathon 2026" />
-      <Text style={[T.h1, { marginTop: 4, marginBottom: 10 }]}>Gemeinsam für{ '\n' }ein gutes Morgen.</Text>
-      <Text style={[T.body, { marginBottom: 22 }]}>Die Projekte hinter Mainsam zeigen, wie viel in Frankfurt möglich ist. Entdecke die Menschen und Ideen dahinter.</Text>
-      {error && <Text accessibilityRole="alert" style={[T.body, { color: C.danger, marginBottom: 12 }]}>{error}</Text>}
-      <View style={{ gap: 14 }}>
-        {PARTNERS.map((p) => (
-          <Pressable key={p.id} accessibilityRole="link" accessibilityLabel={`${p.name} – Website öffnen`} onPress={() => void visit(p.url)}
-            style={({ pressed }) => [{ backgroundColor: p.bg, borderRadius: R.lg, overflow: 'hidden', opacity: pressed ? 0.8 : 1 }, shadow(1)]}>
-            <View style={{ height: 5, backgroundColor: p.color }} />
-            <View style={{ padding: 20, gap: 12 }}>
-              <Row style={{ justifyContent: 'space-between' }}>
-                {p.id === 'foodsharing' ? <FoodsharingLogo width={126} /> : <Text style={{ color: p.color, fontWeight: '900', fontSize: 25, flexShrink: 1 }}>{p.name}</Text>}
-                <View style={{ backgroundColor: '#ffffffaa', width: 42, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={p.icon} size={22} color={p.color} /></View>
-              </Row>
-              <Text style={{ color: p.color, fontSize: 11, fontWeight: '800', letterSpacing: 0.5 }}>{p.role.toUpperCase()}</Text>
-              <Text style={[T.h2, { fontSize: 21 }]}>{p.theme}</Text>
-              <Text style={[T.body, { color: C.ink }]}>{p.description}</Text>
-              <Row style={{ justifyContent: 'space-between', marginTop: 2 }}>
-                <Text style={{ color: p.color, fontWeight: '700', fontSize: 12, flex: 1 }}>{p.category}</Text>
-                <Row style={{ gap: 5 }}><Text style={{ color: p.color, fontWeight: '800', fontSize: 13 }}>Entdecken</Text><Ionicons name="open-outline" size={16} color={p.color} /></Row>
-              </Row>
-            </View>
-          </Pressable>
-        ))}
+  return <Screen tabBar={false}>
+    <Header title="Partner" subtitle="Gemeinsam für Frankfurt" />
+    <LinearGradient colors={['#173C32','#285C45']} style={{borderRadius:28,padding:24,marginBottom:24}}>
+      <View style={{width:44,height:44,borderRadius:22,backgroundColor:'#ffffff1A',alignItems:'center',justifyContent:'center',marginBottom:16}}><Ionicons name="heart-outline" size={24} color="#E7F2C9"/></View>
+      <Text style={[T.h1,{color:'#fff',fontSize:29}]}>Gute Ideen.{ '\n' }Mehr gemeinsam.</Text>
+      <Text style={[T.body,{color:'#E5EFDF',marginTop:12}]}>Lebensmittel teilen, Ressourcen bewahren und nachhaltig unterwegs sein. Entdecke die Organisationen und Initiativen, die unsere Stadt bewegen.</Text>
+    </LinearGradient>
+    {error && <Text accessibilityRole="alert" style={[T.body, { color: C.danger, marginBottom: 12 }]}>{error}</Text>}
+    <View style={{gap:18}}>{PARTNERS.map(p=><Pressable key={p.id} accessibilityRole="link" accessibilityLabel={`${p.name} – Website öffnen`} onPress={()=>void visit(p.url)} style={({pressed})=>[{backgroundColor:'#fff',borderRadius:R.lg,overflow:'hidden',opacity:pressed?0.85:1},shadow(1)]}>
+      <View style={{padding:20,backgroundColor:p.bg}}><Row style={{justifyContent:'space-between'}}><PartnerLogo id={p.id} name={p.name}/><View style={{width:38,height:38,borderRadius:19,backgroundColor:'#ffffffbb',alignItems:'center',justifyContent:'center'}}><Ionicons name={p.icon} size={21} color={p.color}/></View></Row></View>
+      <View style={{padding:20,gap:10}}>
+        <Text style={{color:p.color,fontSize:11,fontWeight:'800',letterSpacing:0.6}}>{p.category.toUpperCase()}</Text>
+        <Text style={[T.h2,{fontSize:22}]}>{p.theme}</Text>
+        <Text style={T.body}>{p.description}</Text>
+        <Row style={{justifyContent:'space-between',marginTop:6,paddingTop:14,borderTopWidth:1,borderTopColor:C.line}}><Text style={{color:p.color,fontWeight:'800'}}>{p.name} entdecken</Text><Ionicons name="open-outline" size={22} color={p.color}/></Row>
       </View>
-    </Screen>
-  );
+    </Pressable>)}</View>
+  </Screen>;
 }
