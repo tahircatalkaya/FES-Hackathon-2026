@@ -9,6 +9,7 @@ import { useStore, balance, weekStats, chameleonStage } from '@/store';
 import { useUI } from '@/store/ui';
 import { LANGS } from '@/i18n';
 import { useT } from '@/i18n/useT';
+import { CHAPTERS } from '@/data/mock';
 
 const col = CONTEXT.home.color;
 
@@ -23,6 +24,7 @@ export default function Profile() {
   useEffect(() => { setCtx('home'); }, []);
   const bal = balance(s), wk = weekStats(s.ledger), st = chameleonStage(s.ledger);
   const unread = s.notices.filter((n) => !n.read).length;
+  const nextQuiz = CHAPTERS.find((c) => !s.quizDone.includes(c.id));
 
   function reset() {
     const go = () => { s.resetAll(); router.replace('/onboarding'); };
@@ -46,7 +48,7 @@ export default function Profile() {
 
       {showLanguages && (
         <Card style={{ marginTop: 8 }}>
-          {LANGS.map((language, index, languages) => (
+          {LANGS.filter((language) => language.code !== 'leicht').map((language, index, languages) => (
             <View key={language.code}>
               <Pressable accessibilityRole="button" accessibilityState={{ selected: s.lang === language.code }} onPress={() => { s.setProfile({ lang: language.code }); setShowLanguages(false); }} style={{ paddingVertical: 10 }}>
                 <Row style={{ justifyContent: 'space-between' }}>
@@ -63,7 +65,7 @@ export default function Profile() {
       <Appear delay={40}>
         <Card style={{ marginTop: S.lg }}>
           <Row>
-            <Chameleon color={col} size={110} stage={st.stage as any} />
+            <Chameleon pose="cool" size={110} />
             <View style={{ flex: 1 }}>
               {editName ? (
                 <Row><TextInput value={nm} onChangeText={setNm} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, padding: 8, fontWeight: '800', color: C.ink }} maxLength={24} /><Button label="OK" color={col} onPress={() => { s.setProfile({ name: nm.trim() || s.name }); setEditName(false); }} style={{ paddingVertical: 8, paddingHorizontal: 12 }} /></Row>
@@ -86,6 +88,23 @@ export default function Profile() {
       <View style={{ marginTop: 12 }}>
         <Button label="Belohnungen" icon="🎁" color={col} onPress={() => router.push('/belohnungen')} style={{ width: '100%', paddingVertical: 14 }} />
       </View>
+
+      <SectionTitle title="Lernen" />
+      <Appear delay={60}>
+        {nextQuiz ? (
+          <Card onPress={() => router.push(('/quiz/' + nextQuiz.id) as any)} style={{ backgroundColor: C.ink }}>
+            <Text style={[T.label, { color: '#ffffff99' }]}>FES-Wissen · mit {s.chameleonName}</Text>
+            <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
+            <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
+            <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{nextQuiz.questions.length} Fragen · +{nextQuiz.questions.length * 5} Punkte</Text>
+          </Card>
+        ) : (
+          <Card>
+            <Text style={T.h3}>Alle Kapitel geschafft</Text>
+            <Text style={T.small}>Neue Lerninhalte kommen mit dem nächsten Update.</Text>
+          </Card>
+        )}
+      </Appear>
 
       <SectionTitle title="Datenschutz" />
       <Appear delay={80}>

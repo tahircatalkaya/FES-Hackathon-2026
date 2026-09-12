@@ -8,6 +8,7 @@ export type VerificationStatus =
 
 export type ActionType =
   // Mobilität
+  | 'ride.checkin' // Terminal-Check-in, fester Betrag
   | 'ride.transit'
   | 'ride.active' // Fuß/Rad statt Auto
   | 'ride.sharing_feeder'
@@ -29,6 +30,7 @@ export type ActionType =
   | 'clean.organize'
   | 'clean.report'
   | 'clean.bin_checkin'
+  | 'clean.bin_quality' // Biotonnen-Check per Foto
   | 'clean.quiz'
   | 'clean.litter_solo' // 0 Punkte, nur Anerkennung
   // Rhythmus
@@ -82,5 +84,7 @@ export interface Award {
   reasons: string[];
   formula: string;
   duplicate?: boolean;
+  /** Fester Betrag: ohne Nachweis-Multiplikator und ohne Degression gewertet. */
+  flat?: boolean;
   meta?: ActionEvent['meta'];
 }

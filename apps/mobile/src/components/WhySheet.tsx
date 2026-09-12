@@ -9,6 +9,8 @@ import { FACTORS } from '@/engine/impact';
 /** Ein Screen, ein Bewertungskriterium: Nachvollziehbarkeit der Impact- und Reward-Logik. */
 export default function WhySheet({ award, onClose }: { award: Award | null; onClose: () => void }) {
   const a = award;
+  // Fester Betrag oder Basis 0: Multiplikator und Degression sagen nichts aus.
+  const plain = !!a && (a.flat || a.base === 0);
   const mode = a?.meta?.mode as keyof typeof FACTORS | undefined;
   return (
     <Sheet open={!!a} onClose={onClose} title="Warum diese Punkte?">
@@ -23,11 +25,11 @@ export default function WhySheet({ award, onClose }: { award: Award | null; onCl
           <Divider />
           <Text style={T.label}>Rechnung</Text>
           <Text style={{ fontSize: 22, fontWeight: '800', color: C.ink, marginTop: 4 }}>{a.formula}</Text>
-          <Text style={T.small}>Basis × Nachweis-Multiplikator × Degression (1./2./3. Aktion heute)</Text>
+          <Text style={T.small}>{a.flat ? 'Fester Betrag für die Entscheidung. Kein Nachweis-Multiplikator, keine Degression.' : plain ? 'Diese Aktion gibt keine Punkte. Der Nachweis zählt hier für den Impact.' : 'Basis × Nachweis-Multiplikator × Degression (1./2./3. Aktion heute)'}</Text>
           <View style={{ flexDirection: 'row', marginTop: S.md, gap: 8 }}>
             <Cell k="Basis" v={String(a.base)} />
-            <Cell k="Multiplikator" v={`×${a.multiplier.toFixed(1)}`} />
-            <Cell k="Degression" v={`×${a.degression}`} />
+            {!plain && <Cell k="Multiplikator" v={`×${a.multiplier.toFixed(1)}`} />}
+            {!plain && <Cell k="Degression" v={`×${a.degression}`} />}
             <Cell k="Punkte" v={String(a.points)} strong />
           </View>
           <Divider />

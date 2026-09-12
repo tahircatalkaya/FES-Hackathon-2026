@@ -22,6 +22,8 @@ RULES = {
     'fes.cleanup':(15,15,30,'confirmed'),
     'fes.spontaneous':(2,2,6,'self_reported'),
     'fes.quiz':(3,3,9,'confirmed'),
+    'fes.bin_bingo':(2,2,14,'self_reported'),
+    'fes.bio_check':(3,3,21,'self_reported'),
     'foodsharing.stock_update':(1,1,3,'self_reported'),
     'transdev.journey':(5,5,15,'plausible'),
 }

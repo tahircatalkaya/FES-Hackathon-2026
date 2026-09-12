@@ -53,7 +53,7 @@ export default function Onboarding() {
           </Card>
         )}
         <View style={{ alignItems: 'center', marginTop: 28 }}>
-          <Chameleon color={color} size={230} mood={last ? 'excited' : 'happy'} lookX={i % 2 ? -0.5 : 0.6} />
+          <Chameleon pose={last ? 'cheer' : i % 2 ? 'hello' : 'wave'} size={230} />
         </View>
         <Animated.View key={i} entering={FadeInDown.springify().damping(16)} exiting={FadeOut} style={{ marginTop: 24, minHeight: 190 }}>
           {!last ? (
