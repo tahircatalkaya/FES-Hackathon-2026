@@ -22,18 +22,9 @@ export default function Act() {
   const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
-  const [reward, setReward] = useState<null | { title: string; points: number }>(null);
+  const [reward, setReward] = useState<null | { points: number; duplicate: boolean }>(null);
   const [showAll, setShowAll] = useState(false);
   useEffect(() => { setCtx('clean'); }, []);
-  /** Jede neue Gutschrift im Journal löst die Belohnung aus. */
-  const seen = React.useRef(ledger.length);
-  useEffect(() => {
-    if (ledger.length > seen.current) {
-      const fresh = ledger[0];
-      if (fresh) setReward({ title: fresh.title, points: fresh.points });
-    }
-    seen.current = ledger.length;
-  }, [ledger.length]);
 
   const st = chameleonStage(ledger);
   const wk = weekStats(ledger);
@@ -55,7 +46,7 @@ export default function Act() {
 
   function join(id: string, title: string) {
     joinCleanup(id);
-    addAward({
+    const a = addAward({
       type: 'clean.participate',
       partner: 'fes',
       status: 'ausstehend',
@@ -65,6 +56,7 @@ export default function Act() {
       meta: { source: 'user', evidence: ['Anmeldung erfasst. Punkte erst nach bestätigter Teilnahme vor Ort.'] },
     });
     haptic('success');
+    setReward({ points: a.points, duplicate: !!a.duplicate });
   }
 
   return (
@@ -161,9 +153,9 @@ export default function Act() {
         })}
       </View>
 
-      <CelebrationOverlay open={!!reward} title={reward?.title} points={reward?.points} onClose={() => setReward(null)} />
-      <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} />
-      <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} />
+      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} onClose={() => setReward(null)} />
+      <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} onDone={setReward} />
+      <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} onDone={setReward} />
       <NewActionSheet open={sheet === 'new'} onClose={() => setSheet(null)} />
     </Screen>
   );

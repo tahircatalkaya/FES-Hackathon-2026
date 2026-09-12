@@ -11,7 +11,7 @@ import { Button, Ring, Sheet, T, haptic } from './ui';
 type Phase = 'start' | 'analyzing' | 'result';
 
 /** Biotonnen-Check: Foto der eigenen Biotonne, Bilderkennung schlägt Fehlwürfe vor, Person bestätigt. */
-export function BinCheckSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: { points: number; duplicate: boolean }) => void }) {
   const { ledger, addAward } = useStore();
   const [phase, setPhase] = useState<Phase>('start');
   const [photo, setPhoto] = useState<string | null>(null);
@@ -55,6 +55,7 @@ export function BinCheckSheet({ open, onClose }: { open: boolean; onClose: () =>
     });
     haptic(a.duplicate ? 'warn' : 'success');
     onClose();
+    onDone?.({ points: a.points, duplicate: !!a.duplicate });
   }
 
   const good = findings.length === 0;

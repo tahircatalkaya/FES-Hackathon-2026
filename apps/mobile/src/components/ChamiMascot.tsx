@@ -74,25 +74,28 @@ export function ChamiMascot({ size = 150, onPress, style }: { size?: number; onP
   return <Pressable onPress={onPress}>{body}</Pressable>;
 }
 
-/** Flamme neben der Gutschrift: die einzige Bewegung im Belohnungsfenster. */
-function Flame({ size = 26 }: { size?: number }) {
-  const f = useSharedValue(0);
+/** Zwei Ringe laufen ruhig nach außen. Reicht als Signal, ohne zu blinken. */
+function Pulse({ children }: { children: React.ReactNode }) {
+  const a = useSharedValue(0);
+  const b = useSharedValue(0);
   useEffect(() => {
-    f.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 520, easing: Easing.inOut(Easing.quad) }),
-        withTiming(0, { duration: 520, easing: Easing.inOut(Easing.quad) }),
-      ),
-      -1,
-      false,
-    );
+    a.value = withRepeat(withTiming(1, { duration: 2200, easing: Easing.out(Easing.quad) }), -1, false);
+    b.value = withDelay(1100, withRepeat(withTiming(1, { duration: 2200, easing: Easing.out(Easing.quad) }), -1, false));
   }, []);
-  const style = useAnimatedStyle(() => ({ transform: [{ scale: 0.92 + 0.16 * f.value }, { translateY: -2 * f.value }, { rotate: `${-4 + 8 * f.value}deg` }] }));
-  return <Animated.Text style={[{ fontSize: size }, style]}>🔥</Animated.Text>;
+  const ringA = useAnimatedStyle(() => ({ opacity: 0.4 * (1 - a.value), transform: [{ scale: 0.62 + 0.75 * a.value }] }));
+  const ringB = useAnimatedStyle(() => ({ opacity: 0.4 * (1 - b.value), transform: [{ scale: 0.62 + 0.75 * b.value }] }));
+  const ring = { position: 'absolute' as const, width: 104, height: 104, borderRadius: 52, borderWidth: 2, borderColor: C.clean };
+  return (
+    <View style={{ width: 112, height: 112, alignItems: 'center', justifyContent: 'center' }}>
+      <Animated.View pointerEvents="none" style={[ring, ringA]} />
+      <Animated.View pointerEvents="none" style={[ring, ringB]} />
+      <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: C.clean + '14', alignItems: 'center', justifyContent: 'center' }}>{children}</View>
+    </View>
+  );
 }
 
 /** Belohnung nach einer erledigten Tat: Clip, Punkte, dazu ein Tipp für den Alltag. */
-export function CelebrationOverlay({ open, points, onClose }: { open: boolean; title?: string; points?: number; onClose: () => void }) {
+export function CelebrationOverlay({ open, points, duplicate, onClose }: { open: boolean; points?: number; duplicate?: boolean; onClose: () => void }) {
   const { width } = useWindowDimensions();
   const player = useVideoPlayer(CLIP, (p) => { p.loop = false; p.muted = true; });
   const boxWidth = Math.min(width - 2 * S.lg, 520);
@@ -113,12 +116,16 @@ export function CelebrationOverlay({ open, points, onClose }: { open: boolean; t
           <VideoView player={player} style={{ width: boxWidth, height: boxWidth / CLIP_RATIO }} contentFit="cover" nativeControls={false} />
 
           <View style={{ padding: S.lg, alignItems: 'center' }}>
-            {earned > 0 ? (
+            {duplicate ? (
               <>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Text style={{ fontSize: 20, fontWeight: '900', color: C.ink, textAlign: 'center' }}>Heute schon eingetragen</Text>
+                <Text style={[T.small, { marginTop: 4, textAlign: 'center' }]}>Diese Challenge zählt einmal pro Tag. Morgen wieder.</Text>
+              </>
+            ) : earned > 0 ? (
+              <>
+                <Pulse>
                   <Text style={{ fontSize: 32, fontWeight: '900', color: C.ink, letterSpacing: -0.5 }}>+{earned}</Text>
-                  <Flame />
-                </View>
+                </Pulse>
               </>
             ) : (
               <>

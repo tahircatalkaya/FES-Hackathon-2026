@@ -9,7 +9,7 @@ import { useStore } from '@/store';
 import { Button, Sheet, T, haptic } from './ui';
 
 /** Bingo-Karte: 16 Felder, ein Feld je Kalendertag. Melden braucht die Entsorgung an einem Mülleimer. */
-export function BingoSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: { points: number; duplicate: boolean }) => void }) {
   const { ledger, addAward } = useStore();
   const [before, setBefore] = useState<string | null>(null);
   const [after, setAfter] = useState<string | null>(null);
@@ -51,6 +51,7 @@ export function BingoSheet({ open, onClose }: { open: boolean; onClose: () => vo
     haptic(a.duplicate ? 'warn' : 'success');
     setBefore(null); setAfter(null); setConfirmed(false); setHint('');
     onClose(); // Platz machen: die Belohnung liegt auf der Seite darunter
+    onDone?.({ points: a.points, duplicate: !!a.duplicate });
   }
 
   return (
