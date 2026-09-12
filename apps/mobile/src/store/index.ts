@@ -230,8 +230,8 @@ export const STAGES = [
   { name: 'Schlüpfling', pose: 'calm' as const, at: 0 },
   { name: 'Entdecker', pose: 'hello' as const, at: 150 },
   { name: 'Kletterer', pose: 'backpack' as const, at: 600 },
-  { name: 'Stadtchamäleon', pose: 'cool' as const, at: 2000 },
-  { name: 'Diamant', pose: 'globe' as const, at: 5000 },
+  { name: 'Stadtchamäleon', pose: 'heart' as const, at: 2000 },
+  { name: 'Diamant', pose: 'cool' as const, at: 5000 },
 ];
 
 /**
