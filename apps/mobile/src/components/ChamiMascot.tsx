@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Animated, { Easing, FadeIn, ZoomIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { VideoView, useVideoPlayer } from 'expo-video';
@@ -74,27 +74,36 @@ export function ChamiMascot({ size = 150, onPress, style }: { size?: number; onP
   return <Pressable onPress={onPress}>{body}</Pressable>;
 }
 
+/** Flamme neben der Gutschrift: die einzige Bewegung im Belohnungsfenster. */
+function Flame({ size = 26 }: { size?: number }) {
+  const f = useSharedValue(0);
+  useEffect(() => {
+    f.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 520, easing: Easing.inOut(Easing.quad) }),
+        withTiming(0, { duration: 520, easing: Easing.inOut(Easing.quad) }),
+      ),
+      -1,
+      false,
+    );
+  }, []);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: 0.92 + 0.16 * f.value }, { translateY: -2 * f.value }, { rotate: `${-4 + 8 * f.value}deg` }] }));
+  return <Animated.Text style={[{ fontSize: size }, style]}>🔥</Animated.Text>;
+}
+
 /** Belohnung nach einer erledigten Tat: Clip, Punkte, dazu ein Tipp für den Alltag. */
-export function CelebrationOverlay({ open, title, points, onClose }: { open: boolean; title?: string; points?: number; onClose: () => void }) {
+export function CelebrationOverlay({ open, points, onClose }: { open: boolean; title?: string; points?: number; onClose: () => void }) {
   const { width } = useWindowDimensions();
   const player = useVideoPlayer(CLIP, (p) => { p.loop = false; p.muted = true; });
   const boxWidth = Math.min(width - 2 * S.lg, 520);
   const earned = points ?? 0;
-  const [count, setCount] = useState(0);
   const fact = useMemo(() => FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)], [open]);
 
   useEffect(() => {
-    if (!open) { setCount(0); return; }
+    if (!open) return;
     const start = setTimeout(() => { player.currentTime = 0; player.play(); }, 50);
-    /** Punkte zählen einmal hoch, sonst bleibt alles ruhig. */
-    let n = 0;
-    const step = setInterval(() => {
-      n += Math.max(1, Math.ceil(earned / 12));
-      if (n >= earned) { n = earned; clearInterval(step); }
-      setCount(n);
-    }, 55);
     const stop = setTimeout(onClose, 9000);
-    return () => { clearTimeout(start); clearTimeout(stop); clearInterval(step); player.pause(); };
+    return () => { clearTimeout(start); clearTimeout(stop); player.pause(); };
   }, [open]);
 
   return (
@@ -106,22 +115,18 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
           <View style={{ padding: S.lg, alignItems: 'center' }}>
             {earned > 0 ? (
               <>
-                <Animated.View
-                  entering={ZoomIn.springify().damping(13).delay(140)}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 10, borderRadius: R.pill, backgroundColor: '#FF6A00' }}
-                >
-                  <Text style={{ fontSize: 18 }}>🔥</Text>
-                  <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: -0.5 }}>+{count}</Text>
-                </Animated.View>
-                <Text style={{ fontSize: 16, fontWeight: '900', color: C.ink, marginTop: 10, textAlign: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <Flame />
+                  <Text style={{ fontSize: 32, fontWeight: '900', color: C.ink, letterSpacing: -0.5 }}>+{earned}</Text>
+                </View>
+                <Text style={{ fontSize: 16, fontWeight: '900', color: C.ink, marginTop: 6, textAlign: 'center' }}>
                   {earned === 1 ? 'Punkt' : 'Punkte'} gutgeschrieben
                 </Text>
-                <Text style={[T.small, { marginTop: 2, textAlign: 'center' }]}>{title}</Text>
               </>
             ) : (
               <>
                 <Text style={{ fontSize: 20, fontWeight: '900', color: C.ink, textAlign: 'center' }}>Eingetragen, noch keine Punkte</Text>
-                <Text style={[T.small, { marginTop: 4, textAlign: 'center' }]}>{title} · Die Punkte kommen, sobald die Teilnahme bestätigt ist.</Text>
+                <Text style={[T.small, { marginTop: 4, textAlign: 'center' }]}>Die Punkte kommen, sobald die Teilnahme bestätigt ist.</Text>
               </>
             )}
 
