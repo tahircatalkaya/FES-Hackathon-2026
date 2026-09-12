@@ -22,7 +22,7 @@ export default function Act() {
   const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
-  const [reward, setReward] = useState<null | { points: number; duplicate: boolean }>(null);
+  const [reward, setReward] = useState<null | { points: number; duplicate: boolean; status: string }>(null);
   const [showAll, setShowAll] = useState(false);
   useEffect(() => { setCtx('clean'); }, []);
 
@@ -56,7 +56,7 @@ export default function Act() {
       meta: { source: 'user', evidence: ['Anmeldung erfasst. Punkte erst nach bestätigter Teilnahme vor Ort.'] },
     });
     haptic('success');
-    setReward({ points: a.points, duplicate: !!a.duplicate });
+    setReward({ points: a.points, duplicate: !!a.duplicate, status: a.status });
   }
 
   return (
@@ -153,7 +153,7 @@ export default function Act() {
         })}
       </View>
 
-      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} onClose={() => setReward(null)} />
+      <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} status={reward?.status} progress={{ done: todayDone, total: 3 }} onClose={() => setReward(null)} />
       <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} onDone={setReward} />
       <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} onDone={setReward} />
       <NewActionSheet open={sheet === 'new'} onClose={() => setSheet(null)} />
