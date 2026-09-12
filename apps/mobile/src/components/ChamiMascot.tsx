@@ -35,7 +35,15 @@ const POSES = {
   hello: { src: require('../../assets/chami/hello.png'), ratio: 276 / 309, lid: undefined, lively: true, eyes: [] },
   calm: { src: require('../../assets/chami/calm.png'), ratio: 240 / 308, lid: undefined, lively: false, eyes: [] },
   coffee: { src: require('../../assets/chami/coffee.png'), ratio: 285 / 305, lid: 'rgb(155, 219, 15)', lively: false, eyes: [{ left: 0.2491, top: 0.2754, width: 0.1895, height: 0.2066 }, { left: 0.6491, top: 0.3377, width: 0.1965, height: 0.2066 }] },
-  globe: { src: require('../../assets/chami/globe.png'), ratio: 257 / 309, lid: undefined, lively: false, eyes: [] },
+  globe: {
+    src: require('../../assets/chami/globe-base.png'),
+    /** Der Globus liegt samt Händen auf einer eigenen Ebene und wackelt leicht. */
+    hand: { src: require('../../assets/chami/globe-hands.png'), pivotX: 0.6479, pivotY: 0.6845, swing: 4 },
+    ratio: 257 / 309,
+    lid: undefined,
+    lively: false,
+    eyes: [],
+  },
   leaf: { src: require('../../assets/chami/leaf.png'), ratio: 292 / 293, lid: 'rgb(153, 220, 15)', lively: false, eyes: [{ left: 0.2295, top: 0.3038, width: 0.1747, height: 0.2082 }, { left: 0.6096, top: 0.2867, width: 0.1952, height: 0.2116 }] },
   backpack: { src: require('../../assets/chami/backpack.png'), ratio: 242 / 291, lid: 'rgb(153, 219, 14)', lively: false, eyes: [{ left: 0.3264, top: 0.2543, width: 0.2355, height: 0.2062 }, { left: 0.781, top: 0.3024, width: 0.1653, height: 0.1959 }] },
   run: { src: require('../../assets/chami/run.png'), ratio: 289 / 291, lid: 'rgb(154, 219, 15)', lively: true, eyes: [{ left: 0.4671, top: 0.354, width: 0.1903, height: 0.2027 }, { left: 0.8339, top: 0.323, width: 0.128, height: 0.1959 }] },
@@ -50,7 +58,8 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
   const p = POSES[pose] ?? POSES.classic;
   const width = size * p.ratio;
   const blink = useSharedValue(0);
-  const idle = useSharedValue(0);
+  const hand = useSharedValue(0);
+  const swing = 'hand' in p ? (p as any).hand.swing : 0;
 
   useEffect(() => {
     blink.value = withRepeat(
@@ -63,31 +72,33 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
       -1,
       false,
     );
-    /** Grundbewegung: wiegt sich langsam hin und her. */
-    idle.value = withRepeat(
+    hand.value = withRepeat(
       withSequence(
-        withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
-        withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
+        withTiming(1, { duration: 1400, easing: Easing.inOut(Easing.quad) }),
+        withTiming(0, { duration: 1400, easing: Easing.inOut(Easing.quad) }),
       ),
       -1,
       false,
     );
   }, []);
 
-  const swing = p.lively ? 7 : 4;
-  const bodyStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: (p.lively ? 0.04 : 0.02) * size * (idle.value - 0.5) * 2 },
-      { translateY: -0.06 * size * idle.value },
-      { rotate: `${-swing / 2 + swing * idle.value}deg` },
-      { scale: 1 + 0.03 * idle.value },
-    ],
-  }));
+  const handStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${-swing / 2 + swing * hand.value}deg` }] }));
   const lidStyle = useAnimatedStyle(() => ({ transform: [{ scaleY: blink.value }] }));
 
+  const layer = 'hand' in p ? (p as any).hand : null;
   const body = (
-    <Animated.View style={[{ width, height: size }, bodyStyle, style]}>
+    <View style={[{ width, height: size }, style]}>
       <Animated.Image source={p.src} style={{ width, height: size }} resizeMode="contain" />
+      {layer ? (
+        <Animated.Image
+          source={layer.src}
+          resizeMode="contain"
+          style={[
+            { position: 'absolute', width, height: size, transformOrigin: `${layer.pivotX * width}px ${layer.pivotY * size}px` },
+            handStyle,
+          ]}
+        />
+      ) : null}
       {p.eyes.map((e, i) => (
         <Animated.View
           key={i}
@@ -106,7 +117,7 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
           ]}
         />
       ))}
-    </Animated.View>
+    </View>
   );
 
   if (!onPress) return body;
