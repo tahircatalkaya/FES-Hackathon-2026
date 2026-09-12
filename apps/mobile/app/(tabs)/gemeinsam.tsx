@@ -91,7 +91,7 @@ export default function Together() {
                 </Row>
                 <Pressable onPress={() => router.push('/belohnungen')}><Text style={{ color: col, fontWeight: '800' }}>Verlosung ›</Text></Pressable>
               </Row>
-              <Text style={T.small}>Monatliche Ziehung, 100 Gewinne. Tippe das i für die Regeln.</Text>
+              <Text style={T.small}>Monatliche Ziehung, 100 Gewinner. Tippe das i für die Regeln.</Text>
             </Card>
           </Appear>
 
@@ -108,7 +108,7 @@ export default function Together() {
             </Card>
           </Appear>
       <Sheet open={drawInfo} onClose={() => setDrawInfo(false)} title="So funktioniert die Verlosung">
-        <Text style={T.body}>Jeden Monat werden 100 Gewinne zufällig gezogen. Ein Los je erreichtes Wochenziel, also höchstens vier oder fünf im Monat.</Text>
+        <Text style={T.body}>Jeden Monat werden 100 Gewinner zufällig gezogen. Ein Los je erreichtes Wochenziel, also höchstens vier oder fünf im Monat.</Text>
         <Text style={[T.body, { marginTop: 10 }]}>Wer zehnmal mehr sammelt, hat nicht zehnmal mehr Chancen. Das Verfahren belohnt Regelmäßigkeit, nicht Menge, und es gibt keine Plätze.</Text>
         <Divider />
         <Text style={T.label}>Gewinn frei wählbar</Text>

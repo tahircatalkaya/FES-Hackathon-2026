@@ -47,7 +47,7 @@ export default function Rewards() {
       <Appear delay={60}>
         <Card style={{ marginTop: 14, borderWidth: 2, borderColor: C.gold }}>
           <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>🎟️ Deutschlandticket-Verlosung</Text><Tag label={`${s.lose} Lose`} color={C.gold} /></Row>
-          <Text style={[T.body, { marginTop: 6 }]}>Jede Woche mit erreichtem Wochenziel gibt ein Los. Gezogen wird am {nextDraw.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}: 100 Gewinne, rein zufällig aus allen Losen.</Text>
+          <Text style={[T.body, { marginTop: 6 }]}>Jede Woche mit erreichtem Wochenziel gibt ein Los. Gezogen wird am {nextDraw.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}: 100 Gewinner, rein zufällig aus allen Losen.</Text>
           <Text style={[T.small, { marginTop: 6 }]}>Du wählst den Gewinn: Deutschlandticket für einen Monat oder ein 20-Euro-Gutschein bei einem Frankfurter Partnerbetrieb, falls du schon ein Ticket hast.</Text>
         </Card>
       </Appear>
