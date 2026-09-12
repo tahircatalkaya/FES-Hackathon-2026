@@ -130,7 +130,7 @@ export function CelebrationOverlay({
             </Animated.Text>
 
             <View style={{ flexDirection: 'row', gap: 10, alignSelf: 'stretch', marginTop: S.md }}>
-              <StatTile label="PUNKTE" value={duplicate ? '+0' : `+${earned}`} color={C.gold} delay={180} />
+              <StatTile label="PUNKTE" value={duplicate ? '+0' : `+${earned}`} color="#FF6A00" delay={180} />
               <StatTile label="HEUTE" value={`${done}/${total}`} color={C.leaf} delay={300} />
             </View>
 
