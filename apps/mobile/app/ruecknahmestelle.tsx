@@ -3,10 +3,11 @@ import React, { useCallback, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Screen, Header } from '@/components/Screen';
-import { Button, Card, Pill, Row, T, Tag } from '@/components/ui';
+import { Button, Card, FeeText, Pill, Row, T, Tag } from '@/components/ui';
 import TrustAccount from '@/components/TrustAccount';
 import ProofCode from '@/components/ProofCode';
-import { DAMAGE } from '@/components/ReuseInventory';
+import { DAMAGE, LOAN_COLOR } from '@/components/ReuseInventory';
+import { FEE_LATE, fmtDue, fmtFee, loanStatus } from '@/engine/loan';
 import { trust, reuseTrust, type TrustProfile, type ReuseLoan } from '@/api/trust';
 import { parseContainerCode } from '@/api/vytal';
 import { C } from '@/theme';
@@ -25,7 +26,9 @@ export default function ReturnDesk() {
         <TextInput accessibilityLabel={rt('routes.container_code_at_return_station')} placeholder={rt('routes.code_on_cup_or_bowl')} value={code} onChangeText={v=>{setCode(v);setLoan(null);setReceipt(null);}} autoCapitalize="characters" style={{padding:14,backgroundColor:C.bg,borderRadius:12,fontSize:16}}/>
         <Button label={rt('routes.check_container')} color={C.reuse} disabled={busy||!code.trim()} onPress={()=>void run(async()=>{const parsed=parseContainerCode(code);if(!parsed)throw new Error('Kein gültiger Behältercode.');setLoan(await reuseTrust.inspect(parsed.code,store));setReceipt(null);})}/>
       </Card>
-      {loan&&<Card style={{gap:12}}><Text style={T.h2}>{rt('routes.2_confirm_receipt')}</Text><Text style={T.h3}>{loan.kind==='cup'?rt('routes.cup'):rt('routes.bowl')} {loan.code}</Text>{loan.damage?<><Tag label={rt('routes.damage_reported')} color={C.warn}/><Text style={T.body}>{localize(DAMAGE[loan.damage.reason])}{loan.damage.note?` · ${loan.damage.note}`:''}</Text><Text style={T.small}>{rt('routes.keep_damaged_containers_separate_and_follow_your_return_rules')}</Text></>:<Text style={T.small}>{rt('routes.no_damage_reported_in_mainsam')}</Text>}
+      {loan&&<Card style={{gap:12}}><Text style={T.h2}>{rt('routes.2_confirm_receipt')}</Text><Text style={T.h3}>{loan.kind==='cup'?rt('routes.cup'):rt('routes.bowl')} {loan.code}</Text>
+        <Row style={{flexWrap:'wrap'}}><Tag label={loanStatus(loan.borrowedAt,loan.returnedAt).label} color={LOAN_COLOR[loanStatus(loan.borrowedAt,loan.returnedAt).state]}/><Text style={T.small}>Frist {fmtDue(loanStatus(loan.borrowedAt).dueAt)}</Text></Row>
+        {loanStatus(loan.borrowedAt).fee>0&&<FeeText text={`Verspätete Rückgabe: ${fmtFee(FEE_LATE)} Gebühr laut Demo-Konditionen. Die Abrechnung läuft über das Vytal-Konto, nicht über Mainsam.`} style={[T.small,{color:C.warn,fontWeight:'800'}]} color={C.warn}/>}{loan.damage?<><Tag label={rt('routes.damage_reported')} color={C.warn}/><Text style={T.body}>{localize(DAMAGE[loan.damage.reason])}{loan.damage.note?` · ${loan.damage.note}`:''}</Text><Text style={T.small}>{rt('routes.keep_damaged_containers_separate_and_follow_your_return_rules')}</Text></>:<Text style={T.small}>{rt('routes.no_damage_reported_in_mainsam')}</Text>}
         <Button label={rt('routes.container_received_issue_return_qr')} color={C.reuse} disabled={busy} onPress={()=>void run(async()=>setReceipt(await reuseTrust.receipt(loan.id,store)))}/>
       </Card>}
       {receipt&&<><ProofCode proof={receipt.proof} expiresAt={receipt.expiresAt} label={rt('routes.return_value_value', { p1: receipt.loan.code, p2: receipt.storeName })}/><Text style={T.body}>{rt('routes.the_person_returning_the_container_scans_this_code_in_their_retur')}</Text><Button label={rt('routes.next_container')} variant="soft" color={C.reuse} onPress={()=>{setCode('');setLoan(null);setReceipt(null);}}/></>}

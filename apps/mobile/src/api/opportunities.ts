@@ -62,8 +62,10 @@ export async function getOpportunities(lat: number, lon: number, radiusKm = 3, l
   for (const c of CLEANUPS) items.push({ id: `cu-${c.id}`, layer: 'clean', ctx: 'clean', partner: 'fes', title: c.title, sub: `${new Date(c.start).toLocaleDateString(locale, { weekday: 'short', day: '2-digit', month: '2-digit' })} ${new Date(c.start).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} · ${c.participants} dabei`, lat: c.lat, lon: c.lon, distance_m: d(c.lat, c.lon), icon: 'sparkles', emoji: '🤝', href: `/cleanup/${c.id}`, availability: c.fesConfirmed ? 'unbekannt' : c.start < Date.now() && c.end > Date.now() ? 'jetzt' : 'bald', source: 'mock', verification: 'Simuliert' });
   for (const b of BINS) items.push({ id: `bin-${b.id}`, layer: 'clean', ctx: 'clean', partner: 'fes', title: `${b.kind} ${b.label}`, sub: 'FES-Behälter mit NFC/QR', lat: b.lat, lon: b.lon, distance_m: d(b.lat, b.lon), icon: b.kind === 'Altkleider' ? 'shirt' : 'trash', emoji: b.kind === 'Glascontainer' ? '🍾' : b.kind === 'Altkleider' ? '👕' : b.kind === 'Pfandring' ? '♻️' : '🗑️', href: `/scan?mode=bin&id=${b.id}`, availability: 'jetzt', source: 'mock', verification: 'Simuliert' });
 
-  items.sort((a, b) => a.distance_m - b.distance_m);
-  return { items, sources, fetchedAt: Date.now() };
+  // Der gewaehlte Umkreis gilt fuer jede Quelle gleich, sonst zeigt die Karte mehr als der Ring verspricht.
+  const inRadius = items.filter((i) => i.distance_m <= radiusKm * 1000);
+  inRadius.sort((a, b) => a.distance_m - b.distance_m);
+  return { items: inRadius, sources, fetchedAt: Date.now() };
 }
 
 export function fmtDist(m: number, locale = 'de-DE') {

@@ -25,6 +25,22 @@ export const T = {
   label: { fontSize: 12, fontWeight: '700', color: C.muted, textTransform: 'uppercase', letterSpacing: 0.8 } as TextStyle,
 };
 
+/**
+ * Satz mit hervorgehobenen Geldbeträgen: Gebühren stehen unterstrichen im Text,
+ * damit niemand sie überliest, ohne dass ein zweiter Hinweiskasten nötig wird.
+ */
+export function FeeText({ text, style, color }: { text: string; style?: TextStyle | TextStyle[]; color?: string }) {
+  return (
+    <Text style={style}>
+      {text.split(/(\d+(?:[.,]\d+)?\s?€)/g).map((part, i) =>
+        part.includes('€')
+          ? <Text key={i} style={{ textDecorationLine: 'underline', fontWeight: '800', color: color ?? C.ink }}>{part}</Text>
+          : part,
+      )}
+    </Text>
+  );
+}
+
 export function Card({ children, style, onPress, tint }: { children: React.ReactNode; style?: ViewStyle | ViewStyle[]; onPress?: () => void; tint?: string }) {
   const sc = useSharedValue(1);
   const st = useAnimatedStyle(() => ({ transform: [{ scale: sc.value }] }));

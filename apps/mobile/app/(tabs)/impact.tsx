@@ -15,6 +15,7 @@ import { useUI } from '@/store/ui';
 import { fmtCo2, FACTORS } from '@/engine/impact';
 import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import { FRANKFURT_GOAL } from '@/data/mock';
+import { cityImpact } from '@/engine/city';
 
 const WEEKDAYS = ['tabs.weekday.mon', 'tabs.weekday.tue', 'tabs.weekday.wed', 'tabs.weekday.thu', 'tabs.weekday.fri', 'tabs.weekday.sat', 'tabs.weekday.sun'] as const;
 
@@ -50,7 +51,8 @@ export default function Impact() {
   }, [ledger]);
   const col = CONTEXT.community.color;
   const empty = ledger.length === 0;
-  const cityKm = Math.round(FRANKFURT_GOAL.weekSoFarKg * 6.5 + total.km);
+  // Gemeinsame Strecke dieser Woche aus derselben Stadtreihe wie im Gemeinsam-Tab.
+  const cityKm = Math.round(cityImpact('week').km + total.km);
 
   return (
     <Screen>

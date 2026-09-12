@@ -42,7 +42,7 @@ function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function dot(c,l){return L.divIcon({html:'<div class="sd" style="background:'+c+'">'+(l?'<span class="sdl">'+esc(l)+'</span>':'')+'</div>',className:'',iconSize:[12,12],iconAnchor:[6,6]})}
 window.update=function(d){layer.clearLayers();
  d.heat.forEach(function(h){L.circle([h.lat,h.lon],{radius:80+h.v*320,color:'transparent',fillColor:'#7C4DFF',fillOpacity:0.08+h.v*0.35}).addTo(layer)});
- d.circles.forEach(function(c){L.circle([c.lat,c.lon],{radius:c.radius,color:c.color,fillColor:c.color,fillOpacity:0.2,weight:2}).addTo(layer)});
+ d.circles.forEach(function(c){L.circle([c.lat,c.lon],{radius:c.radius,color:c.color,fillColor:c.color,fillOpacity:c.fillOpacity==null?0.2:c.fillOpacity,weight:2,dashArray:c.dashed?'6 6':null}).addTo(layer)});
  d.polylines.forEach(function(p){L.polyline(p.points,{color:p.color,weight:p.width||4,dashArray:p.dashed?'6 6':null,lineCap:'round'}).addTo(layer)});
  d.markers.forEach(function(m){if(m.dot){L.marker([m.lat,m.lon],{icon:dot(m.color,m.label),interactive:false}).addTo(layer)}else{L.marker([m.lat,m.lon],{icon:icon(m.color,m.emoji||'●',m.selected)}).on('click',function(){post({type:'marker',id:m.id})}).addTo(layer)}});
  if(d.user){L.marker([d.user.lat,d.user.lon],{icon:L.divIcon({html:'<div class="u" style="background:'+d.userColor+';box-shadow:0 0 0 6px '+d.userColor+'40"></div>',className:'',iconSize:[22,22],iconAnchor:[11,11]}),interactive:false}).addTo(layer)}

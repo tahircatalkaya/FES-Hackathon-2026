@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createTrustServer } from './server.mjs';
 import { award, BASE } from '../mobile/src/engine/reward.ts';
+import { FEE_KEPT } from '../mobile/src/engine/loan.ts';
 
 async function fixture(t, dbPath=':memory:') {
   let timestamp = Date.now();
@@ -201,6 +202,22 @@ test('Return requires assigned merchant, exact loan and fresh proof; damage pers
   await f.call(`/reuse/loans/${l.id}/damage`,f.customer,{reason:'other'},409);
   assert.ok((await f.call('/reuse/loans',f.customer)).find(x=>x.id===l.id).returnedAt);
   assert.ok(!JSON.stringify(await f.call('/reuse/loans',f.customer)).includes(fresh.proof));
+});
+
+test('Loss and total damage are priced by the server, close the loan and never award points',async t=>{
+  const f=await merchantFixture(t),store=f.stores[0].id;f.grant('staff',store);
+  const l=await f.call('/reuse/loans',f.customer,{code:'LOST2345',kind:'bowl',storeId:store});
+  await f.call(`/reuse/loans/${l.id}/settle`,f.outsider,{reason:'lost',method:'PayPal'},403);
+  await f.call(`/reuse/loans/${l.id}/settle`,f.customer,{reason:'stolen',method:'PayPal'},422);
+  await f.call(`/reuse/loans/${l.id}/settle`,f.customer,{reason:'__proto__',method:'PayPal'},422);
+  // Der Betrag aus dem Gerät wird nicht übernommen; das Feld ist gar nicht zugelassen.
+  await f.call(`/reuse/loans/${l.id}/settle`,f.customer,{reason:'lost',method:'PayPal',amount:1},422);
+  const settled=await f.call(`/reuse/loans/${l.id}/settle`,f.customer,{reason:'lost',method:'PayPal'});
+  assert.equal(settled.settlement.amount,FEE_KEPT);assert.equal(settled.settlement.demo,true);assert.ok(settled.returnedAt);
+  await f.call(`/reuse/loans/${l.id}/settle`,f.customer,{reason:'lost',method:'PayPal'},409);
+  await f.call(`/reuse/loans/${l.id}/damage`,f.customer,{reason:'cracked',note:''},409);
+  await f.call('/reuse/merchant/inspect',f.staff,{code:l.code,storeId:store},404);
+  assert.equal((await f.call('/me',f.customer)).awards.length,0);
 });
 
 test('Merchant cannot confirm own return; revoked, replaced and demo proofs cannot produce rewards',async t=>{

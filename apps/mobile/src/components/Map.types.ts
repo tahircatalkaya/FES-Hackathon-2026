@@ -3,7 +3,7 @@ import type { ViewStyle } from 'react-native';
 /** `dot`: kleiner Punkt statt Pin, mit `label` als Namensschild daneben. Nicht anklickbar. */
 export interface MapMarker { id: string; lat: number; lon: number; color: string; emoji?: string; label?: string; selected?: boolean; dot?: boolean; onPress?: () => void }
 export interface MapPolyline { points: [number, number][]; color: string; width?: number; dashed?: boolean }
-export interface MapCircle { lat: number; lon: number; radius: number; color: string }
+export interface MapCircle { lat: number; lon: number; radius: number; color: string; fillOpacity?: number; dashed?: boolean }
 export interface HeatPoint { lat: number; lon: number; v: number } // v in 0..1
 
 export interface MapProps {

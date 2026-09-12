@@ -8,7 +8,7 @@ import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen, Header } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
-import { Button, Card, T, Row, haptic, StatusBadge, Divider } from '@/components/ui';
+import { Button, Card, FeeText, T, Row, haptic, StatusBadge, Divider } from '@/components/ui';
 import { C, CONTEXT } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
@@ -19,6 +19,7 @@ import { syncReuse } from '@/components/ReuseInventory';
 import { trust, reuseTrust } from '@/api/trust';
 import { scheduleReturnReminder } from '@/api/notify';
 import { parseContainerCode, demoContainerCode } from '@/api/vytal';
+import { fmtDue, loanStatus, LOAN_SOURCE, LOAN_TERMS } from '@/engine/loan';
 import { parseTag } from '@/api/nfc';
 import { useLocation } from '@/hooks/useLocation';
 import NfcSheet from '@/components/NfcSheet';
@@ -32,8 +33,8 @@ const TITLES: Record<Mode, { title: string; sub: string; ctx: keyof typeof CONTE
   ride: { title: 'Fahrzeug-Code scannen', sub: 'QR-Code am Türbereich', ctx: 'mobility', hint: 'Der Code am Türbereich bestätigt deine Fahrt. Die Punkte gibt es beim Check-in.' },
   bin: { title: 'FES-Behälter', sub: 'NFC/QR am Papierkorb oder Container', ctx: 'clean', hint: 'Richtig entsorgt am FES-Behälter: 3 Punkte, bis zu dreimal am Tag.' },
   peer: { title: 'Gegenseitig bestätigen', sub: 'Code vom Display einer anderen Person', ctx: 'clean', hint: 'Ihr bestätigt euch gegenseitig vor Ort.' },
-  vytal: { title: 'Mehrweg-Behälter', sub: 'Code auf dem Behälter', ctx: 'reuse', hint: 'Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte.' },
-  'vytal-return': {title:'Rückgabe-QR scannen',sub:'Frischer Code vom Personal',ctx:'reuse',hint:'Gib den Behälter ab. Das Personal stellt danach einen einmaligen Rückgabe-QR für genau diesen Behälter aus.'},
+  vytal: { title: 'Mehrweg-Behälter', sub: 'Code auf dem Behälter', ctx: 'reuse', hint: `Ausleihe erfassen. Beim Zurückbringen gibt es die Punkte. ${LOAN_TERMS}` },
+  'vytal-return': {title:'Rückgabe-QR scannen',sub:'Frischer Code vom Personal',ctx:'reuse',hint:`Gib den Behälter ab. Das Personal stellt danach einen einmaligen Rückgabe-QR für genau diesen Behälter aus. ${LOAN_TERMS}`},
   'food-handover': {title:'Abholcode scannen',sub:'Code vom Handy der abholenden Person',ctx:'food',hint:'Prüfe die vereinbarte Portion. Scanne den persönlichen QR-Code und bestätige erst, wenn du sie übergeben hast.'},
   litter: { title: 'Müll aufgehoben', sub: 'Vorher/Nachher-Nachweis', ctx: 'clean', hint: 'Der Nachweis dokumentiert deine Aktion. Es gibt keine Punkte je Müllstück.' },
 };
@@ -151,7 +152,8 @@ function ScanInner() {
       )}
       <Card style={{ marginTop: 14 }}>
         <Text style={T.label}>{rt('routes.good_to_know')}</Text>
-        <Text style={[T.body, { marginTop: 4 }]}>{localize(cfg.hint)}</Text>
+        <FeeText text={localize(cfg.hint)} style={[T.body, { marginTop: 4 }]} />
+        {mode === 'vytal' && <Text style={[T.small, { marginTop: 6 }]}>{LOAN_SOURCE}</Text>}
       </Card>
       {!done && (
         <Card style={{ marginTop: 14, gap: 10 }}>

@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import type { FoodItem } from './ai';
 import type { VytalStore } from './vytal';
 import type { Award } from '@/engine/types';
+import type { Settlement, SettleReason } from '@/engine/loan';
 
 export interface Reputation { count: number; visible: boolean; satisfaction?: number; reliability?: number; respect?: number }
 export interface PickupSlot { startsAt:number; endsAt:number; available:boolean }
@@ -76,12 +77,14 @@ export const trust = {
 
 export interface DistributionDraft { title:string; area:string; address:string; startsAt:number; endsAt:number; requestKey:string; lots:{items:FoodItem[]; portions:number}[] }
 export interface SharedShelfUpdate { id:string;pointId:number;kind:'shelf'|'stock'|'pickup';fill:'leer'|'wenig'|'mittel'|'voll';items:FoodItem[];at:number }
-export interface ReuseLoan {id:string;code:string;kind:'cup'|'bowl';storeId?:string;storeName:string;borrowedAt:number;returnedAt?:number;returnStoreName?:string;damage:{reason:string;note:string;at:number}|null;demo:boolean}
+export interface ReuseLoan {id:string;code:string;kind:'cup'|'bowl';storeId?:string;storeName:string;borrowedAt:number;returnedAt?:number;returnStoreName?:string;damage:{reason:string;note:string;at:number}|null;settlement:Settlement|null;demo:boolean}
 export const reuseTrust = {
   loans:()=>call<ReuseLoan[]>('/reuse/loans'),
   stores:()=>call<string[]>('/reuse/stores'),
   borrow:(data:{code:string;kind:'cup'|'bowl';storeId?:string;demo?:boolean})=>call<ReuseLoan>('/reuse/loans',data),
   damage:(id:string,reason:string,note:string)=>call<ReuseLoan>(`/reuse/loans/${id}/damage`,{reason,note}),
+  /** Verlust oder Totalschaden begleichen. Den Betrag setzt der Server, nicht das Gerät. */
+  settle:(id:string,reason:SettleReason,method:string)=>call<ReuseLoan>(`/reuse/loans/${id}/settle`,{reason,method}),
   inspect:(code:string,storeId:string)=>call<ReuseLoan>('/reuse/merchant/inspect',{code,storeId}),
   receipt:(loanId:string,storeId:string)=>call<{proof:string;expiresAt:number;loan:ReuseLoan;storeName:string}>('/reuse/merchant/receipt',{loanId,storeId}),
   complete:(loanId:string,proof:string)=>call<{loan:ReuseLoan;awards:Award[];duplicate?:boolean}>('/reuse/return',{loanId,proof}),

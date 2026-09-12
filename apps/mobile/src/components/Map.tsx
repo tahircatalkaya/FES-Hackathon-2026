@@ -102,7 +102,7 @@ function Inner({ center, spanKm = 4, markers = [], polylines = [], circles = [],
         <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution={t('components.map.attribution')} />
         <Controller rl={rl} center={center} zoom={zoom} follow={follow} recenterKey={recenterKey} onPress={onPress} onUserPan={onUserPan} />
         {heat.map((h, i) => <Circle key={`h${i}`} center={[h.lat, h.lon]} radius={80 + h.v * 320} pathOptions={{ color: 'transparent', fillColor: '#7C4DFF', fillOpacity: 0.08 + h.v * 0.35 }} />)}
-        {circles.map((c, i) => <Circle key={`c${i}`} center={[c.lat, c.lon]} radius={c.radius} pathOptions={{ color: c.color, fillColor: c.color, fillOpacity: 0.2, weight: 2 }} />)}
+        {circles.map((c, i) => <Circle key={`c${i}`} center={[c.lat, c.lon]} radius={c.radius} pathOptions={{ color: c.color, fillColor: c.color, fillOpacity: c.fillOpacity ?? 0.2, weight: 2, dashArray: c.dashed ? '6 6' : undefined }} />)}
         {polylines.map((p, i) => <Polyline key={`p${i}`} positions={p.points} pathOptions={{ color: p.color, weight: p.width ?? 4, dashArray: p.dashed ? '6 6' : undefined, lineCap: 'round' }} />)}
         {markers.map((m) => <Marker key={m.id} position={[m.lat, m.lon]} icon={m.dot ? dotIcon(m.color, m.label) : icons(m.color, m.emoji ?? '●', m.selected)} interactive={!m.dot} eventHandlers={{ click: () => m.onPress?.() }} />)}
         {userLocation && <Marker position={[userLocation.lat, userLocation.lon]} icon={userIcon} />}

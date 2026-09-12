@@ -8,8 +8,9 @@ import { cancelReturnReminder } from '@/api/notify';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
 import { C } from '@/theme';
+import { FEE_LATE, fmtDue, fmtFee, loanStatus } from '@/engine/loan';
 import { Header, Screen } from './Screen';
-import { Button, Card, T, haptic } from './ui';
+import { Button, Card, FeeText, T, haptic } from './ui';
 import { syncReuse } from './ReuseInventory';
 import TrustAccount from './TrustAccount';
 
@@ -36,7 +37,8 @@ export default function ProofScanner({kind,id}:{kind:'food'|'return';id:string})
       const a=me.awards.find(a=>a.key===`trust:${id}:${me.user.id}`);if(a)useUI.getState().showToast(a);
     }else{
       const result=await reuseTrust.complete(id,proof);await syncReuse();await cancelReturnReminder(id);
-      setDone(`${t('components.scanner.returnDone', { code: result.loan.code, store: result.loan.returnStoreName ?? '' })}${result.loan.demo ? ` ${t('components.scanner.demo')}` : ''}`);
+      const st=loanStatus(result.loan.borrowedAt,result.loan.returnedAt);
+      setDone(`${t('components.scanner.returnDone', { code: result.loan.code, store: result.loan.returnStoreName ?? '' })} ${st.hint}${result.loan.demo ? ` ${t('components.scanner.demo')}` : ''}`);
       const a=result.awards.find(a=>a.key===`trust:reuse:${id}:reuse.return`);if(a&&!result.duplicate)useUI.getState().showToast(a);
     }
     haptic('success');
@@ -44,7 +46,7 @@ export default function ProofScanner({kind,id}:{kind:'food'|'return';id:string})
   return <Screen tabBar={false}><Header title={kind==='food'?t('components.scanner.pickupTitle'):t('components.scanner.returnTitle')} subtitle={kind==='food'?t('components.scanner.pickupSub'):t('components.scanner.returnSub')} color={color}/>
     {!!error&&<View style={{gap:8,marginBottom:12}}><Text accessibilityRole="alert" style={[T.body,{color:C.danger}]}>{localize(error)}</Text>{!(kind==='food'?handoff:loan)&&<Button label={t('components.common.reload')} variant="soft" onPress={()=>void load()}/>}</View>}
     {signed===null?<Text style={T.body}>{t('components.scanner.loading')}</Text>:!signed?<TrustAccount color={color} onReady={()=>void load()}/>:done?<Card style={{gap:12}}><Text style={T.h2}>{t('components.common.confirmed')}</Text><Text style={T.body}>{done}</Text><Button label={t('common.done')} color={color} onPress={()=>router.replace(kind==='food'?'/uebergaben?mine=1':'/mehrweg')}/></Card>:<View style={{gap:14}}>
-      <Card style={{gap:8}}><Text style={T.h2}>{kind==='food'?t('components.scanner.pickup', { name: handoff?.counterpart.name || t('components.common.loading') }):`${loan?.kind==='cup'?t('components.common.cup'):t('components.common.bowl')} ${loan?.code||'…'}`}</Text><Text style={T.body}>{kind==='food'?handoff?.offer.items.map(i=>`${i.qty} ${i.name}`).join(' · '):t('components.scanner.instructions')}</Text></Card>
+      <Card style={{gap:8}}><Text style={T.h2}>{kind==='food'?t('components.scanner.pickup', { name: handoff?.counterpart.name || t('components.common.loading') }):`${loan?.kind==='cup'?t('components.common.cup'):t('components.common.bowl')} ${loan?.code||'…'}`}</Text><Text style={T.body}>{kind==='food'?handoff?.offer.items.map(i=>`${i.qty} ${i.name}`).join(' · '):t('components.scanner.instructions')}</Text>{kind==='return'&&!!loan&&<FeeText text={`${loanStatus(loan.borrowedAt).label} · Frist ${fmtDue(loanStatus(loan.borrowedAt).dueAt)}${loanStatus(loan.borrowedAt).fee>0?` · ${fmtFee(loanStatus(loan.borrowedAt).fee)} offen, bei Rückgabe jetzt ${fmtFee(FEE_LATE)}`:''}`} style={[T.small,{color:loanStatus(loan.borrowedAt).fee>0?C.danger:C.muted}]} color={loanStatus(loan.borrowedAt).fee>0?C.danger:C.muted}/>}</Card>
       {valid?<Card style={{gap:12}}><Text style={T.h3}>{t('components.scanner.read')}</Text><Text style={T.body}>{kind==='food'?t('components.scanner.handoffQuestion'):t('components.scanner.returnQuestion')}</Text><Button label={busy?t('components.scanner.checking'):kind==='food'?t('components.scanner.handoffFinish'):t('components.scanner.returnFinish')} color={color} disabled={busy||(kind==='food'?!handoff:!loan)} onPress={()=>void complete()}/><Button label={t('components.scanner.other')} variant="ghost" disabled={busy} onPress={()=>{setRaw('');setError('');}}/></Card>:<>
         {Platform.OS!=='web'&&(permission?.granted?<View style={{height:280,borderRadius:22,overflow:'hidden'}}><CameraView style={{flex:1}} facing="back" barcodeScannerSettings={{barcodeTypes:['qr']}} onBarcodeScanned={e=>setRaw(e.data)}/></View>:<Button label={t('components.scanner.camera')} color={color} onPress={()=>void requestPermission()}/>)}
         <Card style={{gap:10}}><Text style={T.h3}>{t('components.scanner.manual')}</Text><Text style={T.small}>{t('components.scanner.manualHint')}</Text><TextInput accessibilityLabel={t('components.scanner.codeLabel')} placeholder="mainsam:…" value={raw} onChangeText={setRaw} autoCapitalize="none" autoCorrect={false} maxLength={200} style={{padding:14,backgroundColor:C.bg,borderRadius:12,fontSize:16,color:C.ink}}/>{!!raw&&<Text style={[T.small,{color:C.warn}]}>{t(kind === 'food' ? 'components.scanner.fullPickup' : 'components.scanner.fullReturn')}</Text>}</Card>

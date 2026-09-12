@@ -50,10 +50,13 @@ interface State {
   photoHashes: string[];
   demoMode: boolean;
   nfcSeen: string[];
+  /** Suchradius auf Entdecken in km, von der Person selbst gesetzt. */
+  radiusKm: number;
 
   setOnboarded: (v: boolean) => void;
   setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'email' | 'phone' | 'address' | 'paymentMethod' | 'chameleonName'>>) => void;
   setPrivacy: (p: Partial<State['privacy']>) => void;
+  setRadius: (km: number) => void;
   addAward: (e: ActionEvent) => Award;
   syncFoodAwards: (receipts: Award[]) => void;
   syncContainers: (containers:Container[]) => void;
@@ -119,6 +122,7 @@ const initial = {
   photoHashes: [] as string[],
   demoMode: true,
   nfcSeen: [] as string[],
+  radiusKm: 3,
 };
 
 export const useStore = create<State>()(
@@ -128,6 +132,7 @@ export const useStore = create<State>()(
       setOnboarded: (v) => set({ onboarded: v }),
       setProfile: (p) => set(p),
       setPrivacy: (p) => set({ privacy: { ...get().privacy, ...p } }),
+      setRadius: (radiusKm) => set({ radiusKm }),
       // Display cache only; the handover server owns these receipts and all food awards.
       syncFoodAwards: (receipts) => set({ ledger: [
         ...receipts.filter(a => a.key.startsWith('trust:') && ['foodsharing','vytal'].includes(a.partner)),

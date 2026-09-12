@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
 import Chameleon from '@/components/Chameleon';
+import RadiusControl, { fmtRadius } from '@/components/RadiusControl';
 import { Pill, T, haptic } from '@/components/ui';
 import { C, CONTEXT, S, shadow, type ContextKey } from '@/theme';
 import { shade } from '@/components/Chameleon';
@@ -30,7 +31,7 @@ const AVAIL: Record<string, { key?: TKey; c: string }> = { offen: { key: 'tabs.d
 
 export default function Discover() {
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const router = useRouter();
   const t = useT();
   const localize = useLocalize();
@@ -43,6 +44,11 @@ export default function Discover() {
   const [loading, setLoading] = useState(true);
   const [sel, setSel] = useState<string | null>(null);
   const name = useStore((s) => s.name);
+  const radiusKm = useStore((s) => s.radiusKm);
+  const setRadius = useStore((s) => s.setRadius);
+  // Ring auf der Karte folgt schon beim Ziehen, geladen wird erst beim Loslassen.
+  const [ring, setRing] = useState(radiusKm);
+  useEffect(() => setRing(radiusKm), [radiusKm]);
   const ledger = useStore((s) => s.ledger);
   const { setCtx, mood } = useUI();
   const listRef = useRef<FlatList<Opportunity>>(null);
@@ -51,14 +57,14 @@ export default function Discover() {
   useEffect(() => { setCtx(LAYERS.find((l) => l.key === layer)!.ctx); }, [layer]);
   useEffect(() => {
     let alive = true; setLoading(true);
-    getOpportunities(loc.lat, loc.lon, 3, locale).then((r) => { if (alive) { setData(r.items); setLoading(false); } });
+    getOpportunities(loc.lat, loc.lon, radiusKm, locale).then((r) => { if (alive) { setData(r.items); setLoading(false); } });
     return () => { alive = false; };
-  }, [loc.lat, loc.lon, locale]);
+  }, [loc.lat, loc.lon, radiusKm, locale]);
 
   const shown = useMemo(() => {
-    const f = layer === 'all' ? data.filter((o) => o.layer !== 'mobility' || o.distance_m < 900) : data.filter((o) => o.layer === layer);
-    return f.slice(0, 60);
-  }, [data, layer]);
+    const f = layer === 'all' ? data.filter((o) => o.layer !== 'mobility' || o.distance_m < Math.min(900, radiusKm * 1000)) : data.filter((o) => o.layer === layer);
+    return f.slice(0, 200);
+  }, [data, layer, radiusKm]);
   const ctxColor = CONTEXT[LAYERS.find((l) => l.key === layer)!.ctx].color;
   const selected = shown.find((o) => o.id === sel) ?? null;
 
@@ -84,12 +90,31 @@ export default function Discover() {
   useEffect(() => { cancelAnimation(top); top.value = snaps[snapIdx]; }, [height, insets.bottom]);
   const cycle = () => { haptic(); snapTo(snapIdx === 2 ? 1 : snapIdx === 1 ? 0 : 2); };
 
+  /*
+   * Die Liste verdeckt die untere Haelfte der Karte. Waere der eigene Standort exakt
+   * in der Kartenmitte, laege er dahinter und der Umkreis-Ring waere nur als Bogen zu ahnen.
+   * Deshalb die Kamera um den halben verdeckten Bereich nach Sueden versetzen, berechnet
+   * aus dem mittleren Rastpunkt, damit das Ziehen der Liste die Karte nicht springen laesst.
+   */
+  const spanKm = selected ? 1.6 : Math.max(1, ring * 2.4);
+  const shiftPx = Math.max(0, height / 2 - (insets.top + 118 + halfTop) / 2);
+  const latShift = (shiftPx * spanKm) / width / 111;
+  const camera = selected ? { lat: selected.lat, lon: selected.lon } : loc;
+  const mapCenter = { lat: camera.lat - latShift, lon: camera.lon };
+
   const markers = shown.map((o) => ({ id: o.id, lat: o.lat, lon: o.lon, color: CONTEXT[o.ctx].color, emoji: o.emoji, selected: o.id === sel, onPress: () => { haptic(); setSel(o.id); if (snapIdx === 2) snapTo(1); const i = shown.findIndex((x) => x.id === o.id); if (i >= 0) setTimeout(() => listRef.current?.scrollToIndex({ index: i, animated: true, viewPosition: 0.1 }), 80); } }));
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height }}>
-        <Map center={selected ? { lat: selected.lat, lon: selected.lon } : loc} spanKm={selected ? 1.6 : 3.2} markers={markers} userLocation={loc} style={{ flex: 1 }} />
+        <Map
+          center={mapCenter}
+          spanKm={spanKm}
+          markers={markers}
+          circles={[{ lat: loc.lat, lon: loc.lon, radius: ring * 1000, color: ctxColor, fillOpacity: 0.06, dashed: true }]}
+          userLocation={loc}
+          style={{ flex: 1 }}
+        />
         <LinearGradient colors={['rgba(246,245,239,0.96)', 'rgba(246,245,239,0)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 100 }} pointerEvents="none" />
         <View pointerEvents="box-none" style={{ position: 'absolute', top: insets.top + 6, left: S.lg, right: S.lg }}>
           <View pointerEvents="box-none" style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -112,7 +137,18 @@ export default function Discover() {
             ))}
           </ScrollView>
         </View>
-        {loading && <View style={{ position: 'absolute', right: 16, top: insets.top + 130, backgroundColor: '#fff', borderRadius: 20, padding: 8 }}><ActivityIndicator color={ctxColor} /></View>}
+        <View pointerEvents="box-none" style={{ position: 'absolute', top: insets.top + 124, right: S.lg, alignItems: 'flex-end' }}>
+          <RadiusControl
+            value={radiusKm}
+            color={ctxColor}
+            title={t('tabs.discover.radiusTitle')}
+            hint={t('tabs.discover.radiusHint')}
+            footer={t('tabs.discover.nearbyCount', { count: shown.length })}
+            onPreview={setRing}
+            onChange={(km) => { setSel(null); setRadius(km); }}
+          />
+        </View>
+        {loading && <View style={{ position: 'absolute', left: S.lg, top: insets.top + 126, backgroundColor: '#fff', borderRadius: 20, padding: 8 }}><ActivityIndicator color={ctxColor} /></View>}
       </View>
 
       <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: fullTop, height: height - fullTop, backgroundColor: C.bg, borderTopLeftRadius: 26, borderTopRightRadius: 26 }, Platform.OS === 'web' ? ({ userSelect: 'none' } as any) : null, shadow(3), sheetStyle]}>
@@ -120,7 +156,7 @@ export default function Discover() {
           <Pressable onPress={cycle} style={{ paddingTop: 8, paddingBottom: 6, paddingHorizontal: S.lg, alignItems: 'center' }}>
             <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: C.line }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 8 }}>
-              <Text style={T.h3}>{t('tabs.discover.nearbyCount', { count: shown.length })}</Text>
+              <Text style={T.h3}>{t('tabs.discover.nearbyCount', { count: shown.length })} · {fmtRadius(radiusKm)}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Ionicons name={snapIdx === 0 ? 'map' : 'list'} size={15} color={C.muted} />
                 <Text style={{ color: C.muted, fontWeight: '700', fontSize: 12 }}>{snapIdx === 0 ? t('tabs.discover.showMap') : snapIdx === 1 ? t('tabs.discover.drag') : t('tabs.discover.showList')}</Text>

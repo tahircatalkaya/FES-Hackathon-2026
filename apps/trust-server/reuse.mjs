@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID, createHash, timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { award } from '../mobile/src/engine/reward.ts';
+import { settleFee, SETTLE_REASONS } from '../mobile/src/engine/loan.ts';
 
 const catalog = JSON.parse(readFileSync(new URL('../mobile/src/data/vytal-stores.json', import.meta.url), 'utf8'));
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -14,9 +15,11 @@ export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields,
     CREATE TABLE IF NOT EXISTS reuse_receipts(id TEXT PRIMARY KEY, loan_id TEXT NOT NULL REFERENCES reuse_loans(id), issuer TEXT NOT NULL REFERENCES users(id), store_id TEXT NOT NULL, token_hash TEXT NOT NULL, expires INTEGER NOT NULL, consumed INTEGER);
     CREATE TABLE IF NOT EXISTS reuse_awards(key TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), payload TEXT NOT NULL);
   `);
+  // Additive Migration: bezahlte Verlust- und Schadensfälle an bestehenden Ausleihen.
+  if(!all('PRAGMA table_info(reuse_loans)').some(c=>c.name==='settlement')) db.exec('ALTER TABLE reuse_loans ADD COLUMN settlement TEXT');
   const awards = actor => all('SELECT payload FROM reuse_awards WHERE user_id=?', actor).map(r => JSON.parse(r.payload));
   const stores = actor => all('SELECT store_id FROM merchants WHERE user_id=?', actor).map(r => catalog.find(s => s.id === r.store_id)).filter(Boolean);
-  const loanView = l => ({ id:l.id, code:l.code, kind:l.kind, storeId:l.store_id, storeName:l.store_name, borrowedAt:l.borrowed, returnedAt:l.returned, returnStoreName:catalog.find(s=>s.id===l.return_store)?.name, damage:l.damage ? JSON.parse(l.damage) : null, demo:!!l.demo });
+  const loanView = l => ({ id:l.id, code:l.code, kind:l.kind, storeId:l.store_id, storeName:l.store_name, borrowedAt:l.borrowed, returnedAt:l.returned, returnStoreName:catalog.find(s=>s.id===l.return_store)?.name, damage:l.damage ? JSON.parse(l.damage) : null, settlement:l.settlement ? JSON.parse(l.settlement) : null, demo:!!l.demo });
   const owned = (id, actor) => { const l=get('SELECT * FROM reuse_loans WHERE id=?',id); if(!l) fail(404,'Behälter nicht gefunden.'); if(l.owner!==actor) fail(403,'Dieser Behälter gehört zu einem anderen Zugang.'); return l; };
   function dispatch(method,path,body,actor) {
     if (method==='GET' && path==='/reuse/loans') return all('SELECT * FROM reuse_loans WHERE owner=? ORDER BY borrowed DESC',actor).map(loanView);
@@ -44,6 +47,18 @@ export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields,
       run('UPDATE reuse_loans SET damage=? WHERE id=?',JSON.stringify(report),l.id);
       return loanView({...l,damage:JSON.stringify(report)});
     }
+    const settle=path.match(/^\/reuse\/loans\/([^/]+)\/settle$/);
+    if(method==='POST' && settle) return transaction(()=>{
+      fields(body,['reason','method']); const l=owned(settle[1],actor);
+      if(l.returned) fail(409,'Dieser Behälter ist bereits abgeschlossen.');
+      if(typeof body.reason!=='string'||!Object.hasOwn(SETTLE_REASONS,body.reason)) fail(422,'Bitte Verlust oder Beschädigung auswählen.');
+      limit(`settle:${actor}`,10,DAY);
+      // Der Betrag kommt aus den Konditionen des Servers, nie aus dem Gerät.
+      const record={reason:body.reason,amount:settleFee(body.reason),at:now(),method:text(body.method,40,3),reference:`MS-${randomBytes(3).toString('hex').toUpperCase()}`,demo:true};
+      // Abgeschlossen, aber keine Rücknahme: kein Rückgabeort, keine Punkte.
+      run('UPDATE reuse_loans SET settlement=?,returned=? WHERE id=?',JSON.stringify(record),record.at,l.id);
+      return loanView({...l,returned:record.at,settlement:JSON.stringify(record)});
+    });
     if(method==='POST' && path==='/reuse/merchant/inspect') {
       fields(body,['code','storeId']);
       if(!stores(actor).some(s=>s.id===body.storeId)) fail(403,'Dieses Konto ist nicht für die Rücknahmestelle freigegeben.');

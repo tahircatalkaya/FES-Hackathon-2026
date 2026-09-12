@@ -1,3 +1,5 @@
+// Relativ mit Endung, damit die Node-Tests diese Datei ohne Metro-Alias laden koennen.
+import { CITY_PARTICIPANTS, CITY_WEEK_TARGET_KG } from '../engine/city.ts';
 export interface Cleanup {
   id: string; title: string; lat: number; lon: number; district: string; start: number; end: number; organizer: string;
   participants: number; radiusM: number; material: string; fesConfirmed: boolean; description: string;
@@ -90,7 +92,8 @@ export const DISTRICTS = [
   { name: 'Innenstadt', pop: 7000, thisWeek: 640, lastWeek: 610 },
 ];
 
-export const FRANKFURT_GOAL = { weekTargetKg: 12000, weekSoFarKg: 8460, participants: 4120 };
+/** Wochenziel der Stadt. Der Iststand kommt aus `engine/city.ts`, nicht aus einer zweiten Zahl. */
+export const FRANKFURT_GOAL = { weekTargetKg: CITY_WEEK_TARGET_KG, participants: CITY_PARTICIPANTS };
 
 export const SAVER_DISTRIBUTIONS = [
   { id: 'd1', saver: 'Marek T.', badge: 'Foodsaver seit 2023', lat: 50.1268, lon: 8.6919, district: 'Nordend', start: at(0, 18), end: at(0, 19), items: [{ n: 'Laugenstangen', q: '2 Tüten' }, { n: 'Joghurt 500 g', q: '6×' }, { n: 'Bananen', q: 'ca. 3 kg' }], slots: 12, taken: 5, source: 'REWE Oeder Weg' },
