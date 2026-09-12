@@ -222,11 +222,17 @@ export default function Ride() {
 
       </Screen>
 
-      {/* Fester Fuss, nur auf diesem Screen: die beiden Wege, eine Fahrt zu starten. */}
+      {/* Fester Fuss: NFC-Check-in auf voller Breite, Fahrtstart erst mit Tag. */}
       <View style={[{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: C.line, paddingTop: S.md, paddingBottom: insets.bottom + S.md }, shadow(2)]}>
         <Row style={{ gap: 10, paddingHorizontal: S.lg, maxWidth: 560, width: '100%', alignSelf: 'center' }}>
-          <Button label={tag ? rt('routes.tap_again') : rt('routes.tap_nfc')} icon="📡" color={col} variant={tag ? 'soft' : 'solid'} onPress={tapIn} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 8 }} />
-          <Button label={tag ? rt('routes.start_ride') : rt('routes.start_without_tag')} icon="▶️" color={col} variant={tag ? 'solid' : 'soft'} onPress={start} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 8 }} />
+          <View style={{ flex: 1 }}>
+            <Button label={tag ? 'Erneut antippen' : 'NFC antippen'} icon="📡" color={col} variant={tag ? 'soft' : 'solid'} onPress={tapIn} style={{ paddingVertical: 14, paddingHorizontal: 8 }} />
+          </View>
+          {tag && (
+            <View style={{ flex: 1 }}>
+              <Button label="Fahrt starten" icon="▶️" color={col} onPress={start} style={{ paddingVertical: 14, paddingHorizontal: 8 }} />
+            </View>
+          )}
         </Row>
       </View>
 
