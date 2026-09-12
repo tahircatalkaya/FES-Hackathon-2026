@@ -265,7 +265,7 @@ export default function Ride() {
               </View>
             )}
             {sim && <Text style={T.small}>▶ {TR[sim].title}: {TR[sim].desc}</Text>}
-            <Button label="Fahrt beenden & prüfen" color={C.ink} icon="⏹" onPress={stop} />
+            <Button label="Fahrt beenden & prüfen" color={C.ink} icon="stop" onPress={stop} />
           </Card>
         </View>
         <RideReward award={rideDone} onClose={() => { setRideDone(null); router.replace('/(tabs)/impact'); }} />

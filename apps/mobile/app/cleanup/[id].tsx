@@ -70,7 +70,7 @@ export default function CleanupScreen() {
       <Text style={[T.small, { marginTop: 6 }]}>{fmtDist(dist)} entfernt · {inFence ? 'du bist im Aktionsgebiet' : 'außerhalb des Gebiets'}</Text>
 
       {!joined ? (
-        <Appear delay={60}><View style={{ marginTop: 14 }}><Button label="Mitmachen" color={col} icon="🙋" onPress={() => { joinCleanup(cu.id); haptic('success'); }} /></View></Appear>
+        <Appear delay={60}><View style={{ marginTop: 14 }}><Button label="Mitmachen" color={col} icon="hand-right" onPress={() => { joinCleanup(cu.id); haptic('success'); }} /></View></Appear>
       ) : (
         <View style={{ marginTop: 14, gap: 10 }}>
           <Appear>
@@ -135,9 +135,9 @@ function CleanupList() {
         </Card>
       </Appear>
       <Row style={{ marginTop: 14, gap: 8 }}>
-        <Button label="Melden" icon="📸" color={col} variant="soft" onPress={() => router.push('/melden')} style={{ flex: 1, paddingVertical: 12 }} />
-        <Button label="Behälter" icon="♻️" color={col} variant="soft" onPress={() => router.push('/scan?mode=bin')} style={{ flex: 1, paddingVertical: 12 }} />
-        <Button label="Lernen" icon="📖" color={col} variant="soft" onPress={() => router.push('/quiz/q1')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label="Melden" icon="camera" color={col} variant="soft" onPress={() => router.push('/melden')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label="Behälter" icon="repeat" color={col} variant="soft" onPress={() => router.push('/scan?mode=bin')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label="Lernen" icon="book" color={col} variant="soft" onPress={() => router.push('/quiz/q1')} style={{ flex: 1, paddingVertical: 12 }} />
       </Row>
       <Text style={[T.h2, { marginTop: S.xl }]}>Aktionen</Text>
       <View style={{ marginTop: 10, gap: 10 }}>

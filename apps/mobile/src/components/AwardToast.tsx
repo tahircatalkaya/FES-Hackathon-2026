@@ -31,7 +31,7 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
 
   if (a.points === 0) {
     return (
-      <Animated.View entering={FadeInUp.springify().damping(14)} exiting={FadeOutUp} style={{ position: 'absolute', top: 54, left: S.lg, right: S.lg, zIndex: 50 }}>
+      <Animated.View entering={FadeInUp.duration(240)} exiting={FadeOutUp} style={{ position: 'absolute', top: 54, left: S.lg, right: S.lg, zIndex: 50 }}>
         <Pressable onPress={() => { setA(null); onWhy(a); }} style={[{ backgroundColor: '#fff', borderRadius: R.lg, padding: S.md, flexDirection: 'row', alignItems: 'center', gap: 12, borderLeftWidth: 6, borderLeftColor: a.duplicate ? C.muted : color }, shadow(3)]}>
           <Chameleon pose={a.duplicate ? 'calm' : 'thumbs'} size={54} />
           <View style={{ flex: 1 }}>
@@ -77,7 +77,7 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
 
 function Pop({ children }: { children: React.ReactNode }) {
   const sc = useSharedValue(0.6), op = useSharedValue(0);
-  useEffect(() => { sc.value = withSpring(1, { damping: 12, stiffness: 160 }); op.value = withTiming(1, { duration: 180 }); }, []);
+  useEffect(() => { sc.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) }); op.value = withTiming(1, { duration: 180 }); }, []);
   const st = useAnimatedStyle(() => ({ transform: [{ scale: sc.value }], opacity: op.value }));
   return <Animated.View style={st}>{children}</Animated.View>;
 }

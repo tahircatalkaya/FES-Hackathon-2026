@@ -11,14 +11,19 @@ export const RIDE = {
   graphite: '#3A3E41',
 };
 
+/** Dunkelblau von Handeln. Traegt auch die Navigationsleiste und Frankfurt gemeinsam. */
+export const NAVY = '#17427F';
+
 /** Kontextfarben. Das Chamäleon nimmt die Farbe des aktiven Kontexts an. */
 export const CONTEXT = {
   home: { color: '#0F2A5C', soft: '#E3E9F7', name: 'Mainsam' },
   mobility: { color: RIDE.red, soft: '#FDEAEA', name: 'Ride2Impact' },
   food: { color: '#2FB55C', soft: '#E1F6E8', name: 'Save2Share' },
-  reuse: { color: '#12B5B0', soft: '#DDF6F4', name: 'Smart Mehrweg' },
-  clean: { color: '#17427F', soft: '#E4EAF6', name: 'Sauberes Frankfurt' },
-  community: { color: '#7C4DFF', soft: '#ECE5FF', name: 'Gemeinsam' },
+  // Das helle Lila aus der Vorlage traegt keine weisse Schrift (Kontrast 2,2).
+  // Es steht deshalb als Flaeche, der Akzent ist dieselbe Farbe abgedunkelt (Kontrast 4,5).
+  reuse: { color: '#9B51E0', soft: '#C99CFF', name: 'Smart Mehrweg' },
+  clean: { color: NAVY, soft: '#E4EAF6', name: 'Sauberes Frankfurt' },
+  community: { color: NAVY, soft: '#E4EAF6', name: 'Gemeinsam' },
 } as const;
 export type ContextKey = keyof typeof CONTEXT;
 

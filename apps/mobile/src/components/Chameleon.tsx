@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { ChamiMascot, type Pose } from './ChamiMascot';
 
 export function shade(hex: string, amt: number) {
+  'worklet';
   const h = hex.replace('#', '');
   const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
   let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;

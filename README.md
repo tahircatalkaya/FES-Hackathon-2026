@@ -4,37 +4,66 @@
 Ein Chamäleon (Kai) führt durch Bus und Bahn (Transdev/traffiQ), Mehrweg (Vytal), Lebensmittelrettung
 (foodsharing) und Sauberkeit (FES). Der lauffähige Code liegt in **`apps/mobile/`**.
 
-## App starten
+## Gemeinsamer App-Stand · 12. September 2026
 
-Voraussetzungen: Node 20 oder neuer, npm, ein Handy mit **Expo Go** und ein kostenloses Konto von [expo.dev](https://expo.dev/signup).
+Der Main-Stand mit neuem Profil, Onboarding, Impact-/Frankfurt-Ansichten, Mobilitätsexport und Müll-Fotonachweis ist mit den Foodsharing- und Mehrweg-Änderungen aus `imad` zusammengeführt. Die Übergaben, Partnerseite und der bisherige Aktionsüberblick bleiben erreichbar. Die Navigation übernimmt die einheitliche dunkelblaue Gestaltung aus Main und die begrenzte Animation samt zuverlässiger Web-Bedienung aus imad.
+
+- **Foodsharing:** Foto, Audio oder Texteingabe; Posten und Portionszahlen, freie Termine, Zusagen, persönlicher Abhol-QR und Bewertungen. Offene Regale zeigen gemeinsame Momentaufnahmen.
+- **Mehrweg:** Ausleihe erfassen, Schaden melden und Rückgabe mit einmaligem Beleg eines freigegebenen Ladenkontos. Ein eigener Knopfdruck oder statischer Store-Aufkleber genügt nicht.
+- **FES:** Vorher-/Nachher-Fotos mit Zeitfenster, frischem Standort je Foto und Dublettenprüfung; keine Punkte je Müllstück. Standort-/Kamerafehler bleiben sichtbar und erzeugen keinen Nachweis.
+- **Mobilität und Wirkung:** Fahrtansicht aus Main, Wochenfortschritt, Globus und Datenexport bleiben enthalten. Die mobile Punkteberechnung bleibt zentral.
+
+## App starten: zwei Terminals
+
+Voraussetzungen: **Node 22.18 oder neuer**, npm und Expo Go mit Unterstützung für **SDK 57**. Nach dem Pull einmal die festgeschriebenen Pakete installieren. Terminal 1 im Repository:
 
 ```bash
 cd apps/mobile
-npm install
-npx expo login      # einmalig, mit dem Expo-Konto
-npx expo start      # QR-Code mit Expo Go scannen
+npm ci --include=optional
+npm run trust:lan
 ```
 
-In Expo Go muss dasselbe Konto eingeloggt sein wie im Terminal. Handy und Rechner müssen im selben Netz sein.
-Uni- und Gäste-WLAN trennen Geräte oft voneinander, dann einfach den Handy-Hotspot nutzen.
-
-Ohne Handy geht auch `npx expo start --web`.
-
-Startet die App nicht oder schließt sie sich sofort wieder: die Tabelle in
-[`apps/mobile/README.md`](apps/mobile/README.md) deckt alle bisher aufgetretenen Fälle ab.
-Kurzversion für den häufigsten Fall:
+Terminal 2 ebenfalls vom Repository aus:
 
 ```bash
-cd apps/mobile && rm -rf node_modules && npm install && npx expo start -c
+cd apps/mobile
+npm run start:lan
 ```
 
-Die Versionen in `apps/mobile/package.json` sind teilweise bewusst ohne `^` gepinnt, weil Expo Go diese
-Module nativ in genau einer Version mitbringt. Bitte nicht eigenmächtig hochziehen.
+Mac und Handy müssen im selben privaten WLAN oder persönlichen Hotspot sein. In den iPhone-Einstellungen für Expo Go **Lokales Netzwerk** erlauben. Den neuen QR-Code mit der iPhone-Kamera scannen und in Expo Go öffnen; den einmaligen Entwicklerhinweis mit **Continue** schließen. Beide Terminals und den Rechner laufen lassen. Öffentliches WLAN kann direkte Geräteverbindungen blockieren. Für diesen Stand ist kein öffentlicher Tunnel eingerichtet.
+
+**Nur `npx expo start` reicht für gemeinsame Übergaben und Rückgaben nicht:** Dafür muss der Server auf Port 8787 erreichbar sein. Die App findet ihn in der Entwicklung über die private Expo-/Metro-Adresse. `EXPO_PUBLIC_TRUST_URL` kann die Serveradresse ausdrücklich setzen; veröffentlichte Builds benötigen einen HTTPS-Endpunkt.
+
+Die [App-Anleitung](apps/mobile/README.md) beschreibt Mikrofonrechte, KI und Startfehler. Bestehende Schlüssel in `apps/mobile/.env` nicht überschreiben oder committen. Die nativen Paketversionen nicht unabhängig vom Expo-SDK aktualisieren.
+
+## Zugänge, Ladenfreigabe und bestehende Daten
+
+Das Profilformular aus Main speichert Angaben lokal auf dem Gerät; es authentifiziert kein Partnerkonto. Für bestätigte Abholungen, Rückgaben und Bewertungen verwendet jede Person einen eigenen **Mainsam-Serverzugang mit Passwort**. Derselbe Zugang gilt für Foodsharing und Mehrweg. **Ausloggen** im Profil beendet jetzt auch diese Serversitzung und entfernt deren Anzeigecache. „Lokale Daten löschen“ löscht keine Konten oder Belege auf dem Server.
+
+Ein Ladenkonto muss einmal vom Betreiber einem Store zugeordnet werden. Ohne Freigabe kann es keine Rückgabe-QRs ausstellen. [Einrichtung und genaue Befehle](apps/trust-server/README.md#einmalige-freigabe-einer-lokalen-rücknahmestelle).
+
+Die bestehende Datenbank `apps/trust-server/data/trust.sqlite` behalten. Schema-Erweiterungen erfolgen additiv; Konten, Zusagen und bestätigte Belege werden nicht neu angelegt oder gelöscht. Die App ergänzt neue Profil-/Fotozustände beim Laden; bestätigte Serverbelege bleiben erhalten. Alte Selbstgutschriften bleiben unbestätigt.
+
+## Prüfung vor weiteren Merges
+
+```bash
+cd apps/mobile
+npm run typecheck
+npm run trust:test
+npm run test:proofs
+node tools/check-ai.cjs
+npx expo export --platform ios --platform android --platform web
+```
+
+Die Tests verwenden isolierte Datenbanken und synthetische Konten. `trust:test` deckt Rollen, Zusagen, Bestand, Bewertungen, Händlerfreigaben und einmalige Belege ab; `test:proofs` prüft Zeit, Ort, Dubletten und ungültige Fotonachweise. Der KI-Adaptertest sendet ohne `--live` keine echte KI-Anfrage. Prüfprotokoll und Merge-Entscheidungen: [Main-/imad-Zusammenführung](docs/MAIN-IMAD-INTEGRATION-2026-09-12.md).
+
+**Grenzen:** Mainsam-Rückgaben beenden noch keine echte Vytal-Leihfrist; der autorisierte Händleradapter fehlt. Müllfotos werden lokal plausibilisiert, nicht von FES bestätigt. Karten-/Verkehrs-Fallbacks und historische Angebote bleiben Demo-/Beispieldaten. Exporte und Browserprüfungen ersetzen keinen Kamera-, Mikrofon- und GPS-Test auf einem echten Handy.
 
 ## Wo was liegt
 
 | Ordner | Inhalt |
 | --- | --- |
+| `apps/trust-server/` | Persistenter lokaler Server für Foodsharing, Mehrweg und Bewertungen |
 | `apps/mobile/` | Die App (Expo / React Native, iOS + Android + Web). Eigene README mit Details |
 | `konzept/` | Review und Entscheidungen, Master-Prompt, Punktemodell und Anti-Fehlanreiz-Regeln |
 | `docs/` | Status, Verträge, Anforderungen, Quellenprüfungen der Vorarbeit |

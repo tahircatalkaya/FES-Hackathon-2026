@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle, Platform } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import Animated, { FadeInDown, FadeInUp, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming, Easing } from 'react-native-reanimated';
+import Animated, { FadeInUp, cancelAnimation, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withTiming, Easing, ReduceMotion } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
 import { C, R, S, shadow, STATUS_COLORS } from '@/theme';
 
 const ACircle = Animated.createAnimatedComponent(Circle);
@@ -31,7 +32,7 @@ export function Card({ children, style, onPress, tint }: { children: React.React
   );
   if (!onPress) return inner;
   return (
-    <Pressable onPressIn={() => (sc.value = withSpring(0.975))} onPressOut={() => (sc.value = withSpring(1))} onPress={() => { haptic(); onPress(); }}>
+    <Pressable onPressIn={() => (sc.value = withTiming(0.975, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPressOut={() => (sc.value = withTiming(1, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPress={() => { haptic(); onPress(); }}>
       {inner}
     </Pressable>
   );
@@ -39,7 +40,7 @@ export function Card({ children, style, onPress, tint }: { children: React.React
 
 export function Pill({ label, color = C.ink, active, onPress, icon }: { label: string; color?: string; active?: boolean; onPress?: () => void; icon?: string }) {
   return (
-    <Pressable onPress={onPress ? () => { haptic(); onPress(); } : undefined} style={[styles.pill, { borderColor: active ? color : C.line, backgroundColor: active ? color : '#fff' }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected:!!active}} onPress={onPress ? () => { haptic(); onPress(); } : undefined} style={[styles.pill, { borderColor: active ? color : C.line, backgroundColor: active ? color : '#fff' }]}>
       {icon ? <Text style={{ fontSize: 13 }}>{icon} </Text> : null}
       <Text style={{ color: active ? '#fff' : C.ink2, fontWeight: '700', fontSize: 13 }}>{label}</Text>
     </Pressable>
@@ -51,14 +52,15 @@ export function Button({ label, onPress, color = C.ink, variant = 'solid', disab
   const st = useAnimatedStyle(() => ({ transform: [{ scale: sc.value }] }));
   const bg = variant === 'solid' ? color : variant === 'soft' ? color + '1A' : 'transparent';
   const fg = variant === 'solid' ? '#fff' : color;
-  return (
-    <Pressable disabled={disabled} onPressIn={() => (sc.value = withSpring(0.96))} onPressOut={() => (sc.value = withSpring(1))} onPress={() => { haptic(); onPress?.(); }}>
-      <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, st, style]}>
-        {icon ? <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text> : null}
-        <Text style={{ color: fg, fontWeight: '800', fontSize: 16 }}>{label}</Text>
-      </Animated.View>
-    </Pressable>
-  );
+  const scale = (value: number) => { sc.value = withTiming(value, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }); };
+  const press = () => { if (!disabled) { haptic(); onPress?.(); } };
+  const content = <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, st, style]}>
+        {icon ? ((Ionicons as any).glyphMap?.[icon] ? <Ionicons name={icon as any} size={18} color={fg} style={{ marginRight: 8 }} /> : <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text>) : null}
+        <Text style={{ color: fg, fontWeight: '800', fontSize: 16, flexShrink: 1, textAlign: 'center' }}>{label}</Text>
+      </Animated.View>;
+  // Browser buttons keep click, Enter/Space and disabled behavior independent of touch responders.
+  if (Platform.OS === 'web') return <button type="button" aria-label={label} disabled={disabled} onClick={press} onPointerDown={() => { if (!disabled) scale(0.96); }} onPointerUp={() => scale(1)} onPointerCancel={() => scale(1)} onPointerLeave={() => scale(1)} onBlur={() => scale(1)} style={{ display: 'flex', flexDirection: 'column', border: 0, padding: 0, background: 'transparent', font: 'inherit', textAlign: 'inherit', cursor: disabled ? 'default' : 'pointer' }}>{content}</button>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }} disabled={disabled} onPressIn={() => scale(0.96)} onPressOut={() => scale(1)} onPress={press}>{content}</Pressable>;
 }
 
 export function StatusBadge({ status, small }: { status: string; small?: boolean }) {
@@ -115,7 +117,7 @@ export function Sheet({ open, onClose, children, title }: { open: boolean; onClo
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.sheet, shadow(3)]}>
+      <Animated.View entering={FadeInUp.duration(220).reduceMotion(ReduceMotion.System)} style={[styles.sheet, shadow(3)]}>
         <View style={styles.grip} />
         {title ? <Text style={[T.h2, { marginBottom: S.md }]}>{title}</Text> : null}
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }}>{children}</ScrollView>
@@ -129,7 +131,20 @@ export function Row({ children, style, gap = S.sm }: { children: React.ReactNode
 }
 
 export function Appear({ children, delay = 0, style }: { children: React.ReactNode; delay?: number; style?: ViewStyle }) {
-  return <Animated.View entering={FadeInDown.delay(delay).springify().damping(16)} style={style}>{children}</Animated.View>;
+  const progress = useSharedValue(0);
+  useEffect(() => {
+    const wait = Number.isFinite(delay) ? Math.max(0, Math.min(delay, 160)) : 0;
+    progress.value = withDelay(wait, withTiming(1, {
+      duration: 220, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System,
+    }), ReduceMotion.System);
+    return () => cancelAnimation(progress);
+  }, [delay, progress]);
+  const appearance = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (1 - progress.value) * 10 }],
+  }));
+  // Keep the container in document flow; entering layout animations can detach it on web.
+  return <Animated.View style={[style, appearance]}>{children}</Animated.View>;
 }
 
 export function Divider() { return <View style={{ height: 1, backgroundColor: C.line, marginVertical: S.md }} />; }

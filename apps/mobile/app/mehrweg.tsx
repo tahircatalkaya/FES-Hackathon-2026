@@ -4,15 +4,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { openRoute } from '@/api/route';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Map from '@/components/Map';
-import Chameleon from '@/components/Chameleon';
+import ReuseInventory from '@/components/ReuseInventory';
 import { Screen, Header } from '@/components/Screen';
-import { Appear, Button, Card, Divider, Pill, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
+import { Button, Card, Divider, Pill, Row, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useLocation } from '@/hooks/useLocation';
 import { vytalStores, type VytalStore } from '@/api/vytal';
-import { useStore } from '@/store';
+import { reuseTrust } from '@/api/trust';
 import { useUI } from '@/store/ui';
-import { remind } from '@/api/notify';
 import { fmtDist } from '@/api/opportunities';
 
 const col = CONTEXT.reuse.color;
@@ -25,72 +24,23 @@ export default function Reuse() {
   const [source, setSource] = useState<'api' | 'snapshot'>('snapshot');
   const [sel, setSel] = useState<string | null>(p.store ?? null);
   const [filter, setFilter] = useState<'alle' | 'RESTAURANT' | 'NATIONAL_CHAIN' | 'SELF_OPERATED_CANTEEN'>('alle');
-  const { containers, returnContainer, addAward, ledger } = useStore();
-  const { setCtx, showToast } = useUI();
+  const [returnStores,setReturnStores]=useState<string[]>([]);
+  const { setCtx } = useUI();
 
   useEffect(() => { setCtx('reuse'); vytalStores(loc.lat, loc.lon).then((r) => { setStores(r.items); setSource(r.source); }); }, [loc.lat, loc.lon]);
   const shown = useMemo(() => stores.filter((s) => filter === 'alle' || s.type === filter).slice(0, 25), [stores, filter]);
-  const open = containers.filter((c) => !c.returnedAt);
-  const returned = containers.filter((c) => c.returnedAt).length;
+  useEffect(()=>{const refresh=()=>void reuseTrust.stores().then(setReturnStores).catch(()=>{});refresh();const t=setInterval(refresh,15000);return()=>clearInterval(t);},[]);
   const store = stores.find((s) => s.id === sel) ?? null;
-
-  function doReturn(code: string) {
-    const c = returnContainer(code, Date.now());
-    if (!c) return;
-    // Der Store bestätigt die Rückgabe (POST /api/3/Container/ContainerReturn, Store-JWT). Wir werten das Event genau einmal je transactionId.
-    const a = addAward({ type: 'reuse.return', partner: 'vytal', status: 'bestätigt', key: `vytal:return:${c.txId}`, at: Date.now(), title: `Rückgabe ${c.kind === 'cup' ? 'Becher' : 'Schale'} ${c.code}`, meta: { containers: 1, source: 'store', evidence: [`Ausleihe ${new Date(c.borrowedAt).toLocaleString('de-DE')} bei ${c.storeName}`, `Rückgabe bestätigt durch ${store?.name ?? 'Vytal-Partner'}`, `Transaktion ${c.txId} nur einmal wertbar`] } });
-    showToast(a);
-    if (Date.now() - c.borrowedAt < 48 * 3600e3) {
-      setTimeout(() => showToast(addAward({ type: 'reuse.return_fast', partner: 'vytal', status: 'bestätigt', key: `vytal:fast:${c.txId}`, at: Date.now(), title: 'Schnelle Rückgabe unter 48 h', meta: { source: 'api', evidence: ['Schneller Umlauf, mehr Nutzungen je Behälter'] } })), 4500);
-    }
-  }
 
   async function borrowDemo(s: VytalStore | null) {
     router.push(`/scan?mode=vytal${s ? `&store=${s.id}` : ''}`);
-    await remind('Vytal-Erinnerung', 'Deine Schale möchte in 14 Tagen zurück. Rückgabe in 48 h gibt +10 Punkte.', 'reuse', 60);
+
   }
 
   return (
     <Screen tabBar={false}>
       <Header title="Smart Mehrweg" subtitle="mit Vytal" color={col} />
-      <Appear>
-        <Card style={{ backgroundColor: col }}>
-          <Row>
-            <View style={{ flex: 1 }}>
-              <Text style={[T.label, { color: '#ffffffaa' }]}>Dein Kreislauf</Text>
-              <Text style={[T.h2, { color: '#fff' }]}>{open.length} unterwegs · {returned} zurück</Text>
-              <Text style={[T.small, { color: '#ffffffcc' }]}>Zurückbringen ist die Leistung, nicht Ausleihen. Jede bestätigte Rückgabe genau einmal.</Text>
-            </View>
-            <Chameleon pose="coffee" size={90} />
-          </Row>
-        </Card>
-      </Appear>
-
-      {open.length > 0 && (
-        <View style={{ marginTop: 14, gap: 10 }}>
-          <Text style={T.h3}>Unterwegs</Text>
-          {open.map((c) => {
-            const hrs = (Date.now() - c.borrowedAt) / 3600e3;
-            const left = Math.max(0, 14 * 24 - hrs);
-            return (
-              <Appear key={c.code}>
-                <Card style={{ borderLeftWidth: 5, borderLeftColor: col }}>
-                  <Row>
-                    <Text style={{ fontSize: 30 }}>{c.kind === 'cup' ? '☕' : '🥡'}</Text>
-                    <View style={{ flex: 1 }}>
-                      <Text style={T.h3}>{c.kind === 'cup' ? 'Becher' : 'Schale'} {c.code}</Text>
-                      <Text style={T.small}>seit {new Date(c.borrowedAt).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} · {c.storeName}</Text>
-                      <Text style={[T.small, { color: hrs < 48 ? C.success : left < 48 ? C.danger : C.muted, fontWeight: '700' }]}>{hrs < 48 ? `Noch ${Math.round(48 - hrs)} h für den Schnell-Bonus` : left < 48 ? `Nur noch ${Math.round(left)} h Frist` : `${Math.floor(left / 24)} Tage Frist`}</Text>
-                    </View>
-                  </Row>
-                  <View style={{ marginTop: 10 }}><Button label="Rückgabe am Store bestätigen" color={col} onPress={() => doReturn(c.code)} style={{ paddingVertical: 12 }} /></View>
-                  <Text style={[T.small, { marginTop: 6 }]}>Der Store bestätigt die Rückgabe, du bekommst die Punkte sofort.</Text>
-                </Card>
-              </Appear>
-            );
-          })}
-        </View>
-      )}
+      <ReuseInventory />
 
       <Text style={[T.h3, { marginTop: S.xl }]}>Partner in der Nähe</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
@@ -107,13 +57,15 @@ export default function Reuse() {
               <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{s.name}</Text><Text style={T.small}>{s.address} · {fmtDist((s.distance_km ?? 0) * 1000)}</Text></View>
               <Pressable onPress={() => openRoute(s.lat, s.lon, s.name)} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: col + '18', alignItems: 'center', justifyContent: 'center' }}><Ionicons name="navigate" size={18} color={col} /></Pressable>
             </Row>
+            {returnStores.includes(s.id)&&<Tag label="Mainsam-Rückgabe bereit" color={col}/>}
             {s.id === sel && (
               <View style={{ marginTop: 10 }}>
                 <Divider />
                 <Row style={{ gap: 8 }}>
                   <Button label="Ausleihe scannen" color={col} onPress={() => borrowDemo(s)} style={{ flex: 1, paddingVertical: 12 }} />
-                  <Button label="Rückgabe hier" color={col} variant="soft" disabled={!open.length} onPress={() => open[0] && doReturn(open[0].code)} style={{ flex: 1, paddingVertical: 12 }} />
+                  <Button label="Rückgabe hier" color={col} variant="soft" disabled={!returnStores.includes(s.id)} onPress={() => router.push('/rueckgabe')} style={{ flex: 1, paddingVertical: 12 }} />
                 </Row>
+                {!returnStores.includes(s.id)&&<Text style={[T.small,{marginTop:8}]}>Für diesen Partner ist noch keine Mainsam-Rücknahmestelle eingerichtet. Echte Vytal-Rückgaben bitte wie gewohnt beim Personal abwickeln.</Text>}
               </View>
             )}
           </Card>

@@ -153,6 +153,8 @@ export default function Act() {
         })}
       </View>
 
+      <Button label="Alle Möglichkeiten & offene Aufgaben" variant="soft" onPress={() => router.push('/aktionen')} style={{ marginTop: 18 }} />
+      <Button label="Foodsharing: Verteilen & Abholen" color={C.food} onPress={() => router.push('/uebergaben')} style={{ marginTop: 10 }} />
       <CelebrationOverlay open={!!reward} points={reward?.points} duplicate={reward?.duplicate} pending={reward?.status === 'ausstehend'} onClose={() => setReward(null)} />
       <BingoSheet open={sheet === 'bingo'} onClose={() => setSheet(null)} onDone={setReward} />
       <BinCheckSheet open={sheet === 'bin'} onClose={() => setSheet(null)} onDone={setReward} />

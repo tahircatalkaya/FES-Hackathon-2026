@@ -15,12 +15,18 @@ export interface Notice { id: string; at: number; title: string; body: string; c
 export interface Friend { id: string; name: string; emoji: string; activeDays: number; goal: number; district: string }
 export interface ItemReservation { id: string; placeId: string; placeTitle: string; item: string; qty: string; at: number; expiresAt: number; kind: 'fairteiler' | 'verteilung'; href: string }
 export interface Redemption { id: string; at: number; title: string; cost: number }
+/** Offener Vorher/Nachher-Nachweis. Ueberlebt das Schliessen der App, sonst waere das Zeitfenster nutzlos. */
+export interface LitterProof { at: number; lat: number; lon: number; accuracy?: number; hash: string; kind: 'ahash' | 'digest' }
 
 interface State {
   onboarded: boolean;
   name: string;
   lang: Lang;
   district: string;
+  email: string;
+  phone: string;
+  address: string;
+  paymentMethod: string;
   chameleonName: string;
   privacy: { tripOnlyLocation: boolean; notifications: boolean; quietHours: boolean; shareAggregates: boolean };
   ledger: Award[];
@@ -39,16 +45,20 @@ interface State {
   notices: Notice[];
   friends: Friend[];
   litterThanks: number;
+  litterProof: LitterProof | null;
+  /** Fingerabdruecke abgeschlossener Nachweise, gegen Wiedervorlage. */
+  photoHashes: string[];
   demoMode: boolean;
   nfcSeen: string[];
 
   setOnboarded: (v: boolean) => void;
-  setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'chameleonName'>>) => void;
+  setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'email' | 'phone' | 'address' | 'paymentMethod' | 'chameleonName'>>) => void;
   setPrivacy: (p: Partial<State['privacy']>) => void;
   addAward: (e: ActionEvent) => Award;
+  syncFoodAwards: (receipts: Award[]) => void;
+  syncContainers: (containers:Container[]) => void;
   redeem: (r: Omit<Redemption, 'id' | 'at'>) => boolean;
   addContainer: (c: Container) => void;
-  returnContainer: (code: string, returnedAt: number) => Container | undefined;
   addReservation: (r: Reservation) => void;
   updateReservation: (id: number, patch: Partial<Reservation>) => void;
   reserveItem: (r: Omit<ItemReservation, 'id' | 'at'>) => void;
@@ -62,6 +72,9 @@ interface State {
   notify: (n: Omit<Notice, 'id' | 'at'>) => void;
   markRead: () => void;
   thankLitter: () => void;
+  startLitterProof: (p: LitterProof) => void;
+  finishLitterProof: (hashes: string[]) => void;
+  cancelLitterProof: () => void;
   setDemoMode: (v: boolean) => void;
   addNfc: (id: string) => void;
   resetAll: () => void;
@@ -80,6 +93,10 @@ const initial = {
   name: '',
   lang: 'de' as Lang,
   district: 'Bockenheim',
+  email: '',
+  phone: '',
+  address: '',
+  paymentMethod: 'Keine',
   chameleonName: 'Kai',
   privacy: { tripOnlyLocation: true, notifications: true, quietHours: true, shareAggregates: true },
   ledger: [] as Award[],
@@ -98,6 +115,8 @@ const initial = {
   notices: [] as Notice[],
   friends: DEFAULT_FRIENDS,
   litterThanks: 0,
+  litterProof: null as LitterProof | null,
+  photoHashes: [] as string[],
   demoMode: true,
   nfcSeen: [] as string[],
 };
@@ -109,6 +128,11 @@ export const useStore = create<State>()(
       setOnboarded: (v) => set({ onboarded: v }),
       setProfile: (p) => set(p),
       setPrivacy: (p) => set({ privacy: { ...get().privacy, ...p } }),
+      // Display cache only; the handover server owns these receipts and all food awards.
+      syncFoodAwards: (receipts) => set({ ledger: [
+        ...receipts.filter(a => a.key.startsWith('trust:') && ['foodsharing','vytal'].includes(a.partner)),
+        ...get().ledger.filter(a => !a.key.startsWith('trust:')),
+      ].sort((a, b) => b.at - a.at) }),
       addAward: (e) => {
         const a = computeAward(e, get().ledger);
         if (!a.duplicate) {
@@ -130,13 +154,8 @@ export const useStore = create<State>()(
         set({ spent: s.spent + r.cost, redemptions: [{ ...r, id: `${Date.now()}`, at: Date.now() }, ...s.redemptions] });
         return true;
       },
-      addContainer: (c) => set({ containers: [c, ...get().containers] }),
-      returnContainer: (code, returnedAt) => {
-        const c = get().containers.find((x) => x.code === code && !x.returnedAt);
-        if (!c) return undefined;
-        set({ containers: get().containers.map((x) => (x === c ? { ...x, returnedAt } : x)) });
-        return { ...c, returnedAt };
-      },
+      syncContainers: (containers) => set({containers:[...containers,...get().containers.filter(c=>!c.txId.startsWith('trust:')&&!containers.some(n=>n.code===c.code))]}),
+      addContainer: (c) => set({ containers: get().containers.some(x=>x.code===c.code&&!x.returnedAt)?get().containers:[c, ...get().containers] }),
       addReservation: (r) => set({ reservations: [r, ...get().reservations] }),
       updateReservation: (id, patch) => set({ reservations: get().reservations.map((r) => (r.basketId === id ? { ...r, ...patch } : r)) }),
       reserveItem: (r) => set({ itemReservations: [{ ...r, id: `${Date.now()}-${Math.random()}`, at: Date.now() }, ...get().itemReservations] }),
@@ -150,16 +169,24 @@ export const useStore = create<State>()(
       notify: (n) => set({ notices: [{ ...n, id: `${Date.now()}-${Math.random()}`, at: Date.now() }, ...get().notices].slice(0, 50) }),
       markRead: () => set({ notices: get().notices.map((n) => ({ ...n, read: true })) }),
       thankLitter: () => set({ litterThanks: get().litterThanks + 1 }),
+      startLitterProof: (litterProof) => set({ litterProof }),
+      // Beide Fingerabdruecke merken, damit keines der Fotos noch einmal durchgeht. Deckel bei 200.
+      finishLitterProof: (hashes) => set({ litterProof: null, photoHashes: [...hashes, ...get().photoHashes].slice(0, 200) }),
+      cancelLitterProof: () => set({ litterProof: null }),
       setDemoMode: (v) => set({ demoMode: v }),
       addNfc: (id) => set({ nfcSeen: [...get().nfcSeen, id] }),
       resetAll: () => set({ ...initial }),
     }),
-    { name: 'mainsam-v1', storage: createJSONStorage(() => AsyncStorage) },
+    { name: 'mainsam-v1', version: 3, storage: createJSONStorage(() => AsyncStorage), migrate: (saved: any) => ({
+      ...saved,
+      ledger: (saved?.ledger ?? []).map((a: Award) => !a.key.startsWith('trust:') && (a.type.startsWith('food.')||a.type.startsWith('reuse.')) ? computeAward(a, []) : a),
+      reservations: (saved?.reservations ?? []).map((r: Reservation) => ({ ...r, status: r.status === 'accepted' ? 'pending' : r.status, addressRevealed: undefined })),
+    }) },
   ),
 );
 
 export function balance(s: Pick<State, 'ledger' | 'spent'>) {
-  return s.ledger.reduce((a, l) => a + l.points, 0) - s.spent;
+  return Math.max(0, s.ledger.reduce((a, l) => a + l.points, 0) - s.spent);
 }
 
 export function totalImpact(ledger: Award[]): Impact {
@@ -174,14 +201,36 @@ export function weekKeyOf(d = new Date()) {
 
 export function weekStats(ledger: Award[]) {
   const weekKey = weekKeyOf();
-  const start = new Date(weekKey).getTime();
+  // Montag lokal rechnen statt aus weekKey zu parsen: "YYYY-MM-DD" gilt als UTC-Mitternacht
+  // und liegt in Zeitzonen hinter UTC einen Tag zu frueh.
+  const monday = new Date(); monday.setHours(0, 0, 0, 0);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const start = monday.getTime();
   const days = new Set<string>();
   let points = 0;
   for (const l of ledger) {
     if (l.at >= start && l.points > 0) { days.add(new Date(l.at).toDateString()); points += l.points; }
   }
-  return { weekKey, activeDays: days.size, goal: 3, points };
+  // Montag bis Sonntag: an welchen Tagen dieser Woche gab es eine Gutschrift?
+  const week = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    return days.has(d.toDateString());
+  });
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  return { weekKey, activeDays: days.size, goal: 3, points, week, todayIdx };
 }
+
+/**
+ * Die vier Stufen mit ihrer Pose. Steht hier und nicht im Screen, damit Profil und
+ * Impact-Tab dieselbe Figur zeigen: Die Figur kennt keine Wachstumsstufen mehr,
+ * unterschieden wird ueber die Pose.
+ */
+export const STAGES = [
+  { name: 'Schlüpfling', pose: 'calm' as const },
+  { name: 'Entdecker', pose: 'hello' as const },
+  { name: 'Kletterer', pose: 'backpack' as const },
+  { name: 'Stadt', pose: 'cool' as const },
+];
 
 /** Entwicklungsstufe des Chamäleons: nach aktiven Wochen, nicht nach Punktemenge. */
 export function chameleonStage(ledger: Award[]) {
