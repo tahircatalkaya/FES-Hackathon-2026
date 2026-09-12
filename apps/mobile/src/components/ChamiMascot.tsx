@@ -92,14 +92,12 @@ export function CelebrationOverlay({
   points,
   duplicate,
   status,
-  progress,
   onClose,
 }: {
   open: boolean;
   points?: number;
   duplicate?: boolean;
   status?: string;
-  progress?: { done: number; total: number };
   onClose: () => void;
 }) {
   const { width } = useWindowDimensions();
@@ -108,8 +106,6 @@ export function CelebrationOverlay({
   const earned = points ?? 0;
   const fact = useMemo(() => FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)], [open]);
   const headline = duplicate ? 'Heute schon eingetragen' : earned > 0 ? 'Stark gemacht!' : 'Eingetragen';
-  const done = progress?.done ?? 0;
-  const total = progress?.total ?? 3;
 
   useEffect(() => {
     if (!open) return;
@@ -129,9 +125,8 @@ export function CelebrationOverlay({
               {headline}
             </Animated.Text>
 
-            <View style={{ flexDirection: 'row', gap: 10, alignSelf: 'stretch', marginTop: S.md }}>
+            <View style={{ flexDirection: 'row', width: 172, marginTop: S.md }}>
               <StatTile label="PUNKTE" value={duplicate ? '+0' : `+${earned}`} color="#FF6A00" delay={180} />
-              <StatTile label="HEUTE" value={`${done}/${total}`} color={C.leaf} delay={300} />
             </View>
 
             {duplicate ? (
