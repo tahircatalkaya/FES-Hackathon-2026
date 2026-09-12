@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Screen } from '@/components/Screen';
-import { Appear, Card, Divider, Ring, Row, SectionTitle, T, Tag } from '@/components/ui';
+import { Appear, Card, Divider, Ring, Row, SectionTitle, Sheet, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
@@ -19,6 +20,7 @@ export default function Together() {
   const { loc } = useLocation();
   const { friends, ledger, name, district, lose } = useStore();
   const { setCtx } = useUI();
+  const [drawInfo, setDrawInfo] = useState(false);
   useEffect(() => { setCtx('community'); }, []);
   const wk = weekStats(ledger);
   const goalPct = FRANKFURT_GOAL.weekSoFarKg / FRANKFURT_GOAL.weekTargetKg;
@@ -74,9 +76,22 @@ export default function Together() {
               <Text style={T.small}>Alle, die ihr Wochenziel geschafft haben, alphabetisch. Jedes erreichte Wochenziel gibt ein Los.</Text>
               <Row style={{ marginTop: 10, flexWrap: 'wrap', gap: 6 }}>{honor.length ? honor.map((n) => <Tag key={n} label={`🎟️ ${n}`} color={col} />) : <Text style={T.body}>Diese Woche noch niemand. Drei aktive Tage, dann stehst du hier.</Text>}</Row>
               <Divider />
-              <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>Deine Lose: {lose}</Text><Pressable onPress={() => router.push('/belohnungen')}><Text style={{ color: col, fontWeight: '800' }}>Verlosung ›</Text></Pressable></Row>
-              <Text style={T.small}>Jeden Monat werden 100 Gewinne zufällig gezogen. Ein Los je Wochenziel, also höchstens vier oder fünf im Monat. Wer zehnmal mehr sammelt, hat nicht zehnmal mehr Chancen.</Text>
-              <Text style={[T.small, { marginTop: 6 }]}>Gewinn frei wählbar: Deutschlandticket für einen Monat oder, wenn du schon eins hast, ein 20-Euro-Gutschein bei einem Frankfurter Partnerbetrieb.</Text>
+              <Row style={{ justifyContent: 'space-between' }}>
+                <Row style={{ gap: 8, flex: 1 }}>
+                  <Text style={T.h3}>Deine Lose: {lose}</Text>
+                  {/* Die Regeln der Verlosung stehen im Detail hinter dem i, damit die Karte kurz bleibt. */}
+                  <Pressable
+                    onPress={() => { haptic(); setDrawInfo(true); }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Wie die Verlosung funktioniert"
+                    hitSlop={8}
+                    style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 1.5, borderColor: col, alignItems: 'center', justifyContent: 'center' }}>
+                    <Ionicons name="information" size={13} color={col} />
+                  </Pressable>
+                </Row>
+                <Pressable onPress={() => router.push('/belohnungen')}><Text style={{ color: col, fontWeight: '800' }}>Verlosung ›</Text></Pressable>
+              </Row>
+              <Text style={T.small}>Monatliche Ziehung, 100 Gewinne. Tippe das i für die Regeln.</Text>
             </Card>
           </Appear>
 
@@ -92,6 +107,13 @@ export default function Together() {
               <Text style={T.small}>Verglichen wird jeder Stadtteil mit sich selbst und pro Kopf. Die Innenstadt hat mehr Bahnen, das ist Infrastruktur, kein Verdienst.</Text>
             </Card>
           </Appear>
+      <Sheet open={drawInfo} onClose={() => setDrawInfo(false)} title="So funktioniert die Verlosung">
+        <Text style={T.body}>Jeden Monat werden 100 Gewinne zufällig gezogen. Ein Los je erreichtes Wochenziel, also höchstens vier oder fünf im Monat.</Text>
+        <Text style={[T.body, { marginTop: 10 }]}>Wer zehnmal mehr sammelt, hat nicht zehnmal mehr Chancen. Das Verfahren belohnt Regelmäßigkeit, nicht Menge, und es gibt keine Plätze.</Text>
+        <Divider />
+        <Text style={T.label}>Gewinn frei wählbar</Text>
+        <Text style={[T.body, { marginTop: 4 }]}>Deutschlandticket für einen Monat oder, wenn du schon eins hast, ein 20-Euro-Gutschein bei einem Frankfurter Partnerbetrieb.</Text>
+      </Sheet>
     </Screen>
   );
 }
