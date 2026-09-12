@@ -76,7 +76,6 @@ export const REWARDS: Reward[] = [
   { id: 'r8', title: 'Deutschlandticket für einen Monat', cost: 2000, partner: 'RMV · traffiQ', emoji: '🎫', desc: 'Ein Monat im ganzen Nahverkehr. Realistisch nach etwa vier Wochen mit erreichtem Wochenziel.' },
   { id: 'r9', title: 'Palmengarten-Jahreskarte', cost: 2500, partner: 'Palmengarten', emoji: '🌴', desc: 'Ein Jahr freier Eintritt, auch im Winter im Tropicarium.' },
   { id: 'r10', title: 'Heimspiel-Ticket', cost: 3000, partner: 'Eintracht Frankfurt', emoji: '🦅', desc: 'Ein Platz im Stadion bei einem Heimspiel der Saison.' },
-  { id: 'r11', title: 'Blick hinter die Kulissen der FES', cost: 4000, partner: 'FES', emoji: '🚛', desc: 'Führung durch die Anlagen und eine Frühschicht auf dem Sammelfahrzeug mitfahren.' },
   { id: 'r12', title: 'Baumpatenschaft mit Plakette', cost: 6000, partner: 'Grünflächenamt', emoji: '🪧', desc: 'Ein Baum in deinem Stadtteil, mit deinem Namen am Stamm. Mehrere Monate Arbeit.' },
   { id: 'r13', title: 'Deutschlandticket für ein Jahr', cost: 10000, partner: 'RMV · traffiQ', emoji: '🏆', desc: 'Zwölf Monate Nahverkehr. Das größte Ziel der App, zu schaffen in etwa einem halben Jahr.' },
 ];
