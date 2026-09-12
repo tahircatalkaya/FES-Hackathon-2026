@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Image, Platform, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -15,6 +16,9 @@ const col = CONTEXT.clean.color;
 const KINDS = ['Volle Tonne', 'Wilde Müllkippe', 'Sperrmüll', 'Scherben', 'Graffiti', 'Anderes'];
 
 export default function Melden() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const router = useRouter();
   const { loc } = useLocation();
   const [kind, setKind] = useState(KINDS[0]);
@@ -41,30 +45,30 @@ export default function Melden() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Melden" subtitle="wird zu einem FES-Ticket" color={col} />
+      <Header title={rt('routes.report')} subtitle={rt('routes.becomes_an_fes_ticket')} color={col} />
       <Appear>
         <View style={{ height: 200, borderRadius: 22, overflow: 'hidden' }}>
           <Map center={pos} spanKm={0.9} userLocation={loc} onPress={(la, lo) => setPos({ lat: la, lon: lo })} markers={[{ id: 'p', lat: pos.lat, lon: pos.lon, color: col, emoji: '📍', selected: true }, ...cleanReports.slice(0, 20).map((r) => ({ id: r.id, lat: r.lat, lon: r.lon, color: C.muted, emoji: '🎫' }))]} />
         </View>
-        <Text style={[T.small, { marginTop: 6 }]}>Tippe auf die Karte, um den Ort zu korrigieren. Bestehende Tickets in grau.</Text>
+        <Text style={[T.small, { marginTop: 6 }]}>{rt('routes.tap_the_map_to_correct_the_location_existing_reports_appear_in_gr')}</Text>
       </Appear>
       <Card style={{ marginTop: 14, gap: 12 }}>
-        <Text style={T.h3}>Was ist los?</Text>
-        <Row style={{ flexWrap: 'wrap', gap: 6 }}>{KINDS.map((k) => <Pill key={k} label={k} active={kind === k} color={col} onPress={() => setKind(k)} />)}</Row>
+        <Text style={T.h3}>{rt('routes.what_happened')}</Text>
+        <Row style={{ flexWrap: 'wrap', gap: 6 }}>{KINDS.map((k) => <Pill key={k} label={localize(k)} active={kind === k} color={col} onPress={() => setKind(k)} />)}</Row>
         {photo && photo !== 'demo' ? <Image source={{ uri: photo }} style={{ height: 140, borderRadius: 14 }} /> : null}
         <Row style={{ gap: 8 }}>
-          <Button label={photo ? 'Foto ✓' : 'Foto (ohne EXIF)'} color={col} variant="soft" onPress={snap} style={{ flex: 1, paddingVertical: 12 }} />
-          <Button label="Absenden" color={col} onPress={submit} style={{ flex: 1, paddingVertical: 12 }} />
+          <Button label={photo ? rt('routes.photo') : rt('routes.photo_without_exif')} color={col} variant="soft" onPress={snap} style={{ flex: 1, paddingVertical: 12 }} />
+          <Button label={rt('routes.submit')} color={col} onPress={submit} style={{ flex: 1, paddingVertical: 12 }} />
         </Row>
-        <Text style={T.small}>{photo ? 'Mit Foto zählt die Meldung mehr.' : 'Ein Foto macht die Meldung glaubwürdiger.'} Doppelte Meldungen im Umkreis von 60 m werden zusammengeführt.</Text>
+        <Text style={T.small}>{rt('routes.value_duplicate_reports_within_60_m_are_merged', { p1: photo ? rt('routes.a_photo_strengthens_the_report') : rt('routes.a_photo_makes_the_report_more_credible') })}</Text>
       </Card>
       {cleanReports.length > 0 && (
         <View style={{ marginTop: S.xl }}>
-          <Text style={T.h2}>Deine Tickets</Text>
+          <Text style={T.h2}>{rt('routes.your_reports')}</Text>
           {cleanReports.slice(0, 5).map((r) => (
             <Card key={r.id} style={{ marginTop: 10, paddingVertical: 12 }}>
-              <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>{r.kind}</Text><Tag label={r.status} color={r.status === 'erledigt' ? C.success : C.warn} /></Row>
-              <Text style={T.small}>{r.ticket} · {new Date(r.at).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</Text>
+              <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>{localize(r.kind)}</Text><Tag label={localize(r.status)} color={r.status === 'erledigt' ? C.success : C.warn} /></Row>
+              <Text style={T.small}>{r.ticket} · {new Date(r.at).toLocaleString(locale, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</Text>
             </Card>
           ))}
         </View>

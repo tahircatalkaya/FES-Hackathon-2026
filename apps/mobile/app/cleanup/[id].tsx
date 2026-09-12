@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image, Platform, Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -20,6 +21,9 @@ import { Ionicons } from '@expo/vector-icons';
 const col = CONTEXT.clean.color;
 
 export default function CleanupScreen() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { loc } = useLocation();
@@ -59,18 +63,18 @@ export default function CleanupScreen() {
 
   return (
     <Screen tabBar={false}>
-      <Header title={cu.title} subtitle={cu.district} color={col} />
+      <Header title={localize(cu.title)} subtitle={cu.district} color={col} />
       <View style={{ height: 190, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={{ lat: cu.lat, lon: cu.lon }} spanKm={1.6} userLocation={loc} interactive={false} circles={[{ lat: cu.lat, lon: cu.lon, radius: cu.radiusM, color: col }]} markers={[{ id: 'c', lat: cu.lat, lon: cu.lon, color: col, emoji: '🤝', selected: true }]} />
       </View>
       <Row style={{ marginTop: 12, justifyContent: 'space-between' }}>
-        <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{new Date(cu.start).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}–{new Date(cu.end).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text>
-        <Row style={{ gap: 8 }}><Tag label={`${cu.participants + (joined ? 1 : 0)} dabei`} color={col} /><Pressable onPress={() => openRoute(cu.lat, cu.lon, cu.title)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999 }}><Ionicons name="navigate" size={15} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Route</Text></Pressable></Row>
+        <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{new Date(cu.start).toLocaleString(locale, { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}–{new Date(cu.end).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</Text>
+        <Row style={{ gap: 8 }}><Tag label={rt('routes.value_taking_part', { p1: cu.participants + (joined ? 1 : 0) })} color={col} /><Pressable onPress={() => openRoute(cu.lat, cu.lon, cu.title)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999 }}><Ionicons name="navigate" size={15} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>{rt('routes.directions')}</Text></Pressable></Row>
       </Row>
-      <Text style={[T.small, { marginTop: 6 }]}>{fmtDist(dist)} entfernt · {inFence ? 'du bist im Aktionsgebiet' : 'außerhalb des Gebiets'}</Text>
+      <Text style={[T.small, { marginTop: 6 }]}>{rt('routes.value_away_value', { p1: fmtDist(dist, locale), p2: inFence ? rt('routes.you_are_in_the_event_area') : rt('routes.outside_the_area') })}</Text>
 
       {!joined ? (
-        <Appear delay={60}><View style={{ marginTop: 14 }}><Button label="Mitmachen" color={col} icon="hand-right" onPress={() => {
+        <Appear delay={60}><View style={{ marginTop: 14 }}><Button label={rt('routes.join')} color={col} icon="hand-right" onPress={() => {
               joinCleanup(cu.id);
               showToast(addAward({
                 type: 'clean.signup', partner: 'fes', status: 'bestätigt', key: `cleanup-join:${cu.id}`, at: Date.now(),
@@ -83,26 +87,26 @@ export default function CleanupScreen() {
         <View style={{ marginTop: 14, gap: 10 }}>
           <Appear>
             <Card>
-              <Text style={T.h3}>1 · Gegenseitig bestätigen</Text>
-              <Text style={T.small}>Mindestens zwei Personen scannen sich gegenseitig. Der Code rotiert und gilt nur vor Ort.</Text>
+              <Text style={T.h3}>{rt('routes.1_confirm_each_other')}</Text>
+              <Text style={T.small}>{rt('routes.at_least_two_people_scan_each_others_codes_the_code_changes_and_i')}</Text>
               <Row style={{ marginTop: 10, gap: 14 }}>
                 <View style={{ backgroundColor: '#fff', padding: 6, borderRadius: 12 }}><QRCode value={myCode} size={104} color={C.ink} backgroundColor="#fff" /></View>
                 <View style={{ flex: 1, gap: 8 }}>
-                  <Text style={T.small}>Dein Code: {myCode}</Text>
-                  <Button label="Code einer Person scannen" color={col} variant="soft" onPress={() => router.push(`/scan?mode=peer&cleanup=${cu.id}`)} style={{ paddingVertical: 10 }} />
-                  <Text style={[T.small, { color: peers.length ? C.success : C.muted }]}>{peers.length ? `✓ ${peers.length} Bestätigung(en): ${peers.join(', ')}` : 'noch keine Bestätigung'}</Text>
+                  <Text style={T.small}>{rt('routes.your_code_value', { p1: myCode })}</Text>
+                  <Button label={rt('routes.scan_someones_code')} color={col} variant="soft" onPress={() => router.push(`/scan?mode=peer&cleanup=${cu.id}`)} style={{ paddingVertical: 10 }} />
+                  <Text style={[T.small, { color: peers.length ? C.success : C.muted }]}>{peers.length ? rt('routes.value_confirmations_value', { p1: peers.length, p2: peers.join(', ') }) : rt('routes.no_confirmation_yet')}</Text>
                 </View>
               </Row>
             </Card>
           </Appear>
           <Appear delay={60}>
             <Card>
-              <Text style={T.h3}>2 · Vorher / Nachher</Text>
+              <Text style={T.h3}>{rt('routes.2_before_after')}</Text>
               <Row style={{ marginTop: 10, gap: 8 }}>
-                {[['Vorher', before, setBefore], ['Nachher', after, setAfter]].map(([l, v, s]: any) => (
+                {[[rt('routes.before'), before, setBefore], [rt('routes.after'), after, setAfter]].map(([l, v, s]: any) => (
                   <View key={l} style={{ flex: 1 }}>
                     {v && v !== 'demo' ? <Image source={{ uri: v }} style={{ height: 90, borderRadius: 12 }} /> : <View style={{ height: 90, borderRadius: 12, backgroundColor: v ? col + '33' : C.bg, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 26 }}>{v ? '✅' : '📷'}</Text></View>}
-                    <Button label={l} color={col} variant="soft" onPress={() => snap(s)} style={{ paddingVertical: 8, marginTop: 6 }} />
+                    <Button label={localize(l)} color={col} variant="soft" onPress={() => snap(s)} style={{ paddingVertical: 8, marginTop: 6 }} />
                   </View>
                 ))}
               </Row>
@@ -110,9 +114,9 @@ export default function CleanupScreen() {
           </Appear>
           <Appear delay={180}>
             <Card>
-              <Text style={T.label}>Nachweis-Status jetzt</Text>
+              <Text style={T.label}>{rt('routes.current_evidence_status')}</Text>
               <Row style={{ marginTop: 6, gap: 8 }}><StatusBadge status={inFence && inWindow && peers.length ? 'schwach plausibel' : 'selbst angegeben'} /></Row>
-              <View style={{ marginTop: 12 }}><Button label={already ? 'Bereits gewertet' : 'Teilnahme werten'} color={col} disabled={already} onPress={claim} /></View>
+              <View style={{ marginTop: 12 }}><Button label={already ? rt('routes.already_counted') : rt('routes.count_participation')} color={col} disabled={already} onPress={claim} /></View>
             </Card>
           </Appear>
         </View>
@@ -122,6 +126,9 @@ export default function CleanupScreen() {
 }
 
 function CleanupList() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const router = useRouter();
   const { loc } = useLocation();
   const { joinedCleanups, addAward, ledger } = useStore();
@@ -130,24 +137,24 @@ function CleanupList() {
   const past = CLEANUPS.filter((c) => c.end <= Date.now() - 3600e3);
   return (
     <Screen tabBar={false}>
-      <Header title="Sauberes Frankfurt" subtitle="mit FES · Clean-ups, Behälter, Melden, Lernen" color={col} />
+      <Header title={rt('routes.clean_frankfurt')} subtitle={rt('routes.with_fes_cleanups_bins_reporting_learning')} color={col} />
       <Appear>
         <Card style={{ backgroundColor: col }}>
           <Row>
             <View style={{ flex: 1 }}>
-              <Text style={[T.label, { color: '#ffffffaa' }]}>Mehr als eine Meldeplattform</Text>
-              <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>Organisieren, gegenseitig bestätigen, richtig entsorgen, lernen.</Text>
+              <Text style={[T.label, { color: '#ffffffaa' }]}>{rt('routes.more_than_a_reporting_platform')}</Text>
+              <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{rt('routes.organise_confirm_each_other_dispose_correctly_learn')}</Text>
             </View>
             <Chameleon pose="leaf" size={90} />
           </Row>
         </Card>
       </Appear>
       <Row style={{ marginTop: 14, gap: 8 }}>
-        <Button label="Melden" icon="camera" color={col} variant="soft" onPress={() => router.push('/melden')} style={{ flex: 1, paddingVertical: 12 }} />
-        <Button label="Behälter" icon="repeat" color={col} variant="soft" onPress={() => router.push('/scan?mode=bin')} style={{ flex: 1, paddingVertical: 12 }} />
-        <Button label="Lernen" icon="book" color={col} variant="soft" onPress={() => router.push('/quiz/q1')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label={rt('routes.report')} icon="camera" color={col} variant="soft" onPress={() => router.push('/melden')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label={rt('routes.containers')} icon="repeat" color={col} variant="soft" onPress={() => router.push('/scan?mode=bin')} style={{ flex: 1, paddingVertical: 12 }} />
+        <Button label={rt('routes.learn')} icon="book" color={col} variant="soft" onPress={() => router.push('/quiz/q1')} style={{ flex: 1, paddingVertical: 12 }} />
       </Row>
-      <Text style={[T.h2, { marginTop: S.xl }]}>Aktionen</Text>
+      <Text style={[T.h2, { marginTop: S.xl }]}>{rt('routes.activities')}</Text>
       <View style={{ marginTop: 10, gap: 10 }}>
         {upcoming.map((c, i) => {
           const d = hav(loc.lat, loc.lon, c.lat, c.lon);
@@ -155,22 +162,22 @@ function CleanupList() {
           return (
             <Appear key={c.id} delay={i * 60}>
               <Card onPress={() => router.push(`/cleanup/${c.id}`)} style={{ borderLeftWidth: 5, borderLeftColor: live ? C.success : col }}>
-                <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3} numberOfLines={1}>{c.title}</Text>{live && <Tag label="läuft jetzt" color={C.success} />}</Row>
-                <Text style={T.small}>{new Date(c.start).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} · {c.district} · {fmtDist(d)}</Text>
-                <Row style={{ marginTop: 6, gap: 6 }}><Tag label={`${c.participants} dabei`} />{joinedCleanups.includes(c.id) && <Tag label="du bist dabei" color={C.success} />}</Row>
+                <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3} numberOfLines={1}>{localize(c.title)}</Text>{live && <Tag label={rt('routes.happening_now')} color={C.success} />}</Row>
+                <Text style={T.small}>{new Date(c.start).toLocaleString(locale, { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} · {c.district} · {fmtDist(d, locale)}</Text>
+                <Row style={{ marginTop: 6, gap: 6 }}><Tag label={rt('routes.value_taking_part', { p1: c.participants })} />{joinedCleanups.includes(c.id) && <Tag label={rt('routes.youre_joining_2')} color={C.success} />}</Row>
               </Card>
             </Appear>
           );
         })}
         <Card onPress={() => { const k = `organize:${Date.now()}`; showToast(addAward({ type: 'clean.organize', partner: 'fes', status: 'ausstehend', key: k, at: Date.now(), title: 'Eigene Aktion angelegt', meta: { source: 'app', evidence: ['Aktion angelegt, FES-Material angefragt', 'Punkte folgen nach FES-Bestätigung der Sackabholung'] } })); }} style={{ borderStyle: 'dashed', borderWidth: 2, borderColor: col, backgroundColor: 'transparent' }}>
-          <Text style={[T.h3, { color: col }]}>+ Eigene Aktion anlegen</Text>
-          <Text style={T.small}>Gebiet, Zeitfenster, Material von FES. 40 Punkte nach FES-Bestätigung.</Text>
+          <Text style={[T.h3, { color: col }]}>{rt('routes.create_your_own_event')}</Text>
+          <Text style={T.small}>{rt('routes.area_time_window_fes_materials_40_points_after_fes_confirmation')}</Text>
         </Card>
       </View>
-      {past.length > 0 && <><Text style={[T.h2, { marginTop: S.xl }]}>Vergangen</Text>{past.map((c) => <Card key={c.id} style={{ marginTop: 10, opacity: 0.8 }}><Text style={T.h3}>{c.title}</Text><Text style={T.small}>{c.participants} Personen · {c.description}</Text><StatusBadge status="bestätigt" small /></Card>)}</>}
-      <Text style={[T.h2, { marginTop: S.xl }]}>Behälter in der Nähe</Text>
+      {past.length > 0 && <><Text style={[T.h2, { marginTop: S.xl }]}>{rt('routes.past')}</Text>{past.map((c) => <Card key={c.id} style={{ marginTop: 10, opacity: 0.8 }}><Text style={T.h3}>{localize(c.title)}</Text><Text style={T.small}>{rt('routes.value_people_value', { p1: c.participants, p2: localize(c.description) })}</Text><StatusBadge status="bestätigt" small /></Card>)}</>}
+      <Text style={[T.h2, { marginTop: S.xl }]}>{rt('routes.nearby_bins')}</Text>
       <View style={{ marginTop: 10, gap: 8 }}>
-        {BINS.map((b) => <Card key={b.id} onPress={() => router.push(`/scan?mode=bin&id=${b.id}`)} style={{ paddingVertical: 12 }}><Row><Text style={{ fontSize: 22 }}>{b.kind === 'Glascontainer' ? '🍾' : b.kind === 'Altkleider' ? '👕' : b.kind === 'Pfandring' ? '♻️' : '🗑️'}</Text><View style={{ flex: 1 }}><Text style={T.h3}>{b.kind} · {b.label}</Text><Text style={T.small}>{fmtDist(hav(loc.lat, loc.lon, b.lat, b.lon))} · NFC/QR · 5 P, max 3/Tag</Text></View></Row></Card>)}
+        {BINS.map((b) => <Card key={b.id} onPress={() => router.push(`/scan?mode=bin&id=${b.id}`)} style={{ paddingVertical: 12 }}><Row><Text style={{ fontSize: 22 }}>{b.kind === 'Glascontainer' ? '🍾' : b.kind === 'Altkleider' ? '👕' : b.kind === 'Pfandring' ? '♻️' : '🗑️'}</Text><View style={{ flex: 1 }}><Text style={T.h3}>{localize(b.kind)} · {localize(b.label)}</Text><Text style={T.small}>{rt('routes.value_nfcqr_5_pts_max_3day', { p1: fmtDist(hav(loc.lat, loc.lon, b.lat, b.lon), locale) })}</Text></View></Row></Card>)}
       </View>
     </Screen>
   );

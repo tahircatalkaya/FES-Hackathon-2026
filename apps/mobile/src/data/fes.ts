@@ -58,12 +58,11 @@ export function meetingPointsFor(district: string) {
 }
 
 /** Terminvorschläge: nächste 14 Tage, 08:00 bis 20:00 in halben Stunden. */
-export function dayOptions(now = new Date()) {
-  const names = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+export function dayOptions(now = new Date(), locale = 'de-DE') {
   return Array.from({ length: 14 }, (_, i) => {
     const d = new Date(now);
     d.setDate(now.getDate() + i + 1);
-    return { label: i === 0 ? 'Morgen' : `${names[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1}.`, date: d };
+    return { label: i === 0 ? 'Morgen' : d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'numeric' }), date: d };
   });
 }
 

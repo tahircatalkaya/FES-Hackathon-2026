@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
@@ -26,6 +27,9 @@ const COPY: Record<AiMode, { title: string; hint: string; photo: string; voice: 
  * Jede Stufe hat einen Zurück-Pfeil. Das Ergebnis ist immer editierbar.
  */
 export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }: { open: boolean; onClose: () => void; onDone: (r: ActionResult) => void; mode: AiMode; color?: string }) {
+  const t = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const [step, setStep] = useState<Step>('method');
   const [method, setMethod] = useState<Method>('manual');
   const [items, setItems] = useState<FoodItem[]>([]);
@@ -36,7 +40,7 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
   const [note, setNote] = useState<string | undefined>();
   const [usedAi, setUsedAi] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const copy = COPY[mode];
+  const copy = Object.fromEntries(Object.entries(COPY[mode]).map(([key, value]) => [key, localize(value)])) as typeof COPY[typeof mode];
   const ai = aiProvider();
 
   useEffect(() => { if (open) { setStep('method'); setItems([]); setFill('mittel'); setPhoto(undefined); setAudio(undefined); setTranscript(undefined); setNote(undefined); setUsedAi(false); setError(null); } }, [open]);
@@ -54,46 +58,46 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
     haptic(); setError(null);
     let asset: ImagePicker.ImagePickerAsset | null = null;
     try {
-      if (camera && Platform.OS !== 'web') { const p = await ImagePicker.requestCameraPermissionsAsync(); if (!p.granted) { setError('Ohne Kamerazugriff geht nur die Galerie oder die manuelle Eingabe.'); return; } }
+      if (camera && Platform.OS !== 'web') { const p = await ImagePicker.requestCameraPermissionsAsync(); if (!p.granted) { setError(t('components.food.cameraPermission')); return; } }
       const opts: ImagePicker.ImagePickerOptions = { quality: 0.35, base64: true, exif: false, mediaTypes: ['images'] };
       const r = camera ? await ImagePicker.launchCameraAsync(opts) : await ImagePicker.launchImageLibraryAsync(opts);
       if (r.canceled || !r.assets?.[0]) return;
       asset = r.assets[0];
-    } catch (e: any) { setError('Kamera konnte nicht geöffnet werden.'); return; }
+    } catch (e: any) { setError(t('components.food.cameraFailed')); return; }
     setPhoto(asset.uri);
     if (!ai) { setStep('result'); return; }
     setStep('working');
     try {
       const b64 = asset.base64 ?? '';
-      if (!b64) throw new Error('Kein Bild');
+      if (!b64) throw new Error(t('components.food.noImage'));
       const res = await analyzePhoto(b64, asset.mimeType ?? 'image/jpeg', mode);
-      setItems(res.items); setFill(res.fill); setNote(res.foodVisible ? res.note : 'Auf dem Foto sind keine Lebensmittel zu erkennen. Trag ein, was du siehst.'); setUsedAi(true);
+      setItems(res.items); setFill(res.fill); setNote(res.foodVisible ? res.note : t('components.food.noFood')); setUsedAi(true);
       haptic('success');
     } catch (e: any) {
-      setNote(`Bilderkennung: ${String(e?.message ?? e)} Du kannst den Inhalt selbst eintragen.`);
+      setNote(t('components.food.imageError', { error: localize(String(e?.message ?? e)) }));
     }
     setStep('result');
   }
 
   async function onVoiceDone(uri: string | undefined, mime: string) {
     setAudio(uri);
-    if (!uri) { setError('Aufnahme hat nicht geklappt. Versuch es nochmal oder trag es selbst ein.'); return; }
+    if (!uri) { setError(t('components.food.recordFailed')); return; }
     if (!ai) { setStep('result'); return; }
     setStep('working');
     try {
       const res = await analyzeAudio(uri, mime, mode);
       setItems(res.items); setFill(res.fill); setTranscript(res.transcript || undefined); setUsedAi(true);
-      setNote(res.items.length ? res.note : 'Ich habe keine Lebensmittel verstanden. Trag sie kurz selbst ein.');
+      setNote(res.items.length ? res.note : t('components.food.noSpeechFood'));
       haptic('success');
     } catch (e: any) {
-      setNote(`Spracherkennung: ${String(e?.message ?? e)} Du kannst den Inhalt selbst eintragen.`);
+      setNote(t('components.food.voiceError', { error: localize(String(e?.message ?? e)) }));
     }
     setStep('result');
   }
 
   const grams = items.reduce((a, b) => a + b.grams, 0);
   const canFinish = items.length > 0 || (mode === 'shelf' && fill === 'leer');
-  const titles: Record<Step, string> = { method: copy.title, photo: 'Foto', voice: 'Sprachnotiz', manual: 'Selbst eintragen', working: 'Einen Moment', result: 'Passt das so?' };
+  const titles: Record<Step, string> = { method: copy.title, photo: t('components.food.photo'), voice: t('components.food.voiceNote'), manual: t('components.food.manual'), working: t('components.food.wait'), result: t('components.food.correct') };
 
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={step === 'method' ? onClose : back}>
@@ -104,30 +108,30 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
             <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: C.line, alignSelf: 'center', marginBottom: 10 }} />
             <Row style={{ justifyContent: 'space-between', marginBottom: 6 }}>
               {step !== 'method' && step !== 'working' ? (
-                <Pressable onPress={back} hitSlop={10} accessibilityLabel="Zurück" accessibilityRole="button" style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}><Ionicons name="chevron-back" size={22} color={C.ink} /></Pressable>
+                <Pressable onPress={back} hitSlop={10} accessibilityLabel={t('common.back')} accessibilityRole="button" style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}><Ionicons name="chevron-back" size={22} color={C.ink} /></Pressable>
               ) : <View style={{ width: 38 }} />}
               <Text style={[T.h2, { flex: 1, textAlign: 'center' }]} numberOfLines={1}>{titles[step]}</Text>
-              <Pressable onPress={onClose} hitSlop={10} accessibilityLabel="Schließen" accessibilityRole="button" style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}><Ionicons name="close" size={22} color={C.ink} /></Pressable>
+              <Pressable onPress={onClose} hitSlop={10} accessibilityLabel={t('components.common.close')} accessibilityRole="button" style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}><Ionicons name="close" size={22} color={C.ink} /></Pressable>
             </Row>
 
             <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
               {step === 'method' && (
                 <Animated.View key="method" entering={FadeIn}>
                   <Text style={[T.body, { textAlign: 'center', marginBottom: 14 }]}>{copy.hint}</Text>
-                  <MethodRow icon="camera" label="Foto" sub={copy.photo} color={color} onPress={() => choose('photo')} />
-                  <MethodRow icon="mic" label="Sprache" sub={copy.voice} color={color} onPress={() => choose('voice')} />
-                  <MethodRow icon="create" label="Eintragen" sub={copy.manual} color={color} onPress={() => choose('manual')} />
+                  <MethodRow icon="camera" label={t('components.food.photo')} sub={copy.photo} color={color} onPress={() => choose('photo')} />
+                  <MethodRow icon="mic" label={t('components.food.voice')} sub={copy.voice} color={color} onPress={() => choose('voice')} />
+                  <MethodRow icon="create" label={t('components.food.enter')} sub={copy.manual} color={color} onPress={() => choose('manual')} />
                 </Animated.View>
               )}
 
               {step === 'photo' && (
                 <Animated.View key="photo" entering={FadeIn}>
-                  <Text style={[T.body, { textAlign: 'center', marginBottom: 14 }]}>{ai ? 'Die Bilderkennung schlägt vor, was drin ist und wie viel. Du prüfst nur noch.' : 'Das Foto wird als Nachweis gespeichert. Den Inhalt trägst du danach ein.'}</Text>
+                  <Text style={[T.body, { textAlign: 'center', marginBottom: 14 }]}>{ai ? t('components.food.aiPhotoHint') : t('components.food.manualPhotoHint')}</Text>
                   <View style={{ gap: 10 }}>
-                    <Button label="Kamera öffnen" color={color} onPress={() => takePhoto(true)} />
-                    <Button label="Aus der Galerie" color={color} variant="soft" onPress={() => takePhoto(false)} />
+                    <Button label={t('components.food.camera')} color={color} onPress={() => takePhoto(true)} />
+                    <Button label={t('components.food.gallery')} color={color} variant="soft" onPress={() => takePhoto(false)} />
                   </View>
-                  {error && <Text style={[T.small, { color: C.warn, marginTop: 10, textAlign: 'center' }]}>{error}</Text>}
+                  {error && <Text style={[T.small, { color: C.warn, marginTop: 10, textAlign: 'center' }]}>{localize(error)}</Text>}
                 </Animated.View>
               )}
 
@@ -135,10 +139,10 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
 
               {step === 'manual' && (
                 <Animated.View key="manual" entering={FadeIn}>
-                  <Text style={[T.small, { marginBottom: 10 }]}>Kostenlos ohne KI: Du kannst auch das Mikrofon deiner Handy-Tastatur zum Diktieren nutzen.</Text>
+                  <Text style={[T.small, { marginBottom: 10 }]}>{t('components.food.manualHint')}</Text>
                   <ItemEditor items={items} setItems={setItems} color={color} autoFocus />
                   {mode === 'shelf' && <FillPicker fill={fill} setFill={setFill} color={color} />}
-                  <View style={{ marginTop: 14 }}><Button label={items.length ? `Weiter · ${items.length} Posten` : 'Weiter'} color={color} disabled={!canFinish} onPress={() => { haptic(); setStep('result'); }} /></View>
+                  <View style={{ marginTop: 14 }}><Button label={items.length ? t('components.food.nextItems', { count: items.length }) : t('common.next')} color={color} disabled={!canFinish} onPress={() => { haptic(); setStep('result'); }} /></View>
                 </Animated.View>
               )}
 
@@ -148,8 +152,8 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
                     {photo ? <Image source={{ uri: photo }} style={{ width: 220, height: 150 }} /> : <Bars active color={color} />}
                     {photo ? <ScanLine color={color} /> : null}
                   </View>
-                  <Row style={{ marginTop: 14, gap: 8 }}><ActivityIndicator color={color} /><Text style={T.h3}>{photo ? 'Bild wird ausgewertet' : 'Sprachnotiz wird ausgewertet'}</Text></Row>
-                  <Text style={T.small}>Lebensmittel, Mengen{mode === 'shelf' ? ', Füllstand' : ''}</Text>
+                  <Row style={{ marginTop: 14, gap: 8 }}><ActivityIndicator color={color} /><Text style={T.h3}>{photo ? t('components.food.analyzingImage') : t('components.food.analyzingVoice')}</Text></Row>
+                  <Text style={T.small}>{t(mode === 'shelf' ? 'components.food.analysisShelf' : 'components.food.analysisFields')}</Text>
                 </View>
               )}
 
@@ -158,16 +162,16 @@ export function FoodActionSheet({ open, onClose, onDone, mode, color = C.food }:
                   <Row style={{ gap: 10, marginBottom: 8 }}>
                     {photo ? <Image source={{ uri: photo }} style={{ width: 64, height: 64, borderRadius: 12 }} /> : <View style={{ width: 64, height: 64, borderRadius: 12, backgroundColor: color + '22', alignItems: 'center', justifyContent: 'center' }}><Ionicons name={method === 'voice' ? 'mic' : 'create'} size={28} color={color} /></View>}
                     <View style={{ flex: 1 }}>
-                      <Text style={T.h3}>{items.length ? `${items.length} Posten, ca. ${(grams / 1000).toFixed(1)} kg` : 'Noch nichts eingetragen'}</Text>
-                      <Text style={T.small}>{usedAi ? 'Von der Erkennung vorgeschlagen. Du kannst alles ändern.' : 'Du kannst noch ergänzen oder entfernen.'}</Text>
+                      <Text style={T.h3}>{items.length ? t('components.food.summary', { count: items.length, kg: (grams / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) }) : t('components.food.empty')}</Text>
+                      <Text style={T.small}>{usedAi ? t('components.food.suggested') : t('components.food.editHint')}</Text>
                     </View>
                   </Row>
                   {transcript ? <View style={{ backgroundColor: C.bg, borderRadius: 14, padding: 12, marginBottom: 8 }}><Text style={[T.body, { fontStyle: 'italic' }]}>„{transcript}“</Text></View> : null}
-                  {note ? <View style={{ backgroundColor: C.warn + '1A', borderRadius: 12, padding: 10, marginBottom: 8 }}><Text style={[T.small, { color: C.ink }]}>{note}</Text></View> : null}
+                  {note ? <View style={{ backgroundColor: C.warn + '1A', borderRadius: 12, padding: 10, marginBottom: 8 }}><Text style={[T.small, { color: C.ink }]}>{localize(note)}</Text></View> : null}
                   <ItemEditor items={items} setItems={setItems} color={color} />
                   {mode === 'shelf' && <FillPicker fill={fill} setFill={setFill} color={color} />}
                   <View style={{ marginTop: 14 }}>
-                    <Button label="Stimmt so" color={color} disabled={!canFinish} onPress={() => { onDone({ items, fill, grams, photo, audio, transcript, method, ai: usedAi }); onClose(); }} />
+                    <Button label={t('components.food.confirm')} color={color} disabled={!canFinish} onPress={() => { onDone({ items, fill, grams, photo, audio, transcript, method, ai: usedAi }); onClose(); }} />
                   </View>
                 </Animated.View>
               )}
@@ -190,16 +194,20 @@ function MethodRow({ icon, label, sub, color, onPress }: { icon: any; label: str
 }
 
 function FillPicker({ fill, setFill, color }: { fill: Fill; setFill: (f: Fill) => void; color: string }) {
+  const t = useT();
+  const localize = useLocalize();
   return (
     <View style={{ marginTop: 12 }}>
-      <Text style={[T.label, { marginBottom: 6 }]}>Wie voll ist das Regal?</Text>
-      <Row style={{ gap: 6 }}>{(['leer', 'wenig', 'mittel', 'voll'] as const).map((f) => <Pill key={f} label={f} active={fill === f} color={color} onPress={() => setFill(f)} />)}</Row>
+      <Text style={[T.label, { marginBottom: 6 }]}>{t('components.food.fillQuestion')}</Text>
+      <Row style={{ gap: 6 }}>{(['leer', 'wenig', 'mittel', 'voll'] as const).map((f) => <Pill key={f} label={localize(f)} active={fill === f} color={color} onPress={() => setFill(f)} />)}</Row>
     </View>
   );
 }
 
 /** Editierbare Postenliste mit Eingabezeile. Wird für manuelle Eingabe und zum Korrigieren der Erkennung benutzt. */
 function ItemEditor({ items, setItems, color, autoFocus }: { items: FoodItem[]; setItems: (i: FoodItem[]) => void; color: string; autoFocus?: boolean }) {
+  const t = useT();
+  const localize = useLocalize();
   const [name, setName] = useState('');
   const [qty, setQty] = useState('');
   const [cat, setCat] = useState(CATS[0]);
@@ -217,20 +225,20 @@ function ItemEditor({ items, setItems, color, autoFocus }: { items: FoodItem[]; 
           {items.map((it, i) => (
             <Row key={`${it.name}-${i}`} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 10 }}>
               <Ionicons name="checkmark-circle" size={20} color={color} />
-              <View style={{ flex: 1 }}><Text style={[T.body, { color: C.ink, fontWeight: '700' }]}>{it.name}</Text><Text style={T.small}>{it.qty} · {it.cat}</Text></View>
-              <Pressable hitSlop={8} onPress={() => { haptic(); setItems(items.filter((_, j) => j !== i)); }} style={{ width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' }}><Ionicons name="close-circle" size={22} color={C.muted} /></Pressable>
+              <View style={{ flex: 1 }}><Text style={[T.body, { color: C.ink, fontWeight: '700' }]}>{it.name}</Text><Text style={T.small}>{localize(it.qty)} · {localize(it.cat)}</Text></View>
+              <Pressable accessibilityRole="button" accessibilityLabel={t('components.food.removeItem', { name: it.name })} hitSlop={8} onPress={() => { haptic(); setItems(items.filter((_, j) => j !== i)); }} style={{ width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' }}><Ionicons name="close-circle" size={22} color={C.muted} /></Pressable>
             </Row>
           ))}
         </View>
       )}
       <View style={{ backgroundColor: C.bg, borderRadius: 14, padding: 10, gap: 8 }}>
         <Row style={{ gap: 8 }}>
-          <TextInput ref={nameRef} autoFocus={autoFocus} value={name} onChangeText={setName} placeholder="Was? z. B. Brötchen" placeholderTextColor={C.muted} returnKeyType="next" onSubmitEditing={add} style={{ flex: 1.4, backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 9, color: C.ink, fontWeight: '700' }} />
-          <TextInput value={qty} onChangeText={setQty} placeholder="Menge, z. B. 6" placeholderTextColor={C.muted} returnKeyType="done" onSubmitEditing={add} style={{ flex: 1, backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 9, color: C.ink }} />
+          <TextInput ref={nameRef} autoFocus={autoFocus} value={name} onChangeText={setName} placeholder={t('components.food.nameHint')} placeholderTextColor={C.muted} returnKeyType="next" onSubmitEditing={add} style={{ flex: 1.4, backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 9, color: C.ink, fontWeight: '700' }} />
+          <TextInput value={qty} onChangeText={setQty} placeholder={t('components.food.qtyHint')} placeholderTextColor={C.muted} returnKeyType="done" onSubmitEditing={add} style={{ flex: 1, backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 9, color: C.ink }} />
         </Row>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled"><Row style={{ gap: 6 }}>{CATS.map((c) => <Pill key={c} label={c} active={cat === c} color={color} onPress={() => setCat(c)} />)}</Row></ScrollView>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled"><Row style={{ gap: 6 }}>{CATS.map((c) => <Pill key={c} label={localize(c)} active={cat === c} color={color} onPress={() => setCat(c)} />)}</Row></ScrollView>
         <Pressable onPress={add} disabled={!name.trim()} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: name.trim() ? color : C.line, borderRadius: 10, paddingVertical: 10 }}>
-          <Ionicons name="add" size={18} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Posten hinzufügen</Text>
+          <Ionicons name="add" size={18} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>{t('components.food.addItem')}</Text>
         </Pressable>
       </View>
     </View>

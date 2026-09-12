@@ -154,3 +154,7 @@ npx tsc --noEmit                 # Typen
 npx expo export --platform web   # Build muss durchlaufen
 python3 tools/flows.py           # Klick-Durchläufe, meldet Laufzeitfehler
 ```
+
+## Sprachen
+
+Im Onboarding und im Profil stehen Deutsch, Englisch, Türkisch, Arabisch, Kroatisch (Hrvatski) und Italienisch (Italiano) zur Auswahl. Die Auswahl bleibt nach einem Neustart erhalten. Die vollständigen Sprachtabellen und Hinweise zur Pflege stehen in [src/i18n/README.md](src/i18n/README.md). `npm run test:i18n` prüft Übersetzungen, Platzhalter und integrierte Inhalte.

@@ -16,22 +16,25 @@ import { useLocation } from '@/hooks/useLocation';
 import { getOpportunities, fmtDist, walkMin, type Layer, type Opportunity } from '@/api/opportunities';
 import { useStore, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
-import { useT } from '@/i18n/useT';
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
+import type { TKey } from '@/i18n';
 
-const LAYERS: { key: Layer | 'all'; label: string; ctx: ContextKey; icon: string }[] = [
-  { key: 'all', label: 'Alles', ctx: 'home', icon: 'apps' },
-  { key: 'mobility', label: 'Bus & Bahn', ctx: 'mobility', icon: 'train' },
-  { key: 'food', label: 'Essen', ctx: 'food', icon: 'nutrition' },
-  { key: 'reuse', label: 'Mehrweg', ctx: 'reuse', icon: 'cafe' },
-  { key: 'clean', label: 'Sauber', ctx: 'clean', icon: 'sparkles' },
+const LAYERS: { key: Layer | 'all'; label: TKey; ctx: ContextKey; icon: string }[] = [
+  { key: 'all', label: 'home.all', ctx: 'home', icon: 'apps' },
+  { key: 'mobility', label: 'tabs.discover.transit', ctx: 'mobility', icon: 'train' },
+  { key: 'food', label: 'tabs.discover.food', ctx: 'food', icon: 'nutrition' },
+  { key: 'reuse', label: 'act.reuse', ctx: 'reuse', icon: 'cafe' },
+  { key: 'clean', label: 'tabs.discover.clean', ctx: 'clean', icon: 'sparkles' },
 ];
-const AVAIL: Record<string, { l: string; c: string }> = { offen: { l: 'offen', c: C.success }, reserviert: { l: 'reserviert', c: C.warn }, voll: { l: 'voll', c: C.danger }, jetzt: { l: 'jetzt', c: C.success }, bald: { l: 'bald', c: C.info }, unbekannt: { l: '', c: C.muted } };
+const AVAIL: Record<string, { key?: TKey; c: string }> = { offen: { key: 'tabs.discover.open', c: C.success }, reserviert: { key: 'tabs.discover.reserved', c: C.warn }, voll: { key: 'tabs.discover.full', c: C.danger }, jetzt: { key: 'tabs.discover.now', c: C.success }, bald: { key: 'tabs.discover.soon', c: C.info }, unbekannt: { c: C.muted } };
 
 export default function Discover() {
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const router = useRouter();
   const t = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const { loc, isDemo } = useLocation();
   const qp = useLocalSearchParams<{ layer?: string }>();
   const [layer, setLayer] = useState<Layer | 'all'>((qp.layer as Layer) ?? 'all');
@@ -48,9 +51,9 @@ export default function Discover() {
   useEffect(() => { setCtx(LAYERS.find((l) => l.key === layer)!.ctx); }, [layer]);
   useEffect(() => {
     let alive = true; setLoading(true);
-    getOpportunities(loc.lat, loc.lon, 3).then((r) => { if (alive) { setData(r.items); setLoading(false); } });
+    getOpportunities(loc.lat, loc.lon, 3, locale).then((r) => { if (alive) { setData(r.items); setLoading(false); } });
     return () => { alive = false; };
-  }, [loc.lat, loc.lon]);
+  }, [loc.lat, loc.lon, locale]);
 
   const shown = useMemo(() => {
     const f = layer === 'all' ? data.filter((o) => o.layer !== 'mobility' || o.distance_m < 900) : data.filter((o) => o.layer === layer);
@@ -92,7 +95,7 @@ export default function Discover() {
           <View pointerEvents="box-none" style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Pressable onPress={() => router.push('/handeln')}><Chameleon pose="wave" size={64} /></Pressable>
             <View style={{ flex: 1 }}>
-              <Text style={[T.h2]} numberOfLines={1}>{t('home.greeting')} {name || 'du'} 👋</Text>
+              <Text style={[T.h2]} numberOfLines={1}>{t('home.greeting')} {name || t('tabs.you')} 👋</Text>
               <Text style={T.small}>{t('home.nearby')}{isDemo ? ' · Bockenheimer Warte' : ''}</Text>
             </View>
             {layer === 'food' ? <FoodsharingLogo width={88} /> : <Pressable onPress={() => router.push('/handeln')} style={[{ backgroundColor: '#fff', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 8, alignItems: 'center' }, shadow(1)]}>
@@ -104,7 +107,7 @@ export default function Discover() {
             {LAYERS.map((l) => (
               <Pressable key={l.key} onPress={() => { haptic(); setLayer(l.key); setSel(null); }} style={[{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 999, marginRight: 8, backgroundColor: layer === l.key ? CONTEXT[l.ctx].color : '#fff' }, shadow(1)]}>
                 <Ionicons name={l.icon as any} size={15} color={layer === l.key ? '#fff' : CONTEXT[l.ctx].color} />
-                <Text style={{ fontWeight: '800', fontSize: 13, color: layer === l.key ? '#fff' : C.ink }}>{l.label}</Text>
+                <Text style={{ fontWeight: '800', fontSize: 13, color: layer === l.key ? '#fff' : C.ink }}>{t(l.label)}</Text>
               </Pressable>
             ))}
           </ScrollView>
@@ -117,10 +120,10 @@ export default function Discover() {
           <Pressable onPress={cycle} style={{ paddingTop: 8, paddingBottom: 6, paddingHorizontal: S.lg, alignItems: 'center' }}>
             <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: C.line }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 8 }}>
-              <Text style={T.h3}>{shown.length} in deiner Nähe</Text>
+              <Text style={T.h3}>{t('tabs.discover.nearbyCount', { count: shown.length })}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Ionicons name={snapIdx === 0 ? 'map' : 'list'} size={15} color={C.muted} />
-                <Text style={{ color: C.muted, fontWeight: '700', fontSize: 12 }}>{snapIdx === 0 ? 'Karte zeigen' : snapIdx === 1 ? 'Ziehen' : 'Liste zeigen'}</Text>
+                <Text style={{ color: C.muted, fontWeight: '700', fontSize: 12 }}>{snapIdx === 0 ? t('tabs.discover.showMap') : snapIdx === 1 ? t('tabs.discover.drag') : t('tabs.discover.showList')}</Text>
               </View>
             </View>
           </Pressable>
@@ -134,7 +137,7 @@ export default function Discover() {
         getItemLayout={(_, i) => ({ length: 96, offset: 96 * i, index: i })}
         onScrollToIndexFailed={() => {}}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={loading ? null : <Text style={[T.body, { padding: 20 }]}>Hier ist gerade nichts. Probier eine andere Kategorie.</Text>}
+        ListEmptyComponent={loading ? null : <Text style={[T.body, { padding: 20 }]}>{t('tabs.discover.empty')}</Text>}
         renderItem={({ item: o, index }) => {
           const c = CONTEXT[o.ctx].color; const av = AVAIL[o.availability];
           return (
@@ -144,11 +147,11 @@ export default function Discover() {
                   <Ionicons name={o.icon as any} size={30} color="#fff" />
                 </LinearGradient>
                 <View style={{ flex: 1 }}>
-                  <Text style={[T.h3, { fontSize: 15 }]} numberOfLines={1}>{o.title}</Text>
-                  <Text style={T.small} numberOfLines={1}>{o.sub}</Text>
+                  <Text style={[T.h3, { fontSize: 15 }]} numberOfLines={1}>{localize(o.title)}</Text>
+                  <Text style={T.small} numberOfLines={1}>{localize(o.sub)}</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                    <Text style={{ fontWeight: '800', color: c, fontSize: 13 }}>{fmtDist(o.distance_m)} · {walkMin(o.distance_m)} min</Text>
-                    {av.l ? <View style={{ backgroundColor: av.c + '1A', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999 }}><Text style={{ color: av.c, fontWeight: '800', fontSize: 11 }}>{av.l}</Text></View> : null}
+                    <Text style={{ fontWeight: '800', color: c, fontSize: 13 }}>{fmtDist(o.distance_m, locale)} · {t('tabs.discover.walkMinutes', { count: walkMin(o.distance_m) })}</Text>
+                    {av.key ? <View style={{ backgroundColor: av.c + '1A', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999 }}><Text style={{ color: av.c, fontWeight: '800', fontSize: 11 }}>{t(av.key)}</Text></View> : null}
                   </View>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={C.muted} />

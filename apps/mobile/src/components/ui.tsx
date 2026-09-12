@@ -1,3 +1,4 @@
+import { useLocalize } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle, Platform } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
@@ -39,15 +40,17 @@ export function Card({ children, style, onPress, tint }: { children: React.React
 }
 
 export function Pill({ label, color = C.ink, active, onPress, icon }: { label: string; color?: string; active?: boolean; onPress?: () => void; icon?: string }) {
+  const localize = useLocalize();
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected:!!active}} onPress={onPress ? () => { haptic(); onPress(); } : undefined} style={[styles.pill, { borderColor: active ? color : C.line, backgroundColor: active ? color : '#fff' }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={localize(label)} accessibilityState={{selected:!!active}} onPress={onPress ? () => { haptic(); onPress(); } : undefined} style={[styles.pill, { borderColor: active ? color : C.line, backgroundColor: active ? color : '#fff' }]}>
       {icon ? <Text style={{ fontSize: 13 }}>{icon} </Text> : null}
-      <Text style={{ color: active ? '#fff' : C.ink2, fontWeight: '700', fontSize: 13 }}>{label}</Text>
+      <Text style={{ color: active ? '#fff' : C.ink2, fontWeight: '700', fontSize: 13 }}>{localize(label)}</Text>
     </Pressable>
   );
 }
 
 export function Button({ label, onPress, color = C.ink, variant = 'solid', disabled, icon, style }: { label: string; onPress?: () => void; color?: string; variant?: 'solid' | 'ghost' | 'soft'; disabled?: boolean; icon?: string; style?: ViewStyle }) {
+  const localize = useLocalize();
   const sc = useSharedValue(1);
   const st = useAnimatedStyle(() => ({ transform: [{ scale: sc.value }] }));
   const bg = variant === 'solid' ? color : variant === 'soft' ? color + '1A' : 'transparent';
@@ -56,32 +59,35 @@ export function Button({ label, onPress, color = C.ink, variant = 'solid', disab
   const press = () => { if (!disabled) { haptic(); onPress?.(); } };
   const content = <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, st, style]}>
         {icon ? ((Ionicons as any).glyphMap?.[icon] ? <Ionicons name={icon as any} size={18} color={fg} style={{ marginRight: 8 }} /> : <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text>) : null}
-        <Text style={{ color: fg, fontWeight: '800', fontSize: 16, flexShrink: 1, textAlign: 'center' }}>{label}</Text>
+        <Text style={{ color: fg, fontWeight: '800', fontSize: 16, flexShrink: 1, textAlign: 'center' }}>{localize(label)}</Text>
       </Animated.View>;
   // Browser buttons keep click, Enter/Space and disabled behavior independent of touch responders.
-  if (Platform.OS === 'web') return <button type="button" aria-label={label} disabled={disabled} onClick={press} onPointerDown={() => { if (!disabled) scale(0.96); }} onPointerUp={() => scale(1)} onPointerCancel={() => scale(1)} onPointerLeave={() => scale(1)} onBlur={() => scale(1)} style={{ display: 'flex', flexDirection: 'column', border: 0, padding: 0, background: 'transparent', font: 'inherit', textAlign: 'inherit', cursor: disabled ? 'default' : 'pointer' }}>{content}</button>;
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }} disabled={disabled} onPressIn={() => scale(0.96)} onPressOut={() => scale(1)} onPress={press}>{content}</Pressable>;
+  if (Platform.OS === 'web') return <button type="button" aria-label={localize(label)} disabled={disabled} onClick={press} onPointerDown={() => { if (!disabled) scale(0.96); }} onPointerUp={() => scale(1)} onPointerCancel={() => scale(1)} onPointerLeave={() => scale(1)} onBlur={() => scale(1)} style={{ display: 'flex', flexDirection: 'column', border: 0, padding: 0, background: 'transparent', font: 'inherit', textAlign: 'inherit', cursor: disabled ? 'default' : 'pointer' }}>{content}</button>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={localize(label)} accessibilityState={{ disabled: !!disabled }} disabled={disabled} onPressIn={() => scale(0.96)} onPressOut={() => scale(1)} onPress={press}>{content}</Pressable>;
 }
 
 export function StatusBadge({ status, small }: { status: string; small?: boolean }) {
+  const localize = useLocalize();
   const col = STATUS_COLORS[status] ?? C.muted;
   return (
     <View style={[styles.badge, { backgroundColor: col + '1F', paddingVertical: small ? 2 : 4 }]}>
       <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: col, marginRight: 6 }} />
-      <Text style={{ color: col, fontWeight: '800', fontSize: small ? 11 : 12 }}>{status}</Text>
+      <Text style={{ color: col, fontWeight: '800', fontSize: small ? 11 : 12 }}>{localize(status)}</Text>
     </View>
   );
 }
 
 export function Tag({ label, color = C.muted }: { label: string; color?: string }) {
-  return <View style={[styles.badge, { backgroundColor: color + '1A' }]}><Text style={{ color, fontWeight: '700', fontSize: 11 }}>{label}</Text></View>;
+  const localize = useLocalize();
+  return <View style={[styles.badge, { backgroundColor: color + '1A' }]}><Text style={{ color, fontWeight: '700', fontSize: 11 }}>{localize(label)}</Text></View>;
 }
 
 export function SectionTitle({ title, action, onAction, style }: { title: string; action?: string; onAction?: () => void; style?: ViewStyle }) {
+  const localize = useLocalize();
   return (
     <View style={[{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: S.md, marginTop: S.xl }, style]}>
-      <Text style={T.h2}>{title}</Text>
-      {action ? <Pressable onPress={onAction}><Text style={{ color: C.info, fontWeight: '700' }}>{action}</Text></Pressable> : null}
+      <Text style={T.h2}>{localize(title)}</Text>
+      {action ? <Pressable onPress={onAction}><Text style={{ color: C.info, fontWeight: '700' }}>{localize(action)}</Text></Pressable> : null}
     </View>
   );
 }
@@ -114,12 +120,13 @@ export function Counter({ value, style, suffix = '', decimals = 0 }: { value: nu
 }
 
 export function Sheet({ open, onClose, children, title }: { open: boolean; onClose: () => void; children: React.ReactNode; title?: string }) {
+  const localize = useLocalize();
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose} />
+      <Pressable accessibilityRole="button" accessibilityLabel={localize('Schließen')} style={styles.backdrop} onPress={onClose} />
       <Animated.View entering={FadeInUp.duration(220).reduceMotion(ReduceMotion.System)} style={[styles.sheet, shadow(3)]}>
         <View style={styles.grip} />
-        {title ? <Text style={[T.h2, { marginBottom: S.md }]}>{title}</Text> : null}
+        {title ? <Text style={[T.h2, { marginBottom: S.md }]}>{localize(title)}</Text> : null}
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }}>{children}</ScrollView>
       </Animated.View>
     </Modal>
@@ -150,11 +157,12 @@ export function Appear({ children, delay = 0, style }: { children: React.ReactNo
 export function Divider() { return <View style={{ height: 1, backgroundColor: C.line, marginVertical: S.md }} />; }
 
 export function Stat({ label, value, color = C.ink, sub }: { label: string; value: string; color?: string; sub?: string }) {
+  const localize = useLocalize();
   return (
     <View style={{ flex: 1 }}>
-      <Text style={[T.label]}>{label}</Text>
+      <Text style={[T.label]}>{localize(label)}</Text>
       <Text style={{ fontSize: 24, fontWeight: '800', color, marginTop: 2 }}>{value}</Text>
-      {sub ? <Text style={T.small}>{sub}</Text> : null}
+      {sub ? <Text style={T.small}>{localize(sub)}</Text> : null}
     </View>
   );
 }

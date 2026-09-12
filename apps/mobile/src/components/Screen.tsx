@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React from 'react';
 import { Pressable, ScrollView, Text, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,17 +19,19 @@ export function Screen({ children, style, tabBar = true, scroll = true, bg = C.b
 }
 
 export function Header({ title, subtitle, back = true, right, color = C.ink }: { title: string; subtitle?: string; back?: boolean; right?: React.ReactNode; color?: string }) {
+  const t = useT();
+  const localize = useLocalize();
   const router = useRouter();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: S.lg, gap: 12 }}>
       {back && (
-        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)'))} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)'))} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
           <Ionicons name="chevron-back" size={22} color={C.ink} />
         </Pressable>
       )}
       <View style={{ flex: 1 }}>
-        <Text style={[T.h2, { color }]} numberOfLines={1}>{title}</Text>
-        {subtitle ? <Text style={T.small}>{subtitle}</Text> : null}
+        <Text style={[T.h2, { color }]} numberOfLines={1}>{localize(title)}</Text>
+        {subtitle ? <Text style={T.small}>{localize(subtitle)}</Text> : null}
       </View>
       {right}
     </View>

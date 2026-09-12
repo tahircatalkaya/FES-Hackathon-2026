@@ -13,32 +13,35 @@ import { C, CONTEXT, S } from '@/theme';
 import { useStore, totalImpact, weekStats, chameleonStage, STAGES } from '@/store';
 import { useUI } from '@/store/ui';
 import { fmtCo2, FACTORS } from '@/engine/impact';
-import { useT } from '@/i18n/useT';
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import { FRANKFURT_GOAL } from '@/data/mock';
 
-const WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const WEEKDAYS = ['tabs.weekday.mon', 'tabs.weekday.tue', 'tabs.weekday.wed', 'tabs.weekday.thu', 'tabs.weekday.fri', 'tabs.weekday.sat', 'tabs.weekday.sun'] as const;
 
 /**
  * Abzeichen nach gesammelten Punkten. Die Schwellen folgen dem Tagesdeckel von
  * 50 Punkten: Bronze in der ersten Woche, Diamant erst nach Monaten.
  */
 const MEDALS = [
-  { name: 'Bronze', points: 100, color: '#B87333' },
-  { name: 'Silber', points: 400, color: '#9DA5AE' },
-  { name: 'Gold', points: 1000, color: '#D4A017' },
-  { name: 'Platin', points: 2500, color: '#7A8C93' },
-  { name: 'Diamant', points: 5000, color: '#52A9C7' },
-];
+  { name: 'tabs.medal.bronze', points: 100, color: '#B87333' },
+  { name: 'tabs.medal.silver', points: 400, color: '#9DA5AE' },
+  { name: 'tabs.medal.gold', points: 1000, color: '#D4A017' },
+  { name: 'tabs.medal.platinum', points: 2500, color: '#7A8C93' },
+  { name: 'tabs.medal.diamond', points: 5000, color: '#52A9C7' },
+] as const;
 
 export default function Impact() {
   const router = useRouter();
   const t = useT();
+  const l = useLocalize();
+  const locale = useLocale();
   const { ledger, name, chameleonName } = useStore();
   const { setCtx } = useUI();
   useEffect(() => { setCtx('community'); }, []);
   const total = totalImpact(ledger);
   const wk = weekStats(ledger);
   const st = chameleonStage(ledger);
+  const nextStage = STAGES[st.stage];
   const earnedPoints = ledger.reduce((sum, entry) => sum + Math.max(0, entry.points), 0);
   const byMode = useMemo(() => {
     const m: Record<string, { km: number; co2: number; n: number }> = {};
@@ -54,7 +57,7 @@ export default function Impact() {
       <ScopeToggle active="me" color={col} />
       <Text style={[T.h1]}>{t('impact.title')}</Text>
 
-      <SectionTitle title="Deine Abzeichen" />
+      <SectionTitle title={t('tabs.impact.badges')} />
       <Appear delay={20}>
         <Card style={{ paddingVertical: 18 }}>
           <Row style={{ alignItems: 'flex-start', gap: 4 }}>
@@ -71,13 +74,13 @@ export default function Impact() {
                       </View>
                     )}
                   </View>
-                  <Text style={[T.small, { marginTop: 7, color: unlocked ? C.ink : C.muted, fontWeight: '800', textAlign: 'center' }]}>{medal.name}</Text>
-                  <Text style={{ marginTop: 2, color: C.muted, fontSize: 10, fontWeight: '700' }}>{medal.points} Blätter</Text>
+                  <Text style={[T.small, { marginTop: 7, color: unlocked ? C.ink : C.muted, fontWeight: '800', textAlign: 'center' }]}>{t(medal.name)}</Text>
+                  <Text style={{ marginTop: 2, color: C.muted, fontSize: 10, fontWeight: '700' }}>{t('tabs.impact.leaves', { count: medal.points })}</Text>
                 </View>
               );
             })}
           </Row>
-          <Text style={[T.small, { marginTop: 14, textAlign: 'center' }]}>{earnedPoints} Blätter gesammelt</Text>
+          <Text style={[T.small, { marginTop: 14, textAlign: 'center' }]}>{t('tabs.impact.leavesEarned', { count: earnedPoints })}</Text>
         </Card>
       </Appear>
 
@@ -96,21 +99,21 @@ export default function Impact() {
           </Row>
           <Divider />
           <Row style={{ gap: 8 }}>
-            <Stat label={t('impact.food')} value={`${(total.food_g / 1000).toFixed(1)} kg`} color="#fff" />
+            <Stat label={t('impact.food')} value={`${(total.food_g / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg`} color="#fff" />
             <Stat label={t('impact.packaging')} value={`${total.packaging}×`} color="#fff" />
-            <Stat label={t('impact.km')} value={total.km.toFixed(1)} color="#fff" />
+            <Stat label={t('impact.km')} value={total.km.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} color="#fff" />
           </Row>
 
           <Divider />
           {/* Die Woche am Stück: welche Tage aktiv waren. Ziel bleiben drei von sieben. */}
           <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={[T.label, { color: '#ffffff99' }]}>Diese Woche</Text>
-            <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{wk.activeDays}/{wk.goal} aktive Tage</Text>
+            <Text style={[T.label, { color: '#ffffff99' }]}>{t('tabs.impact.thisWeek')}</Text>
+            <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{t('tabs.impact.activeDays', { days: wk.activeDays, goal: wk.goal })}</Text>
           </Row>
           <Row style={{ gap: 6, marginTop: 8 }}>
             {wk.week.map((on, i) => (
               <View key={i} style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontSize: 10, fontWeight: '800', color: i === wk.todayIdx ? '#fff' : '#ffffff77' }}>{WEEKDAYS[i]}</Text>
+                <Text style={{ fontSize: 10, fontWeight: '800', color: i === wk.todayIdx ? '#fff' : '#ffffff77' }}>{t(WEEKDAYS[i])}</Text>
                 <View style={{ width: '100%', height: 26, marginTop: 4, borderRadius: 9, backgroundColor: on ? C.leaf : '#ffffff1A', borderWidth: i === wk.todayIdx ? 2 : 0, borderColor: '#ffffffaa', alignItems: 'center', justifyContent: 'center' }}>
                   {on && <Text style={{ color: '#14300F', fontWeight: '900', fontSize: 13 }}>✓</Text>}
                 </View>
@@ -120,18 +123,18 @@ export default function Impact() {
 
           <Divider />
           <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={[T.label, { color: '#ffffff99' }]}>{chameleonName} wächst mit dir</Text>
-            <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{st.label}</Text>
+            <Text style={[T.label, { color: '#ffffff99' }]}>{t('tabs.impact.grows', { name: chameleonName })}</Text>
+            <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{l(st.label)}</Text>
           </Row>
           <Row style={{ gap: 4, marginTop: 6 }}>
             {STAGES.map((stage, i) => (
               <View key={stage.name} style={{ flex: 1, alignItems: 'center', opacity: i + 1 <= st.stage ? 1 : 0.32 }}>
                 <Chameleon pose={stage.pose} size={42} />
-                <Text numberOfLines={1} style={{ fontSize: 9, fontWeight: '700', color: i + 1 === st.stage ? '#fff' : '#ffffff88' }}>{stage.name}</Text>
+                <Text numberOfLines={1} style={{ fontSize: 9, fontWeight: '700', color: i + 1 === st.stage ? '#fff' : '#ffffff88' }}>{l(stage.name)}</Text>
               </View>
             ))}
           </Row>
-          <Text style={[T.small, { color: '#ffffff99', marginTop: 8 }]}>{st.earned} Punkte gesammelt. {st.next ? `Noch ${st.next}.` : 'Diamant erreicht, höher geht es nicht.'}</Text>
+          <Text style={[T.small, { color: '#ffffff99', marginTop: 8 }]}>{t('tabs.impact.pointsEarned', { count: st.earned })} {nextStage ? t('tabs.impact.pointsRemaining', { count: nextStage.at - st.earned, stage: l(nextStage.name) }) : t('tabs.impact.diamondReached')}</Text>
         </Card>
       </Appear>
 
@@ -139,14 +142,14 @@ export default function Impact() {
         <Appear delay={100}>
           <Card style={{ marginTop: 14, alignItems: 'center', paddingVertical: 24 }}>
             <Chameleon pose="calm" size={160} />
-            <Text style={[T.h3, { marginTop: 8 }]}>Noch nichts erfasst</Text>
-            <Text style={[T.body, { textAlign: 'center' }]}>Starte eine Fahrt, melde ein Regal oder bring einen Behälter zurück. Jede Gutschrift erklärt sich selbst.</Text>
-            <Pressable onPress={() => router.push('/handeln')} style={{ marginTop: 12 }}><Text style={{ color: col, fontWeight: '800' }}>Zu den Aktionen ›</Text></Pressable>
+            <Text style={[T.h3, { marginTop: 8 }]}>{t('tabs.impact.emptyTitle')}</Text>
+            <Text style={[T.body, { textAlign: 'center' }]}>{t('tabs.impact.emptyBody')}</Text>
+            <Pressable onPress={() => router.push('/handeln')} style={{ marginTop: 12 }}><Text style={{ color: col, fontWeight: '800' }}>{t('tabs.impact.toActions')}</Text></Pressable>
           </Card>
         </Appear>
       ) : (
         <>
-          <SectionTitle title="Was das bedeutet" />
+          <SectionTitle title={t('tabs.impact.meaning')} />
           <Appear delay={120}>
             <Card style={{ alignItems: 'center', paddingVertical: 18 }}>
               <Globe km={total.km} color={col} size={250} />
@@ -157,15 +160,15 @@ export default function Impact() {
 
       {byMode.length > 0 && (
         <>
-          <SectionTitle title="Verkehrsmittel im Vergleich" />
+          <SectionTitle title={t('tabs.impact.modeComparison')} />
           <Appear delay={200}>
             <Card>
               {byMode.map(([mode, v]) => {
-                const label = (FACTORS as any)[mode]?.label ?? mode;
+                const label = l((FACTORS as any)[mode]?.label ?? mode);
                 const max = byMode[0][1].co2 || 1;
                 return (
                   <View key={mode} style={{ marginBottom: 10 }}>
-                    <Row style={{ justifyContent: 'space-between' }}><Text style={T.body}>{label} · {v.km.toFixed(1)} km</Text><Text style={T.small}>{fmtCo2(v.co2)} vermieden</Text></Row>
+                    <Row style={{ justifyContent: 'space-between' }}><Text style={T.body}>{label} · {v.km.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} km</Text><Text style={T.small}>{t('tabs.impact.avoided', { amount: fmtCo2(v.co2, locale) })}</Text></Row>
                     <View style={{ height: 10, borderRadius: 5, backgroundColor: C.line, marginTop: 4, overflow: 'hidden' }}><View style={{ width: `${Math.round((v.co2 / max) * 100)}%`, height: 10, backgroundColor: CONTEXT.mobility.color }} /></View>
                   </View>
                 );
@@ -175,12 +178,12 @@ export default function Impact() {
         </>
       )}
 
-      <SectionTitle title="Frankfurt diese Woche" action="Mehr ›" onAction={() => router.replace('/gemeinsam')} />
+      <SectionTitle title={t('tabs.impact.frankfurtWeek')} action={t('tabs.impact.more')} onAction={() => router.replace('/gemeinsam')} />
       <Appear delay={280}>
         <Card style={{ alignItems: 'center' }}>
-          <Text style={{ fontWeight: '900', fontSize: 34, color: C.ink, letterSpacing: -1 }}>{cityKm.toLocaleString('de-DE')} km</Text>
-          <Text style={[T.small, { fontWeight: '700' }]}>{(cityKm / CIRCUMFERENCE).toLocaleString('de-DE', { maximumFractionDigits: 2 })}× um die Erde</Text>
-          <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Gemeinsame nachhaltige Strecke aller {FRANKFURT_GOAL.participants.toLocaleString('de-DE')} Teilnehmenden . Dein Anteil: {total.km.toFixed(1)} km.</Text>
+          <Text style={{ fontWeight: '900', fontSize: 34, color: C.ink, letterSpacing: -1 }}>{cityKm.toLocaleString(locale)} km</Text>
+          <Text style={[T.small, { fontWeight: '700' }]}>{t('tabs.impact.aroundEarth', { count: (cityKm / CIRCUMFERENCE).toLocaleString(locale, { maximumFractionDigits: 2 }) })}</Text>
+          <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{t('tabs.impact.cityShare', { participants: FRANKFURT_GOAL.participants.toLocaleString(locale), distance: total.km.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })}</Text>
         </Card>
       </Appear>
 

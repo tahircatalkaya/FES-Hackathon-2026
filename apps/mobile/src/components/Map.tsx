@@ -1,3 +1,4 @@
+import { useT } from '@/i18n/useT';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import type { MapProps } from './Map.types';
@@ -66,6 +67,7 @@ function Controller({ rl, center, zoom, follow, recenterKey, onPress, onUserPan 
 }
 
 function Inner({ center, spanKm = 4, markers = [], polylines = [], circles = [], heat = [], userLocation, userColor = '#2F6BFF', style, interactive = true, onPress, follow, onUserPan, recenterKey, rl, L }: MapProps & { rl: any; L: any }) {
+  const t = useT();
   const { MapContainer, TileLayer, Marker, Polyline, Circle } = rl;
   const zoom = Math.round(14.2 - Math.log2(spanKm / 3));
   const icons = useMemo(() => {
@@ -97,7 +99,7 @@ function Inner({ center, spanKm = 4, markers = [], polylines = [], circles = [],
   return (
     <View style={[{ flex: 1, overflow: 'hidden' }, style]}>
       <MapContainer center={[center.lat, center.lon]} zoom={zoom} style={{ width: '100%', height: '100%' }} zoomControl={false} dragging={interactive} scrollWheelZoom={interactive} doubleClickZoom={interactive} touchZoom={interactive} attributionControl>
-        <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap-Mitwirkende' />
+        <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution={t('components.map.attribution')} />
         <Controller rl={rl} center={center} zoom={zoom} follow={follow} recenterKey={recenterKey} onPress={onPress} onUserPan={onUserPan} />
         {heat.map((h, i) => <Circle key={`h${i}`} center={[h.lat, h.lon]} radius={80 + h.v * 320} pathOptions={{ color: 'transparent', fillColor: '#7C4DFF', fillOpacity: 0.08 + h.v * 0.35 }} />)}
         {circles.map((c, i) => <Circle key={`c${i}`} center={[c.lat, c.lon]} radius={c.radius} pathOptions={{ color: c.color, fillColor: c.color, fillOpacity: 0.2, weight: 2 }} />)}

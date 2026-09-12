@@ -1,3 +1,4 @@
+import { useT, useLocale, useLocalize } from '@/i18n/useT';
 import React, { useEffect, useMemo } from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Circle, G, Path, Defs, RadialGradient, Stop, ClipPath } from 'react-native-svg';
@@ -65,16 +66,16 @@ function distKm(aLat: number, aLon: number, bLat: number, bLon: number) {
  * und wenn nichts in der Nähe liegt (meist über dem Meer) stehen die Koordinaten da.
  * So wird kein Punkt einer Stadt zugeschrieben, die tausend Kilometer weit weg ist.
  */
-function placeLabel(lat: number, lon: number) {
+function placeLabel(lat: number, lon: number, t: ReturnType<typeof useT>, localize: ReturnType<typeof useLocalize>, locale: string) {
   let best = PLACES[0], bestD = Infinity;
   for (const p of PLACES) {
     const d = distKm(lat, lon, p[1], p[2]);
     if (d < bestD) { bestD = d; best = p; }
   }
-  if (bestD < 100) return best[0];
-  if (bestD < 500) return `${Math.round(bestD).toLocaleString('de-DE')} km von ${best[0]}`;
-  const fmt = (v: number) => Math.abs(v).toLocaleString('de-DE', { maximumFractionDigits: 1 });
-  return `${fmt(lat)}° ${lat >= 0 ? 'N' : 'S'} · ${fmt(lon)}° ${lon >= 0 ? 'O' : 'W'}`;
+  if (bestD < 100) return localize(best[0]);
+  if (bestD < 500) return t('components.globe.distance', { distance: Math.round(bestD).toLocaleString(locale), place: localize(best[0]) });
+  const fmt = (v: number) => Math.abs(v).toLocaleString(locale, { maximumFractionDigits: 1 });
+  return `${fmt(lat)}° ${t(lat >= 0 ? 'components.globe.north' : 'components.globe.south')} · ${fmt(lon)}° ${t(lon >= 0 ? 'components.globe.east' : 'components.globe.west')}`;
 }
 
 /** Grobe Umrisse, Punkte als [Breite, Länge]. Stilisiert, keine Vermessungsdaten. */
@@ -104,6 +105,9 @@ export default function Globe({
   label?: string;
   tilt?: number;
 }) {
+  const t = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const R = size / 2 - 10;
   const cx = size / 2, cy = size / 2;
 
@@ -241,7 +245,7 @@ export default function Globe({
               pointerEvents="none"
               style={{ position: 'absolute', left: Math.max(2, Math.min(size - 182, end.x - 90)), top: end.y > 80 ? end.y - 42 : end.y + 10, width: 180, alignItems: 'center' }}>
               <Text numberOfLines={1} style={{ fontSize: 11, fontWeight: '800', color: C.ink, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2, overflow: 'hidden' }}>
-                {placeLabel(route.end.lat, route.end.lon)}
+                {placeLabel(route.end.lat, route.end.lon, t, localize, locale)}
               </Text>
             </View>
           )}
@@ -251,12 +255,12 @@ export default function Globe({
 
       <View style={{ alignItems: 'center', marginTop: 10 }}>
         <Text style={{ fontWeight: '900', fontSize: 24, color: C.ink, letterSpacing: -0.5 }}>
-          {km.toLocaleString('de-DE', { maximumFractionDigits: km < 100 ? 1 : 0 })} km
+          {km.toLocaleString(locale, { maximumFractionDigits: km < 100 ? 1 : 0 })} km
         </Text>
         <Text style={{ fontSize: 12, color: C.muted, fontWeight: '700', marginTop: 2 }}>
-          {label ?? (laps >= 1
-            ? `${laps.toLocaleString('de-DE', { maximumFractionDigits: 2 })}× um die Erde`
-            : `${pct.toLocaleString('de-DE', { maximumFractionDigits: pct < 0.01 ? 4 : 2 })} % einer Erdumrundung`)}
+          {(label ? localize(label) : undefined) ?? (laps >= 1
+            ? t('components.globe.laps', { count: laps.toLocaleString(locale, { maximumFractionDigits: 2 }) })
+            : t('components.globe.percent', { percent: pct.toLocaleString(locale, { maximumFractionDigits: pct < 0.01 ? 4 : 2 }) }))}
         </Text>
       </View>
     </View>

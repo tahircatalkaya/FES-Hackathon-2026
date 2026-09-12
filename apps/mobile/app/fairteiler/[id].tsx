@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -23,6 +24,9 @@ const col = CONTEXT.food.color;
 const HOLD_MIN = 30;
 
 export default function Fairteiler() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { loc } = useLocation();
@@ -44,7 +48,7 @@ export default function Fairteiler() {
     fs.foodSharePoints().then((r) => { const live = r.items.find((p) => String(p.id) === id); if (live) setPt(live); }).catch(() => {});
   }, [id]);
 
-  if (!pt) return <Screen tabBar={false}><Header right={<FoodsharingLogo width={76} />} title="Fairteiler" /><Text style={T.body}>Lade…</Text></Screen>;
+  if (!pt) return <Screen tabBar={false}><Header right={<FoodsharingLogo width={76} />} title={rt('routes.foodsharing_shelf')} /><Text style={T.body}>{rt('routes.loading')}</Text></Screen>;
   const dist = hav(loc.lat, loc.lon, pt.lat, pt.lon);
   const near = dist < 200;
   const reports = shelfReports.filter((r) => r.pointId === pt.id).sort((a, b) => b.at - a.at);
@@ -87,56 +91,56 @@ export default function Fairteiler() {
 
   return (
     <Screen tabBar={false}>
-      <Header right={<FoodsharingLogo width={76} />} title={title} subtitle={pt.name.toLowerCase().includes('abgabe') ? 'Abgabestelle' : 'Fairteiler'} color={col} />
+      <Header right={<FoodsharingLogo width={76} />} title={title} subtitle={pt.name.toLowerCase().includes('abgabe') ? rt('routes.dropoff_point') : rt('routes.foodsharing_shelf')} color={col} />
       <View style={{ height: 190, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={{ lat: pt.lat, lon: pt.lon }} spanKm={1.2} userLocation={loc} markers={[{ id: 'p', lat: pt.lat, lon: pt.lon, color: col, emoji: '🥕', selected: true }]} interactive={false} />
       </View>
       <Row style={{ marginTop: 12, justifyContent: 'space-between' }}>
-        <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{fmtDist(dist)} · {walkMin(dist)} min zu Fuß</Text>
+        <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{rt('routes.value_value_min_walk', { p1: fmtDist(dist, locale), p2: walkMin(dist) })}</Text>
         <Pressable onPress={() => openRoute(pt.lat, pt.lon, title)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999 }}>
-          <Ionicons name="navigate" size={16} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Route</Text>
+          <Ionicons name="navigate" size={16} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>{rt('routes.directions')}</Text>
         </Pressable>
       </Row>
 
-      {!!syncError&&<Text accessibilityRole="alert" style={[T.small,{marginTop:12,color:C.warn}]}>{syncError}</Text>}
+      {!!syncError&&<Text accessibilityRole="alert" style={[T.small,{marginTop:12,color:C.warn}]}>{localize(syncError)}</Text>}
       {login&&<TrustAccount onReady={()=>{setLogin(false);setSyncError('Angemeldet. Bitte die aktuelle Regalmeldung erneut erfassen, um sie zu teilen.');void refresh();}}/>}
       <Appear delay={60}>
         <Card style={{ marginTop: 14 }}>
           <Row style={{ justifyContent: 'space-between' }}>
-            <Text style={T.h3}>Zuletzt im Regal gesehen</Text>
-            {latest ? <Tag label={`vor ${ageMin! < 60 ? `${ageMin} min` : `${Math.round(ageMin! / 60)} h`}`} color={ageMin! < 120 ? C.success : C.muted} /> : null}
+            <Text style={T.h3}>{rt('routes.last_seen_on_the_shelf')}</Text>
+            {latest ? <Tag label={rt('routes.value_ago', { p1: ageMin! < 60 ? `${ageMin} min` : `${Math.round(ageMin! / 60)} h` })} color={ageMin! < 120 ? C.success : C.muted} /> : null}
           </Row>
           {latest ? (
             <View style={{ marginTop: 8 }}>
               <Row style={{ gap: 6 }}>{(['leer', 'wenig', 'mittel', 'voll'] as const).map((f, i) => <View key={f} style={{ flex: 1, height: 10, borderRadius: 5, backgroundColor: i <= ['leer', 'wenig', 'mittel', 'voll'].indexOf(latest.fill) ? col : C.line }} />)}</Row>
-              <Text style={[T.small, { marginTop: 4 }]}>Füllstand {latest.fill} · {sharedLatest?.at===latest.at?'gemeinsam gemeldet':'auf diesem Gerät gemeldet'}</Text><Text style={[T.small,{marginTop:4,color:changed?C.warn:C.muted}]}>{changed?'Seitdem wurden Lebensmittel eingestellt oder mitgenommen. Bitte den aktuellen Stand prüfen.':'Momentaufnahme, keine Bestandszusage. Am offenen Regal können auch Personen ohne App etwas mitnehmen.'}</Text>
+              <Text style={[T.small, { marginTop: 4 }]}>{rt('routes.fill_level_value_value', { p1: localize(latest.fill), p2: sharedLatest?.at===latest.at?rt('routes.shared_report'):rt('routes.reported_on_this_device') })}</Text><Text style={[T.small,{marginTop:4,color:changed?C.warn:C.muted}]}>{changed?rt('routes.food_has_been_added_or_taken_since_then_please_check_the_current_'):rt('routes.a_snapshot_not_a_stock_guarantee_people_without_the_app_can_also_')}</Text>
               {'photo' in latest && latest.photo && latest.photo !== 'demo' && <Image source={{ uri: latest.photo }} style={{ height: 120, borderRadius: 12, marginTop: 8 }} />}
               <View style={{ marginTop: 8, gap: 6 }}>
                 {(latest.items ?? []).map((it) => {
                   const held = itemReservations.find((r) => r.item === it.name && r.placeId === `fsp-${pt.id}` && r.expiresAt > Date.now());
                   return (
                     <Row key={it.name} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 10 }}>
-                      <View style={{ flex: 1 }}><Text style={[T.body, { fontWeight: '700', color: C.ink }]}>{it.name}</Text><Text style={T.small}>{it.qty} · {it.cat}</Text></View>
-                      {held ? <Tag label={`für dich bis ${new Date(held.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`} color={C.success} /> : <Pressable onPress={() => hold(it)} style={{ backgroundColor: col + '18', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999 }}><Text style={{ color: col, fontWeight: '800' }}>{HOLD_MIN} min merken</Text></Pressable>}
+                      <View style={{ flex: 1 }}><Text style={[T.body, { fontWeight: '700', color: C.ink }]}>{it.name}</Text><Text style={T.small}>{it.qty} · {localize(it.cat)}</Text></View>
+                      {held ? <Tag label={rt('routes.for_you_until_value', { p1: new Date(held.expiresAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) })} color={C.success} /> : <Pressable onPress={() => hold(it)} style={{ backgroundColor: col + '18', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999 }}><Text style={{ color: col, fontWeight: '800' }}>{rt('routes.save_for_value_min', { p1: HOLD_MIN })}</Text></Pressable>}
                     </Row>
                   );
                 })}
               </View>
             </View>
-          ) : <Text style={[T.body, { marginTop: 6 }]}>Heute hat noch niemand gemeldet. Ein kurzer Blick ins Regal hilft allen, die danach kommen.</Text>}
+          ) : <Text style={[T.body, { marginTop: 6 }]}>{rt('routes.no_reports_today_yet_a_quick_look_at_the_shelf_helps_everyone_com')}</Text>}
         </Card>
       </Appear>
 
-      {!!shared.length&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>Letzte Meldungen vor Ort</Text>{shared.slice(0,5).map(r=><Text key={r.id} style={T.small}>{new Date(r.at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} · {r.kind==='stock'?'Eingestellt':r.kind==='pickup'?'Mitgenommen':'Regal angesehen'}: {r.items.map(i=>`${i.qty} ${i.name}`).join(', ')||r.fill}</Text>)}</Card>}
-      <Text style={[T.label, { marginTop: 18, marginBottom: 8 }]}>Was machst du gerade?</Text>
+      {!!shared.length&&<Card style={{marginTop:12,gap:8}}><Text style={T.h3}>{rt('routes.recent_local_reports')}</Text>{shared.slice(0,5).map(r=><Text key={r.id} style={T.small}>{new Date(r.at).toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'})} · {r.kind==='stock'?rt('routes.added'):r.kind==='pickup'?rt('routes.collected'):rt('routes.shelf_checked')}: {r.items.map(i=>`${i.qty} ${i.name}`).join(', ')||localize(r.fill)}</Text>)}</Card>}
+      <Text style={[T.label, { marginTop: 18, marginBottom: 8 }]}>{rt('routes.what_are_you_doing')}</Text>
       <Row style={{ gap: 10 }}>
-        <ActionTile icon="bag-handle" label="Abholen" pts={15} color={col} onPress={() => setSheet('pickup')} />
-        <ActionTile icon="add-circle" label="Einstellen" pts={40} color={col} onPress={() => setSheet('stock')} />
-        <ActionTile icon="eye" label="Regal melden" pts={15} color={col} onPress={() => setSheet('shelf')} />
+        <ActionTile icon="bag-handle" label={rt('routes.collect')} pts={15} color={col} onPress={() => setSheet('pickup')} />
+        <ActionTile icon="add-circle" label={rt('routes.add_food')} pts={40} color={col} onPress={() => setSheet('stock')} />
+        <ActionTile icon="eye" label={rt('routes.report_shelf_status')} pts={15} color={col} onPress={() => setSheet('shelf')} />
       </Row>
-      <Text style={[T.small, { marginTop: 8, textAlign: 'center' }]}>Foto, Audio und Texteingabe bleiben verfügbar. Deine Erfassung ist noch kein Übergabenachweis und gibt allein keine Punkte.</Text>
+      <Text style={[T.small, { marginTop: 8, textAlign: 'center' }]}>{rt('routes.photo_audio_and_text_entry_remain_available_your_entry_is_not_pro')}</Text>
 
-      <Card style={{ marginTop: 16, gap: 10 }}><Text style={T.h3}>Mit einer Person übergeben</Text><Text style={T.body}>Für persönliche Übergaben gibt es feste Portionen, Zusagen und einen Übergabecode. Am offenen Regal ohne Gegenüber bleibt deine Meldung eine Eigenangabe.</Text><Button label="Übergaben & Zuverlässigkeit" color={col} onPress={() => router.push({ pathname: '/uebergaben', params: { area: title } })} /></Card>
+      <Card style={{ marginTop: 16, gap: 10 }}><Text style={T.h3}>{rt('routes.hand_food_to_a_person')}</Text><Text style={T.body}>{rt('routes.personal_handoffs_use_fixed_portions_acceptance_and_a_handoff_cod')}</Text><Button label={rt('routes.handoffs_reliability')} color={col} onPress={() => router.push({ pathname: '/uebergaben', params: { area: title } })} /></Card>
       <FoodActionSheet open={sheet === 'shelf'} mode="shelf" onClose={() => setSheet(null)} onDone={onReport} color={col} />
       <FoodActionSheet open={sheet === 'stock'} mode="stock" onClose={() => setSheet(null)} onDone={onStock} color={col} />
       <FoodActionSheet open={sheet === 'pickup'} mode="pickup" onClose={() => setSheet(null)} onDone={onPickup} color={col} />
@@ -145,11 +149,12 @@ export default function Fairteiler() {
 }
 
 function ActionTile({ icon, label, pts, color, onPress }: { icon: any; label: string; pts: number; color: string; onPress: () => void }) {
+  const rt = useT();
   return (
     <Pressable onPress={() => { haptic(); onPress(); }} style={({ pressed }) => [{ flex: 1, alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingVertical: 16, paddingHorizontal: 6, borderWidth: 1.5, borderColor: pressed ? color : C.line, transform: [{ scale: pressed ? 0.97 : 1 }] }]}>
       <View style={{ width: 52, height: 52, borderRadius: 18, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={icon} size={26} color="#fff" /></View>
       <Text style={[T.h3, { marginTop: 8, fontSize: 14 }]} numberOfLines={1}>{label}</Text>
-      <Text style={{ color, fontWeight: '800', fontSize: 12, marginTop: 2 }}>Erfassen</Text>
+      <Text style={{ color, fontWeight: '800', fontSize: 12, marginTop: 2 }}>{rt('routes.record')}</Text>
     </Pressable>
   );
 }

@@ -1,3 +1,4 @@
+import { useT } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from 'react-native-reanimated';
@@ -9,7 +10,8 @@ import { nfcAvailable, readTag, demoTag, type TagInfo } from '@/api/nfc';
  * NFC-Tap: Handy an den Tag halten. Echtes Lesen, wenn das Gerät NFC hat (Dev-Build),
  * sonst Simulation mit derselben Animation. Ergebnis ist in beiden Fällen ein TagInfo.
  */
-export default function NfcSheet({ open, onClose, onRead, color = C.mobility, title = 'Handy an den Tag halten', demoLine = 'U4', label }: { open: boolean; onClose: () => void; onRead: (t: TagInfo) => void; color?: string; title?: string; demoLine?: string; label?: string }) {
+export default function NfcSheet({ open, onClose, onRead, color = C.mobility, title, demoLine = 'U4', label }: { open: boolean; onClose: () => void; onRead: (t: TagInfo) => void; color?: string; title?: string; demoLine?: string; label?: string }) {
+  const t = useT();
   const [phase, setPhase] = useState<'scan' | 'ok'>('scan');
   const [real, setReal] = useState(false);
   useEffect(() => {
@@ -41,9 +43,9 @@ export default function NfcSheet({ open, onClose, onRead, color = C.mobility, ti
               {phase === 'scan' ? <Phone color={color} /> : <Check color={color} />}
             </Animated.View>
           </View>
-          <Text style={[T.h2, { marginTop: 8, textAlign: 'center' }]}>{phase === 'scan' ? title : 'Tag gelesen'}</Text>
-          <Text style={[T.body, { textAlign: 'center', marginTop: 6 }]}>{phase === 'scan' ? (real ? 'Oben am Gerät, ohne zu bewegen.' : label ?? 'Der Tag sitzt im Türbereich des Fahrzeugs. In dieser Demo wird das Lesen simuliert.') : 'Passt. Weiter geht es automatisch.'}</Text>
-          {phase === 'scan' && <Pressable onPress={onClose} style={{ marginTop: 16 }}><Text style={{ color: C.muted, fontWeight: '700' }}>Abbrechen</Text></Pressable>}
+          <Text style={[T.h2, { marginTop: 8, textAlign: 'center' }]}>{phase === 'scan' ? (title ?? t('components.nfc.hold')) : t('components.nfc.read')}</Text>
+          <Text style={[T.body, { textAlign: 'center', marginTop: 6 }]}>{phase === 'scan' ? (real ? t('components.nfc.still') : label ?? t('components.nfc.demo')) : t('components.nfc.next')}</Text>
+          {phase === 'scan' && <Pressable onPress={onClose} style={{ marginTop: 16 }}><Text style={{ color: C.muted, fontWeight: '700' }}>{t('common.cancel')}</Text></Pressable>}
         </Animated.View>
       </View>
     </Modal>

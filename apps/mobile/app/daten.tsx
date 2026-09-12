@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,8 @@ const PAYMENT_DETAILS: Record<string, string> = {
 
 /** Was die App speichert, was nicht, und was aggregiert an Frankfurt geht. */
 export default function Daten() {
+  const rt = useT();
+  const localize = useLocalize();
   const s = useStore();
   const { setCtx } = useUI();
   const [paymentOpen, setPaymentOpen] = useState(false);
@@ -42,63 +45,63 @@ export default function Daten() {
   const inputStyle = { marginTop: 6, paddingVertical: 10, paddingHorizontal: 12, borderWidth: 1, borderColor: C.line, borderRadius: 12, backgroundColor: C.bg, color: C.ink };
   return (
     <Screen tabBar={false}>
-      <Header title="Meine Daten" />
+      <Header title={rt('routes.my_data')} />
       <Card>
-        <Text style={T.h3}>Persönliche Angaben</Text>
-        <Text style={[T.small, { marginTop: 4 }]}>Diese Angaben werden nur auf deinem Gerät gespeichert.</Text>
-        <Text style={[T.label, { marginTop: 16 }]}>Stadtteil</Text>
+        <Text style={T.h3}>{rt('routes.personal_details')}</Text>
+        <Text style={[T.small, { marginTop: 4 }]}>{rt('routes.these_details_are_stored_only_on_your_device')}</Text>
+        <Text style={[T.label, { marginTop: 16 }]}>{rt('routes.district')}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{DISTRICTS.map((district) => <Pill key={district.name} label={district.name} active={s.district === district.name} color={col} onPress={() => s.setProfile({ district: district.name })} />)}</ScrollView>
-        <Text style={[T.label, { marginTop: 16 }]}>E-Mail</Text>
+        <Text style={[T.label, { marginTop: 16 }]}>{rt('routes.email')}</Text>
         <TextInput value={s.email} onChangeText={(email) => s.setProfile({ email })} placeholder="name@beispiel.de" keyboardType="email-address" autoCapitalize="none" autoComplete="email" style={inputStyle} />
-        <Text style={[T.label, { marginTop: 16 }]}>Telefonnummer</Text>
-        <TextInput value={s.phone} onChangeText={(phone) => s.setProfile({ phone })} placeholder="Deine Telefonnummer" keyboardType="phone-pad" autoComplete="tel" style={inputStyle} />
-        <Text style={[T.label, { marginTop: 16 }]}>Adresse</Text>
-        <TextInput value={s.address} onChangeText={(address) => s.setProfile({ address })} placeholder="Straße und Hausnummer" autoComplete="street-address" style={inputStyle} />
-        <Text style={[T.label, { marginTop: 16 }]}>Zahlungsart</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Zahlungsart verwalten" onPress={() => { setDraftPaymentMethod(currentPaymentMethod); setPaymentSaved(false); setPaymentOpen(true); }} style={{ marginTop: 8, padding: 14, borderWidth: 1, borderColor: C.line, borderRadius: 14, backgroundColor: C.bg }}>
+        <Text style={[T.label, { marginTop: 16 }]}>{rt('routes.phone_number')}</Text>
+        <TextInput value={s.phone} onChangeText={(phone) => s.setProfile({ phone })} placeholder={rt('routes.your_phone_number')} keyboardType="phone-pad" autoComplete="tel" style={inputStyle} />
+        <Text style={[T.label, { marginTop: 16 }]}>{rt('routes.address')}</Text>
+        <TextInput value={s.address} onChangeText={(address) => s.setProfile({ address })} placeholder={rt('routes.street_and_house_number')} autoComplete="street-address" style={inputStyle} />
+        <Text style={[T.label, { marginTop: 16 }]}>{rt('routes.payment_method')}</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel={rt('routes.manage_payment_method')} onPress={() => { setDraftPaymentMethod(currentPaymentMethod); setPaymentSaved(false); setPaymentOpen(true); }} style={{ marginTop: 8, padding: 14, borderWidth: 1, borderColor: C.line, borderRadius: 14, backgroundColor: C.bg }}>
           <Row>
             <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}><Ionicons name="card-outline" size={21} color={col} /></View>
             <View style={{ flex: 1 }}>
-              <Text style={T.h3}>{currentPaymentMethod === 'Keine' ? 'Zahlungsart hinzufügen' : currentPaymentMethod}</Text>
-              <Text style={T.small}>{PAYMENT_DETAILS[currentPaymentMethod] || 'Noch keine Zahlungsart hinterlegt'}</Text>
+              <Text style={T.h3}>{currentPaymentMethod === 'Keine' ? rt('routes.add_payment_method') : localize(currentPaymentMethod)}</Text>
+              <Text style={T.small}>{PAYMENT_DETAILS[currentPaymentMethod] || rt('routes.no_payment_method_saved_yet')}</Text>
             </View>
-            <Text style={{ color: col, fontWeight: '800' }}>{currentPaymentMethod === 'Keine' ? 'Hinzufügen' : 'Ändern'}</Text>
+            <Text style={{ color: col, fontWeight: '800' }}>{currentPaymentMethod === 'Keine' ? rt('routes.add') : rt('routes.change')}</Text>
           </Row>
         </Pressable>
         {paymentSaved && (
           <Row style={{ marginTop: 10, padding: 10, borderRadius: 12, backgroundColor: C.success + '18' }}>
             <Ionicons name="checkmark-circle" size={19} color={C.success} />
-            <Text style={[T.small, { color: C.success, fontWeight: '800' }]}>Zahlungsart gespeichert.</Text>
+            <Text style={[T.small, { color: C.success, fontWeight: '800' }]}>{rt('routes.payment_method_saved')}</Text>
           </Row>
         )}
       </Card>
-      <SectionTitle title="Weitere gespeicherte Informationen" />
+      <SectionTitle title={rt('routes.other_stored_information')} />
       <Card>
         {rows.map((r, i) => (
           <View key={r.t}>
             <Row style={{ gap: 12 }}>
               <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={r.i as any} size={18} color={C.ink} /></View>
-              <View style={{ flex: 1 }}><Text style={T.h3}>{r.t}</Text><Text style={T.small}>{r.v}</Text></View>
+              <View style={{ flex: 1 }}><Text style={T.h3}>{localize(r.t)}</Text><Text style={T.small}>{localize(r.v)}</Text></View>
             </Row>
             {i < rows.length - 1 && <Divider />}
           </View>
         ))}
       </Card>
-      <Text style={[T.h2, { marginTop: S.xl }]}>Was an Frankfurt geht</Text>
-      <Text style={[T.small, { marginTop: 6, color: C.muted }]}>Nur Summen: Linie, Stunde, Anzahl Fahrten. Nie dein Name, nie deine Route. Erst ab fünf Personen pro Gruppe. {s.privacy.shareAggregates ? 'Du machst mit.' : 'Du machst nicht mit.'}</Text>
-      <Sheet open={paymentOpen} onClose={() => setPaymentOpen(false)} title="Zahlungsart hinterlegen">
-        <Text style={[T.body, { marginBottom: 12 }]}>Wähle eine Zahlungsart aus.</Text>
+      <Text style={[T.h2, { marginTop: S.xl }]}>{rt('routes.what_is_shared_with_frankfurt')}</Text>
+      <Text style={[T.small, { marginTop: 6, color: C.muted }]}>{rt('routes.only_totals_route_hour_number_of_rides_never_your_name_or_persona', { p1: s.privacy.shareAggregates ? rt('routes.you_participate') : rt('routes.you_do_not_participate') })}</Text>
+      <Sheet open={paymentOpen} onClose={() => setPaymentOpen(false)} title={rt('routes.set_up_payment_method')}>
+        <Text style={[T.body, { marginBottom: 12 }]}>{rt('routes.choose_a_payment_method')}</Text>
         <View style={{ gap: 8 }}>
           {PAYMENT_METHODS.map((method) => (
             <Pressable key={method} accessibilityRole="radio" accessibilityState={{ selected: draftPaymentMethod === method }} onPress={() => setDraftPaymentMethod(method)} style={{ padding: 14, borderRadius: 14, borderWidth: 2, borderColor: draftPaymentMethod === method ? col : C.line, backgroundColor: draftPaymentMethod === method ? col + '12' : '#fff' }}>
               <Row style={{ justifyContent: 'space-between' }}>
-                <View><Text style={T.h3}>{method}</Text><Text style={T.small}>{PAYMENT_DETAILS[method]}</Text></View>
+                <View><Text style={T.h3}>{localize(method)}</Text><Text style={T.small}>{PAYMENT_DETAILS[method]}</Text></View>
                 {draftPaymentMethod === method && <Ionicons name="checkmark-circle" size={22} color={col} />}
               </Row>
             </Pressable>
           ))}
         </View>
-        <Button label="Zahlungsart speichern" color={col} disabled={!PAYMENT_METHODS.includes(draftPaymentMethod)} onPress={savePaymentMethod} style={{ marginTop: 16 }} />
+        <Button label={rt('routes.save_payment_method')} color={col} disabled={!PAYMENT_METHODS.includes(draftPaymentMethod)} onPress={savePaymentMethod} style={{ marginTop: 16 }} />
       </Sheet>
     </Screen>
   );

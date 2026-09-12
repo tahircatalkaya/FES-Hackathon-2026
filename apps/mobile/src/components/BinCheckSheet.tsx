@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Image, Platform, Pressable, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -12,6 +13,8 @@ type Phase = 'start' | 'analyzing' | 'result';
 
 /** Biotonnen-Check: Foto der eigenen Biotonne, Bilderkennung schlägt Fehlwürfe vor, Person bestätigt. */
 export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: { points: number; duplicate: boolean; status: string }) => void }) {
+  const t = useT();
+  const localize = useLocalize();
   const { ledger, addAward } = useStore();
   const [phase, setPhase] = useState<Phase>('start');
   const [photo, setPhoto] = useState<string | null>(null);
@@ -60,18 +63,17 @@ export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClos
 
   const good = findings.length === 0;
   return (
-    <Sheet open={open} onClose={onClose} title="Biotonnen-Check">
+    <Sheet open={open} onClose={onClose} title={t('components.bin.title')}>
       {phase === 'start' && (
         <Animated.View entering={FadeIn}>
           <Text style={[T.body, { marginTop: 4 }]}>
-            Fotografiere deine offene Biotonne von oben. Die Bilderkennung schlägt vor, was nicht hineingehört. Du entscheidest, ob der Vorschlag stimmt.
-          </Text>
+            {t('components.bin.instructions')}</Text>
           <Pressable onPress={snap} style={{ marginTop: S.lg, height: 170, borderRadius: R.md, borderWidth: 2, borderStyle: 'dashed', borderColor: C.line, backgroundColor: '#FAFAF7', alignItems: 'center', justifyContent: 'center' }}>
             <Ionicons name="camera" size={30} color={C.muted} />
-            <Text style={{ fontWeight: '800', color: C.muted, marginTop: 8 }}>Foto der Biotonne</Text>
+            <Text style={{ fontWeight: '800', color: C.muted, marginTop: 8 }}>{t('components.bin.photo')}</Text>
           </Pressable>
-          <Text style={[T.small, { marginTop: 10 }]}>Das Bild wird auf dem Gerät ausgewertet und nicht hochgeladen. Im Pilot ersetzt ein trainiertes Modell diese Vorschlagslogik.</Text>
-          {doneToday ? <Text style={[T.small, { color: C.warn, marginTop: 8 }]}>Heute schon geprüft. Ein zweiter Check gibt keine Punkte mehr.</Text> : null}
+          <Text style={[T.small, { marginTop: 10 }]}>{t('components.bin.privacy')}</Text>
+          {doneToday ? <Text style={[T.small, { color: C.warn, marginTop: 8 }]}>{t('components.bin.already')}</Text> : null}
         </Animated.View>
       )}
 
@@ -79,7 +81,7 @@ export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClos
         <Animated.View entering={FadeIn} style={{ alignItems: 'center', paddingVertical: S.xl }}>
           {photo ? <Image source={{ uri: photo }} style={{ width: '100%', height: 150, borderRadius: R.md, marginBottom: S.lg }} /> : null}
           <Ring progress={0.7} size={78} color={C.clean}><Ionicons name="scan" size={26} color={C.clean} /></Ring>
-          <Text style={[T.h3, { marginTop: 14 }]}>Bild wird ausgewertet …</Text>
+          <Text style={[T.h3, { marginTop: 14 }]}>{t('components.bin.analyzing')}</Text>
         </Animated.View>
       )}
 
@@ -91,8 +93,8 @@ export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClos
               <Text style={{ fontSize: 22, fontWeight: '900', color: C.ink }}>{score}</Text>
             </Ring>
             <View style={{ flex: 1 }}>
-              <Text style={T.h3}>{good ? 'Sauber getrennt' : 'Da ist Fremdmaterial drin'}</Text>
-              <Text style={T.small}>Trennqualität, Vorschlag der Bilderkennung</Text>
+              <Text style={T.h3}>{good ? t('components.bin.good') : t('components.bin.foreign')}</Text>
+              <Text style={T.small}>{t('components.bin.quality')}</Text>
             </View>
           </View>
 
@@ -102,17 +104,17 @@ export function BinCheckSheet({ open, onClose, onDone }: { open: boolean; onClos
                 <View key={f.label} style={{ flexDirection: 'row', gap: 10, padding: S.md, borderRadius: R.md, backgroundColor: C.warn + '14' }}>
                   <Ionicons name="alert-circle" size={20} color={C.warn} />
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontWeight: '800', color: C.ink }}>{f.label}</Text>
-                    <Text style={T.small}>{f.hint}</Text>
+                    <Text style={{ fontWeight: '800', color: C.ink }}>{localize(f.label)}</Text>
+                    <Text style={T.small}>{localize(f.hint)}</Text>
                   </View>
                 </View>
               ))}
             </View>
           )}
 
-          <Button label={good ? 'Stimmt so, Punkte holen' : 'Verstanden, Punkte holen'} onPress={claim} color={C.clean} style={{ marginTop: S.lg }} />
-          <Button label="Neues Foto" variant="ghost" color={C.ink} onPress={() => setPhase('start')} style={{ marginTop: 8 }} />
-          <Text style={[T.small, { marginTop: 10 }]}>Punkte gibt es für das Prüfen und Lernen, nicht für ein gutes Ergebnis. Einmal pro Tag.</Text>
+          <Button label={good ? t('components.bin.correct') : t('components.bin.understood')} onPress={claim} color={C.clean} style={{ marginTop: S.lg }} />
+          <Button label={t('components.bin.new')} variant="ghost" color={C.ink} onPress={() => setPhase('start')} style={{ marginTop: 8 }} />
+          <Text style={[T.small, { marginTop: 10 }]}>{t('components.bin.pointsHint')}</Text>
         </Animated.View>
       )}
     </Sheet>

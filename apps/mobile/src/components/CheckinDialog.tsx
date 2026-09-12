@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image, Modal, Pressable, Text, View } from 'react-native';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
@@ -22,7 +23,7 @@ const CHECKIN_POINTS = BASE['ride.checkin'];
  * Echtes NFC wird im Hintergrund gelesen, wenn das Gerät es kann, sonst Simulation.
  */
 export default function CheckinDialog({
-  open, onClose, onCheckin, onContinue, demoLine = 'U4', headsign, stopName, continueLabel = 'Fahrt starten',
+  open, onClose, onCheckin, onContinue, demoLine = 'U4', headsign, stopName, continueLabel,
 }: {
   open: boolean;
   onClose: () => void;
@@ -34,6 +35,7 @@ export default function CheckinDialog({
   stopName?: string;
   continueLabel?: string;
 }) {
+  const t = useT();
   const [stage, setStage] = useState<'terminal' | 'success'>('terminal');
   const [tag, setTag] = useState<TagInfo | null>(null);
   const [award, setAward] = useState<Award | null>(null);
@@ -63,14 +65,14 @@ export default function CheckinDialog({
     <Modal visible transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
       <View style={{ flex: 1, backgroundColor: 'rgba(16,43,84,0.43)', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
         {/* Klick auf den Hintergrund schliesst, wie beim <dialog>-Backdrop im Web. */}
-        <Pressable style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }} onPress={onClose} accessibilityLabel="Schliessen" />
+        <Pressable style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }} onPress={onClose} accessibilityLabel={t('components.common.close')} />
         <Appear>
           <View style={[{ backgroundColor: '#fff', borderRadius: 28, borderWidth: 1, borderColor: C.line, padding: 24 }, shadow(3)]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: stage === 'success' ? 0 : 12 }}>
               <Text style={{ fontSize: 13, fontWeight: '800', letterSpacing: 1.4, color: ACCENT }}>
-                {stage === 'success' ? 'SIMULATION' : 'NFC-CHECK-IN'}
+                {stage === 'success' ? t('components.checkin.simulation') : t('components.checkin.nfc')}
               </Text>
-              <Pressable onPress={onClose} hitSlop={8} accessibilityRole="button" accessibilityLabel="Schliessen"
+              <Pressable onPress={onClose} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('components.common.close')}
                 style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: 26, lineHeight: 30, color: C.ink2 }}>×</Text>
               </Pressable>
@@ -86,7 +88,7 @@ export default function CheckinDialog({
                 onCancel={onClose}
               />
             ) : (
-              <Success tag={tag!} award={award} label={continueLabel} onContinue={() => { onClose(); onContinue(); }} />
+              <Success tag={tag!} award={award} label={continueLabel ?? t('act.ride')} onContinue={() => { onClose(); onContinue(); }} />
             )}
           </View>
         </Appear>
@@ -97,28 +99,29 @@ export default function CheckinDialog({
 
 /* ---------- Stufe 1: Terminal ---------- */
 function Terminal({ real, demoLine, headsign, stopName, onSimulate, onCancel }: { real: boolean; demoLine: string; headsign?: string; stopName?: string; onSimulate: () => void; onCancel: () => void }) {
+  const t = useT();
   return (
     <View>
-      <Text style={{ fontSize: 26, fontWeight: '800', color: C.ink, letterSpacing: -0.6, lineHeight: 31, marginBottom: 12 }}>Bitte am Terminal einchecken</Text>
+      <Text style={{ fontSize: 26, fontWeight: '800', color: C.ink, letterSpacing: -0.6, lineHeight: 31, marginBottom: 12 }}>{t('components.checkin.title')}</Text>
       <Text style={{ fontSize: 16, lineHeight: 25, color: C.ink2 }}>
-        {real ? 'Halte dein Smartphone nah an das Lesefeld des Terminals.' : 'Halte dein Smartphone nah an das Lesefeld des Terminals. Hier simuliert.'}
+        {real ? t('components.checkin.real') : t('components.checkin.demo')}
       </Text>
 
       <View style={{ marginTop: 22, marginBottom: 18, borderRadius: 20, backgroundColor: C.bg, overflow: 'hidden', alignItems: 'center' }}>
         <Scene />
-        <Text style={{ paddingHorizontal: 12, paddingBottom: 16, fontSize: 14, lineHeight: 20, color: C.ink2, textAlign: 'center' }}>Handy kurz ans Lesefeld halten</Text>
+        <Text style={{ paddingHorizontal: 12, paddingBottom: 16, fontSize: 14, lineHeight: 20, color: C.ink2, textAlign: 'center' }}>{t('components.checkin.hold')}</Text>
       </View>
 
       <Text style={{ textAlign: 'center', fontSize: 14, lineHeight: 20, color: C.ink2, marginBottom: 18 }}>
-        Teste den Check-in mit einer simulierten Fahrt.{'\n'}
-        <Text style={{ color: C.muted }}>Simuliertes Terminal: {demoLine}{headsign ? ` Richtung ${headsign}` : ''}{stopName ? ` · ${stopName}` : ''}</Text>
+        {t('components.checkin.try')}{'\n'}
+        <Text style={{ color: C.muted }}>{t('components.checkin.terminal', { line: demoLine })}{headsign ? ` ${t('components.checkin.direction', { destination: headsign })}` : ''}{stopName ? ` · ${stopName}` : ''}</Text>
       </Text>
 
       <Pressable onPress={onSimulate} style={({ pressed }) => ({ backgroundColor: ACCENT, borderRadius: 16, paddingVertical: 14, alignItems: 'center', opacity: pressed ? 0.85 : 1 })}>
-        <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>Check-in simulieren</Text>
+        <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>{t('components.checkin.simulate')}</Text>
       </Pressable>
       <Pressable onPress={onCancel} style={{ marginTop: 8, paddingVertical: 12, alignItems: 'center' }}>
-        <Text style={{ color: C.muted, fontWeight: '700' }}>Abbrechen</Text>
+        <Text style={{ color: C.muted, fontWeight: '700' }}>{t('common.cancel')}</Text>
       </Pressable>
     </View>
   );
@@ -162,6 +165,8 @@ function Scene() {
 const CONFETTI = [RIDE.red, RIDE.grey, C.gold, RIDE.graphite];
 
 function Success({ tag, award, label, onContinue }: { tag: TagInfo; award: Award | null; label: string; onContinue: () => void }) {
+  const t = useT();
+  const localize = useLocalize();
   const pieces = useMemo(() => Array.from({ length: 24 }, (_, i) => ({
     x: 5 + ((i * 37) % 90), drift: ((i * 29) % 80) - 40, turn: (i % 2 ? 1 : -1) * (180 + i * 21),
     delay: (i % 6) * 65, color: CONFETTI[i % 4], round: i % 3 === 2,
@@ -182,18 +187,18 @@ function Success({ tag, award, label, onContinue }: { tag: TagInfo; award: Award
         </Animated.View>
       </View>
 
-      <Text style={{ fontSize: 25, fontWeight: '800', color: C.ink, letterSpacing: -0.5, textAlign: 'center', marginBottom: 10 }}>Erfolgreich eingecheckt</Text>
-      <Text style={{ fontSize: 15, lineHeight: 22, color: C.ink2, textAlign: 'center', maxWidth: 270 }}>Danke, dass du mit Bus und Bahn unterwegs bist.</Text>
+      <Text style={{ fontSize: 25, fontWeight: '800', color: C.ink, letterSpacing: -0.5, textAlign: 'center', marginBottom: 10 }}>{t('components.checkin.success')}</Text>
+      <Text style={{ fontSize: 15, lineHeight: 22, color: C.ink2, textAlign: 'center', maxWidth: 270 }}>{t('components.checkin.thanks')}</Text>
       <Text style={{ fontSize: 14, lineHeight: 20, color: C.ink2, textAlign: 'center', marginTop: 10 }}>
-        Terminal erkannt: <Text style={{ fontWeight: '800', color: C.ink }}>{tag.line}</Text> · Fahrzeug {tag.vehicle}
+        {t('components.checkin.detected', { line: tag.line, vehicle: tag.vehicle })}
       </Text>
 
       <View style={{ alignSelf: 'stretch', alignItems: 'center', gap: 2, backgroundColor: C.bg, borderWidth: 1, borderColor: C.line, borderRadius: 18, padding: 14, marginTop: 22, marginBottom: 10 }}>
         <Text style={{ fontSize: 48, lineHeight: 52, fontWeight: '800', letterSpacing: -2, color: C.success }}>+{award?.points ?? CHECKIN_POINTS}</Text>
-        <Text style={{ fontSize: 15, color: C.ink2, textAlign: 'center' }}>Punkte für den Check-in</Text>
+        <Text style={{ fontSize: 15, color: C.ink2, textAlign: 'center' }}>{t('components.checkin.points')}</Text>
       </View>
       <Text style={[T.small, { textAlign: 'center', marginBottom: 16 }]}>
-        {award && award.points < CHECKIN_POINTS ? award.formula : `Fester Betrag, unabhängig von Strecke und Dauer. Der Impact deiner Fahrt kommt am Ende dazu.`}
+        {award && award.points < CHECKIN_POINTS ? localize(award.formula) : t('components.checkin.fixed')}
       </Text>
 
       <Pressable onPress={onContinue} style={({ pressed }) => ({ alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, backgroundColor: ACCENT, borderRadius: 16, paddingVertical: 14, paddingHorizontal: 18, opacity: pressed ? 0.85 : 1 })}>

@@ -1,3 +1,4 @@
+import { useT } from '@/i18n/useT';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -6,8 +7,9 @@ import { haptic } from './ui';
 
 /** Umschalter oben im Impact-Tab: mein Beitrag oder Frankfurt gemeinsam. */
 export default function ScopeToggle({ active, color }: { active: 'me' | 'city'; color: string }) {
+  const t = useT();
   const router = useRouter();
-  const items = [{ k: 'me', l: 'Mein Impact', h: '/impact' }, { k: 'city', l: 'Frankfurt gemeinsam', h: '/gemeinsam' }] as const;
+  const items = [{ k: 'me', l: t('impact.title'), h: '/impact' }, { k: 'city', l: t('together.title'), h: '/gemeinsam' }] as const;
   return (
     <View style={{ flexDirection: 'row', backgroundColor: '#fff', borderRadius: 999, padding: 4, marginBottom: 14 }}>
       {items.map((it) => (

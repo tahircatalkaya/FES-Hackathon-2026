@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -29,6 +30,8 @@ const SIM_TRACES = Object.entries(TR).filter(([k]) => k !== 'car_parallel');
 const col = CONTEXT.mobility.color;
 
 export default function Ride() {
+  const rt = useT();
+  const localize = useLocalize();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ station?: string; tag?: string; nfc?: string }>();
@@ -183,34 +186,34 @@ export default function Ride() {
     return (
       <View style={{ flex: 1, backgroundColor: C.bg }}>
       <Screen tabBar={false} style={{ paddingBottom: insets.bottom + 120 }}>
-        <Header title="Fahrt starten" color={col} right={<Partners />} />
+        <Header title={rt('routes.start_ride')} color={col} right={<Partners />} />
         <Appear>
           <Card style={{ backgroundColor: RIDE.graphite, overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 1 }}>
-                <Text style={[T.label, { color: '#ffffffaa' }]}>Nachweis-Kette</Text>
-                <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>Antippen, einsteigen, aussteigen. Den Rest prüft die App.</Text>
-                <Text style={[T.small, { color: '#ffffffcc', marginTop: 6 }]}>Standort nur während der Fahrt, nur auf deinem Gerät.</Text>
+                <Text style={[T.label, { color: '#ffffffaa' }]}>{rt('routes.evidence_chain')}</Text>
+                <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{rt('routes.tap_board_get_off_the_app_checks_the_rest')}</Text>
+                <Text style={[T.small, { color: '#ffffffcc', marginTop: 6 }]}>{rt('routes.location_only_during_the_ride_only_on_your_device')}</Text>
               </View>
               <Chameleon pose="run" size={96} />
             </View>
           </Card>
         </Appear>
 
-        <Text style={[T.h3, { marginTop: S.xl }]}>1 · Haltestelle {isDemo ? '(Demo-Standort)' : 'in deiner Nähe'}</Text>
+        <Text style={[T.h3, { marginTop: S.xl }]}>{rt('routes.1_stop_value', { p1: isDemo ? rt('routes.demo_location') : rt('routes.near_you') })}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
           {near.map((s) => <Pill key={s.id} label={`${s.name} · ${Math.round(s.d)} m`} active={station?.id === s.id} color={col} onPress={() => setStationId(s.id)} />)}
         </ScrollView>
 
-        <Text style={[T.h3, { marginTop: S.xl }]}>2 · Nächste Abfahrten {station ? `ab ${station.name}` : ''}</Text>
-        <Text style={T.small}>Fahrplan RMV (GTFS), Demo-Tag {SERVICE_DAY.split(' ')[0]}.</Text>
+        <Text style={[T.h3, { marginTop: S.xl }]}>{rt('routes.2_next_departures_value', { p1: station ? rt('routes.from_value', { p1: station.name }) : '' })}</Text>
+        <Text style={T.small}>{rt('routes.rmv_timetable_gtfs_demo_date_value', { p1: SERVICE_DAY.split(' ')[0] })}</Text>
         <View style={{ marginTop: 10, gap: 8 }}>
-          {deps.length === 0 && <Text style={T.body}>Keine Abfahrten in den nächsten 90 Minuten in den bereitgestellten Linien (U, S, Tram).</Text>}
+          {deps.length === 0 && <Text style={T.body}>{rt('routes.no_departures_in_the_next_90_minutes_on_the_available_lines_u_s_t')}</Text>}
           {deps.map((d, i) => (
             <Animated.View key={i} entering={FadeInDown.delay(i * 40)}>
               <View style={[{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, padding: 12, gap: 12 }, shadow(1)]}>
                 <View style={{ backgroundColor: d.color, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 6, minWidth: 48, alignItems: 'center' }}><Text style={{ color: d.route === 'U9' ? '#222' : '#fff', fontWeight: '900' }}>{d.route}</Text></View>
-                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{d.headsign}</Text><Text style={T.small}>{d.kind === 'U' ? 'U-Bahn' : d.kind === 'S' ? 'S-Bahn' : 'Straßenbahn'} · Gleis lt. Aushang</Text></View>
+                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{d.headsign}</Text><Text style={T.small}>{rt('routes.value_platform_as_posted', { p1: d.kind === 'U' ? rt('routes.metro') : d.kind === 'S' ? rt('routes.suburban_train') : rt('routes.tram') })}</Text></View>
                 <View style={{ alignItems: 'flex-end' }}><Text style={{ fontWeight: '900', fontSize: 18, color: C.ink }}>{fmtMin(d.minute)}</Text><Text style={T.small}>{Math.max(0, d.minute - nowMinutes())} min</Text></View>
               </View>
             </Animated.View>
@@ -222,8 +225,8 @@ export default function Ride() {
       {/* Fester Fuss, nur auf diesem Screen: die beiden Wege, eine Fahrt zu starten. */}
       <View style={[{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: C.line, paddingTop: S.md, paddingBottom: insets.bottom + S.md }, shadow(2)]}>
         <Row style={{ gap: 10, paddingHorizontal: S.lg, maxWidth: 560, width: '100%', alignSelf: 'center' }}>
-          <Button label={tag ? 'Erneut antippen' : 'NFC antippen'} icon="📡" color={col} variant={tag ? 'soft' : 'solid'} onPress={tapIn} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 8 }} />
-          <Button label={tag ? 'Fahrt starten' : 'Ohne Tag starten'} icon="▶️" color={col} variant={tag ? 'solid' : 'soft'} onPress={start} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 8 }} />
+          <Button label={tag ? rt('routes.tap_again') : rt('routes.tap_nfc')} icon="📡" color={col} variant={tag ? 'soft' : 'solid'} onPress={tapIn} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 8 }} />
+          <Button label={tag ? rt('routes.start_ride') : rt('routes.start_without_tag')} icon="▶️" color={col} variant={tag ? 'solid' : 'soft'} onPress={start} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 8 }} />
         </Row>
       </View>
 
@@ -243,7 +246,7 @@ export default function Ride() {
           <Pressable
             onPress={recenter}
             accessibilityRole="button"
-            accessibilityLabel="Auf meinen Standort zentrieren"
+            accessibilityLabel={rt('routes.centre_on_my_location')}
             style={[{ alignSelf: 'flex-end', width: 46, height: 46, borderRadius: 23, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }, shadow(2)]}>
             <Ionicons name={following ? 'locate' : 'locate-outline'} size={22} color={following ? col : C.ink} />
           </Pressable>
@@ -251,21 +254,21 @@ export default function Ride() {
             <Row>
               <Chameleon pose="think" size={70} />
               <View style={{ flex: 1 }}>
-                <Text style={T.h3}>{station?.name ?? 'Unterwegs'} {tag ? `· ${tag.line}` : ''}</Text>
-                <Text style={T.small}>{Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, '0')} · {tracker.points.length} GPS-Punkte · nur auf dem Gerät</Text>
+                <Text style={T.h3}>{station?.name ?? rt('routes.on_the_way')} {tag ? `· ${tag.line}` : ''}</Text>
+                <Text style={T.small}>{rt('routes.valuevalue_value_gps_points_on_device_only', { p1: Math.floor(elapsed / 60), p2: String(elapsed % 60).padStart(2, '0'), p3: tracker.points.length })}</Text>
               </View>
             </Row>
             {trip && <NextStops trip={trip} all={allStops} onToggle={() => setAllStops((v) => !v)} />}
             {!sim && (
               <View>
-                <Text style={[T.label, { marginBottom: 6 }]}>Demo: Fahrt simulieren</Text>
+                <Text style={[T.label, { marginBottom: 6 }]}>{rt('routes.demo_simulate_ride')}</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {SIM_TRACES.map(([k, v]) => <Pill key={k} label={v.title} color={col} onPress={() => playSim(k)} />)}
+                  {SIM_TRACES.map(([k, v]) => <Pill key={k} label={localize(v.title)} color={col} onPress={() => playSim(k)} />)}
                 </ScrollView>
               </View>
             )}
-            {sim && <Text style={T.small}>▶ {TR[sim].title}: {TR[sim].desc}</Text>}
-            <Button label="Fahrt beenden & prüfen" color={C.ink} icon="stop" onPress={stop} />
+            {sim && <Text style={T.small}>▶ {localize(TR[sim].title)}: {localize(TR[sim].desc)}</Text>}
+            <Button label={rt('routes.end_ride_verify')} color={C.ink} icon="stop" onPress={stop} />
           </Card>
         </View>
         <RideReward award={rideDone} onClose={() => { setRideDone(null); router.replace('/(tabs)/impact'); }} />
@@ -275,15 +278,17 @@ export default function Ride() {
 
 /** Belohnung für eine zugeordnete Fahrt: derselbe Ablauf wie in den anderen Bereichen. */
 function RideReward({ award, onClose }: { award: Award | null; onClose: () => void }) {
+  const rt = useT();
+  const locale = useLocale();
   const km = Number(award?.meta?.km ?? 0);
   return (
     <CelebrationOverlay
       open={!!award}
       clip="ride"
-      headline="Fahrt bestätigt"
-      tileLabel="CO₂ GESPART"
-      tileValue={fmtCo2(award?.impact.co2_g ?? 0)}
-      note={`${km.toFixed(1)} km zugeordnet. Die Punkte gab es schon beim Check-in.`}
+      headline={rt('routes.ride_confirmed')}
+      tileLabel={rt('routes.co2_saved')}
+      tileValue={fmtCo2(award?.impact.co2_g ?? 0, locale)}
+      note={rt('routes.value_km_matched_points_were_awarded_at_checkin', { p1: km.toFixed(1) })}
       onClose={onClose}
     />
   );
@@ -300,13 +305,14 @@ const PARTNERS = [
 
 /** Die restlichen Halte der Fahrt. Zwei sind sichtbar, der Rest klappt bis zur Endstation auf. */
 function NextStops({ trip, all, onToggle }: { trip: Departure; all: boolean; onToggle: () => void }) {
+  const rt = useT();
   const stops = remainingStops(trip);
   if (!stops.length) return null;
   const shown = all ? stops : stops.slice(0, 2);
   const hidden = stops.length - shown.length;
   return (
     <View>
-      <Text numberOfLines={1} style={[T.label, { marginBottom: 6 }]}>Nächste Haltestellen · {trip.route} → {trip.headsign}</Text>
+      <Text numberOfLines={1} style={[T.label, { marginBottom: 6 }]}>{rt('routes.next_stops_value_value', { p1: trip.route, p2: trip.headsign })}</Text>
       <ScrollView style={{ maxHeight: 168 }} nestedScrollEnabled showsVerticalScrollIndicator={false}>
         {shown.map((st, i) => (
           <View key={st.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, height: 26 }}>
@@ -315,7 +321,7 @@ function NextStops({ trip, all, onToggle }: { trip: Departure; all: boolean; onT
               <View style={{ marginTop: 8, width: st.last ? 11 : 9, height: st.last ? 11 : 9, borderRadius: 6, borderWidth: st.last ? 3 : 0, borderColor: col, backgroundColor: st.last ? '#fff' : col }} />
             </View>
             <Text numberOfLines={1} style={[T.body, { flex: 1, color: C.ink, fontWeight: '700' }]}>{st.name}</Text>
-            <Text style={T.small}>{fmtMin(st.minute)}{st.last ? ' · Endstation' : ''}</Text>
+            <Text style={T.small}>{fmtMin(st.minute)}{st.last ? rt('routes.terminus') : ''}</Text>
           </View>
         ))}
       </ScrollView>
@@ -323,11 +329,11 @@ function NextStops({ trip, all, onToggle }: { trip: Departure; all: boolean; onT
         {(hidden > 0 || all) ? (
           <Pressable onPress={onToggle} hitSlop={6} style={{ flex: 1 }}>
             <Text numberOfLines={1} style={{ color: col, fontWeight: '800', fontSize: 13 }}>
-              {all ? 'Weniger anzeigen' : `Alle ${hidden} Haltestellen anzeigen`}
+              {all ? rt('routes.show_less') : rt('routes.show_all_value_stops', { p1: hidden })}
             </Text>
           </Pressable>
         ) : <View style={{ flex: 1 }} />}
-        <Text style={[T.small, { fontSize: 11 }]}>laut Fahrplan</Text>
+        <Text style={[T.small, { fontSize: 11 }]}>{rt('routes.according_to_timetable')}</Text>
       </View>
     </View>
   );
@@ -344,14 +350,15 @@ function Partners() {
 }
 
 function RecordingBanner({ top }: { top: number }) {
+  const rt = useT();
   const o = useSharedValue(1);
   useEffect(() => { o.value = withRepeat(withTiming(0.3, { duration: 800 }), -1, true); }, []);
   const st = useAnimatedStyle(() => ({ opacity: o.value }));
   return (
     <View style={[{ position: 'absolute', top: top + 10, left: S.lg, right: S.lg, flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#fff', borderRadius: 18, padding: 12 }, shadow(2)]}>
       <Animated.View style={[{ width: 12, height: 12, borderRadius: 6, backgroundColor: C.danger }, st]} />
-      <Text style={{ fontWeight: '800', color: C.ink, flex: 1 }}>Aufzeichnung läuft · nur während dieser Fahrt</Text>
-      <Tag label="on-device" color={C.success} />
+      <Text style={{ fontWeight: '800', color: C.ink, flex: 1 }}>{rt('routes.recording_only_during_this_ride')}</Text>
+      <Tag label={rt('routes.on_device')} color={C.success} />
     </View>
   );
 }

@@ -9,8 +9,11 @@ import { useUI } from '@/store/ui';
 import AwardToast from '@/components/AwardToast';
 import WhySheet from '@/components/WhySheet';
 import { C, CONTEXT } from '@/theme';
+import { useT, useLocale, useIsRTL } from '@/i18n/useT';
 
 export default function RootLayout() {
+  const locale = useLocale();
+  const rtl = useIsRTL();
   const onboarded = useStore((s) => s.onboarded);
   const [hydrated, setHydrated] = useState(false);
   const router = useRouter();
@@ -39,6 +42,13 @@ export default function RootLayout() {
       document.head.appendChild(s);
     }
   }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      document.documentElement.lang = locale;
+      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    }
+  }, [locale, rtl]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -75,13 +85,14 @@ export default function RootLayout() {
 
 /** Fängt Render-Fehler ab, damit statt eines Absturzes eine lesbare Meldung erscheint. */
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => Promise<void> }) {
+  const t = useT();
   return (
     <View style={{ flex: 1, backgroundColor: '#0F2A5C', padding: 24, justifyContent: 'center' }}>
-      <RNText style={{ color: '#fff', fontSize: 20, fontWeight: '800', marginBottom: 10 }}>Da ist etwas schiefgelaufen</RNText>
+      <RNText style={{ color: '#fff', fontSize: 20, fontWeight: '800', marginBottom: 10 }}>{t('data.error')}</RNText>
       <RNText selectable style={{ color: '#fff', fontSize: 13, marginBottom: 6 }}>{String(error?.message ?? error)}</RNText>
       <ScrollView style={{ maxHeight: 320 }}><RNText selectable style={{ color: '#ffffffaa', fontSize: 11 }}>{String(error?.stack ?? '')}</RNText></ScrollView>
       <Pressable onPress={() => retry()} style={{ marginTop: 16, backgroundColor: '#fff', borderRadius: 999, paddingVertical: 12, alignItems: 'center' }}>
-        <RNText style={{ color: '#0F2A5C', fontWeight: '800' }}>Nochmal versuchen</RNText>
+        <RNText style={{ color: '#0F2A5C', fontWeight: '800' }}>{t('data.retry')}</RNText>
       </Pressable>
     </View>
   );

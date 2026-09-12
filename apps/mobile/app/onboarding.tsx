@@ -33,7 +33,7 @@ export default function Onboarding() {
       <LinearGradient colors={[color + '33', C.bg]} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 420 }} />
       <ScrollView contentContainerStyle={{ paddingTop: insets.top + 12, paddingHorizontal: S.xl, paddingBottom: insets.bottom + 24, flexGrow: 1, maxWidth: 560, width: '100%', alignSelf: 'center' }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'flex-end' }}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Sprachen" accessibilityState={{ expanded: showLanguages }} onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable accessibilityRole="button" accessibilityLabel={t('data.languages')} accessibilityState={{ expanded: showLanguages }} onPress={() => setShowLanguages((open) => !open)} style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 18 }}>🌐</Text>
           </Pressable>
         </View>
@@ -60,7 +60,7 @@ export default function Onboarding() {
             <>
               {i === 1 && lang === 'de' ? (
                 <View>
-                  <Text style={T.h1}>Gemeinsam entdecken wir</Text>
+                  <Text style={T.h1}>{t('data.onbFrankfurt')}</Text>
                   <View style={{ alignItems: 'center', marginTop: 2 }}>
                     <Text style={{ width: '100%', color, fontFamily: 'serif', fontStyle: 'italic', fontSize: 44, lineHeight: 52, fontWeight: '900', letterSpacing: 1, textAlign: 'center', textShadowColor: color + '55', textShadowOffset: { width: 0, height: 3 }, textShadowRadius: 7 }}>Frankfurt.</Text>
                     <View style={{ width: 118, height: 4, marginTop: -2, borderRadius: 2, backgroundColor: color, transform: [{ rotate: '-2deg' }] }} />
@@ -73,15 +73,15 @@ export default function Onboarding() {
               {i === 2 && (
                 <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent }} onPress={() => setConsent(!consent)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 18, backgroundColor: '#fff', padding: 14, borderRadius: 16 }}>
                   <View style={{ width: 26, height: 26, borderRadius: 8, borderWidth: 2, borderColor: color, backgroundColor: consent ? color : '#fff', alignItems: 'center', justifyContent: 'center' }}>{consent && <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>}</View>
-                  <Text style={[T.body, { flex: 1 }]}>Standort nur während bewusst gestarteter Fahrten.</Text>
+                  <Text style={[T.body, { flex: 1 }]}>{t('data.consent')}</Text>
                 </Pressable>
               )}
             </>
           ) : (
             <>
               <Text style={[T.h1]}>{t('onb.name')}</Text>
-              <TextInput value={name} onChangeText={setName} placeholder="Benutzername" placeholderTextColor={C.muted} style={{ marginTop: 14, backgroundColor: '#fff', borderRadius: 16, padding: 16, fontSize: 18, fontWeight: '700', color: C.ink, borderWidth: 2, borderColor: color + '55' }} autoFocus maxLength={24} />
-              <Text style={[T.small, { marginTop: 10 }]}>Öffentlich sichtbar ist nur dieser Name.{'\n'}Keine E-Mail, keine Telefonnummer, keine Adresse.</Text>
+              <TextInput value={name} onChangeText={setName} placeholder={t('data.username')} placeholderTextColor={C.muted} style={{ marginTop: 14, backgroundColor: '#fff', borderRadius: 16, padding: 16, fontSize: 18, fontWeight: '700', color: C.ink, borderWidth: 2, borderColor: color + '55' }} autoFocus maxLength={24} />
+              <Text style={[T.small, { marginTop: 10 }]}>{t('data.namePrivacy')}</Text>
             </>
           )}
         </Animated.View>

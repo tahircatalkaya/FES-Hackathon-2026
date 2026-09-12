@@ -68,11 +68,11 @@ function TabBar({ state, navigation }: any) {
           if (i === 2) {
             return (
               <React.Fragment key="scan-slot">
-                <NavigationTab role="button" label="Scannen" width={cell} onPress={() => { haptic(); router.push('/scan'); }}>
+                <NavigationTab role="button" label={t('tabs.scan')} width={cell} onPress={() => { haptic(); router.push('/scan'); }}>
                   <View style={[{ width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', marginTop: -26, borderWidth: 4, borderColor: '#fff', backgroundColor: NAVY }, shadow(2)]}>
                     <Ionicons name="scan" size={26} color="#fff" />
                   </View>
-                  <Text style={{ fontSize: 10.5, fontWeight: '800', color: C.muted, marginTop: 2 }}>Scan</Text>
+                  <Text style={{ fontSize: 10.5, fontWeight: '800', color: C.muted, marginTop: 2 }}>{t('tabs.scanShort')}</Text>
                 </NavigationTab>
                 {tab}
               </React.Fragment>

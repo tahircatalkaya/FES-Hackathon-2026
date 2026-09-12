@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -46,6 +47,8 @@ export default function Scan() {
 }
 
 function Chooser() {
+  const rt = useT();
+  const localize = useLocalize();
   const router = useRouter();
   const { setCtx } = useUI();
   useEffect(() => { setCtx('home'); }, []);
@@ -57,14 +60,14 @@ function Chooser() {
   ];
   return (
     <Screen tabBar={false}>
-      <Header title="Scannen" subtitle="Was hast du vor dir?" />
+      <Header title={rt('routes.scan')} subtitle={rt('routes.what_is_in_front_of_you')} />
       <View style={{ gap: 10 }}>
         {items.map((it, i) => (
           <Card key={it.mode} onPress={() => router.replace((it.href ?? `/scan?mode=${it.mode}`) as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
             {it.mode === 'vytal'
               ? <VytalMark size={52} radius={16} />
               : <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: CONTEXT[TITLES[it.mode].ctx].color, alignItems: 'center', justifyContent: 'center' }}><Ionicons name={it.icon as any} size={26} color="#fff" /></View>}
-            <View style={{ flex: 1 }}><Text style={T.h3}>{it.t}</Text><Text style={T.small}>{it.s}</Text></View>
+            <View style={{ flex: 1 }}><Text style={T.h3}>{localize(it.t)}</Text><Text style={T.small}>{localize(it.s)}</Text></View>
             <Text style={{ color: C.muted, fontWeight: '900', fontSize: 18 }}>›</Text>
           </Card>
         ))}
@@ -74,6 +77,8 @@ function Chooser() {
 }
 
 function ScanInner() {
+  const rt = useT();
+  const localize = useLocalize();
   const router = useRouter();
   const p = useLocalSearchParams<{ mode?: string; id?: string; cleanup?: string; store?: string }>();
   const mode = ((p.mode as Mode) ?? 'ride');
@@ -106,19 +111,19 @@ function ScanInner() {
       case 'bin': {
         const bin = BINS.find((b) => raw.includes(b.id)) ?? BINS.find((b) => b.id === p.id) ?? BINS[0];
         const d = hav(loc.lat, loc.lon, bin.lat, bin.lon);
-        const a = addAward({ type: 'clean.bin_checkin', partner: 'fes', status: d < 150 ? 'bestätigt' : 'schwach plausibel', key: `bin:${bin.id}:${Math.floor(Date.now() / 3600e3)}`, at: Date.now(), title: `${bin.kind} ${bin.label}`, meta: { source: 'nfc/qr', evidence: [`Behälter ${bin.id} registriert`, d < 150 ? `Standort ${Math.round(d)} m vom Behälter entfernt` : `Standort ${Math.round(d)} m entfernt, Geofence nicht erfüllt`] } });
-        showToast(a); setDone(`${bin.kind} ${bin.label} erfasst.`); break;
+        const a = addAward({ type: 'clean.bin_checkin', partner: 'fes', status: d < 150 ? 'bestätigt' : 'schwach plausibel', key: `bin:${bin.id}:${Math.floor(Date.now() / 3600e3)}`, at: Date.now(), title: `${bin.kind} · ${bin.label}`, meta: { source: 'nfc/qr', evidence: [`Behälter ${bin.id} registriert`, d < 150 ? `Standort ${Math.round(d)} m vom Behälter entfernt` : `Standort ${Math.round(d)} m entfernt, Geofence nicht erfüllt`] } });
+        showToast(a); setDone(rt('routes.value_value_recorded', { p1: localize(bin.kind), p2: localize(bin.label) })); break;
       }
       case 'peer': {
         const cu = CLEANUPS.find((c) => c.id === p.cleanup) ?? CLEANUPS[0];
         const peer = raw.replace(/[^A-Za-z0-9]/g, '').slice(-6) || 'PEER';
-        attest(cu.id, peer); setDone(`Bestätigung von ${peer} für „${cu.title}“ gespeichert.`); break;
+        attest(cu.id, peer); setDone(rt('routes.confirmation_by_value_for_value_saved', { p1: peer, p2: localize(cu.title) })); break;
       }
       case 'vytal': {
         const c=parseContainerCode(raw);if(!c)throw new Error('Kein gültiger Behälter-Code. Bitte den Code auf Becher oder Schale verwenden.');
         const l=await reuseTrust.borrow({code:c.code,kind:c.kind,storeId:p.store,demo});
         await syncReuse();await scheduleReturnReminder(l.id,l.code,l.borrowedAt);
-        setDone(`${c.kind==='cup'?'Becher':'Schale'} ${c.code} erfasst. ${l.demo?'Demo ohne Punkte. ':''}Die Rückgabe zählt erst nach Annahme durch das Personal und deinem Scan des Rückgabebelegs.`);break;
+        setDone(rt('routes.value_value_recorded_valuethe_return_counts_only_after_staff_acce', { p1: rt(c.kind === 'cup' ? 'components.common.cup' : 'components.common.bowl'), p2: c.code, p3: l.demo ? rt('routes.demo_without_points') : '' }));break;
       }
     }
     haptic('success');
@@ -126,13 +131,13 @@ function ScanInner() {
     finally {lock.current=false;setBusy(false);}
   }
 
-  if(needsAccount&&signed!==true)return <Screen tabBar={false}><Header title={cfg.title}/>{signed===null?<Text>Lade Zugang…</Text>:<TrustAccount color={color} onReady={()=>void loadAccount()}/>}</Screen>;
+  if(needsAccount&&signed!==true)return <Screen tabBar={false}><Header title={localize(cfg.title)}/>{signed===null?<Text>{rt('routes.loading_account')}</Text>:<TrustAccount color={color} onReady={()=>void loadAccount()}/>}</Screen>;
   const cameraOk = Platform.OS !== 'web' && perm?.granted && !done && !busy && mode !== 'litter';
 
   return (
     <Screen tabBar={false}>
-      <Header title={cfg.title} subtitle={cfg.sub} color={color} />
-      {!!error&&<Text accessibilityRole="alert" style={[T.body,{color:C.danger,marginBottom:12}]}>{error}</Text>}
+      <Header title={localize(cfg.title)} subtitle={localize(cfg.sub)} color={color} />
+      {!!error&&<Text accessibilityRole="alert" style={[T.body,{color:C.danger,marginBottom:12}]}>{localize(error)}</Text>}
       {cameraOk ? (
         <View style={{ height: 320, borderRadius: 24, overflow: 'hidden', backgroundColor: '#000' }}>
           <CameraView style={{ flex: 1 }} facing="back" barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={(e) => void handle(e.data)} />
@@ -141,26 +146,26 @@ function ScanInner() {
       ) : (
         <Card style={{ alignItems: 'center', paddingVertical: 24 }}>
           <Chameleon pose={done ? 'thumbs' : mode === 'vytal' ? 'coffee' : mode === 'ride' ? 'run' : 'leaf'} size={140} />
-          <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>{done ?? (mode === 'litter' ? 'Tippe unten, wenn du etwas aufgehoben und richtig entsorgt hast.' : Platform.OS === 'web' ? 'Kamera-Scan läuft auf dem Handy. Alternativ kannst du den Textcode eingeben.' : 'Kamera-Freigabe fehlt. Du kannst den Textcode eingeben.')}</Text>
+          <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>{done ?? (mode === 'litter' ? rt('routes.tap_below_when_you_have_picked_up_and_properly_disposed_of_litter') : Platform.OS === 'web' ? rt('routes.camera_scanning_works_on_your_phone_you_can_also_enter_the_text_c') : rt('routes.camera_permission_is_missing_you_can_enter_the_text_code'))}</Text>
         </Card>
       )}
       <Card style={{ marginTop: 14 }}>
-        <Text style={T.label}>Gut zu wissen</Text>
-        <Text style={[T.body, { marginTop: 4 }]}>{cfg.hint}</Text>
+        <Text style={T.label}>{rt('routes.good_to_know')}</Text>
+        <Text style={[T.body, { marginTop: 4 }]}>{localize(cfg.hint)}</Text>
       </Card>
       {!done && (
         <Card style={{ marginTop: 14, gap: 10 }}>
-          <Text style={T.label}>Code manuell</Text>
-          <TextInput accessibilityLabel="QR- oder Textcode" value={manual} onChangeText={setManual} onSubmitEditing={()=>{if(manual.trim())void handle(manual);}} returnKeyType="done" autoCorrect={false} placeholder={mode === 'ride' ? 'z. B. U4|1234' : mode === 'vytal' ? 'z. B. B7K2M9QX' : 'Code'} placeholderTextColor={C.muted} autoCapitalize={mode==='vytal'?'characters':'none'} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
+          <Text style={T.label}>{rt('routes.enter_code_manually')}</Text>
+          <TextInput accessibilityLabel={rt('routes.qr_or_text_code')} value={manual} onChangeText={setManual} onSubmitEditing={()=>{if(manual.trim())void handle(manual);}} returnKeyType="done" autoCorrect={false} placeholder={mode === 'ride' ? rt('components.scan.rideExample') : mode === 'vytal' ? rt('routes.eg_b7k2m9qx') : rt('components.scan.code')} placeholderTextColor={C.muted} autoCapitalize={mode==='vytal'?'characters':'none'} style={{ backgroundColor: C.bg, borderRadius: 12, padding: 12, fontWeight: '700', color: C.ink }} />
           <Row style={{ gap: 8 }}>
-            <Button label="Prüfen" color={color} disabled={busy||!manual.trim()} onPress={() => void handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
-            {mode === 'bin' ? <Button label="NFC antippen" icon="radio" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label="Demo-Code" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q',true)} />}
+            <Button label={rt('routes.check')} color={color} disabled={busy||!manual.trim()} onPress={() => void handle(manual)} style={{ flex: 1, paddingVertical: 12 }} />
+            {mode === 'bin' ? <Button label={rt('routes.tap_nfc')} icon="radio" color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => setNfcOpen(true)} /> : <Button label={rt('routes.demo_code')} color={color} variant="soft" style={{ flex: 1, paddingVertical: 12 }} onPress={() => handle(mode === 'vytal' ? demoContainerCode() : mode === 'ride' ? 'U4|4711' : 'PEER-7F3K2Q',true)} />}
           </Row>
         </Card>
       )}
-      <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={(t) => handle(p.id ?? t.raw)} color={color} title="Handy an den Behälter halten" label="Der Tag sitzt am FES-Aufkleber des Behälters. Hier simuliert." />
-      {done && <View style={{ marginTop: 14 }}><Button label="Fertig" color={color} onPress={() => mode==='vytal'?router.replace('/mehrweg'):(router.canGoBack()?router.back():router.replace('/(tabs)/handeln'))} /></View>}
-      {mode === 'bin' && nfcSeen.length > 0 && <Text style={[T.small, { marginTop: 10 }]}>Zuletzt gelesene Tags: {nfcSeen.slice(-3).join(', ')}</Text>}
+      <NfcSheet open={nfcOpen} onClose={() => setNfcOpen(false)} onRead={(t) => handle(p.id ?? t.raw)} color={color} title={rt('routes.hold_your_phone_to_the_bin')} label={rt('routes.the_tag_is_on_the_bins_fes_sticker_simulated_here')} />
+      {done && <View style={{ marginTop: 14 }}><Button label={rt('routes.done_2')} color={color} onPress={() => mode==='vytal'?router.replace('/mehrweg'):(router.canGoBack()?router.back():router.replace('/(tabs)/handeln'))} /></View>}
+      {mode === 'bin' && nfcSeen.length > 0 && <Text style={[T.small, { marginTop: 10 }]}>{rt('routes.recently_read_tags_value', { p1: nfcSeen.slice(-3).join(', ') })}</Text>}
     </Screen>
   );
 }
@@ -173,6 +178,8 @@ function ScanInner() {
  * als lokale Plausibilitätsprüfung. Eine externe FES-Bestätigung ist das nicht.
  */
 function LitterProofScreen() {
+  const rt = useT();
+  const localize = useLocalize();
   const router = useRouter();
   const color = CONTEXT.clean.color;
   const { addAward, thankLitter, litterProof, startLitterProof, finishLitterProof, cancelLitterProof, photoHashes } = useStore();
@@ -249,65 +256,63 @@ function LitterProofScreen() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Müll aufgehoben" subtitle="Vorher/Nachher-Nachweis" color={color} />
+      <Header title={rt('routes.litter_picked_up')} subtitle={rt('routes.beforeafter_evidence')} color={color} />
 
       <Card style={{ alignItems: 'center', paddingVertical: 22 }}>
         <Chameleon pose={verdict?.ok ? 'thumbs' : litterProof ? 'think' : 'leaf'} size={132} />
         <Text style={[T.body, { textAlign: 'center', marginTop: 8 }]}>
           {verdict?.ok
-            ? 'Plausibel dokumentiert. Danke! Dein Eintrag ist in Mainsam gespeichert.'
+            ? rt('routes.plausibly_documented_thank_you_your_entry_is_saved_in_mainsam')
             : litterProof
               ? abgelaufen
-                ? `Das Zeitfenster von ${PROOF.maxMinutes} Minuten ist vorbei. Bitte neu anfangen.`
+                ? rt('routes.the_valueminute_time_window_has_ended_please_start_again', { p1: PROOF.maxMinutes })
                 : bereit
-                  ? 'Jetzt das Nachher-Foto von derselben Stelle.'
-                  : `Noch ${Math.max(1, Math.ceil(PROOF.minMinutes - wartezeit))} min, dann ist das Nachher-Foto dran.`
-              : 'Erst ein Foto von der Stelle, dann aufräumen, dann dieselbe Stelle noch einmal.'}
+                  ? rt('routes.now_take_the_after_photo_of_the_same_spot')
+                  : rt('routes.value_min_left_before_the_after_photo', { p1: Math.max(1, Math.ceil(PROOF.minMinutes - wartezeit)) })
+              : rt('routes.first_photograph_the_spot_then_clean_up_then_photograph_the_same_')}
         </Text>
       </Card>
 
-      {fehler && <Card style={{ marginTop: 12, borderLeftWidth: 5, borderLeftColor: C.danger }}><Text style={T.body}>{fehler}</Text></Card>}
+      {fehler && <Card style={{ marginTop: 12, borderLeftWidth: 5, borderLeftColor: C.danger }}><Text style={T.body}>{localize(fehler)}</Text></Card>}
 
       {verdict && (
         <Card style={{ marginTop: 12, borderLeftWidth: 5, borderLeftColor: verdict.ok ? C.success : C.danger }}>
           <Row style={{ justifyContent: 'space-between' }}>
-            <Text style={T.h3}>{verdict.ok ? 'Nachweis erfüllt' : 'Nachweis nicht erfüllt'}</Text>
+            <Text style={T.h3}>{verdict.ok ? rt('routes.evidence_requirements_met') : rt('routes.evidence_requirements_not_met')}</Text>
             <StatusBadge status={verdict.status} small />
           </Row>
           <Divider />
-          {verdict.reasons.map((r, i) => <Text key={i} style={[T.body, { marginTop: 3 }]}>• {r}</Text>)}
-          {verdict.ok && <Text style={[T.small, { marginTop: 8 }]}>Punkte gibt es dafür keine. Ein Punkt je Müllstück würde zum Sammeln verleiten statt zum Vermeiden.</Text>}
+          {verdict.reasons.map((r, i) => <Text key={i} style={[T.body, { marginTop: 3 }]}>• {localize(r)}</Text>)}
+          {verdict.ok && <Text style={[T.small, { marginTop: 8 }]}>{rt('routes.no_points_are_awarded_a_point_per_piece_of_litter_would_encourage')}</Text>}
         </Card>
       )}
 
       {!verdict?.ok && (
         <View style={{ marginTop: 14, gap: 10 }}>
           {!litterProof ? (
-            <Button label={busy ? 'Moment …' : 'Vorher-Foto aufnehmen'} icon="📷" color={color} disabled={busy} onPress={vorher} />
+            <Button label={busy ? rt('routes.one_moment') : rt('routes.take_before_photo')} icon="📷" color={color} disabled={busy} onPress={vorher} />
           ) : (
             <>
-              <Button label={busy ? 'Moment …' : 'Nachher-Foto aufnehmen'} icon="📷" color={color} disabled={busy || !bereit || abgelaufen} onPress={nachher} />
-              <Button label="Abbrechen" variant="ghost" color={C.ink} onPress={() => { cancelLitterProof(); setVerdict(null); setFehler(null); }} />
+              <Button label={busy ? rt('routes.one_moment') : rt('routes.take_after_photo')} icon="📷" color={color} disabled={busy || !bereit || abgelaufen} onPress={nachher} />
+              <Button label={rt('routes.cancel')} variant="ghost" color={C.ink} onPress={() => { cancelLitterProof(); setVerdict(null); setFehler(null); }} />
             </>
           )}
         </View>
       )}
 
       <Card style={{ marginTop: 14 }}>
-        <Text style={T.label}>So wird dein Nachweis geprüft</Text>
-        <Text style={[T.body, { marginTop: 4 }]}>
-          Ein Knopf „hab was aufgehoben“ ließe sich beliebig oft drücken. Deshalb zählt nur, was sich prüfen lässt:
-        </Text>
-        <Text style={[T.body, { marginTop: 6 }]}>• {PROOF.minMinutes} bis {PROOF.maxMinutes} Minuten zwischen den Fotos</Text>
-        <Text style={T.body}>• frischer Standort je Foto, beide im Umkreis von {PROOF.geofenceM} m</Text>
-        <Text style={T.body}>• zwei verschiedene Bilder, direkt aus der Kamera</Text>
-        <Text style={T.body}>• kein Foto, das schon einmal eingereicht wurde</Text>
-        <Text style={[T.small, { marginTop: 8 }]}>Lokale Plausibilitätsprüfung, keine externe FES-Bestätigung. Im Browser kann die Systemauswahl auch Dateien anbieten; auf dem Handy öffnet sich die Kamera.</Text>
+        <Text style={T.label}>{rt('routes.how_your_evidence_is_checked')}</Text>
+        <Text style={[T.body, { marginTop: 4 }]}>{rt('routes.an_i_picked_something_up_button_could_be_pressed_endlessly_only_v')}</Text>
+        <Text style={[T.body, { marginTop: 6 }]}>{rt('routes.value_to_value_minutes_between_photos', { p1: PROOF.minMinutes, p2: PROOF.maxMinutes })}</Text>
+        <Text style={T.body}>{rt('routes.fresh_location_for_each_photo_both_within_value_m', { p1: PROOF.geofenceM })}</Text>
+        <Text style={T.body}>{rt('routes.two_different_photos_directly_from_the_camera')}</Text>
+        <Text style={T.body}>{rt('routes.no_previously_submitted_photos')}</Text>
+        <Text style={[T.small, { marginTop: 8 }]}>{rt('routes.local_plausibility_check_no_external_fes_confirmation_in_a_browse')}</Text>
       </Card>
 
       {verdict?.ok && (
         <View style={{ marginTop: 14 }}>
-          <Button label="Fertig" color={color} onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/handeln'))} />
+          <Button label={rt('routes.done_2')} color={color} onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/handeln'))} />
         </View>
       )}
     </Screen>

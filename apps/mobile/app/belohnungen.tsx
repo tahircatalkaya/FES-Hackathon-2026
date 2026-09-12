@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Screen, Header } from '@/components/Screen';
@@ -15,6 +16,9 @@ const BIG = REWARDS.filter((r) => r.cost >= 1000);
 const col = CONTEXT.home.color;
 
 export default function Rewards() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const s = useStore();
   const { setCtx } = useUI();
   const [msg, setMsg] = useState<string | null>(null);
@@ -30,14 +34,14 @@ export default function Rewards() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Belohnungen" color={col} />
+      <Header title={rt('routes.rewards')} color={col} />
       <Appear>
         <Card style={{ backgroundColor: col }}>
           <Row>
             <View style={{ flex: 1 }}>
-              <Text style={[T.label, { color: '#ffffffaa' }]}>Guthaben</Text>
+              <Text style={[T.label, { color: '#ffffffaa' }]}>{rt('routes.balance')}</Text>
               <Text style={{ fontSize: 40, fontWeight: '900', color: '#fff' }}>{bal} 🍃</Text>
-              <Text style={[T.small, { color: '#ffffffcc' }]}>Punkte verfallen nicht. Wochenziele resetten.</Text>
+              <Text style={[T.small, { color: '#ffffffcc' }]}>{rt('routes.points_never_expire_weekly_goals_reset')}</Text>
             </View>
             <Chameleon pose="heart" size={96} />
           </Row>
@@ -46,31 +50,33 @@ export default function Rewards() {
 
       <Appear delay={60}>
         <Card style={{ marginTop: 14, borderWidth: 2, borderColor: C.gold }}>
-          <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>🎟️ Deutschlandticket-Verlosung</Text><Tag label={`${s.lose} Lose`} color={C.gold} /></Row>
-          <Text style={[T.body, { marginTop: 6 }]}>Jede Woche mit erreichtem Wochenziel gibt ein Los. Gezogen wird am {nextDraw.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}: 100 Gewinner, rein zufällig aus allen Losen.</Text>
-          <Text style={[T.small, { marginTop: 6 }]}>Du wählst den Gewinn: Deutschlandticket für einen Monat oder ein 20-Euro-Gutschein bei einem Frankfurter Partnerbetrieb, falls du schon ein Ticket hast.</Text>
+          <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>{rt('routes.deutschlandticket_raffle')}</Text><Tag label={rt('routes.value_raffle_tickets', { p1: s.lose })} color={C.gold} /></Row>
+          <Text style={[T.body, { marginTop: 6 }]}>{rt('routes.each_week_you_reach_your_goal_earns_one_raffle_ticket_draw_on_val', { p1: nextDraw.toLocaleDateString(locale, { day: '2-digit', month: 'long' }) })}</Text>
+          <Text style={[T.small, { marginTop: 6 }]}>{rt('routes.choose_your_prize_a_deutschlandticket_for_one_month_or_a_20_vouch')}</Text>
         </Card>
       </Appear>
 
-      <Text style={[T.h2, { marginTop: S.xl }]}>Sofort einlösen</Text>
+      <Text style={[T.h2, { marginTop: S.xl }]}>{rt('routes.redeem_now')}</Text>
       <View style={{ marginTop: 10, gap: 10 }}>
         {SMALL.map((r, i) => <RewardCard key={r.id} r={r} bal={bal} delay={100 + i * 50} onRedeem={redeem} />)}
       </View>
 
-      <Text style={[T.h2, { marginTop: S.xl }]}>Große Ziele</Text>
-      <Text style={[T.small, { marginTop: 4 }]}>Punkte verfallen nicht. Diese Ziele sind auf Wochen und Monate angelegt, nicht auf einen guten Tag.</Text>
+      <Text style={[T.h2, { marginTop: S.xl }]}>{rt('routes.big_goals')}</Text>
+      <Text style={[T.small, { marginTop: 4 }]}>{rt('routes.points_never_expire_these_goals_take_weeks_and_months_rather_than')}</Text>
       <View style={{ marginTop: 10, gap: 10 }}>
         {BIG.map((r, i) => <RewardCard key={r.id} r={r} bal={bal} delay={100 + i * 50} progress onRedeem={redeem} />)}
       </View>
 
-      {msg && <Card style={{ marginTop: 12, backgroundColor: C.success + '15' }}><Text style={[T.body, { color: C.success, fontWeight: '700' }]}>{msg}</Text></Card>}
-      {s.redemptions.length > 0 && (<><Divider /><Text style={T.label}>Bereits eingelöst</Text>{s.redemptions.map((r) => <Text key={r.id} style={[T.small, { marginTop: 4 }]}>{new Date(r.at).toLocaleDateString('de-DE')} · {r.title} · −{r.cost}</Text>)}</>)}
+      {msg && <Card style={{ marginTop: 12, backgroundColor: C.success + '15' }}><Text style={[T.body, { color: C.success, fontWeight: '700' }]}>{localize(msg)}</Text></Card>}
+      {s.redemptions.length > 0 && (<><Divider /><Text style={T.label}>{rt('routes.already_redeemed')}</Text>{s.redemptions.map((r) => <Text key={r.id} style={[T.small, { marginTop: 4 }]}>{new Date(r.at).toLocaleDateString(locale)} · {localize(r.title)} · −{r.cost}</Text>)}</>)}
     </Screen>
   );
 }
 
 /** Eine Belohnung. Bei großen Zielen zeigt ein Balken, wie weit das Guthaben ist. */
 function RewardCard({ r, bal, delay, progress, onRedeem }: { r: Reward; bal: number; delay: number; progress?: boolean; onRedeem: (r: Reward) => void }) {
+  const rt = useT();
+  const localize = useLocalize();
   const ok = bal >= r.cost;
   return (
     <Appear delay={delay}>
@@ -80,14 +86,14 @@ function RewardCard({ r, bal, delay, progress, onRedeem }: { r: Reward; bal: num
             <Text style={{ fontSize: 26 }}>{r.emoji}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={T.h3}>{r.title}</Text>
-            <Text style={T.small}>{r.desc}</Text>
+            <Text style={T.h3}>{localize(r.title)}</Text>
+            <Text style={T.small}>{localize(r.desc)}</Text>
             <Tag label={r.partner} color={col} />
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontWeight: '900', fontSize: 18, color: ok ? C.success : C.muted }}>{r.cost}</Text>
             <Button
-              label={ok ? 'Einlösen' : `noch ${r.cost - bal}`}
+              label={ok ? rt('routes.redeem') : rt('routes.value_to_go_2', { p1: r.cost - bal })}
               color={col}
               variant={ok ? 'solid' : 'soft'}
               disabled={!ok}

@@ -1,3 +1,4 @@
+import { useT } from '@/i18n/useT';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -10,6 +11,8 @@ import { LEAFLET_JS } from './leafletJs';
  * läuft in Expo Go auf Android und iOS identisch zur Web-Version.
  */
 export default function LeafletWebView({ center, spanKm = 4, markers = [], polylines = [], circles = [], heat = [], userLocation, userColor = '#2F6BFF', style, interactive = true, onPress, follow, onUserPan, recenterKey }: MapProps) {
+  const t = useT();
+  const attribution = t('components.map.attribution');
   const ref = useRef<WebView>(null);
   const handlers = useRef<Record<string, (() => void) | undefined>>({});
   handlers.current = Object.fromEntries(markers.map((m) => [m.id, m.onPress]));
@@ -21,7 +24,7 @@ export default function LeafletWebView({ center, spanKm = 4, markers = [], polyl
 </head><body><div id="m"></div><script>${LEAFLET_JS}</script>
 <script>
 var map=L.map('m',{zoomControl:false,attributionControl:true,dragging:${interactive},scrollWheelZoom:${interactive},doubleClickZoom:${interactive},touchZoom:${interactive},tap:${interactive}}).setView([${center.lat},${center.lon}],${zoom});
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap-Mitwirkende',maxZoom:19}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:${JSON.stringify(attribution)},maxZoom:19}).addTo(map);
 var layer=L.layerGroup().addTo(map);var userM=null;var post=function(o){window.ReactNativeWebView&&window.ReactNativeWebView.postMessage(JSON.stringify(o))};
 var lastRk=0,lastC=null,lastF='';
 function move(lat,lon,z){map.setView([lat,lon],z==null?map.getZoom():z,{animate:true})}
@@ -51,7 +54,7 @@ window.update=function(d){layer.clearLayers();
  else if(moved){move(d.center.lat,d.center.lon,d.zoom)}
 };
 post({type:'ready'});
-</script></body></html>`, []);
+</script></body></html>`, [attribution]);
 
   const payload = JSON.stringify({ center, zoom, markers: markers.map(({ onPress: _o, ...m }) => m), polylines, circles, heat, user: userLocation ?? null, userColor, follow: follow ?? null, recenterKey: recenterKey ?? 0 });
   useEffect(() => { ref.current?.injectJavaScript(`window.update && window.update(${payload}); true;`); }, [payload]);

@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React, { useEffect, useMemo } from 'react';
 import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Animated, { Easing, FadeIn, ZoomIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
@@ -190,6 +191,8 @@ export function CelebrationOverlay({
   clip?: ClipName;
   onClose: () => void;
 }) {
+  const t = useT();
+  const localize = useLocalize();
   const { width } = useWindowDimensions();
   const c = CLIPS[clip];
   const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; });
@@ -200,8 +203,8 @@ export function CelebrationOverlay({
     const pool = FUN_FACTS.filter((f) => !f.topic || f.topic === clip);
     return pool[Math.floor(Math.random() * pool.length)];
   }, [open, clip]);
-  const headline = headlineOverride ?? (duplicate ? 'Heute schon eingetragen' : earned > 0 ? 'Stark gemacht!' : 'Eingetragen');
-  const tile = tileValue ? { label: tileLabel ?? 'IMPACT', value: tileValue } : { label: 'PUNKTE', value: duplicate ? '+0' : `+${earned}` };
+  const headline = headlineOverride ?? (duplicate ? t('components.celebration.already') : earned > 0 ? t('components.celebration.great') : t('components.celebration.saved'));
+  const tile = tileValue ? { label: tileLabel ?? t('components.why.impact'), value: tileValue } : { label: t('components.why.points'), value: duplicate ? '+0' : `+${earned}` };
 
   useEffect(() => {
     if (!open) return;
@@ -218,24 +221,24 @@ export function CelebrationOverlay({
 
           <View style={{ padding: S.lg, alignItems: 'center' }}>
             <Animated.Text entering={FadeIn.delay(120)} style={{ fontSize: 24, fontWeight: '900', color: C.ink, letterSpacing: -0.4, textAlign: 'center' }}>
-              {headline}
+              {localize(headline)}
             </Animated.Text>
 
             <View style={{ flexDirection: 'row', width: 172, marginTop: S.md }}>
-              <StatTile label={tile.label} value={tile.value} color="#FF6A00" delay={180} />
+              <StatTile label={localize(tile.label)} value={tile.value} color="#FF6A00" delay={180} />
             </View>
 
             {tileValue ? (
-              note ? <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{note}</Text> : null
+              note ? <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{localize(note)}</Text> : null
             ) : duplicate ? (
-              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Diese Challenge zählt einmal pro Tag. Morgen wieder.</Text>
+              <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{t('components.celebration.once')}</Text>
             ) : earned > 0 ? null : (
               <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>
                 {note
-                  ? note
+                  ? localize(note)
                   : pending
-                    ? 'Die Punkte kommen, sobald die Teilnahme bestätigt ist.'
-                    : 'Für heute ist der Deckel in dieser Kategorie erreicht. Morgen zählt es wieder voll.'}
+                    ? t('components.celebration.pending')
+                    : t('components.celebration.cap')}
               </Text>
             )}
 
@@ -245,13 +248,13 @@ export function CelebrationOverlay({
             >
               <Text style={{ fontSize: 18 }}>{fact.icon}</Text>
               <View style={{ flex: 1 }}>
-                <Text style={T.label}>{fact.label}</Text>
-                <Text style={[T.body, { marginTop: 2 }]}>{fact.text}</Text>
-                {fact.source ? <Text style={[T.small, { marginTop: 4, color: C.muted }]}>Quelle: {fact.source}</Text> : null}
+                <Text style={T.label}>{localize(fact.label)}</Text>
+                <Text style={[T.body, { marginTop: 2 }]}>{localize(fact.text)}</Text>
+                {fact.source ? <Text style={[T.small, { marginTop: 4, color: C.muted }]}>{t('components.why.source', { source: localize(fact.source) })}</Text> : null}
               </View>
             </Animated.View>
 
-            <Text style={[T.small, { marginTop: 10, color: C.muted }]}>Tippen zum Schließen</Text>
+            <Text style={[T.small, { marginTop: 10, color: C.muted }]}>{t('components.celebration.close')}</Text>
           </View>
         </Animated.View>
       </Pressable>

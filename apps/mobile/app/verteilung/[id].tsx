@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -21,6 +22,9 @@ const TTL_MIN = 45;
 const EXACT = { d1: 'Oeder Weg 112, EG links', d2: 'Schweizer Str. 61, Hinterhaus', d3: 'Leipziger Str. 48, 2. Stock' } as Record<string, string>;
 
 export default function Verteilung() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { loc } = useLocation();
@@ -50,7 +54,7 @@ export default function Verteilung() {
     if (!chosen.length) return;
     haptic('success');
     chosen.forEach((it) => reserveItem({ placeId: `dist-${d.id}`, placeTitle: `Verteilung bei ${d.saver}`, item: it.n, qty: `${qty[it.n]}|${slot}`, expiresAt: slots[slot].t + slotLen + TTL_MIN * 60000, kind: 'verteilung', href: `/verteilung/${d.id}` }));
-    await remind('Reserviert', `${chosen.map((c) => `${qty[c.n]}× ${c.n}`).join(', ')} bei ${d.saver}, Slot ${new Date(slots[slot].t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}. Adresse erscheint 15 Minuten vorher.`, 'food');
+    await remind('Reserviert', `${chosen.map((c) => `${qty[c.n]}× ${c.n}`).join(', ')} bei ${d.saver}, Slot ${new Date(slots[slot].t).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}. Adresse erscheint 15 Minuten vorher.`, 'food');
   }
   function cancel() { haptic('warn'); mine.forEach((m) => releaseItem(m.id)); }
   function pickedUp() {
@@ -59,23 +63,23 @@ export default function Verteilung() {
 
   return (
     <Screen tabBar={false}>
-      <Header right={<FoodsharingLogo width={76} />} title={`Verteilung bei ${d.saver}`} subtitle={`${d.district} · ${d.badge}`} color={col} />
-      <Card style={{ marginBottom: 14, gap: 10 }}><Tag label="Beispielangebot" color={C.muted} /><Text style={T.body}>Dieses Beispiel hat keine angebundene anbietende Person. Echte Anfragen, Zusagen und Bewertungen findest du unter Übergaben.</Text><Button label="Echte Übergabe vereinbaren" color={col} onPress={() => router.push('/uebergaben')} /></Card>
+      <Header right={<FoodsharingLogo width={76} />} title={rt('routes.distribution_by_value', { p1: d.saver })} subtitle={`${d.district} · ${localize(d.badge)}`} color={col} />
+      <Card style={{ marginBottom: 14, gap: 10 }}><Tag label={rt('routes.example_offer')} color={C.muted} /><Text style={T.body}>{rt('routes.this_example_has_no_connected_provider_find_real_requests_accepta')}</Text><Button label={rt('routes.arrange_a_real_handoff')} color={col} onPress={() => router.push('/uebergaben')} /></Card>
       <View style={{ height: 180, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={circle} spanKm={1.3} userLocation={loc} interactive={false} circles={revealed ? [] : [{ lat: circle.lat, lon: circle.lon, radius: 300, color: col }]} markers={revealed ? [{ id: 'd', lat: d.lat, lon: d.lon, color: col, emoji: '🏠', selected: true }] : []} />
       </View>
       <Row style={{ marginTop: 12, justifyContent: 'space-between' }}>
-        <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{revealed ? `${fmtDist(dist)} · ${walkMin(dist)} min` : `ca. ${fmtDist(Math.round(dist / 100) * 100)} entfernt`}</Text>
+        <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{revealed ? `${fmtDist(dist, locale)} · ${walkMin(dist)} min` : rt('routes.about_value_away', { p1: fmtDist(Math.round(dist / 100) * 100, locale) })}</Text>
         {revealed ? (
-          <Pressable onPress={() => openRoute(d.lat, d.lon, d.saver)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999 }}><Ionicons name="navigate" size={16} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Route</Text></Pressable>
-        ) : <Tag label={d.taken >= d.slots ? 'ausgebucht' : `${d.slots - d.taken} Slots frei`} color={d.taken >= d.slots ? C.danger : C.success} />}
+          <Pressable onPress={() => openRoute(d.lat, d.lon, d.saver)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999 }}><Ionicons name="navigate" size={16} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>{rt('routes.directions')}</Text></Pressable>
+        ) : <Tag label={d.taken >= d.slots ? rt('routes.fully_booked') : rt('routes.value_slots_available', { p1: d.slots - d.taken })} color={d.taken >= d.slots ? C.danger : C.success} />}
       </Row>
-      <Text style={[T.small, { marginTop: 4 }]}>{revealed ? 'Genaue Adresse freigegeben.' : '🔒 Die genaue Adresse erscheint 15 Minuten vor deinem Slot.'}</Text>
+      <Text style={[T.small, { marginTop: 4 }]}>{revealed ? rt('routes.exact_address_revealed') : rt('routes.the_exact_address_appears_15_minutes_before_your_slot')}</Text>
 
       <Appear delay={60}>
         <Card style={{ marginTop: 14 }}>
-          <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>Gerettet bei {d.source}</Text><Tag label={`${new Date(d.start).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}–${new Date(d.end).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`} color={col} /></Row>
-          <Text style={[T.small, { marginTop: 2 }]}>Wähle, was du brauchst. Andere sehen, was übrig bleibt.</Text>
+          <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>{rt('routes.rescued_from_value', { p1: localize(d.source) })}</Text><Tag label={`${new Date(d.start).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}–${new Date(d.end).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`} color={col} /></Row>
+          <Text style={[T.small, { marginTop: 2 }]}>{rt('routes.choose_what_you_need_others_see_what_remains')}</Text>
           <View style={{ marginTop: 10, gap: 8 }}>
             {d.items.map((it) => {
               const total = totalOf(it.q) || 3; const left = Math.max(0, total - (others[it.n] ?? 0) - (booked ? totalOf(mine.find((m) => m.item === it.n)?.qty ?? '0') : 0));
@@ -83,8 +87,8 @@ export default function Verteilung() {
               return (
                 <View key={it.n} style={{ backgroundColor: C.bg, borderRadius: 14, padding: 10 }}>
                   <Row style={{ justifyContent: 'space-between' }}>
-                    <View style={{ flex: 1 }}><Text style={[T.body, { fontWeight: '700', color: C.ink }]}>{it.n}</Text><Text style={T.small}>{it.q} · noch {left} frei{(others[it.n] ?? 0) ? ` · ${others[it.n]} reserviert` : ''}</Text></View>
-                    {booked ? (my > 0 ? <Tag label={`${my}× für dich`} color={C.success} /> : null) : (
+                    <View style={{ flex: 1 }}><Text style={[T.body, { fontWeight: '700', color: C.ink }]}>{localize(it.n)}</Text><Text style={T.small}>{rt('routes.value_value_still_availablevalue', { p1: localize(it.q), p2: left, p3: (others[it.n] ?? 0) ? rt('routes.value_reserved', { p1: others[it.n] }) : '' })}</Text></View>
+                    {booked ? (my > 0 ? <Tag label={rt('routes.value_for_you', { p1: my })} color={C.success} /> : null) : (
                       <Row style={{ gap: 6 }}>
                         <Pressable onPress={() => { haptic(); setQty({ ...qty, [it.n]: Math.max(0, (qty[it.n] ?? 0) - 1) }); }} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontWeight: '900', color: C.ink }}>−</Text></Pressable>
                         <Text style={{ fontWeight: '900', width: 20, textAlign: 'center' }}>{qty[it.n] ?? 0}</Text>
@@ -97,34 +101,34 @@ export default function Verteilung() {
               );
             })}
           </View>
-          <Text style={[T.small, { marginTop: 8 }]}>Max. 2 je Posten, damit für alle etwas da ist.</Text>
+          <Text style={[T.small, { marginTop: 8 }]}>{rt('routes.max_2_of_each_item_so_everyone_gets_some')}</Text>
         </Card>
       </Appear>
 
       {!booked ? (
         <Appear delay={120}>
           <Card style={{ marginTop: 14, gap: 10 }}>
-            <Text style={T.h3}>Wann kommst du?</Text>
+            <Text style={T.h3}>{rt('routes.when_will_you_come')}</Text>
             <Row style={{ flexWrap: 'wrap', gap: 6 }}>
-              {slots.map((s) => <Pill key={s.i} label={new Date(s.t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} active={slot === s.i} color={s.taken ? C.muted : col} onPress={s.taken ? undefined : () => setSlot(s.i)} />)}
+              {slots.map((s) => <Pill key={s.i} label={new Date(s.t).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} active={slot === s.i} color={s.taken ? C.muted : col} onPress={s.taken ? undefined : () => setSlot(s.i)} />)}
             </Row>
-            <Button label="Beispiel-Reservierung ansehen" color={col} disabled={slot === null || !Object.values(qty).some((v) => v > 0) || d.taken >= d.slots} onPress={book} />
-            <Text style={T.small}>Gilt bis {TTL_MIN} Minuten nach deinem Slot. Eine bestätigte Übergabe braucht eine Zusage von beiden Personen.</Text>
+            <Button label={rt('routes.view_example_reservation')} color={col} disabled={slot === null || !Object.values(qty).some((v) => v > 0) || d.taken >= d.slots} onPress={book} />
+            <Text style={T.small}>{rt('routes.valid_until_value_minutes_after_your_slot_a_confirmed_handoff_nee', { p1: TTL_MIN })}</Text>
           </Card>
         </Appear>
       ) : (
         <Appear>
           <Card style={{ marginTop: 14, gap: 10, borderLeftWidth: 5, borderLeftColor: C.success }}>
-            <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>Dein Slot: {mySlot !== null && mySlot >= 0 ? new Date(slots[mySlot].t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '–'} Uhr</Text><Tag label="reserviert" color={C.success} /></Row>
-            {revealed ? <View style={{ backgroundColor: C.ink, borderRadius: 16, padding: 14 }}><Text style={[T.label, { color: '#ffffff99' }]}>Adresse</Text><Text style={{ color: '#fff', fontWeight: '800', fontSize: 17 }}>{EXACT[d.id]}</Text></View> : <Text style={T.body}>Die Adresse erscheint {minsToStart > 15 ? `in ${minsToStart - 15} Minuten` : 'jetzt gleich'}.</Text>}
+            <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>{rt('routes.your_slot_value', { p1: mySlot !== null && mySlot >= 0 ? new Date(slots[mySlot].t).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : '–' })}</Text><Tag label={rt('routes.reserved')} color={C.success} /></Row>
+            {revealed ? <View style={{ backgroundColor: C.ink, borderRadius: 16, padding: 14 }}><Text style={[T.label, { color: '#ffffff99' }]}>{rt('routes.address')}</Text><Text style={{ color: '#fff', fontWeight: '800', fontSize: 17 }}>{EXACT[d.id]}</Text></View> : <Text style={T.body}>{rt('routes.the_address_appears_value', { p1: minsToStart > 15 ? rt('routes.in_value_minutes', { p1: minsToStart - 15 }) : rt('routes.right_now') })}</Text>}
             <Divider />
-            <Button label="Echte Übergabe vereinbaren" color={col} onPress={pickedUp} />
-            <Button label="Reservierung aufheben" variant="ghost" color={C.muted} onPress={cancel} style={{ paddingVertical: 10 }} />
-            <Text style={[T.small, { textAlign: 'center' }]}>Keine Punkte ohne beidseitige Bestätigung.</Text>
+            <Button label={rt('routes.arrange_a_real_handoff')} color={col} onPress={pickedUp} />
+            <Button label={rt('routes.cancel_reservation')} variant="ghost" color={C.muted} onPress={cancel} style={{ paddingVertical: 10 }} />
+            <Text style={[T.small, { textAlign: 'center' }]}>{rt('routes.no_points_without_mutual_confirmation')}</Text>
           </Card>
         </Appear>
       )}
-      <View style={{ marginTop: S.xl }}><Button label="Selbst Saver werden" variant="soft" color={col} icon="people" onPress={() => router.push('/saver')} /></View>
+      <View style={{ marginTop: S.xl }}><Button label={rt('routes.become_a_food_saver')} variant="soft" color={col} icon="people" onPress={() => router.push('/saver')} /></View>
     </Screen>
   );
 }

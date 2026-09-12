@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeInUp, FadeOut, FadeOutUp, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from 'react-native-reanimated';
@@ -13,6 +14,9 @@ import { CelebrationOverlay } from './ChamiMascot';
  * Punkte > 0: große Feier-Karte mit Kai, Zähler, Blätter-Regen. 0 Punkte oder Duplikat: kleiner Hinweis oben.
  */
 export default function AwardToast({ award, onWhy, onDone, color = C.success }: { award: Award | null; onWhy: (a: Award) => void; onDone: () => void; color?: string }) {
+  const t = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const [a, setA] = useState<Award | null>(null);
   useEffect(() => {
     if (award) { setA(award); haptic(award.points > 0 ? 'success' : 'light'); }
@@ -35,8 +39,8 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
         <Pressable onPress={() => { setA(null); onWhy(a); }} style={[{ backgroundColor: '#fff', borderRadius: R.lg, padding: S.md, flexDirection: 'row', alignItems: 'center', gap: 12, borderLeftWidth: 6, borderLeftColor: a.duplicate ? C.muted : color }, shadow(3)]}>
           <Chameleon pose={a.duplicate ? 'calm' : 'thumbs'} size={54} />
           <View style={{ flex: 1 }}>
-            <Text style={T.h3} numberOfLines={1}>{a.duplicate ? 'Schon gewertet' : 'Danke!'}</Text>
-            <Text style={T.small} numberOfLines={2}>{a.duplicate ? 'Keine Doppelbelohnung. Tippen für Details.' : `${a.title} · ohne Punkte, aber gezählt. Tippen: warum.`}</Text>
+            <Text style={T.h3} numberOfLines={1}>{a.duplicate ? t('components.award.already') : t('components.award.thanks')}</Text>
+            <Text style={T.small} numberOfLines={2}>{a.duplicate ? t('components.award.duplicate') : t('components.award.counted', { title: localize(a.title) })}</Text>
           </View>
         </Pressable>
       </Animated.View>
@@ -51,22 +55,22 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
         <Pop>
           <View style={[{ backgroundColor: '#fff', borderRadius: R.xl, padding: S.xl, alignItems: 'center', maxWidth: 420, width: '100%', alignSelf: 'center' }, shadow(3)]}>
             <Chameleon pose="cheer" size={170} />
-            <Text style={[T.label, { marginTop: 4 }]}>Geschafft</Text>
+            <Text style={[T.label, { marginTop: 4 }]}>{t('components.award.done')}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
               <Text style={{ fontSize: 56, fontWeight: '900', color, letterSpacing: -2 }}>+</Text>
               <Counter value={a.points} style={{ fontSize: 56, fontWeight: '900', color, letterSpacing: -2 }} />
               <Text style={{ fontSize: 22, fontWeight: '800', color: C.ink, marginBottom: 12 }}>🍃</Text>
             </View>
-            <Text style={[T.h3, { textAlign: 'center' }]} numberOfLines={2}>{a.title}</Text>
+            <Text style={[T.h3, { textAlign: 'center' }]} numberOfLines={2}>{localize(a.title)}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
               <StatusBadge status={a.status} />
-              {a.impact.co2_g > 0 && <Text style={T.body}>🌍 {fmtCo2(a.impact.co2_g)} CO₂e</Text>}
+              {a.impact.co2_g > 0 && <Text style={T.body}>🌍 {fmtCo2(a.impact.co2_g, locale)} CO₂e</Text>}
               {a.impact.food_g > 0 && <Text style={T.body}>🥕 {(a.impact.food_g / 1000).toFixed(1)} kg</Text>}
-              {a.impact.packaging > 0 && <Text style={T.body}>🥡 {a.impact.packaging}× Einweg</Text>}
+              {a.impact.packaging > 0 && <Text style={T.body}>🥡 {t('components.award.singleUse', { count: a.impact.packaging })}</Text>}
             </View>
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 18, width: '100%' }}>
-              <Button label="Warum?" variant="soft" color={color} onPress={() => { setA(null); onWhy(a); }} style={{ flex: 1, paddingVertical: 12 }} />
-              <Button label="Weiter" color={color} onPress={close} style={{ flex: 1, paddingVertical: 12 }} />
+              <Button label={t('why.title')} variant="soft" color={color} onPress={() => { setA(null); onWhy(a); }} style={{ flex: 1, paddingVertical: 12 }} />
+              <Button label={t('common.next')} color={color} onPress={close} style={{ flex: 1, paddingVertical: 12 }} />
             </View>
           </View>
         </Pop>

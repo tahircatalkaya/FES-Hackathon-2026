@@ -15,10 +15,15 @@ import { useStore, chameleonStage, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
 import { CLEANUPS } from '@/data/mock';
 import { BINGO, bingoIndexFor, dayKey } from '@/data/fes';
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
+import { translate } from '@/i18n';
 
 /** FES-Bereich: drei Tages-Challenges und die Aktionen im eigenen Viertel. */
 export default function Act() {
   const router = useRouter();
+  const t = useT();
+  const l = useLocalize();
+  const locale = useLocale();
   const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
   const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
@@ -52,8 +57,8 @@ export default function Act() {
       status: 'bestätigt',
       key: `cleanup-join:${id}`,
       at: Date.now(),
-      title: `Angemeldet: ${title}`,
-      meta: { source: 'user', evidence: ['Anmeldung in der App erfasst.', 'Ein Punkt für die Zusage, höchstens zwei Anmeldungen am Tag. Die Teilnahme selbst wird vor Ort bestätigt.'] },
+      title: translate('de', 'tabs.act.registration', { title }),
+      meta: { source: 'user', evidence: [translate('de', 'tabs.act.registrationEvidence'), translate('de', 'tabs.act.registrationRule')] },
     });
     haptic('success');
     setReward({ points: a.points, duplicate: !!a.duplicate, status: a.status });
@@ -62,7 +67,7 @@ export default function Act() {
   return (
     <Screen>
       <FesLogo width={92} />
-      <Text style={[T.h1, { marginTop: 10 }]}>Wir machen die Stadt. Sauber.</Text>
+      <Text style={[T.h1, { marginTop: 10 }]}>{t('tabs.act.title')}</Text>
 
       {/* Kopf: Chamäleon, Tagesziel, eigene Aktion anlegen */}
       <Appear delay={60}>
@@ -71,19 +76,19 @@ export default function Act() {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <ChamiMascot size={140} />
             <View style={{ flex: 1, paddingLeft: 4 }}>
-              <Text style={T.h3}>{chameleonName} · {st.label}</Text>
+              <Text style={T.h3}>{chameleonName} · {l(st.label)}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 10 }}>
                 <Ring progress={todayDone / 3} size={62} stroke={8} color={C.clean}>
                   <Text style={{ fontWeight: '900', fontSize: 14, color: C.ink }}>{todayDone}/3</Text>
                 </Ring>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontWeight: '800', color: C.ink }}>Challenges heute</Text>
-                  <Text style={T.small}>{todayDone === 3 ? 'Alle drei geschafft' : `Noch ${3 - todayDone} offen`} · Wochenziel {wk.activeDays}/{wk.goal} Tage</Text>
+                  <Text style={{ fontWeight: '800', color: C.ink }}>{t('tabs.act.challengesToday')}</Text>
+                  <Text style={T.small}>{todayDone === 3 ? t('tabs.act.allDone') : t('tabs.act.remaining', { count: 3 - todayDone })} · {t('tabs.act.weekGoal', { days: wk.activeDays, goal: wk.goal })}</Text>
                 </View>
               </View>
             </View>
           </View>
-          <Button label="Aktion starten" icon="🤝" onPress={() => setSheet('new')} color={C.clean} style={{ marginTop: S.md }} />
+          <Button label={t('tabs.act.start')} icon="🤝" onPress={() => setSheet('new')} color={C.clean} style={{ marginTop: S.md }} />
         </Card>
       </Appear>
 
@@ -94,8 +99,8 @@ export default function Act() {
             <Text style={{ fontSize: 27 }}>♻️</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={T.label}>{binDone ? 'Heute geprüft' : 'Foto reicht'}</Text>
-            <Text style={T.h3}>Biotonnen-Check</Text>
+            <Text style={T.label}>{binDone ? t('tabs.act.checkedToday') : t('tabs.act.photoEnough')}</Text>
+            <Text style={T.h3}>{t('tabs.act.binCheck')}</Text>
           </View>
           <Ionicons name={binDone ? 'checkmark-circle' : 'chevron-forward'} size={binDone ? 26 : 20} color={binDone ? C.success : C.muted} />
         </Card>
@@ -105,7 +110,7 @@ export default function Act() {
       <Appear delay={180}>
         <Card onPress={() => setSheet('bingo')} style={{ marginTop: S.md, borderWidth: 2, borderColor: bingo.doneToday ? C.leaf : 'transparent' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: S.md }}>
-            <Text style={T.h3}>Mülleimer-Bingo</Text>
+            <Text style={T.h3}>{t('tabs.act.bingo')}</Text>
             <View style={{ backgroundColor: C.clean + '18', borderRadius: R.pill, paddingHorizontal: 11, paddingVertical: 4 }}>
               <Text style={{ fontWeight: '900', fontSize: 12, color: C.clean }}>{bingo.filled}/{BINGO.length}</Text>
             </View>
@@ -115,8 +120,8 @@ export default function Act() {
               <Text style={{ fontSize: 25 }}>{BINGO[todayIndex].icon}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={T.label}>{bingo.doneToday ? 'Heute erledigt' : 'Heutige Challenge'}</Text>
-              <Text style={T.h3} numberOfLines={2}>{BINGO[todayIndex].title}</Text>
+              <Text style={T.label}>{bingo.doneToday ? t('tabs.act.doneToday') : t('tabs.act.todayChallenge')}</Text>
+              <Text style={T.h3} numberOfLines={2}>{l(BINGO[todayIndex].title)}</Text>
             </View>
             <Ionicons name={bingo.doneToday ? 'checkmark-circle' : 'chevron-forward'} size={bingo.doneToday ? 26 : 20} color={bingo.doneToday ? C.success : C.muted} />
           </View>
@@ -127,25 +132,26 @@ export default function Act() {
       </Appear>
 
       {/* Aktionen im Viertel */}
-      <SectionTitle title="Aktionen in deiner Nähe" action={nearby.length > 3 ? (showAll ? 'Weniger' : `Alle ${nearby.length}`) : undefined} onAction={() => setShowAll((v) => !v)} />
+      <SectionTitle title={t('tabs.act.nearby')} action={nearby.length > 3 ? (showAll ? t('tabs.act.less') : t('tabs.act.showAll', { count: nearby.length })) : undefined} onAction={() => setShowAll((v) => !v)} />
       <View style={{ gap: 10 }}>
         {shown.map((c, i) => {
           const joined = joinedCleanups.includes(c.id);
+          const title = l(c.title);
           return (
             <Appear key={c.id} delay={300 + i * 50}>
               <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 }}>
                 <Pressable onPress={() => router.push(`/cleanup/${c.id}` as any)} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                   <Text style={{ fontSize: 24 }}>🤝</Text>
                   <View style={{ flex: 1 }}>
-                    <Text style={T.h3} numberOfLines={1}>{c.title}</Text>
+                    <Text style={T.h3} numberOfLines={1}>{title}</Text>
                     <Text style={T.small} numberOfLines={1}>
-                      {c.district} · {new Date(c.start).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })}, {new Date(c.start).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} · {c.participants} dabei
+                      {c.district} · {new Date(c.start).toLocaleDateString(locale, { weekday: 'short', day: '2-digit', month: '2-digit' })}, {new Date(c.start).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} · {t('tabs.act.participants', { count: c.participants })}
                     </Text>
-                    {c.fesConfirmed ? <Tag label="FES bestätigt" color={C.success} /> : null}
+                    {c.fesConfirmed ? <Tag label={t('tabs.act.fesConfirmed')} color={C.success} /> : null}
                   </View>
                 </Pressable>
                 <Pressable onPress={() => (joined ? router.push(`/cleanup/${c.id}` as any) : join(c.id, c.title))} style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: R.pill, backgroundColor: joined ? C.leaf + '26' : C.clean }}>
-                  <Text style={{ fontWeight: '800', fontSize: 13, color: joined ? '#3F7A25' : '#fff' }}>{joined ? 'Angemeldet' : 'Mitmachen'}</Text>
+                  <Text style={{ fontWeight: '800', fontSize: 13, color: joined ? '#3F7A25' : '#fff' }}>{joined ? t('tabs.act.registered') : t('tabs.act.join')}</Text>
                 </Pressable>
               </Card>
             </Appear>

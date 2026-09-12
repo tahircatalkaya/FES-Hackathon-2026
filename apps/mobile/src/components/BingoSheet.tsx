@@ -1,3 +1,4 @@
+import { useT, useLocalize } from '@/i18n/useT';
 import React, { useMemo, useState } from 'react';
 import { Image, Platform, Pressable, Text, View } from 'react-native';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
@@ -10,6 +11,8 @@ import { Button, Sheet, T, haptic } from './ui';
 
 /** Bingo-Karte: 3×3 Felder, ein Feld je Kalendertag. Melden braucht die Entsorgung an einem Mülleimer. */
 export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone?: (a: { points: number; duplicate: boolean; status: string }) => void }) {
+  const t = useT();
+  const localize = useLocalize();
   const { ledger, addAward } = useStore();
   const [before, setBefore] = useState<string | null>(null);
   const [after, setAfter] = useState<string | null>(null);
@@ -38,7 +41,7 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
   }
 
   function report() {
-    if (!confirmed) { setHint('Bitte bestätige, dass du es an einem Mülleimer entsorgt hast.'); return; }
+    if (!confirmed) { setHint(t('components.bingo.confirmHint')); return; }
     const a = addAward({
       type: 'clean.bin_checkin',
       partner: 'fes',
@@ -55,12 +58,12 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
   }
 
   return (
-    <Sheet open={open} onClose={onClose} title="Mülleimer-Bingo">
+    <Sheet open={open} onClose={onClose} title={t('components.bingo.title')}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: C.clean + '14', borderRadius: R.md, padding: S.md }}>
         <Text style={{ fontSize: 34 }}>{BINGO[today].icon}</Text>
         <View style={{ flex: 1 }}>
-          <Text style={T.label}>Heutige Challenge</Text>
-          <Text style={T.h3}>{BINGO[today].title}</Text>
+          <Text style={T.label}>{t('components.bingo.today')}</Text>
+          <Text style={T.h3}>{localize(BINGO[today].title)}</Text>
         </View>
       </View>
 
@@ -71,7 +74,7 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
             <Animated.View key={c.short} entering={FadeIn.delay(i * 25)} style={{ width: '33.333%', padding: 5 }}>
               <View style={{ aspectRatio: 1, borderRadius: R.sm, borderWidth: i === today ? 2.5 : 1.5, borderColor: i === today ? C.clean : done ? C.leaf : C.line, backgroundColor: done ? C.leaf + '1F' : '#fff', alignItems: 'center', justifyContent: 'center', opacity: done || i === today ? 1 : 0.5 }}>
                 <Text style={{ fontSize: 30 }}>{c.icon}</Text>
-                <Text style={{ fontSize: 11, fontWeight: '800', color: done ? '#3F7A25' : C.muted, marginTop: 3 }} numberOfLines={1}>{c.short}</Text>
+                <Text style={{ fontSize: 11, fontWeight: '800', color: done ? '#3F7A25' : C.muted, marginTop: 3 }} numberOfLines={1}>{localize(c.short)}</Text>
                 {done && (
                   <Animated.View entering={ZoomIn} style={{ position: 'absolute', top: -5, right: -5, width: 20, height: 20, borderRadius: 10, backgroundColor: C.success, alignItems: 'center', justifyContent: 'center' }}>
                     <Ionicons name="checkmark" size={13} color="#fff" />
@@ -83,7 +86,7 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
         })}
       </View>
 
-      <Text style={[T.small, { marginTop: S.md }]}>{filled.size} von {BINGO.length} Feldern gefüllt</Text>
+      <Text style={[T.small, { marginTop: S.md }]}>{t('components.bingo.filled', { count: filled.size, total: BINGO.length })}</Text>
       <View style={{ height: 9, borderRadius: 6, backgroundColor: C.line, marginTop: 6, overflow: 'hidden' }}>
         <View style={{ width: `${(filled.size / BINGO.length) * 100}%`, height: '100%', backgroundColor: C.clean }} />
       </View>
@@ -91,12 +94,12 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
       {doneToday ? (
         <View style={{ marginTop: S.lg, borderRadius: R.md, borderWidth: 2, borderColor: C.leaf, backgroundColor: C.leaf + '1A', padding: S.md, flexDirection: 'row', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
           <Ionicons name="checkmark-circle" size={20} color={C.success} />
-          <Text style={{ fontWeight: '800', color: '#3F7A25' }}>Heute erledigt</Text>
+          <Text style={{ fontWeight: '800', color: '#3F7A25' }}>{t('components.bingo.done')}</Text>
         </View>
       ) : (
         <>
           <View style={{ flexDirection: 'row', gap: 10, marginTop: S.lg }}>
-            {([['before', before, 'Vorher', 'camera'], ['after', after, 'Nachher', 'sparkles']] as const).map(([k, uri, label, icon]) => (
+            {([['before', before, t('components.common.before'), 'camera'], ['after', after, t('components.common.after'), 'sparkles']] as const).map(([k, uri, label, icon]) => (
               <Pressable key={k} onPress={() => snap(k)} style={{ flex: 1, height: 108, borderRadius: R.md, borderWidth: 2, borderStyle: uri ? 'solid' : 'dashed', borderColor: uri ? C.leaf : C.line, backgroundColor: '#FAFAF7', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                 {uri ? <Image source={{ uri }} style={{ width: '100%', height: '100%' }} /> : (
                   <>
@@ -112,11 +115,11 @@ export function BingoSheet({ open, onClose, onDone }: { open: boolean; onClose: 
             <View style={{ width: 26, height: 26, borderRadius: 8, borderWidth: 2, borderColor: confirmed ? C.success : C.line, backgroundColor: confirmed ? C.success : '#fff', alignItems: 'center', justifyContent: 'center' }}>
               {confirmed && <Ionicons name="checkmark" size={16} color="#fff" />}
             </View>
-            <Text style={[T.body, { flex: 1 }]}>Ich habe es an einem Frankfurter Straßenmülleimer entsorgt</Text>
+            <Text style={[T.body, { flex: 1 }]}>{t('components.bingo.confirm')}</Text>
           </Pressable>
-          {hint ? <Text style={[T.small, { color: C.warn, marginTop: 6 }]}>{hint}</Text> : null}
-          <Button label="Aktion melden" onPress={report} color={C.clean} style={{ marginTop: S.md }} />
-          <Text style={[T.small, { marginTop: 8 }]}>Selbst angegeben, deshalb 30 Prozent der Basispunkte. Ein Feld pro Tag.</Text>
+          {hint ? <Text style={[T.small, { color: C.warn, marginTop: 6 }]}>{localize(hint)}</Text> : null}
+          <Button label={t('components.bingo.report')} onPress={report} color={C.clean} style={{ marginTop: S.md }} />
+          <Text style={[T.small, { marginTop: 8 }]}>{t('components.bingo.pointsHint')}</Text>
         </>
       )}
     </Sheet>

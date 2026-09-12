@@ -1,3 +1,4 @@
+import { useT } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -21,6 +22,7 @@ const inputStyle = {
 };
 
 export default function Anmelden() {
+  const rt = useT();
   const router = useRouter();
   const setOnboarded = useStore((state) => state.setOnboarded);
   const setProfile = useStore((state) => state.setProfile);
@@ -37,14 +39,14 @@ export default function Anmelden() {
       <View style={{ alignItems: 'center', marginTop: S.lg }}>
         <Chameleon pose="hello" size={220} />
       </View>
-      <Text style={[T.h1, { marginTop: S.lg }]}>Willkommen zurück</Text>
-      <Text style={[T.body, { marginTop: 8 }]}>Kai freut sich, dich wiederzusehen.</Text>
+      <Text style={[T.h1, { marginTop: S.lg }]}>{rt('routes.welcome_back')}</Text>
+      <Text style={[T.body, { marginTop: 8 }]}>{rt('routes.kai_is_happy_to_see_you_again')}</Text>
       <Card style={{ marginTop: S.xl }}>
-        <Text style={T.label}>Benutzername</Text>
-        <TextInput value={name} onChangeText={setName} placeholder="Benutzername" placeholderTextColor={C.muted} autoCapitalize="none" autoComplete="username" maxLength={24} style={inputStyle} />
-        <Text style={[T.label, { marginTop: 16 }]}>E-Mail-Adresse</Text>
+        <Text style={T.label}>{rt('routes.username')}</Text>
+        <TextInput value={name} onChangeText={setName} placeholder={rt('routes.username')} placeholderTextColor={C.muted} autoCapitalize="none" autoComplete="username" maxLength={24} style={inputStyle} />
+        <Text style={[T.label, { marginTop: 16 }]}>{rt('routes.email_address')}</Text>
         <TextInput value={email} onChangeText={setEmail} placeholder="name@beispiel.de" placeholderTextColor={C.muted} keyboardType="email-address" autoCapitalize="none" autoComplete="email" style={inputStyle} />
-        <Button label="Anmelden" color={col} disabled={!canSubmit} onPress={() => {
+        <Button label={rt('routes.sign_in')} color={col} disabled={!canSubmit} onPress={() => {
           setProfile({ name: name.trim(), email: email.trim() });
           setOnboarded(true);
           router.replace('/(tabs)');

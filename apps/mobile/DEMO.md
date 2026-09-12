@@ -5,7 +5,7 @@ Reihenfolge so, dass der stärkste Moment (die abgelehnte Autofahrt) in Minute 3
 
 | Min | Screen | Was passiert | Was die Jury hört |
 |---|---|---|---|
-| 0:00 | Onboarding | Sprache wählen (kurz Leichte Sprache zeigen), 3 Slides, Name | „Mobile-first, fünf Sprachen, Standort nur bei bewusster Fahrt.“ |
+| 0:00 | Onboarding | Sprache wählen (kurz Hrvatski oder Italiano zeigen), 3 Slides, Name | „Mobile-first, sechs Sprachen, Standort nur bei bewusster Fahrt.“ |
 | 0:45 | Entdecken | Karte, Layer wechseln, Kai wechselt die Farbe, Karten-Karussell | „Eine Journey nach Absicht, nicht nach Partner. Live-Daten: foodsharing-API, Vytal, GTFS.“ |
 | 1:30 | Fahrt starten | Haltestelle Bockenheimer Warte, echte GTFS-Abfahrten, Demo-Tag, Start | „Bewusst starten. Tag hebt den Nachweis auf bestätigt.“ |
 | 2:15 | Tracking | Banner „Aufzeichnung läuft“, Simulation **Autofahrt neben der Linie** → beenden | **„Nicht zuordenbar. 0 Punkte. Das System lehnt eine Autofahrt ab.“** |

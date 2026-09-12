@@ -87,6 +87,9 @@ export function comparisons(co2_g: number) {
   ];
 }
 
-export function fmtCo2(g: number) {
-  return g >= 1000 ? `${(g / 1000).toFixed(g >= 10000 ? 0 : 1)} kg` : `${Math.round(g)} g`;
+export function fmtCo2(g: number, locale = 'de-DE') {
+  const decimals = g >= 10000 ? 0 : 1;
+  return g >= 1000
+    ? `${(g / 1000).toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} kg`
+    : `${Math.round(g).toLocaleString(locale)} g`;
 }

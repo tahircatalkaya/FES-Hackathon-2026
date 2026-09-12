@@ -1,3 +1,4 @@
+import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -9,10 +10,12 @@ import { Appear, Button, Card, Ring, Row, SectionTitle, T, Tag, haptic } from '@
 import { C, CONTEXT, S, shadow } from '@/theme';
 import { useStore, weekStats, chameleonStage, balance } from '@/store';
 import { useUI } from '@/store/ui';
-import { useT } from '@/i18n/useT';
 import { CHAPTERS } from '@/data/mock';
 
 export default function Act() {
+  const rt = useT();
+  const localize = useLocalize();
+  const locale = useLocale();
   const router = useRouter();
   const t = useT();
   const { ledger, name, chameleonName, quizDone, containers, reservations, itemReservations } = useStore();
@@ -39,10 +42,10 @@ export default function Act() {
 
   return (
     <Screen tabBar={false}>
-      <Header title="Alle Möglichkeiten" />
+      <Header title={rt('routes.all_options')} />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <View style={{ flex: 1 }}>
-          <Text style={T.label}>{new Date().toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long' })}</Text>
+          <Text style={T.label}>{new Date().toLocaleDateString(locale, { weekday: 'long', day: '2-digit', month: 'long' })}</Text>
           <Text style={[T.h1, { marginTop: 4 }]}>{t('act.title')}</Text>
         </View>
       </View>
@@ -54,16 +57,16 @@ export default function Act() {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Pressable onPress={() => { haptic(); setPoke((p) => p + 1); }}><Chameleon color={C.home} size={150} stage={st.stage as any} mood={mood} lookX={0.4} poke={poke} /></Pressable>
             <View style={{ flex: 1, paddingLeft: 4 }}>
-              <Text style={T.h3}>{chameleonName} · {st.label}</Text>
-              <Text style={[T.small, { marginBottom: 10 }]}>{st.next ? `Noch ${st.next}` : 'Diamant erreicht'}</Text>
+              <Text style={T.h3}>{chameleonName} · {localize(st.label)}</Text>
+              <Text style={[T.small, { marginBottom: 10 }]}>{st.next ? rt('routes.value_to_go', { p1: localize(st.next) }) : rt('routes.diamond_reached')}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                 <Ring progress={wk.activeDays / wk.goal} size={70} stroke={9} color={C.leaf}>
                   <Text style={{ fontWeight: '900', fontSize: 16, color: C.ink }}>{wk.activeDays}/{wk.goal}</Text>
                 </Ring>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontWeight: '800', color: C.ink }}>{t('week.goal')}</Text>
-                  <Text style={T.small}>{wk.activeDays >= wk.goal ? 'Geschafft, Los gesichert 🎟️' : `${wk.goal - wk.activeDays} ${t('week.days')} fehlen`}</Text>
-                  <Text style={T.small}>Heute {todayPts}/50 Punkte</Text>
+                  <Text style={T.small}>{wk.activeDays >= wk.goal ? rt('routes.done_raffle_ticket_secured') : rt('routes.value_value_remaining', { p1: wk.goal - wk.activeDays, p2: t('week.days') })}</Text>
+                  <Text style={T.small}>{rt('routes.today_value50_points', { p1: todayPts })}</Text>
                 </View>
               </View>
             </View>
@@ -80,7 +83,7 @@ export default function Act() {
               return (
                 <Card key={c.code} onPress={() => router.push('/mehrweg')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.reuse }}>
                   <Text style={{ fontSize: 24 }}>🥡</Text>
-                  <View style={{ flex: 1 }}><Text style={T.h3}>Vytal-{c.kind === 'cup' ? 'Becher' : 'Schale'} unterwegs</Text><Text style={T.small}>{c.storeName} · noch {Math.floor(left / 24)} Tage, {left < 48 ? '+10 Punkte bei schneller Rückgabe' : 'zurückbringen für 30 Punkte'}</Text></View>
+                  <View style={{ flex: 1 }}><Text style={T.h3}>{rt('routes.vytal_value_on_loan', { p1: c.kind === 'cup' ? rt('routes.cup') : rt('routes.bowl') })}</Text><Text style={T.small}>{rt('routes.value_value_days_left_value', { p1: c.storeName, p2: Math.floor(left / 24), p3: left < 48 ? rt('routes.10_points_for_a_quick_return') : rt('routes.return_for_30_points') })}</Text></View>
                   <Text style={{ color: C.reuse, fontWeight: '800' }}>›</Text>
                 </Card>
               );
@@ -88,14 +91,14 @@ export default function Act() {
             {openItems.map((r) => (
               <Card key={r.id} onPress={() => router.push(r.href as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.food }}>
                 <Ionicons name="bookmark" size={24} color={C.food} />
-                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.item} · {r.placeTitle}</Text><Text style={T.small}>Reserviert bis {new Date(r.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text></View>
+                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.item} · {r.placeTitle}</Text><Text style={T.small}>{rt('routes.reserved_until_value', { p1: new Date(r.expiresAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) })}</Text></View>
                 <Text style={{ color: C.food, fontWeight: '800' }}>›</Text>
               </Card>
             ))}
             {openRes.map((r) => (
               <Card key={r.basketId} onPress={() => router.push(`/korb/${r.basketId}` as any)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderLeftWidth: 5, borderLeftColor: C.food }}>
                 <Text style={{ fontSize: 24 }}>🧺</Text>
-                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.title}</Text><Text style={T.small}>Reserviert bis {new Date(r.expiresAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} · {r.status}</Text></View>
+                <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{r.title}</Text><Text style={T.small}>{rt('routes.reserved_until_value_value', { p1: new Date(r.expiresAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }), p2: localize(({ pending: 'Anfrage läuft', accepted: 'Zusage erhalten', cancelled: 'Abgesagt', picked_up: 'Abholung gemeldet', expired: 'abgelaufen' } as const)[r.status]) })}</Text></View>
                 <Text style={{ color: C.food, fontWeight: '800' }}>›</Text>
               </Card>
             ))}
@@ -104,18 +107,18 @@ export default function Act() {
       )}
 
       <View style={{ flexDirection: 'row', gap: 10, marginTop: S.md }}>
-        {[{ e: 'radio', l: 'NFC-Tap', h: '/fahrt?nfc=1', c: C.mobility }, { e: 'scan', l: 'Scannen', h: '/scan', c: C.ink }, { e: 'map', l: 'Karte', h: '/(tabs)', c: C.food }].map((q, i) => (
+        {[{ e: 'radio', l: rt('routes.nfc_tap'), h: '/fahrt?nfc=1', c: C.mobility }, { e: 'scan', l: rt('routes.scan'), h: '/scan', c: C.ink }, { e: 'map', l: rt('routes.map'), h: '/(tabs)', c: C.food }].map((q, i) => (
           <Appear key={q.l} delay={100 + i * 40} style={{ flex: 1 }}>
             <Card onPress={() => router.push(q.h as any)} style={{ alignItems: 'center', paddingVertical: 14, backgroundColor: q.c }}>
               <Ionicons name={q.e as any} size={26} color="#fff" />
-              <Text style={{ color: '#fff', fontWeight: '800', marginTop: 6 }}>{q.l}</Text>
+              <Text style={{ color: '#fff', fontWeight: '800', marginTop: 6 }}>{localize(q.l)}</Text>
             </Card>
           </Appear>
         ))}
       </View>
 
-      <Button label="Foodsharing: Übergaben & Bewertungen" color={CONTEXT.food.color} onPress={() => router.push('/uebergaben')} style={{ marginTop: 14 }} />
-      <SectionTitle title="Kernaktionen" />
+      <Button label={rt('routes.foodsharing_handoffs_reviews')} color={CONTEXT.food.color} onPress={() => router.push('/uebergaben')} style={{ marginTop: 14 }} />
+      <SectionTitle title={rt('routes.main_actions')} />
       <View style={{ gap: 12 }}>
         {actions.map((a, i) => (
           <Appear key={a.key} delay={160 + i * 60}>
@@ -124,7 +127,7 @@ export default function Act() {
               <View style={{ flex: 1 }}>
                 <Text style={T.h3}>{a.title}</Text>
                 <Text style={T.small}>{a.sub}</Text>
-                <Row style={{ gap: 6 }}><Tag label={`mit ${a.partner}`} color={CONTEXT[a.key].color} />{favorite === a.key && <Tag label="dein Favorit" color={C.gold} />}</Row>
+                <Row style={{ gap: 6 }}><Tag label={rt('routes.with_value', { p1: a.partner })} color={CONTEXT[a.key].color} />{favorite === a.key && <Tag label={rt('routes.your_favourite')} color={C.gold} />}</Row>
               </View>
               <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: CONTEXT[a.key].color, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontWeight: '900' }}>›</Text></View>
             </Card>
@@ -132,28 +135,28 @@ export default function Act() {
         ))}
       </View>
 
-      <SectionTitle title="Heute für dich" />
+      <SectionTitle title={rt('routes.for_you_today')} />
       <View style={{ gap: 12 }}>
         {nextQuiz && (
           <Appear delay={420}>
             <Card onPress={() => router.push(`/quiz/${nextQuiz.id}` as any)} style={{ backgroundColor: C.ink }}>
-              <Text style={[T.label, { color: '#ffffff99' }]}>Tagesmission · Lernen mit {chameleonName}</Text>
-              <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{nextQuiz.title}</Text>
-              <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{nextQuiz.intro}</Text>
-              <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>+{nextQuiz.questions.length * 5} Punkte · 2 Minuten</Text>
+              <Text style={[T.label, { color: '#ffffff99' }]}>{rt('routes.daily_mission_learn_with_value', { p1: chameleonName })}</Text>
+              <Text style={[T.h3, { color: '#fff', marginTop: 4 }]}>{localize(nextQuiz.title)}</Text>
+              <Text style={[T.small, { color: '#ffffffbb', marginTop: 4 }]} numberOfLines={2}>{localize(nextQuiz.intro)}</Text>
+              <Text style={{ color: C.leaf, fontWeight: '800', marginTop: 10 }}>{rt('routes.value_points_2_minutes', { p1: nextQuiz.questions.length * 5 })}</Text>
             </Card>
           </Appear>
         )}
         <Appear delay={480}>
           <Card onPress={() => router.push('/melden')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 26 }}>📸</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Volle Tonne oder wilde Kippe melden</Text><Text style={T.small}>Foto, Ort, fertig. 10 Punkte.</Text></View>
+            <View style={{ flex: 1 }}><Text style={T.h3}>{rt('routes.report_a_full_bin_or_illegal_dumping')}</Text><Text style={T.small}>{rt('routes.photo_location_done_10_points')}</Text></View>
           </Card>
         </Appear>
         <Appear delay={540}>
           <Card onPress={() => router.push('/scan?mode=litter')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 26 }}>🫶</Text>
-            <View style={{ flex: 1 }}><Text style={T.h3}>Müll aufgehoben?</Text><Text style={T.small}>Ohne Punkte, aber {chameleonName} freut sich.</Text></View>
+            <View style={{ flex: 1 }}><Text style={T.h3}>{rt('routes.picked_up_litter')}</Text><Text style={T.small}>{rt('routes.no_points_but_value_is_happy', { p1: chameleonName })}</Text></View>
           </Card>
         </Appear>
       </View>

@@ -1,10 +1,14 @@
+import { useCallback } from 'react';
 import { useStore } from '@/store';
-import { translate, type TKey } from './index';
+import { localeFor, localizeText, translate, type TKey, type TranslationParams } from './index';
 
 export function useT() {
   const lang = useStore((s) => s.lang);
-  return (key: TKey) => translate(lang, key);
+  return useCallback((key: TKey, params?: TranslationParams) => translate(lang, key, params), [lang]);
 }
-export function useIsRTL() {
-  return useStore((s) => s.lang) === 'ar';
+export function useLocalize() {
+  const lang = useStore((s) => s.lang);
+  return useCallback((text: string) => localizeText(lang, text), [lang]);
 }
+export function useLocale() { return localeFor(useStore((s) => s.lang)); }
+export function useIsRTL() { return useStore((s) => s.lang) === 'ar'; }
