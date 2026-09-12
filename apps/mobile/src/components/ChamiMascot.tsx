@@ -50,7 +50,8 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
   const p = POSES[pose] ?? POSES.classic;
   const width = size * p.ratio;
   const blink = useSharedValue(0);
-  const breath = useSharedValue(0);
+  const idle = useSharedValue(0);
+  const hop = useSharedValue(0);
 
   useEffect(() => {
     blink.value = withRepeat(
@@ -63,21 +64,35 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
       -1,
       false,
     );
-    breath.value = withRepeat(
+    /** Grundbewegung: wiegt sich langsam hin und her. */
+    idle.value = withRepeat(
       withSequence(
-        withTiming(1, { duration: 1900, easing: Easing.inOut(Easing.quad) }),
-        withTiming(0, { duration: 1900, easing: Easing.inOut(Easing.quad) }),
+        withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
+        withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
+      ),
+      -1,
+      false,
+    );
+    /** Alle paar Sekunden ein doppelter Hüpfer, damit die Figur nicht einschläft. */
+    hop.value = withRepeat(
+      withSequence(
+        withDelay(3600, withTiming(1, { duration: 170, easing: Easing.out(Easing.quad) })),
+        withTiming(0, { duration: 220, easing: Easing.in(Easing.quad) }),
+        withTiming(1, { duration: 150, easing: Easing.out(Easing.quad) }),
+        withTiming(0, { duration: 200, easing: Easing.in(Easing.quad) }),
       ),
       -1,
       false,
     );
   }, []);
 
+  const swing = p.lively ? 7 : 4;
   const bodyStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateY: -0.012 * size * breath.value },
-      { scale: 1 + 0.012 * breath.value },
-      { rotate: p.lively ? `${-2 + 4 * breath.value}deg` : '0deg' },
+      { translateX: (p.lively ? 0.04 : 0.02) * size * (idle.value - 0.5) * 2 },
+      { translateY: -0.06 * size * idle.value - 0.12 * size * hop.value },
+      { rotate: `${-swing / 2 + swing * idle.value}deg` },
+      { scale: 1 + 0.03 * idle.value + 0.05 * hop.value },
     ],
   }));
   const lidStyle = useAnimatedStyle(() => ({ transform: [{ scaleY: blink.value }] }));
