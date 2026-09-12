@@ -35,7 +35,13 @@ export default function Together() {
               <Text style={[T.h2, { color: '#fff', marginTop: 2 }]}>{(FRANKFURT_GOAL.weekSoFarKg / 1000).toFixed(1)} von {FRANKFURT_GOAL.weekTargetKg / 1000} t CO₂ vermieden</Text>
               <View style={{ height: 14, borderRadius: 7, backgroundColor: '#ffffff33', marginTop: 12, overflow: 'hidden' }}><View style={{ width: `${Math.round(goalPct * 100)}%`, height: 14, backgroundColor: '#fff', borderRadius: 7 }} /></View>
               <Row style={{ justifyContent: 'space-between', marginTop: 8 }}><Text style={{ color: '#ffffffcc', fontSize: 12 }}>{FRANKFURT_GOAL.participants.toLocaleString('de-DE')} Menschen · aggregiert, k ≥ 5</Text><Text style={{ color: '#fff', fontWeight: '800' }}>{Math.round(goalPct * 100)} %</Text></Row>
-              <Text style={{ color: '#ffffffbb', fontSize: 12, marginTop: 6 }}>Wird das Ziel erreicht, pflanzt die Stadt 50 Bäume. Alle tragen bei, niemand wird gerankt.</Text>
+              <Row style={{ gap: 10, alignItems: 'center', marginTop: 12, backgroundColor: '#ffffff26', borderRadius: 14, padding: 10 }}>
+                <Text style={{ fontSize: 24 }}>🌳</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#fff', fontWeight: '900', fontSize: 15 }}>Ziel erreicht = 50 neue Bäume</Text>
+                  <Text style={{ color: '#ffffffcc', fontSize: 12, marginTop: 2 }}>Schafft Frankfurt die 12 Tonnen, pflanzt die Stadt 50 Bäume in den Stadtteilen.</Text>
+                </View>
+              </Row>
             </Card>
           </Appear>
 
@@ -43,7 +49,7 @@ export default function Together() {
           <Appear delay={80}>
             <Card>
               <Row style={{ justifyContent: 'space-between' }}>
-                <View style={{ flex: 1 }}><Text style={T.h3}>Gemeinsames Wochenziel</Text><Text style={T.small}>{friends.length + 1} Personen · {groupDays} von {groupGoal} aktiven Tagen. Kein Ranking untereinander: Jede Person hat ihr eigenes Ziel, ihr schafft es zusammen.</Text></View>
+                <View style={{ flex: 1 }}><Text style={T.h3}>Gemeinsames Wochenziel</Text><Text style={T.small}>{friends.length + 1} Personen · {groupDays} von {groupGoal} aktiven Tagen</Text></View>
                 <Ring progress={groupDays / groupGoal} size={64} stroke={8} color={col}><Text style={{ fontWeight: '900', fontSize: 13 }}>{Math.round((groupDays / groupGoal) * 100)}%</Text></Ring>
               </Row>
               <Divider />
@@ -65,11 +71,12 @@ export default function Together() {
           <SectionTitle title="Ehrentafel der Woche" />
           <Appear delay={120}>
             <Card>
-              <Text style={T.small}>Alle, die ihr Wochenziel geschafft haben, alphabetisch. Keine Plätze, keine Top 100. Jede Person hier hat ein Los für das Deutschlandticket.</Text>
+              <Text style={T.small}>Alle, die ihr Wochenziel geschafft haben, alphabetisch. Jedes erreichte Wochenziel gibt ein Los.</Text>
               <Row style={{ marginTop: 10, flexWrap: 'wrap', gap: 6 }}>{honor.length ? honor.map((n) => <Tag key={n} label={`🎟️ ${n}`} color={col} />) : <Text style={T.body}>Diese Woche noch niemand. Drei aktive Tage, dann stehst du hier.</Text>}</Row>
               <Divider />
               <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3}>Deine Lose: {lose}</Text><Pressable onPress={() => router.push('/belohnungen')}><Text style={{ color: col, fontWeight: '800' }}>Verlosung ›</Text></Pressable></Row>
-              <Text style={T.small}>Max. 4 Lose im Monat. Wer zehnmal mehr sammelt, hat nicht zehnmal mehr Chancen.</Text>
+              <Text style={T.small}>Jeden Monat werden 100 Gewinne zufällig gezogen. Ein Los je Wochenziel, also höchstens vier oder fünf im Monat. Wer zehnmal mehr sammelt, hat nicht zehnmal mehr Chancen.</Text>
+              <Text style={[T.small, { marginTop: 6 }]}>Gewinn frei wählbar: Deutschlandticket für einen Monat oder, wenn du schon eins hast, ein 20-Euro-Gutschein bei einem Frankfurter Partnerbetrieb.</Text>
             </Card>
           </Appear>
 
