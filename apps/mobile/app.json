@@ -1,29 +1,42 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
-    "version": "1.0.0",
+    "name": "Mainsam",
+    "slug": "mainsam",
+    "scheme": "mainsam",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": { "image": "./assets/splash-icon.png", "resizeMode": "contain", "backgroundColor": "#0F2A5C" },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "de.frankfurt.mainsam",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt und zum Anzeigen von Angeboten in deiner Nähe.",
+        "NSCameraUsageDescription": "Die Kamera wird zum Scannen von QR-Codes (Mehrweg, Clean-up-Bestätigung) und für Regal-Fotos verwendet.",
+        "NFCReaderUsageDescription": "Mainsam liest NFC-Tags in Bus und Bahn, um eine Fahrt bewusst zu starten."
+      }
     },
     "android": {
+      "package": "de.frankfurt.mainsam",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0F2A5C",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "CAMERA", "NFC"],
       "predictiveBackGestureEnabled": false
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "web": { "favicon": "./assets/favicon.png", "bundler": "metro", "output": "single" },
     "plugins": [
-      "expo-splash-screen",
-      "expo-localization"
-    ]
+      "expo-router",
+      ["expo-location", { "locationWhenInUsePermission": "Mainsam nutzt deinen Standort nur während einer bewusst gestarteten Fahrt." }],
+      ["expo-camera", { "cameraPermission": "Zum Scannen von QR-Codes und für Regal-Fotos." }],
+      "expo-localization",
+      "expo-notifications"
+    ],
+    "experiments": { "typedRoutes": false }
   }
 }
