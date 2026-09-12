@@ -22,7 +22,7 @@ export default function Onboarding() {
   const { lang, setProfile, setOnboarded, setPrivacy } = useStore();
   const [i, setI] = useState(0);
   const [name, setName] = useState('');
-  const [consent, setConsent] = useState(true);
+  const [consent, setConsent] = useState(false);
   const [showLanguages, setShowLanguages] = useState(false);
   const last = i === SLIDES.length; // Name-Schritt
   const ctx = last ? 'community' : SLIDES[i].ctx;
@@ -39,7 +39,7 @@ export default function Onboarding() {
         </View>
         {showLanguages && (
           <Card style={{ marginTop: 8 }}>
-            {LANGS.map((language, index, languages) => (
+            {LANGS.filter((language) => language.code !== 'leicht').map((language, index, languages) => (
               <View key={language.code}>
                 <Pressable accessibilityRole="button" accessibilityState={{ selected: lang === language.code }} onPress={() => { setProfile({ lang: language.code }); setShowLanguages(false); }} style={{ paddingVertical: 10 }}>
                   <Row style={{ justifyContent: 'space-between' }}>
@@ -58,10 +58,20 @@ export default function Onboarding() {
         <Animated.View key={i} entering={FadeInDown.springify().damping(16)} exiting={FadeOut} style={{ marginTop: 24, minHeight: 190 }}>
           {!last ? (
             <>
-              <Text style={T.h1}>{t(SLIDES[i].t)}</Text>
+              {i === 1 && lang === 'de' ? (
+                <View>
+                  <Text style={T.h1}>Gemeinsam entdecken wir</Text>
+                  <View style={{ alignItems: 'center', marginTop: 2 }}>
+                    <Text style={{ width: '100%', color, fontFamily: 'serif', fontStyle: 'italic', fontSize: 44, lineHeight: 52, fontWeight: '900', letterSpacing: 1, textAlign: 'center', textShadowColor: color + '55', textShadowOffset: { width: 0, height: 3 }, textShadowRadius: 7 }}>Frankfurt.</Text>
+                    <View style={{ width: 118, height: 4, marginTop: -2, borderRadius: 2, backgroundColor: color, transform: [{ rotate: '-2deg' }] }} />
+                  </View>
+                </View>
+              ) : (
+                <Text style={T.h1}>{t(SLIDES[i].t)}</Text>
+              )}
               <Text style={[T.body, { marginTop: 10, fontSize: 17, lineHeight: 25 }]}>{t(SLIDES[i].b)}</Text>
               {i === 2 && (
-                <Pressable onPress={() => setConsent(!consent)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 18, backgroundColor: '#fff', padding: 14, borderRadius: 16 }}>
+                <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent }} onPress={() => setConsent(!consent)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 18, backgroundColor: '#fff', padding: 14, borderRadius: 16 }}>
                   <View style={{ width: 26, height: 26, borderRadius: 8, borderWidth: 2, borderColor: color, backgroundColor: consent ? color : '#fff', alignItems: 'center', justifyContent: 'center' }}>{consent && <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>}</View>
                   <Text style={[T.body, { flex: 1 }]}>Standort nur während bewusst gestarteter Fahrten.</Text>
                 </Pressable>
@@ -79,7 +89,7 @@ export default function Onboarding() {
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: 18 }}>
           {[...SLIDES, null].map((_, k) => <Animated.View key={k} entering={FadeIn} style={{ width: k === i ? 22 : 7, height: 7, borderRadius: 4, backgroundColor: k === i ? color : C.line }} />)}
         </View>
-        <Button color={color} label={last ? t('onb.start') : t('common.next')} disabled={last && name.trim().length < 2} onPress={() => {
+        <Button color={color} label={last ? t('onb.start') : t('common.next')} disabled={(i === 2 && !consent) || (last && name.trim().length < 2)} onPress={() => {
           if (!last) { setI(i + 1); return; }
           haptic('success');
           setProfile({ name: name.trim() }); setPrivacy({ shareAggregates: consent }); setOnboarded(true);

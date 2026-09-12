@@ -43,6 +43,9 @@ export default function Profile() {
             <Text style={{ fontSize: 18 }}>🔔</Text>
             {unread > 0 && <View style={{ position: 'absolute', top: 4, right: 4, backgroundColor: C.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: '#fff', fontSize: 10, fontWeight: '900' }}>{unread}</Text></View>}
           </Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel="Ausloggen" onPress={() => router.replace('/anmelden')} style={{ height: 42, borderRadius: 21, backgroundColor: '#fff', paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ color: C.ink, fontSize: 14, fontWeight: '800' }}>Ausloggen</Text>
+          </Pressable>
         </Row>
       </Row>
 
