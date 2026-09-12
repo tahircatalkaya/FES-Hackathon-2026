@@ -2,19 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "mainwandel-server",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "shared.server"],
-      "port": 8765,
-      "autoPort": true
-    },
-    {
-      "name": "mainsam-expo-web",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "web", "--", "--port", "8081"],
+      "name": "mainsam-web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["expo", "start", "--web", "--port", "8081"],
       "cwd": "apps/mobile",
-      "port": 8081,
-      "autoPort": true
+      "port": 8081
     }
   ]
 }

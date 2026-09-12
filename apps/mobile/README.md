@@ -6,17 +6,23 @@ Save2Share (Frankfurt foodsharing), Sauberes Frankfurt (FES), Mobilitätsimpact 
 
 ## Auf dem iPhone starten (privater Hotspot/LAN)
 
-Voraussetzungen: Node 22 LTS oder neuer, npm und die aktuelle **Expo Go**-App mit Unterstützung für **SDK 57**. Dein Screenshot zeigt bereits SDK 57.
+Voraussetzungen: Node 22.18 oder neuer, npm und die aktuelle **Expo Go**-App mit Unterstützung für **SDK 57**. Dein Screenshot zeigt bereits SDK 57.
 
 Den Mac mit dem persönlichen Hotspot des iPhones verbinden oder beide Geräte mit demselben privaten WLAN verbinden. Auf dem iPhone unter Einstellungen → Apps → Expo Go **Lokales Netzwerk** erlauben. Im Mac-Terminal:
 
 ```bash
 cd "/Users/imad.azizi/Desktop/FES Hackathon 2026/team-01/apps/mobile"
-npm install --include=optional
+npm ci --include=optional
+npm run trust:lan
+```
+
+In einem zweiten Terminal im selben App-Verzeichnis:
+
+```bash
 npm run start:lan
 ```
 
-Der Startbefehl verwendet `expo start --go --lan --clear`. Scanne den **neuen** QR-Code mit der iPhone-Kamera und öffne ihn in Expo Go. Beim einmaligen Entwicklerhinweis auf **Continue** tippen. Terminal und Mac müssen während der Nutzung weiterlaufen.
+Beide Prozesse werden für gemeinsame Übergaben und Rückgaben gebraucht. Der Startbefehl verwendet `expo start --go --lan --clear`. Scanne den **neuen** QR-Code mit der iPhone-Kamera und öffne ihn in Expo Go. Beim einmaligen Entwicklerhinweis auf **Continue** tippen. Terminal und Mac müssen während der Nutzung weiterlaufen.
 
 Öffentliches WLAN kann direkte Verbindungen zwischen Geräten blockieren. Ein Handy-Hotspot löst außerdem keinen App-Absturz. Deshalb wurde zusätzlich die native Startanimation korrigiert.
 
@@ -79,10 +85,20 @@ Der lokale Ablauf benötigt keine bezahlte API, aber getrennte Kunden-/Ladenkont
 
 Profil → **Partner** zeigt FES, foodsharing, Vytal, Transdev und traffiQ sowie Main-Lastenrad als Initiative aus der Region. Jede Karte öffnet die offizielle Website. Das foodsharing-Original-Logo liegt lokal unter `assets/partners/foodsharing.png` und erscheint auch im Essen-Filter sowie in Fairteiler-, Korb-, Verteilungs- und Saver-Kopfzeilen. Quelle: [offizielle Presse-Mediendatenbank](https://foodsharing.de/content?sub=presse).
 
+## Neu aus Main: Profil, Impact und Fotonachweis
+
+Das überarbeitete Onboarding, die Sprachauswahl im Globus-Knopf, Profil-/Datenansicht, Wochenanzeige, Globus und Mobilitätsexport sind integriert. Partner, Foodsharing-Übergaben und Mehrweg-Belege bleiben zugänglich. Die dunkelblaue Tab-Markierung bewegt sich zeitgesteuert innerhalb fester Grenzen; Web-Tabs und zentraler Scan verwenden native Browser-Schaltflächen.
+
+Das Formular „Anmelden“ aus Main bearbeitet das lokale Profil. Der passwortgeschützte Serverzugang für Übergaben und Rückgaben ist davon getrennt. „Ausloggen“ beendet auch die Serversitzung und leert ihren Anzeigecache. Die lokale Löschfunktion entfernt keine Serverkonten und keine bestätigten Belege.
+
+**Scan → Müll aufgehoben**: Vorher-Foto aufnehmen, 10–120 Minuten später ein Nachher-Foto. Jede Aufnahme braucht einen frischen, ausreichend genauen Standort; der Demo-Kartenpunkt zählt nicht. Gleiche oder bereits verwendete Bildfingerabdrücke werden abgelehnt. Kamera-/Standortfehler werden angezeigt. Die Prüfung gibt keine Punkte je Müllstück und ist keine externe FES-Bestätigung. Im Browser kann die Systemauswahl Dateien anbieten; native Geräte öffnen die Kamera. Native Bilddigests erkennen identische Dateien, keine neu abfotografierten Bilder.
+
 ## Gezielte Prüfungen
 
 ```bash
 npm run typecheck
+npm run trust:test
+npm run test:proofs
 node tools/check-ai.cjs
 npx expo export --platform ios --platform android --platform web
 # Optional: kleine echte API-Anfragen mit dem vorhandenen Schlüssel

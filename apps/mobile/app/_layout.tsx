@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -12,15 +12,23 @@ import { C, CONTEXT } from '@/theme';
 
 export default function RootLayout() {
   const onboarded = useStore((s) => s.onboarded);
-  const hydrated = useStore.persist?.hasHydrated?.() ?? true;
+  const [hydrated, setHydrated] = useState(false);
   const router = useRouter();
   const segments = useSegments();
   const { toast, showToast, why, showWhy, ctx } = useUI();
 
   useEffect(() => {
+    // Wait for persisted state and React hydration before deciding on a redirect.
+    const unsubscribe = useStore.persist.onFinishHydration(() => setHydrated(true));
+    setHydrated(useStore.persist.hasHydrated());
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
     if (!hydrated) return;
     const inOnb = segments[0] === 'onboarding';
-    if (!onboarded && !inOnb) router.replace('/onboarding');
+    const inAuth = inOnb || segments[0] === 'anmelden';
+    if (!onboarded && !inAuth) router.replace('/onboarding');
     if (onboarded && inOnb) router.replace('/(tabs)');
   }, [onboarded, segments[0], hydrated]);
 
@@ -40,6 +48,7 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: C.bg }, animation: 'slide_from_right' }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
+            <Stack.Screen name="anmelden" options={{ animation: 'fade' }} />
             <Stack.Screen name="fahrt" options={{ animation: 'slide_from_bottom' }} />
             <Stack.Screen name="mehrweg" />
             <Stack.Screen name="fairteiler/[id]" />
