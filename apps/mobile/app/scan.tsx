@@ -54,9 +54,6 @@ function Chooser() {
     { mode: 'vytal', icon: 'cafe', t: 'Mehrweg-Behälter', s: 'Code auf dem Behälter scannen' },
     { mode: 'vytal-return', icon: 'return-down-back', t: 'Mehrweg zurückgeben', s: 'Rückgabe-QR vom Personal scannen', href:'/rueckgabe' },
     { mode: 'food-handover', icon:'basket', t:'Lebensmittel übergeben', s:'Abholung & persönlichen QR-Code öffnen', href:'/uebergaben?mine=1' },
-    { mode: 'bin', icon: 'trash', t: 'FES-Behälter', s: 'Aufkleber am Papierkorb antippen' },
-    { mode: 'peer', icon: 'people', t: 'Clean-up-Partner', s: 'Code vom anderen Handy scannen' },
-    { mode: 'litter', icon: 'camera', t: 'Müll aufgehoben', s: 'Vorher/Nachher belegen' },
   ];
   return (
     <Screen tabBar={false}>
