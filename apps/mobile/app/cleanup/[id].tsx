@@ -27,7 +27,6 @@ export default function CleanupScreen() {
   const { setCtx, showToast } = useUI();
   const [before, setBefore] = useState<string | null>(null);
   const [after, setAfter] = useState<string | null>(null);
-  const [fesConfirmed, setFes] = useState(false);
   useEffect(() => { setCtx('clean'); }, []);
 
   if (id === 'list') return <CleanupList />;
@@ -51,17 +50,16 @@ export default function CleanupScreen() {
       { ok: inWindow, t: inWindow ? 'Innerhalb des Zeitfensters' : 'Außerhalb des Zeitfensters' },
       { ok: peers.length >= 1, t: peers.length ? `Gegenseitig bestätigt von ${peers.join(', ')}` : 'Noch keine gegenseitige Bestätigung' },
       { ok: !!before && !!after, t: before && after ? 'Vorher/Nachher-Foto vorhanden (Perceptual-Hash geprüft, keine Dublette)' : 'Vorher/Nachher-Foto fehlt' },
-      { ok: fesConfirmed, t: fesConfirmed ? 'FES hat die Sackabholung bestätigt' : 'FES-Bestätigung steht aus' },
     ];
     const strong = checks[0].ok && checks[1].ok && checks[2].ok;
-    const status = fesConfirmed && strong ? 'bestätigt' : strong ? 'schwach plausibel' : checks[0].ok || checks[2].ok ? 'selbst angegeben' : 'nicht zuordenbar';
+    const status = strong ? 'schwach plausibel' : checks[0].ok || checks[2].ok ? 'selbst angegeben' : 'nicht zuordenbar';
     showToast(addAward({ type: 'clean.participate', partner: 'fes', status, key: `cleanup:${cu.id}:${name}`, at: Date.now(), title: cu.title, meta: { source: 'geofence+peer+foto+fes', evidence: checks.map((c) => `${c.ok ? '✓' : '✗'} ${c.t}`) } }));
     router.replace('/(tabs)/impact');
   }
 
   return (
     <Screen tabBar={false}>
-      <Header title={cu.title} subtitle={`${cu.district} · ${cu.organizer}`} color={col} />
+      <Header title={cu.title} subtitle={cu.district} color={col} />
       <View style={{ height: 190, borderRadius: 22, overflow: 'hidden' }}>
         <Map center={{ lat: cu.lat, lon: cu.lon }} spanKm={1.6} userLocation={loc} interactive={false} circles={[{ lat: cu.lat, lon: cu.lon, radius: cu.radiusM, color: col }]} markers={[{ id: 'c', lat: cu.lat, lon: cu.lon, color: col, emoji: '🧹', selected: true }]} />
       </View>
@@ -69,8 +67,7 @@ export default function CleanupScreen() {
         <Text style={{ fontWeight: '800', color: col, fontSize: 16 }}>{new Date(cu.start).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}–{new Date(cu.end).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</Text>
         <Row style={{ gap: 8 }}><Tag label={`${cu.participants + (joined ? 1 : 0)} dabei`} color={col} /><Pressable onPress={() => openRoute(cu.lat, cu.lon, cu.title)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: col, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999 }}><Ionicons name="navigate" size={15} color="#fff" /><Text style={{ color: '#fff', fontWeight: '800' }}>Route</Text></Pressable></Row>
       </Row>
-      <Text style={[T.body, { marginTop: 6 }]}>{cu.description}</Text>
-      <Text style={T.small}>Material: {cu.material} · {fmtDist(dist)} entfernt · {inFence ? 'du bist im Aktionsgebiet' : 'außerhalb des Gebiets'}</Text>
+      <Text style={[T.small, { marginTop: 6 }]}>{fmtDist(dist)} entfernt · {inFence ? 'du bist im Aktionsgebiet' : 'außerhalb des Gebiets'}</Text>
 
       {!joined ? (
         <Appear delay={60}><View style={{ marginTop: 14 }}><Button label="Mitmachen" color={col} icon="🙋" onPress={() => { joinCleanup(cu.id); haptic('success'); }} /></View></Appear>
@@ -93,7 +90,6 @@ export default function CleanupScreen() {
           <Appear delay={60}>
             <Card>
               <Text style={T.h3}>2 · Vorher / Nachher</Text>
-              <Text style={T.small}>Gleicher Standpunkt, 10–120 min Abstand. Fotos werden ohne EXIF gespeichert und gegen Dubletten geprüft.</Text>
               <Row style={{ marginTop: 10, gap: 8 }}>
                 {[['Vorher', before, setBefore], ['Nachher', after, setAfter]].map(([l, v, s]: any) => (
                   <View key={l} style={{ flex: 1 }}>
@@ -104,20 +100,10 @@ export default function CleanupScreen() {
               </Row>
             </Card>
           </Appear>
-          <Appear delay={120}>
-            <Card>
-              <Text style={T.h3}>3 · FES bestätigt die Abholung</Text>
-              <Text style={T.small}>FES stellt Material und holt die Säcke ab. Diese Abholung ist der Nachweis, der den Multiplikator auf 1,0 hebt. Ohne FES bleibt es bei 0,4.</Text>
-              <Row style={{ marginTop: 10, gap: 8 }}>
-                <Button label={fesConfirmed ? 'FES: Säcke abgeholt ✓' : 'FES-Abholung bestätigen'} color={fesConfirmed ? C.success : col} variant={fesConfirmed ? 'solid' : 'soft'} onPress={() => { setFes(true); haptic('success'); }} style={{ flex: 1, paddingVertical: 10 }} />
-              </Row>
-            </Card>
-          </Appear>
           <Appear delay={180}>
             <Card style={{ backgroundColor: C.ink }}>
               <Text style={[T.label, { color: '#ffffff99' }]}>Nachweis-Status jetzt</Text>
-              <Row style={{ marginTop: 6, gap: 8 }}><StatusBadge status={fesConfirmed && inFence && inWindow && peers.length ? 'bestätigt' : inFence && inWindow && peers.length ? 'schwach plausibel' : 'selbst angegeben'} /><Text style={{ color: '#ffffffcc', fontSize: 12 }}>60 Basispunkte × Multiplikator</Text></Row>
-              <Text style={{ color: '#ffffffbb', fontSize: 12, marginTop: 8 }}>Punkte pro Person, nicht pro Sack. Mehr Müll ist kein Hebel. Das ist unsere Antwort auf den Kobra-Effekt.</Text>
+              <Row style={{ marginTop: 6, gap: 8 }}><StatusBadge status={inFence && inWindow && peers.length ? 'schwach plausibel' : 'selbst angegeben'} /><Text style={{ color: '#ffffffcc', fontSize: 12 }}>60 Basispunkte × Multiplikator</Text></Row>
               <View style={{ marginTop: 12 }}><Button label={already ? 'Bereits gewertet' : 'Teilnahme werten'} color={col} disabled={already} onPress={claim} /></View>
             </Card>
           </Appear>
@@ -163,7 +149,7 @@ function CleanupList() {
               <Card onPress={() => router.push(`/cleanup/${c.id}`)} style={{ borderLeftWidth: 5, borderLeftColor: live ? C.success : col }}>
                 <Row style={{ justifyContent: 'space-between' }}><Text style={T.h3} numberOfLines={1}>{c.title}</Text>{live && <Tag label="läuft jetzt" color={C.success} />}</Row>
                 <Text style={T.small}>{new Date(c.start).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} · {c.district} · {fmtDist(d)}</Text>
-                <Row style={{ marginTop: 6, gap: 6 }}><Tag label={`${c.participants} dabei`} /><Tag label={c.material} color={col} />{joinedCleanups.includes(c.id) && <Tag label="du bist dabei" color={C.success} />}</Row>
+                <Row style={{ marginTop: 6, gap: 6 }}><Tag label={`${c.participants} dabei`} />{joinedCleanups.includes(c.id) && <Tag label="du bist dabei" color={C.success} />}</Row>
               </Card>
             </Appear>
           );

@@ -6,7 +6,7 @@ export const CONTEXT = {
   mobility: { color: '#2F6BFF', soft: '#E4ECFF', name: 'Ride2Impact' },
   food: { color: '#2FB55C', soft: '#E1F6E8', name: 'Save2Share' },
   reuse: { color: '#12B5B0', soft: '#DDF6F4', name: 'Smart Mehrweg' },
-  clean: { color: '#FF8A2A', soft: '#FFEBDD', name: 'Sauberes Frankfurt' },
+  clean: { color: '#17427F', soft: '#E4EAF6', name: 'Sauberes Frankfurt' },
   community: { color: '#7C4DFF', soft: '#ECE5FF', name: 'Gemeinsam' },
 } as const;
 export type ContextKey = keyof typeof CONTEXT;

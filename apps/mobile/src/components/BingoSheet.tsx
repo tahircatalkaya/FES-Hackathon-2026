@@ -105,7 +105,6 @@ export function BingoSheet({ open, onClose }: { open: boolean; onClose: () => vo
               </Pressable>
             ))}
           </View>
-          <Text style={[T.small, { marginTop: 8 }]}>Fotos bleiben auf deinem Gerät. Freiwillig, sie verändern die Punkte nicht.</Text>
 
           <Pressable onPress={() => { haptic(); setConfirmed((v) => !v); setHint(''); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: S.md, padding: S.md, borderRadius: R.md, borderWidth: 2, borderColor: confirmed ? C.leaf : C.line, backgroundColor: confirmed ? C.leaf + '14' : '#fff' }}>
             <View style={{ width: 26, height: 26, borderRadius: 8, borderWidth: 2, borderColor: confirmed ? C.success : C.line, backgroundColor: confirmed ? C.success : '#fff', alignItems: 'center', justifyContent: 'center' }}>
