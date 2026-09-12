@@ -103,7 +103,7 @@ export default function Impact() {
           <Divider />
           <Row style={{ gap: 8 }}>
             <Stat label="bestätigt" value={String(confirmed)} color={C.success} />
-            <Stat label="plausibel" value={String(plausible)} color={C.mobility} />
+            <Stat label="plausibel" value={String(plausible)} color={C.info} />
             <Stat label="eigenangabe" value={String(selfR)} color={C.muted} />
           </Row>
           <Text style={[T.small, { marginTop: 8 }]}>Bestätigte Daten, Nutzereingaben und Schätzwerte bleiben getrennt.</Text>

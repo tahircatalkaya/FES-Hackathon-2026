@@ -140,6 +140,17 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
   return <Pressable onPress={onPress}>{body}</Pressable>;
 }
 
+/** Belohnungsclip zum Einbauen in andere Karten, spielt einmal ab. */
+export function ClipPlayer({ clip = 'clean', style }: { clip?: ClipName; style?: any }) {
+  const c = CLIPS[clip];
+  const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; });
+  useEffect(() => {
+    const t = setTimeout(() => { player.currentTime = 0; player.play(); }, 50);
+    return () => { clearTimeout(t); player.pause(); };
+  }, []);
+  return <VideoView player={player} style={[{ width: '100%', aspectRatio: c.ratio }, style]} contentFit="cover" nativeControls={false} />;
+}
+
 /** Kachel im Stil einer Lernapp: farbiger Rahmen, Label oben, Wert groß. */
 function StatTile({ label, value, color, delay }: { label: string; value: string; color: string; delay: number }) {
   return (
@@ -158,6 +169,10 @@ export function CelebrationOverlay({
   points,
   duplicate,
   pending,
+  note,
+  headline: headlineOverride,
+  tileLabel,
+  tileValue,
   clip = 'clean',
   onClose,
 }: {
@@ -166,6 +181,12 @@ export function CelebrationOverlay({
   duplicate?: boolean;
   /** Gutschrift wartet auf eine Bestätigung, statt am Tagesdeckel zu hängen. */
   pending?: boolean;
+  /** Eigene Erklärung, wenn null Punkte keinen der beiden Standardgründe haben. */
+  note?: string;
+  /** Eigene Überschrift und Kachel, etwa für eine bestätigte Fahrt ohne neue Punkte. */
+  headline?: string;
+  tileLabel?: string;
+  tileValue?: string;
   clip?: ClipName;
   onClose: () => void;
 }) {
@@ -179,7 +200,8 @@ export function CelebrationOverlay({
     const pool = FUN_FACTS.filter((f) => !f.topic || f.topic === clip);
     return pool[Math.floor(Math.random() * pool.length)];
   }, [open, clip]);
-  const headline = duplicate ? 'Heute schon eingetragen' : earned > 0 ? 'Stark gemacht!' : 'Eingetragen';
+  const headline = headlineOverride ?? (duplicate ? 'Heute schon eingetragen' : earned > 0 ? 'Stark gemacht!' : 'Eingetragen');
+  const tile = tileValue ? { label: tileLabel ?? 'IMPACT', value: tileValue } : { label: 'PUNKTE', value: duplicate ? '+0' : `+${earned}` };
 
   useEffect(() => {
     if (!open) return;
@@ -200,16 +222,20 @@ export function CelebrationOverlay({
             </Animated.Text>
 
             <View style={{ flexDirection: 'row', width: 172, marginTop: S.md }}>
-              <StatTile label="PUNKTE" value={duplicate ? '+0' : `+${earned}`} color="#FF6A00" delay={180} />
+              <StatTile label={tile.label} value={tile.value} color="#FF6A00" delay={180} />
             </View>
 
-            {duplicate ? (
+            {tileValue ? (
+              note ? <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>{note}</Text> : null
+            ) : duplicate ? (
               <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>Diese Challenge zählt einmal pro Tag. Morgen wieder.</Text>
             ) : earned > 0 ? null : (
               <Text style={[T.small, { marginTop: 10, textAlign: 'center' }]}>
-                {pending
-                  ? 'Die Punkte kommen, sobald die Teilnahme bestätigt ist.'
-                  : 'Für heute ist der Deckel in dieser Kategorie erreicht. Morgen zählt es wieder voll.'}
+                {note
+                  ? note
+                  : pending
+                    ? 'Die Punkte kommen, sobald die Teilnahme bestätigt ist.'
+                    : 'Für heute ist der Deckel in dieser Kategorie erreicht. Morgen zählt es wieder voll.'}
               </Text>
             )}
 

@@ -79,12 +79,12 @@ export function SectionTitle({ title, action, onAction, style }: { title: string
   return (
     <View style={[{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: S.md, marginTop: S.xl }, style]}>
       <Text style={T.h2}>{title}</Text>
-      {action ? <Pressable onPress={onAction}><Text style={{ color: C.mobility, fontWeight: '700' }}>{action}</Text></Pressable> : null}
+      {action ? <Pressable onPress={onAction}><Text style={{ color: C.info, fontWeight: '700' }}>{action}</Text></Pressable> : null}
     </View>
   );
 }
 
-export function Ring({ progress, size = 88, stroke = 10, color = C.mobility, track = '#EDEBE3', children }: { progress: number; size?: number; stroke?: number; color?: string; track?: string; children?: React.ReactNode }) {
+export function Ring({ progress, size = 88, stroke = 10, color = C.info, track = '#EDEBE3', children }: { progress: number; size?: number; stroke?: number; color?: string; track?: string; children?: React.ReactNode }) {
   const r = (size - stroke) / 2, circ = 2 * Math.PI * r;
   const p = useSharedValue(0);
   useEffect(() => { p.value = withTiming(Math.min(1, Math.max(0, progress)), { duration: 1100, easing: Easing.out(Easing.cubic) }); }, [progress]);

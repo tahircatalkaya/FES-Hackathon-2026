@@ -37,7 +37,7 @@ export default function Daten() {
       </Card>
       <Text style={[T.h2, { marginTop: S.xl }]}>So kennzeichnen wir Angaben</Text>
       <Card style={{ marginTop: 10 }}>
-        {[['bestätigt', 'Von einem Partner bestätigt, zum Beispiel Rückgabe im Laden', C.success], ['plausibel', 'Von der App geprüft, zum Beispiel Fahrt gegen den Fahrplan', C.mobility], ['selbst angegeben', 'Deine Angabe ohne Beleg', C.muted], ['geschätzt', 'CO₂-Werte aus Durchschnittsfaktoren', C.community]].map(([k, v, c]) => (
+        {[['bestätigt', 'Von einem Partner bestätigt, zum Beispiel Rückgabe im Laden', C.success], ['plausibel', 'Von der App geprüft, zum Beispiel Fahrt gegen den Fahrplan', C.info], ['selbst angegeben', 'Deine Angabe ohne Beleg', C.muted], ['geschätzt', 'CO₂-Werte aus Durchschnittsfaktoren', C.community]].map(([k, v, c]) => (
           <Row key={k} style={{ alignItems: 'flex-start', marginBottom: 8 }}><Tag label={k} color={c} /><Text style={[T.small, { flex: 1 }]}>{v}</Text></Row>
         ))}
       </Card>
