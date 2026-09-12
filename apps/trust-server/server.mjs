@@ -1,14 +1,15 @@
 import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
-import { randomBytes, randomInt, randomUUID, createHash, scrypt, timingSafeEqual } from 'node:crypto';
-import { promisify } from 'node:util';
+import { randomBytes, randomInt, randomUUID, createHash, timingSafeEqual } from 'node:crypto';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { reuseRoutes } from './reuse.mjs';
+import { shelfRoutes } from './shelves.mjs';
+import { pinCodes } from './pins.mjs';
+import { accountRoutes } from './accounts.mjs';
 import { award } from '../mobile/src/engine/reward.ts';
 
-const derive = promisify(scrypt);
 const hash = value => createHash('sha256').update(value).digest('hex');
 const shelfIds = new Set(JSON.parse(readFileSync(new URL('../mobile/src/data/fairteiler.json',import.meta.url),'utf8')).map(p=>p.id));
 const DAY = 86400_000, CODE_TTL = 10 * 60_000;
@@ -36,14 +37,17 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
   const run = (sql, ...args) => db.prepare(sql).run(...args);
   const transaction = fn => { db.exec('BEGIN IMMEDIATE'); try { const result = fn(); db.exec('COMMIT'); return result; } catch (e) { db.exec('ROLLBACK'); throw e; } };
   const username = id => get('SELECT name FROM users WHERE id=?', id)?.name ?? 'Person';
-  const foodAwards = actor => all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload));
-  const reuse = reuseRoutes({ db, get, all, run, transaction, now, fail, fields, text, limit, foodAwards });
+  const foodAwards = actor => [...all('SELECT payload FROM awards WHERE user_id=?', actor).map(a => JSON.parse(a.payload)),...shelves.awards(actor)];
+  const accounts = accountRoutes({db,get,all,run,transaction,now,fail,fields,text,limit});
+  const pins = pinCodes({db,get,run,now,fail});
+  const reuse = reuseRoutes({ db, get, all, run, transaction, now, fail, fields, text, limit, foodAwards, isGuest:accounts.isGuest, pins });
   // Additive migrations retain existing accounts, appointments and receipts.
   const addColumn = (table, name, type) => { if (!all(`PRAGMA table_info(${table})`).some(c=>c.name===name)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${type}`); };
   addColumn('offers','slot_minutes','INTEGER');
   addColumn('handoffs','slot_start','INTEGER'); addColumn('handoffs','slot_end','INTEGER');
   addColumn('handoffs','reserve_expires','INTEGER'); addColumn('handoffs','ticket_hash','TEXT'); addColumn('handoffs','ticket_expires','INTEGER');
   db.exec(`CREATE TABLE IF NOT EXISTS shelf_updates(id TEXT PRIMARY KEY, point_id INTEGER NOT NULL, actor TEXT NOT NULL REFERENCES users(id), kind TEXT NOT NULL, fill TEXT NOT NULL, items TEXT NOT NULL, created INTEGER NOT NULL, request_key TEXT NOT NULL, UNIQUE(actor,request_key));`);
+  const shelves = shelfRoutes({db,get,all,run,transaction,now,fail,fields,text,pins,isGuest:accounts.isGuest,ledger:actor=>[...foodAwards(actor),...reuse.awards(actor)]});
   const slotOffer = (h,o) => ({...o,starts:h.slot_start??o.starts,ends:h.slot_end??o.ends});
   function slots(o) {
     if(!o.slot_minutes) return [];
@@ -74,7 +78,7 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
   function reputation(id) {
     // One contribution per counterpart, latest first. Blind until both submit or 14 days pass.
     const rows = all(`SELECT r.* FROM reviews r JOIN handoffs h ON h.id=r.handoff_id
-      WHERE r.target=? AND ((SELECT COUNT(*) FROM reviews x WHERE x.handoff_id=r.handoff_id)=2 OR h.completed<=?) ORDER BY r.created DESC`, id, now() - 14 * DAY);
+      WHERE r.target=? AND r.reviewer IN (SELECT id FROM users WHERE guest=0) AND ((SELECT COUNT(*) FROM reviews x WHERE x.handoff_id=r.handoff_id)=2 OR h.completed<=?) ORDER BY r.created DESC`, id, now() - 14 * DAY);
     const unique = [...new Map(rows.toReversed().map(r => [r.reviewer, r])).values()];
     if (unique.length < 3) return { count: unique.length, visible: false };
     const avg = key => Math.round(unique.reduce((n, r) => n + r[key], 0) / unique.length * 10) / 10;
@@ -108,9 +112,9 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
     const event = { type, partner: 'foodsharing', status: 'bestätigt', key: `trust:${h.id}:${actor}`, at: now(), title: `${type === 'food.pickup' ? 'Abgeholt' : 'Übergeben'}: ${o.title}`,
       meta: { source: 'mainsam-server', handoffId: h.id, food_g: type === 'food.pickup' ? JSON.parse(o.items).reduce((n, i) => n + i.grams, 0) : 0, evidence: ['Übergabecode innerhalb des vereinbarten Zeitfensters eingelöst', 'Empfang und Übergabe von zwei getrennten Konten bestätigt', 'Mengen sind Schätzungen; Foto und Audio dienen zur Erfassung'] } };
     const result = award(event, ledger, { verifiedFood: true });
-    if (recentPair || dailyRole >= 2) {
+    if (recentPair || dailyRole >= 2 || accounts.isGuest(actor) || accounts.isGuest(other)) {
       result.points = 0; result.multiplier = 0; result.formula = 'Wiederholungsgrenze → 0 Punkte';
-      result.reasons.push(recentPair ? 'Mit derselben Person gibt es innerhalb von sieben Tagen nur einmal Punkte.' : 'Höchstens zwei gewertete Übergaben pro Rolle und Tag.');
+      result.reasons.push(accounts.isGuest(actor)||accounts.isGuest(other) ? 'Gastübergabe: Essen teilen ohne Anmeldung; keine einlösbaren Punkte für beide Seiten.' : recentPair ? 'Mit derselben Person gibt es innerhalb von sieben Tagen nur einmal Punkte.' : 'Höchstens zwei gewertete Übergaben pro Rolle und Tag.');
     }
     // The same food must never count twice across provider and recipient.
     if (type !== 'food.pickup') { result.impact.food_g = 0; result.impact.co2_g = 0; }
@@ -132,37 +136,17 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
       return offerView({ ...o, slot_minutes:minutes, remaining: o.portions }, actor);
   }
   async function dispatch(method, path, body, actor, ip) {
-    if (method === 'GET' && path === '/health') return { ok: true, version: 1 };
-    if (method === 'POST' && ['/register','/login'].includes(path)) {
-      fields(body, ['name','password']); limit(`auth:${ip}`, 30, 10 * 60_000);
-      const name = text(body.name, 24, 3).toLowerCase();
-      if (!/^[a-z0-9._-]+$/.test(name)) fail(422, 'Benutzername: 3–24 Buchstaben, Zahlen, Punkt, Bindestrich oder Unterstrich.');
-      const password = text(body.password, 128, 10);
-      let u = get('SELECT * FROM users WHERE name=?', name);
-      if (path === '/register') {
-        limit(`register:${ip}`, 10, DAY);
-        if (u) fail(409, 'Dieser Benutzername ist bereits vergeben.');
-        const salt = randomBytes(16).toString('hex');
-        const digest = (await derive(password, salt, 64)).toString('hex');
-        u = { id: randomUUID(), name, salt, password: digest };
-        // Another request can finish the asynchronous password hash first.
-        if (get('SELECT 1 FROM users WHERE name=?', name)) fail(409, 'Dieser Benutzername ist bereits vergeben.');
-        run('INSERT INTO users VALUES(?,?,?,?)', u.id, name, salt, digest);
-      } else {
-        const digest = await derive(password, u?.salt ?? 'invalid-user-salt', 64);
-        if (!u || !timingSafeEqual(digest, Buffer.from(u.password, 'hex'))) fail(401, 'Benutzername oder Passwort stimmt nicht.');
-      }
-      const token = randomBytes(32).toString('hex');
-      run('INSERT INTO sessions VALUES(?,?,?)', hash(token), u.id, now() + 30 * DAY);
-      return { token, user: { id: u.id, name: u.name } };
-    }
+    if (method === 'GET' && path === '/health') return { ok: true, version: 2 };
+    if (method === 'POST' && ['/register','/login','/guest'].includes(path)) return accounts.dispatch(path,body,actor,ip);
+    if (method === 'GET' && path === '/offers' && !actor) return all('SELECT * FROM offers WHERE ends>? ORDER BY created DESC LIMIT 100',now()).map(o=>offerView(o,null));
     if(method==='GET' && /^\/shelves(\/\d+)?$/.test(path)) {
       const point=path.split('/')[2];
       const rows=point?all('SELECT * FROM shelf_updates WHERE point_id=? ORDER BY created DESC LIMIT 20',Number(point)):all("SELECT * FROM shelf_updates WHERE kind='shelf' AND id IN (SELECT id FROM shelf_updates s WHERE kind='shelf' AND created=(SELECT MAX(created) FROM shelf_updates WHERE point_id=s.point_id AND kind='shelf')) ORDER BY created DESC LIMIT 100");
       return rows.map(r=>({id:r.id,pointId:r.point_id,kind:r.kind,fill:r.fill,items:JSON.parse(r.items),at:r.created}));
     }
     if (!actor) fail(401, 'Bitte anmelden.');
-    if (method === 'GET' && path === '/me') return { user: { id: actor, name: username(actor) }, reputation: reputation(actor), awards: [...foodAwards(actor),...reuse.awards(actor)], merchantStores:reuse.stores(actor) };
+    if (method === 'GET' && path === '/me') return { user: accounts.userView(actor), reputation: reputation(actor), awards: [...foodAwards(actor),...reuse.awards(actor)], merchantStores:reuse.stores(actor), shelfStores:shelves.stores(actor) };
+    if(path.startsWith('/shelf-actions')) {const result=shelves.dispatch(method,path,body,actor);if(result!==undefined)return result;}
     if(path.startsWith('/reuse/')) { const result=reuse.dispatch(method,path,body,actor); if(result!==undefined) return result; }
     if (method === 'GET' && path === '/offers') return all('SELECT * FROM offers WHERE owner=? OR (ends>?) ORDER BY created DESC LIMIT 100', actor, now()).map(o => offerView(o, actor));
     if (method === 'GET' && path === '/handoffs') return all('SELECT h.* FROM handoffs h JOIN offers o ON h.offer_id=o.id WHERE o.owner=? OR h.receiver=? ORDER BY h.created DESC LIMIT 100', actor, actor).map(h => view(h, get('SELECT * FROM offers WHERE id=?', h.offer_id), actor));
@@ -205,12 +189,17 @@ export function createTrustServer({ dbPath = ':memory:', now = Date.now, allowed
         if(h.status!=='accepted'||now()<o.starts||now()>o.ends) fail(409,'Dein Abholcode ist nur zum zugesagten Termin verfügbar.');
         limit(`ticket:${h.id}`,10,60000);
         const secret=randomBytes(24).toString('hex'),expires=Math.min(now()+5*60000,o.ends);
+        const code=pins.issue(`food:${h.id}`,expires);
         run('UPDATE handoffs SET ticket_hash=?,ticket_expires=? WHERE id=?',hash(secret),expires,h.id);
-        return {proof:`mainsam:food:${h.id}:${secret}`,expiresAt:expires};
+        return {proof:`mainsam:food:${h.id}:${secret}`,code,expiresAt:expires};
       }
       if(actor!==o.owner) fail(403,'Nur die anbietende Person kann diese Übergabe abschließen.');
-      const match=text(body.proof,200).match(/^mainsam:food:([a-f0-9-]{36}):([a-f0-9]{48})$/);
-      if(!match||match[1]!==h.id||!h.ticket_hash||!timingSafeEqual(Buffer.from(hash(match[2])),Buffer.from(h.ticket_hash))) fail(422,'Dieser Abholcode gehört nicht zu dieser Zusage.');
+      const value=text(body.proof,200);
+      if(/^\d{4}$/.test(value)) { if(h.status!=='accepted') fail(409,'Diese Übergabe wurde bereits abgeschlossen.'); pins.verify(`food:${h.id}`,value); }
+      else {
+        const match=value.match(/^mainsam:food:([a-f0-9-]{36}):([a-f0-9]{48})$/);
+        if(!match||match[1]!==h.id||!h.ticket_hash||!timingSafeEqual(Buffer.from(hash(match[2])),Buffer.from(h.ticket_hash))) fail(422,'Dieser Abholcode gehört nicht zu dieser Zusage.');
+      }
       if(h.status==='completed') return view(h,o,actor);
       if(h.status!=='accepted'||h.ticket_expires<=now()||now()<o.starts||now()>o.ends) fail(409,'Der Abholcode ist abgelaufen. Bitte vor Ort erneuern.');
       return transaction(()=>{

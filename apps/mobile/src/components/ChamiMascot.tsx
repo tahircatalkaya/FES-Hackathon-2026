@@ -143,11 +143,8 @@ export function ChamiMascot({ pose = 'classic', size = 150, onPress, style }: { 
 /** Belohnungsclip zum Einbauen in andere Karten, spielt einmal ab. */
 export function ClipPlayer({ clip = 'clean', style }: { clip?: ClipName; style?: any }) {
   const c = CLIPS[clip];
-  const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; });
-  useEffect(() => {
-    const t = setTimeout(() => { player.currentTime = 0; player.play(); }, 50);
-    return () => { clearTimeout(t); player.pause(); };
-  }, []);
+  // Expo owns release/unmount. A later effect cleanup must not touch the released player.
+  const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; p.play(); });
   return <VideoView player={player} style={[{ width: '100%', aspectRatio: c.ratio }, style]} contentFit="cover" nativeControls={false} />;
 }
 
@@ -192,7 +189,6 @@ export function CelebrationOverlay({
 }) {
   const { width } = useWindowDimensions();
   const c = CLIPS[clip];
-  const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; });
   const boxWidth = Math.min(width - 2 * S.lg, 520);
   const earned = points ?? 0;
   /** Tipp zum Bereich der Gutschrift, allgemeine Tipps passen überall. */
@@ -205,16 +201,15 @@ export function CelebrationOverlay({
 
   useEffect(() => {
     if (!open) return;
-    const start = setTimeout(() => { player.currentTime = 0; player.play(); }, 50);
     const stop = setTimeout(onClose, 9000);
-    return () => { clearTimeout(start); clearTimeout(stop); player.pause(); };
-  }, [open]);
+    return () => clearTimeout(stop);
+  }, [open, onClose]);
 
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable onPress={onClose} style={{ flex: 1, backgroundColor: 'rgba(15,20,15,0.72)', alignItems: 'center', justifyContent: 'center', padding: S.lg }}>
         <Animated.View entering={ZoomIn.duration(240)} style={[{ width: boxWidth, backgroundColor: '#fff', borderRadius: R.xl, overflow: 'hidden' }, shadow(3)]}>
-          <VideoView player={player} style={{ width: boxWidth, height: boxWidth / c.ratio }} contentFit="cover" nativeControls={false} />
+          {open && <ClipPlayer key={clip} clip={clip} style={{ width: boxWidth, height: boxWidth / c.ratio }} />}
 
           <View style={{ padding: S.lg, alignItems: 'center' }}>
             <Animated.Text entering={FadeIn.delay(120)} style={{ fontSize: 24, fontWeight: '900', color: C.ink, letterSpacing: -0.4, textAlign: 'center' }}>

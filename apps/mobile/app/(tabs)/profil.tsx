@@ -148,9 +148,13 @@ export default function Profile() {
         <Text style={T.small}>Konten und bestätigte Belege auf dem Server bleiben erhalten.</Text>
       </View>
 
+      <SectionTitle title="Dein Zugang" />
+      <Text style={T.body}>{s.accessMode==='guest'?'Du nutzt Mainsam als Gast. Essen bleibt ohne Registrierung zugänglich.':'Ein Zugang gilt für alle Bereiche der App. Deine E-Mail bleibt privat.'}</Text>
+      {s.accessMode==='guest'&&<Button label="Zugang einrichten" variant="soft" color={col} onPress={()=>router.push('/anmelden?register=1')}/>}
       <SectionTitle title="Foodsharing" />
       <Button label="Übergaben & Zuverlässigkeit" icon="🤝" variant="soft" color={col} onPress={() => router.push('/uebergaben')} style={{ marginBottom: 12 }} />
 
+      <Button label="Regalmeldungen & Betreuung" variant="soft" color={col} onPress={()=>router.push('/regalnachweise')} style={{marginBottom:12}}/>
       <SectionTitle title="Über Mainsam" />
       <Button label="Partner" icon="heart-circle-outline" variant="soft" color={col} onPress={() => router.push('/partner')} style={{ marginBottom: 12 }} />
       <Card>

@@ -1,3 +1,9 @@
+# App-Update: Einstieg und QR-Übergaben
+
+Start mit App und lokalem Server gemeinsam: **`npm run dev:lan`**. Alte Prozesse vorher mit Ctrl+C stoppen. Anmeldung mit Benutzername, E-Mail und Passwort nach dem Tutorial oder „Ohne Anmeldung weiter“. Zugangsdaten werden ausschließlich am App-Einstieg abgefragt. Innerhalb von Foodsharing und Mehrweg gelten dieselbe Sitzung und dieselben Rollen.
+
+Ortscodes öffnen Regal/Angebot/Restaurant, persönliche QR-Codes oder vier Ziffern bestätigen genau eine Aktion. Gastübergaben bleiben ohne einlösbare Punkte. Regalbetreuung und Ladenpersonal müssen vom Betreiber freigegeben werden. Details, Migration und Testgrenzen: [Einstieg und QR-Übergaben](../../docs/EINSTIEG-UND-QR-UEBERGABEN.md).
+
 # Mainsam – Frankfurt Impact Challenge (Team 01)
 
 Mobile-first Prototyp (Expo / React Native, iOS + Android + Web) für die FES Hackathon 2026 Aufgabe.
@@ -71,7 +77,7 @@ Die Demo verwendet weiterhin öffentliche Client-Umgebungsvariablen für KI-Schl
 
 Neu: Profil → **Übergaben & Zuverlässigkeit**. Ein lokaler Server speichert getrennte Konten, Lebensmittelposten mit eigenen Portionszahlen, fünfminütige Abholtermine und Bewertungen. Der Abholer zeigt seinen persönlichen, kurz gültigen QR; der Anbieter scannt ihn bei der tatsächlichen Übergabe. Kamera und Audio bleiben zur Erfassung erhalten. Punkte erst nach Bestätigung beider Personen; keine automatischen Zusagen oder Selbst-Freigaben mehr.
 
-Im App-Ordner zuerst `npm run trust:lan`, dann in einem zweiten Terminal `npm run start:lan`. Beide Geräte müssen dasselbe private Netz nutzen. Jede Person legt einen eigenen Zugang an. Der Treffpunkt erscheint nur nach Zusage, kurz vor dem Termin. [Ablauf, Tests und Grenzen](../trust-server/README.md).
+Im App-Ordner zuerst `npm run trust:lan`, dann in einem zweiten Terminal `npm run start:lan`. Beide Geräte müssen dasselbe private Netz nutzen. Gäste erhalten automatisch einen pseudonymen Zugang; reguläre Konten werden am App-Einstieg eingerichtet. Der Treffpunkt erscheint nur nach Zusage, kurz vor dem Termin. [Ablauf, Tests und Grenzen](../trust-server/README.md).
 
 Angemeldete Personen teilen Regal-Meldungen mit allen Nutzern; aktuelle Momentaufnahmen und spätere Änderungen erscheinen am Ort. Offene Regal-Meldungen ohne Gegenüber bleiben Eigenangaben ohne Punkte und bestätigten Impact. Alte Foodsharing-Gutschriften aus Selbstbestätigungen werden entsprechend gekennzeichnet. Für echte Prämieneinlösung ist zusätzlich ein serverseitiges Prämiensystem nötig; der lokale Dienst ist kein öffentlicher Produktionsbetrieb.
 

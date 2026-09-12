@@ -65,7 +65,9 @@
     "trust:start": "node ../trust-server/server.mjs",
     "trust:lan": "node ../trust-server/server.mjs --lan",
     "trust:test": "node --test ../trust-server/server.test.mjs",
-    "test:proofs": "node --test src/engine/litterproof.test.mjs"
+    "test:proofs": "node --test src/engine/litterproof.test.mjs",
+    "dev:lan": "node tools/dev-lan.cjs",
+    "test:session": "node tools/check-trust.cjs"
   },
   "private": true
 }

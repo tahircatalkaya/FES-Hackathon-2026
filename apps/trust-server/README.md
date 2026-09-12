@@ -1,3 +1,22 @@
+# Zentrale Anmeldung, Gäste und QR-Codes
+
+Die App fragt Zugangsdaten nur am Einstieg ab. `/register` benötigt `name`, `email`, `password` (10–128 Zeichen); `/login` akzeptiert E-Mail oder Benutzername im Feld `name` plus Passwort. Bestehende Konten ohne E-Mail bleiben nutzbar. `/guest` erstellt eine pseudonyme Sitzung ohne Registrierung. Beim Registrieren mit einer gültigen Gastsitzung bleiben die Nutzer-ID, Zusagen und Meldungen erhalten; alle bisherigen Gastsitzungen werden dabei ungültig. Gastbelege geben keine einlösbaren Punkte, auch nicht an die Gegenseite einer Foodsharing-Übergabe.
+
+Persönliche Tickets enthalten jetzt zusätzlich einen vierstelligen `code`. Dieser wird im bestehenden `proof`-Feld eingelöst, immer innerhalb einer bestimmten Zusage/Ausleihe. Neue Codes setzen Fehlversuche nicht zurück; maximal fünf PIN-Fehlversuche und zehn Ausstellungen pro Aktion. Die langen QR-Belege bleiben als Alternative gültig. Alle neuen Tabellen/Spalten werden additiv angelegt. Bestehende Datenbank behalten.
+
+Regalbetreuung freigeben, ausschließlich auf dem Server durch den Betreiber:
+
+```bash
+node merchant.mjs shelves
+node merchant.mjs grant-shelf BENUTZERNAME REGAL_ID
+# Entziehen:
+node merchant.mjs revoke-shelf BENUTZERNAME REGAL_ID
+```
+
+Das Konto muss regulär registriert sein. In der App unter **Profil → Regalmeldungen & Betreuung** erscheinen die zu prüfenden Aktionen. Ohne Betreuung darf weiterhin geteilt und abgeholt werden; es gibt dann keinen bestätigten Punktebeleg. Eine Bestätigung muss vor Ort auf tatsächlicher Beobachtung beruhen.
+
+[Gesamter Ablauf, QR-Formate und Grenzen](../../docs/EINSTIEG-UND-QR-UEBERGABEN.md). Die folgenden Abschnitte dokumentieren die weiterhin unterstützten bisherigen QR-/Sechs-Ziffern-Endpunkte; die aktuelle Oberfläche nutzt vier Ziffern oder den persönlichen QR.
+
 # Mainsam: Abholungen und Rückgaben
 
 Persistenter lokaler Server für Foodsharing-Zusagen, gemeinsame Regalmeldungen, Vytal-Rückgabebelege und Bewertungen. Node **22.18+**, keine kostenpflichtige API und keine zusätzlichen Server-Pakete. Daten bleiben in `data/trust.sqlite`; additive Migrationen erhalten vorhandene Konten, Zusagen und Belege.

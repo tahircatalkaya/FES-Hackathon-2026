@@ -6,7 +6,7 @@ const catalog = JSON.parse(readFileSync(new URL('../mobile/src/data/vytal-stores
 const hash = value => createHash('sha256').update(value).digest('hex');
 const DAY = 86400000;
 
-export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields, text, limit, foodAwards }) {
+export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields, text, limit, foodAwards, isGuest, pins }) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS merchants(user_id TEXT NOT NULL REFERENCES users(id), store_id TEXT NOT NULL, PRIMARY KEY(user_id,store_id));
     CREATE TABLE IF NOT EXISTS reuse_loans(id TEXT PRIMARY KEY, owner TEXT NOT NULL REFERENCES users(id), code TEXT NOT NULL, kind TEXT NOT NULL, store_id TEXT, store_name TEXT NOT NULL, borrowed INTEGER NOT NULL, returned INTEGER, return_store TEXT, damage TEXT, demo INTEGER NOT NULL DEFAULT 0);
@@ -63,17 +63,27 @@ export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields,
       run('UPDATE reuse_receipts SET expires=? WHERE loan_id=? AND consumed IS NULL',now(),l.id);
       const id=randomUUID(),secret=randomBytes(24).toString('hex'),expires=now()+180000;
       run('INSERT INTO reuse_receipts(id,loan_id,issuer,store_id,token_hash,expires) VALUES(?,?,?,?,?,?)',id,l.id,actor,body.storeId,hash(secret),expires);
-      return {proof:`mainsam:return:${id}:${secret}`,expiresAt:expires,loan:loanView(l),storeName:catalog.find(s=>s.id===body.storeId).name};
+      return {proof:`mainsam:return:${id}:${secret}`,code:pins.issue(`return:${l.id}`,expires),expiresAt:expires,loan:loanView(l),storeName:catalog.find(s=>s.id===body.storeId).name};
     });
-    if(method==='POST' && path==='/reuse/return') return transaction(()=>{
+    if(method==='POST' && path==='/reuse/return') {
       fields(body,['loanId','proof']); const l=owned(text(body.loanId,80),actor);
-      const match=text(body.proof,200).match(/^mainsam:return:([a-f0-9-]{36}):([a-f0-9]{48})$/);
-      if(!match) fail(422,'Das ist kein Rückgabebeleg. Bitte den frischen QR-Code nach der Annahme durch das Personal scannen.');
-      const r=get('SELECT * FROM reuse_receipts WHERE id=?',match[1]);
-      if(!r||r.loan_id!==l.id||!timingSafeEqual(Buffer.from(hash(match[2])),Buffer.from(r.token_hash))) fail(422,'Dieser Rückgabecode passt nicht zu deinem Behälter.');
+      const value=text(body.proof,200),short=/^\d{4}$/.test(value);
+      let r;
+      if(short) {
+        if(l.returned) fail(409,'Dieser Behälter ist bereits zurückgegeben.');
+        pins.verify(`return:${l.id}`,value);
+        r=get('SELECT * FROM reuse_receipts WHERE loan_id=? AND consumed IS NULL AND expires>? ORDER BY expires DESC LIMIT 1',l.id,now());
+      } else {
+        const match=value.match(/^mainsam:return:([a-f0-9-]{36}):([a-f0-9]{48})$/);
+        if(!match) fail(422,'Bitte den frischen Rückgabe-QR oder den vierstelligen Code vom Personal verwenden.');
+        r=get('SELECT * FROM reuse_receipts WHERE id=?',match[1]);
+        if(!r||r.loan_id!==l.id||!timingSafeEqual(Buffer.from(hash(match[2])),Buffer.from(r.token_hash))) fail(422,'Dieser Rückgabecode passt nicht zu deinem Behälter.');
+      }
+      if(!r) fail(409,'Kein aktueller Rückgabebeleg vorhanden.');
       if(r.consumed && l.returned) return {loan:loanView(l),awards:awards(actor),duplicate:true};
       if(l.returned||r.expires<=now()) fail(409,'Dieser Code ist abgelaufen oder bereits verwendet. Bitte das Personal um einen neuen Code bitten.');
       if(!get('SELECT 1 FROM merchants WHERE user_id=? AND store_id=?',r.issuer,r.store_id)) fail(403,'Diese Rücknahmestelle ist nicht mehr freigegeben.');
+      return transaction(()=>{
       run('UPDATE reuse_loans SET returned=?,return_store=? WHERE id=?',now(),r.store_id,l.id);
       run('UPDATE reuse_receipts SET consumed=? WHERE id=?',now(),r.id);
       const ledger=[...foodAwards(actor),...awards(actor)];
@@ -81,11 +91,12 @@ export function reuseRoutes({ db, get, all, run, transaction, now, fail, fields,
       if(!l.demo) for(const type of ['reuse.return',...(now()-l.borrowed<48*3600000?['reuse.return_fast']:[])]) {
         const key=`trust:reuse:${l.id}:${type}`;
         const result=award({type,partner:'vytal',status:'bestätigt',key,at:now(),title:type==='reuse.return_fast'?'Schnelle Rückgabe':`Rückgabe ${l.code}`,meta:{source:'mainsam-store',containers:type==='reuse.return'?1:0,kind:l.kind,evidence:[`Annahme durch freigegebene Rücknahmestelle ${catalog.find(s=>s.id===r.store_id).name}`,'Persönlicher, einmaliger Rückgabe-QR innerhalb von drei Minuten eingelöst','Mainsam-Beleg; keine Buchung im externen Vytal-Konto']}},ledger,{verifiedReuse:true});
-        if(repeated) {result.points=0;result.formula='Derselbe Behälter innerhalb von 24 Stunden → 0 Punkte';result.reasons.push(result.formula);}
+        if(repeated||isGuest(actor)) {result.points=0;result.formula=isGuest(actor)?'Gast-Rückgabe → Beleg ohne einlösbare Punkte':'Derselbe Behälter innerhalb von 24 Stunden → 0 Punkte';result.reasons.push(result.formula);}
         run('INSERT INTO reuse_awards VALUES(?,?,?)',key,actor,JSON.stringify(result));ledger.push(result);
       }
       return {loan:loanView({...l,returned:now(),return_store:r.store_id}),awards:awards(actor)};
-    });
+      });
+    }
   }
   return {dispatch,awards,stores};
 }
