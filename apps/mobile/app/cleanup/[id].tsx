@@ -101,9 +101,9 @@ export default function CleanupScreen() {
             </Card>
           </Appear>
           <Appear delay={180}>
-            <Card style={{ backgroundColor: C.ink }}>
-              <Text style={[T.label, { color: '#ffffff99' }]}>Nachweis-Status jetzt</Text>
-              <Row style={{ marginTop: 6, gap: 8 }}><StatusBadge status={inFence && inWindow && peers.length ? 'schwach plausibel' : 'selbst angegeben'} /><Text style={{ color: '#ffffffcc', fontSize: 12 }}>60 Basispunkte × Multiplikator</Text></Row>
+            <Card>
+              <Text style={T.label}>Nachweis-Status jetzt</Text>
+              <Row style={{ marginTop: 6, gap: 8 }}><StatusBadge status={inFence && inWindow && peers.length ? 'schwach plausibel' : 'selbst angegeben'} /></Row>
               <View style={{ marginTop: 12 }}><Button label={already ? 'Bereits gewertet' : 'Teilnahme werten'} color={col} disabled={already} onPress={claim} /></View>
             </Card>
           </Appear>
