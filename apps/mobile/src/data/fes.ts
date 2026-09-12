@@ -82,16 +82,16 @@ export function timeOptions() {
 
 /** Kurze Fakten und Alltagstipps, die nach einer Gutschrift eingeblendet werden. */
 export const FUN_FACTS: { icon: string; label: string; text: string; source?: string }[] = [
-  { icon: '🚬', label: 'Wusstest du?', text: 'Eine weggeworfene Kippe kann bis zu 40 Liter Wasser mit Schadstoffen belasten. Ein Taschenascher passt in jede Jackentasche.', source: 'Umweltbundesamt' },
-  { icon: '🌱', label: 'Tipp für morgen', text: 'Bioabfall ohne Plastiktüte sammeln. Zeitungspapier oder eine Papiertüte tun es auch und stören die Kompostierung nicht.' },
-  { icon: '🍕', label: 'Richtig trennen', text: 'Pizzakarton: sauberer Deckel ins Altpapier, der durchgefettete Boden in den Restmüll.' },
-  { icon: '🧾', label: 'Wusstest du?', text: 'Kassenbons sind meist Thermopapier. Die gehören in den Restmüll, nicht ins Altpapier.' },
-  { icon: '🔋', label: 'Tipp für morgen', text: 'Batterien nie in den Hausmüll. Jeder Laden, der Batterien verkauft, nimmt sie kostenlos zurück.' },
-  { icon: '☕', label: 'Kleine Gewohnheit', text: 'Eigener Becher statt To-go-Becher. Viele Frankfurter Cafés füllen ihn ohne Nachfrage.' },
-  { icon: '🍾', label: 'Richtig trennen', text: 'Blaues Glas kommt zum Grünglas. Grün verträgt Fehlfarben am besten.' },
-  { icon: '🛋️', label: 'Wusstest du?', text: 'Sperrmüll holt die FES nach Anmeldung ab. Einfach an die Straße stellen ist eine illegale Ablagerung.' },
-  { icon: '🕖', label: 'Kleine Gewohnheit', text: 'Altglas erst ab 7 Uhr einwerfen. Ruhezeiten gelten auch für Container.' },
-  { icon: '🗑️', label: 'Tipp für morgen', text: 'Viele Frankfurter Straßenmülleimer haben einen Ascher am Deckel. Kippe oben ablegen statt auf den Boden.' },
-  { icon: '🍂', label: 'Kleine Gewohnheit', text: 'Laub vom Gully vor der Tür wegkehren. Bei Starkregen läuft das Wasser dann ab, statt sich zu stauen.' },
-  { icon: '📦', label: 'Richtig trennen', text: 'Kartons flach falten, bevor sie ins Altpapier gehen. Sonst ist die Tonne voll, obwohl kaum etwas drin ist.' },
+  { icon: '🚬', label: 'Wusstest du?', text: 'Eine Kippe belastet bis zu 40 Liter Wasser.', source: 'Umweltbundesamt' },
+  { icon: '🌱', label: 'Tipp', text: 'Bioabfall in Papier wickeln, nie in Plastik.' },
+  { icon: '🍕', label: 'Trenn-Tipp', text: 'Pizzakarton: Deckel ins Altpapier, fettiger Boden in den Restmüll.' },
+  { icon: '🧾', label: 'Wusstest du?', text: 'Kassenbons sind Thermopapier und gehören in den Restmüll.' },
+  { icon: '🔋', label: 'Tipp', text: 'Batterien nimmt jeder Laden zurück, der welche verkauft.' },
+  { icon: '☕', label: 'Tipp', text: 'Eigener Becher statt To-go. Viele Cafés füllen ihn direkt.' },
+  { icon: '🍾', label: 'Trenn-Tipp', text: 'Blaues Glas kommt zum Grünglas.' },
+  { icon: '🛋️', label: 'Wusstest du?', text: 'Sperrmüll nur nach Anmeldung rausstellen, sonst ist es illegal.' },
+  { icon: '🕖', label: 'Tipp', text: 'Altglas erst ab 7 Uhr einwerfen.' },
+  { icon: '🗑️', label: 'Wusstest du?', text: 'Viele Frankfurter Mülleimer haben oben einen Ascher.' },
+  { icon: '🍂', label: 'Tipp', text: 'Laub vom Gully kehren hilft bei Starkregen.' },
+  { icon: '📦', label: 'Tipp', text: 'Kartons flach falten, dann passt dreimal so viel rein.' },
 ];

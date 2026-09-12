@@ -119,14 +119,60 @@ function Confetti({ index, width }: { index: number; width: number }) {
   );
 }
 
-/** Flamme, die pulsiert. */
-function Flame({ delay, size = 22 }: { delay: number; size?: number }) {
+/** Flamme am Badge: flackert hart, kippt hin und her und glüht. */
+function Flame({ delay, size = 30 }: { delay: number; size?: number }) {
   const f = useSharedValue(0);
   useEffect(() => {
-    f.value = withDelay(delay, withRepeat(withSequence(withTiming(1, { duration: 420 }), withTiming(0, { duration: 420 })), -1, false));
+    f.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 260, easing: Easing.out(Easing.quad) }),
+          withTiming(0.35, { duration: 180 }),
+          withTiming(0.85, { duration: 220 }),
+          withTiming(0, { duration: 300 }),
+        ),
+        -1,
+        false,
+      ),
+    );
   }, []);
-  const style = useAnimatedStyle(() => ({ transform: [{ scale: 0.88 + 0.28 * f.value }, { translateY: -3 * f.value }] }));
-  return <Animated.Text style={[{ fontSize: size }, style]}>🔥</Animated.Text>;
+  const style = useAnimatedStyle(() => ({
+    transform: [{ scale: 0.82 + 0.55 * f.value }, { translateY: -6 * f.value }, { rotate: `${-9 + 18 * f.value}deg` }],
+  }));
+  return <Animated.Text style={[{ fontSize: size, textShadowColor: '#FFD54F', textShadowRadius: 14 } as any, style]}>🔥</Animated.Text>;
+}
+
+/** Funke, der hinter dem Badge aufsteigt und verglüht. */
+function Spark({ index, width }: { index: number; width: number }) {
+  const p = useSharedValue(0);
+  const conf = useMemo(() => {
+    const rnd = (n: number) => ((Math.sin(index * 45.233 + n * 17.77) * 24634.6345) % 1 + 1) % 1;
+    return {
+      x: (rnd(1) - 0.5) * width * 0.62,
+      size: 14 + rnd(2) * 16,
+      rise: 60 + rnd(3) * 60,
+      duration: 900 + rnd(4) * 700,
+      delay: rnd(5) * 900,
+      drift: (rnd(6) - 0.5) * 34,
+    };
+  }, [index, width]);
+
+  useEffect(() => {
+    p.value = withDelay(conf.delay, withRepeat(withTiming(1, { duration: conf.duration, easing: Easing.out(Easing.quad) }), -1, false));
+  }, []);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: Math.min(1, p.value * 4) * (1 - p.value),
+    transform: [
+      { translateX: conf.x + conf.drift * p.value },
+      { translateY: 18 - conf.rise * p.value },
+      { scale: 1.05 - 0.65 * p.value },
+      { rotate: `${-12 + 24 * p.value}deg` },
+    ],
+  }));
+
+  return <Animated.Text pointerEvents="none" style={[{ position: 'absolute', fontSize: conf.size }, style]}>🔥</Animated.Text>;
 }
 
 /** Belohnung nach einer erledigten Tat: Clip, Punkte mit Feuer, dazu ein Tipp für den Alltag. */
@@ -154,7 +200,10 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
     return () => { clearTimeout(start); clearTimeout(stop); clearInterval(step); player.pause(); };
   }, [open]);
 
-  const glowStyle = useAnimatedStyle(() => ({ opacity: 0.25 + 0.35 * glow.value, transform: [{ scale: 1 + 0.12 * glow.value }] }));
+  /** Halo in zwei Schichten, damit der Rand weich wirkt, dazu der Puls des Badges. */
+  const haloOuter = useAnimatedStyle(() => ({ opacity: 0.1 + 0.14 * glow.value, transform: [{ scale: 1 + 0.14 * glow.value }] }));
+  const haloInner = useAnimatedStyle(() => ({ opacity: 0.18 + 0.2 * glow.value, transform: [{ scale: 1 + 0.08 * glow.value }] }));
+  const badgeStyle = useAnimatedStyle(() => ({ transform: [{ scale: 1 + 0.035 * glow.value }] }));
 
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
@@ -166,8 +215,10 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
             {earned > 0 ? (
               <>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Animated.View style={[{ position: 'absolute', width: boxWidth * 0.62, height: 74, borderRadius: 40, backgroundColor: '#FF6A00' }, glowStyle]} />
-                  <Animated.View entering={ZoomIn.springify().damping(9).delay(150)}>
+                  <Animated.View style={[{ position: 'absolute', width: boxWidth * 0.82, height: 104, borderRadius: 52, backgroundColor: '#FF2D55' }, haloOuter]} />
+                  <Animated.View style={[{ position: 'absolute', width: boxWidth * 0.6, height: 76, borderRadius: 38, backgroundColor: '#FF9500' }, haloInner]} />
+                  {open && Array.from({ length: 10 }).map((_, i) => <Spark key={`s${i}`} index={i} width={boxWidth} />)}
+                  <Animated.View entering={ZoomIn.springify().damping(9).delay(150)} style={badgeStyle}>
                     <LinearGradient
                       colors={['#FFB300', '#FF6A00', '#FF2D55']}
                       start={{ x: 0, y: 0 }}
@@ -176,7 +227,7 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
                     >
                       <Flame delay={0} />
                       <Text style={{ fontSize: 34, fontWeight: '900', color: '#fff', letterSpacing: -0.5 }}>+{count}</Text>
-                      <Flame delay={210} />
+                      <Flame delay={190} />
                     </LinearGradient>
                   </Animated.View>
                   {open && Array.from({ length: 16 }).map((_, i) => <Confetti key={i} index={i} width={boxWidth} />)}
