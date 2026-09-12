@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native';
-import Animated, { Easing, FadeIn, FadeInDown, ZoomIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
+import Animated, { Easing, FadeIn, ZoomIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { C, R, S, shadow } from '@/theme';
 import { FUN_FACTS } from '@/data/fes';
@@ -75,107 +74,7 @@ export function ChamiMascot({ size = 150, onPress, style }: { size?: number; onP
   return <Pressable onPress={onPress}>{body}</Pressable>;
 }
 
-const SPARK = ['#FFB300', '#FF6A00', '#FF3B30', '#7CCB4B', '#2F6BFF', '#FFD54F'];
-
-/** Ein Konfettiteilchen, das aus der Mitte nach oben schießt und wieder fällt. */
-function Confetti({ index, width }: { index: number; width: number }) {
-  const p = useSharedValue(0);
-  const conf = useMemo(() => {
-    const rnd = (n: number) => ((Math.sin(index * 12.9898 + n * 78.233) * 43758.5453) % 1 + 1) % 1;
-    return {
-      x: (rnd(1) - 0.5) * width * 0.9,
-      rise: 90 + rnd(2) * 130,
-      drift: (rnd(3) - 0.5) * 80,
-      delay: rnd(4) * 420,
-      size: 7 + rnd(5) * 7,
-      spin: 240 + rnd(6) * 540,
-      color: SPARK[Math.floor(rnd(7) * SPARK.length)],
-      round: rnd(8) > 0.6,
-    };
-  }, [index, width]);
-
-  useEffect(() => {
-    p.value = withDelay(conf.delay, withTiming(1, { duration: 1500, easing: Easing.out(Easing.quad) }));
-  }, []);
-
-  const style = useAnimatedStyle(() => {
-    const t = p.value;
-    /** Wurfparabel: erst hoch, dann runter. */
-    const y = -conf.rise * (4 * t * (1 - t)) + 150 * t * t;
-    return {
-      opacity: t > 0.75 ? (1 - t) / 0.25 : 1,
-      transform: [{ translateX: conf.x + conf.drift * t }, { translateY: y }, { rotate: `${conf.spin * t}deg` }, { scale: 0.6 + 0.4 * Math.min(1, t * 4) }],
-    };
-  });
-
-  return (
-    <Animated.View
-      pointerEvents="none"
-      style={[
-        { position: 'absolute', width: conf.size, height: conf.round ? conf.size : conf.size * 1.7, borderRadius: conf.round ? conf.size : 2, backgroundColor: conf.color },
-        style,
-      ]}
-    />
-  );
-}
-
-/** Flamme am Badge: flackert hart, kippt hin und her und glüht. */
-function Flame({ delay, size = 30 }: { delay: number; size?: number }) {
-  const f = useSharedValue(0);
-  useEffect(() => {
-    f.value = withDelay(
-      delay,
-      withRepeat(
-        withSequence(
-          withTiming(1, { duration: 260, easing: Easing.out(Easing.quad) }),
-          withTiming(0.35, { duration: 180 }),
-          withTiming(0.85, { duration: 220 }),
-          withTiming(0, { duration: 300 }),
-        ),
-        -1,
-        false,
-      ),
-    );
-  }, []);
-  const style = useAnimatedStyle(() => ({
-    transform: [{ scale: 0.82 + 0.55 * f.value }, { translateY: -6 * f.value }, { rotate: `${-9 + 18 * f.value}deg` }],
-  }));
-  return <Animated.Text style={[{ fontSize: size, textShadowColor: '#FFD54F', textShadowRadius: 14 } as any, style]}>🔥</Animated.Text>;
-}
-
-/** Funke, der hinter dem Badge aufsteigt und verglüht. */
-function Spark({ index, width }: { index: number; width: number }) {
-  const p = useSharedValue(0);
-  const conf = useMemo(() => {
-    const rnd = (n: number) => ((Math.sin(index * 45.233 + n * 17.77) * 24634.6345) % 1 + 1) % 1;
-    return {
-      x: (rnd(1) - 0.5) * width * 0.62,
-      size: 14 + rnd(2) * 16,
-      rise: 60 + rnd(3) * 60,
-      duration: 900 + rnd(4) * 700,
-      delay: rnd(5) * 900,
-      drift: (rnd(6) - 0.5) * 34,
-    };
-  }, [index, width]);
-
-  useEffect(() => {
-    p.value = withDelay(conf.delay, withRepeat(withTiming(1, { duration: conf.duration, easing: Easing.out(Easing.quad) }), -1, false));
-  }, []);
-
-  const style = useAnimatedStyle(() => ({
-    opacity: Math.min(1, p.value * 4) * (1 - p.value),
-    transform: [
-      { translateX: conf.x + conf.drift * p.value },
-      { translateY: 18 - conf.rise * p.value },
-      { scale: 1.05 - 0.65 * p.value },
-      { rotate: `${-12 + 24 * p.value}deg` },
-    ],
-  }));
-
-  return <Animated.Text pointerEvents="none" style={[{ position: 'absolute', fontSize: conf.size }, style]}>🔥</Animated.Text>;
-}
-
-/** Belohnung nach einer erledigten Tat: Clip, Punkte mit Feuer, dazu ein Tipp für den Alltag. */
+/** Belohnung nach einer erledigten Tat: Clip, Punkte, dazu ein Tipp für den Alltag. */
 export function CelebrationOverlay({ open, title, points, onClose }: { open: boolean; title?: string; points?: number; onClose: () => void }) {
   const { width } = useWindowDimensions();
   const player = useVideoPlayer(CLIP, (p) => { p.loop = false; p.muted = true; });
@@ -183,27 +82,20 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
   const earned = points ?? 0;
   const [count, setCount] = useState(0);
   const fact = useMemo(() => FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)], [open]);
-  const glow = useSharedValue(0);
 
   useEffect(() => {
     if (!open) { setCount(0); return; }
     const start = setTimeout(() => { player.currentTime = 0; player.play(); }, 50);
-    /** Punkte zählen hoch, das macht die Gutschrift sichtbar. */
+    /** Punkte zählen einmal hoch, sonst bleibt alles ruhig. */
     let n = 0;
     const step = setInterval(() => {
-      n += Math.max(1, Math.ceil(earned / 14));
+      n += Math.max(1, Math.ceil(earned / 12));
       if (n >= earned) { n = earned; clearInterval(step); }
       setCount(n);
-    }, 45);
-    glow.value = withRepeat(withSequence(withTiming(1, { duration: 700 }), withTiming(0, { duration: 700 })), -1, false);
+    }, 55);
     const stop = setTimeout(onClose, 9000);
     return () => { clearTimeout(start); clearTimeout(stop); clearInterval(step); player.pause(); };
   }, [open]);
-
-  /** Halo in zwei Schichten, damit der Rand weich wirkt, dazu der Puls des Badges. */
-  const haloOuter = useAnimatedStyle(() => ({ opacity: 0.1 + 0.14 * glow.value, transform: [{ scale: 1 + 0.14 * glow.value }] }));
-  const haloInner = useAnimatedStyle(() => ({ opacity: 0.18 + 0.2 * glow.value, transform: [{ scale: 1 + 0.08 * glow.value }] }));
-  const badgeStyle = useAnimatedStyle(() => ({ transform: [{ scale: 1 + 0.035 * glow.value }] }));
 
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
@@ -214,25 +106,14 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
           <View style={{ padding: S.lg, alignItems: 'center' }}>
             {earned > 0 ? (
               <>
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Animated.View style={[{ position: 'absolute', width: boxWidth * 0.82, height: 104, borderRadius: 52, backgroundColor: '#FF2D55' }, haloOuter]} />
-                  <Animated.View style={[{ position: 'absolute', width: boxWidth * 0.6, height: 76, borderRadius: 38, backgroundColor: '#FF9500' }, haloInner]} />
-                  {open && Array.from({ length: 10 }).map((_, i) => <Spark key={`s${i}`} index={i} width={boxWidth} />)}
-                  <Animated.View entering={ZoomIn.springify().damping(9).delay(150)} style={badgeStyle}>
-                    <LinearGradient
-                      colors={['#FFB300', '#FF6A00', '#FF2D55']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 22, paddingVertical: 12, borderRadius: R.pill }}
-                    >
-                      <Flame delay={0} />
-                      <Text style={{ fontSize: 34, fontWeight: '900', color: '#fff', letterSpacing: -0.5 }}>+{count}</Text>
-                      <Flame delay={190} />
-                    </LinearGradient>
-                  </Animated.View>
-                  {open && Array.from({ length: 16 }).map((_, i) => <Confetti key={i} index={i} width={boxWidth} />)}
-                </View>
-                <Text style={{ fontSize: 17, fontWeight: '900', color: C.ink, marginTop: 12, textAlign: 'center' }}>
+                <Animated.View
+                  entering={ZoomIn.springify().damping(13).delay(140)}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 10, borderRadius: R.pill, backgroundColor: '#FF6A00' }}
+                >
+                  <Text style={{ fontSize: 18 }}>🔥</Text>
+                  <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: -0.5 }}>+{count}</Text>
+                </Animated.View>
+                <Text style={{ fontSize: 16, fontWeight: '900', color: C.ink, marginTop: 10, textAlign: 'center' }}>
                   {earned === 1 ? 'Punkt' : 'Punkte'} gutgeschrieben
                 </Text>
                 <Text style={[T.small, { marginTop: 2, textAlign: 'center' }]}>{title}</Text>
@@ -245,10 +126,10 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
             )}
 
             <Animated.View
-              entering={FadeInDown.delay(500)}
+              entering={FadeIn.delay(420)}
               style={{ flexDirection: 'row', gap: 10, alignSelf: 'stretch', marginTop: S.lg, padding: S.md, borderRadius: R.md, backgroundColor: C.clean + '12' }}
             >
-              <Text style={{ fontSize: 20 }}>{fact.icon}</Text>
+              <Text style={{ fontSize: 18 }}>{fact.icon}</Text>
               <View style={{ flex: 1 }}>
                 <Text style={T.label}>{fact.label}</Text>
                 <Text style={[T.body, { marginTop: 2 }]}>{fact.text}</Text>
@@ -256,7 +137,7 @@ export function CelebrationOverlay({ open, title, points, onClose }: { open: boo
               </View>
             </Animated.View>
 
-            <Animated.Text entering={FadeIn.delay(900)} style={[T.small, { marginTop: 10, color: C.muted }]}>Tippen zum Schließen</Animated.Text>
+            <Text style={[T.small, { marginTop: 10, color: C.muted }]}>Tippen zum Schließen</Text>
           </View>
         </Animated.View>
       </Pressable>
