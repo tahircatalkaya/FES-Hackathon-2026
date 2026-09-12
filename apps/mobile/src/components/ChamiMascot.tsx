@@ -6,8 +6,13 @@ import { C, R, S, shadow } from '@/theme';
 import { FUN_FACTS } from '@/data/fes';
 import { T } from './ui';
 
-const CLIP = require('../../assets/chami-celebrate.mp4');
-const CLIP_RATIO = 848 / 480;
+/** Belohnungsclips je Bereich. Ratio ist Breite durch Höhe der Datei. */
+const CLIPS = {
+  clean: { src: require('../../assets/chami-celebrate.mp4'), ratio: 848 / 480 },
+  food: { src: require('../../assets/chami-food.mp4'), ratio: 1 },
+  cup: { src: require('../../assets/chami-cup.mp4'), ratio: 1 },
+} as const;
+export type ClipName = keyof typeof CLIPS;
 
 /**
  * Die Posen aus dem Maskottchen-Sheet. `ratio` ist Breite durch Höhe der Datei,
@@ -151,18 +156,25 @@ export function CelebrationOverlay({
   open,
   points,
   duplicate,
+  clip = 'clean',
   onClose,
 }: {
   open: boolean;
   points?: number;
   duplicate?: boolean;
+  clip?: ClipName;
   onClose: () => void;
 }) {
   const { width } = useWindowDimensions();
-  const player = useVideoPlayer(CLIP, (p) => { p.loop = false; p.muted = true; });
+  const c = CLIPS[clip];
+  const player = useVideoPlayer(c.src, (p) => { p.loop = false; p.muted = true; });
   const boxWidth = Math.min(width - 2 * S.lg, 520);
   const earned = points ?? 0;
-  const fact = useMemo(() => FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)], [open]);
+  /** Tipp zum Bereich der Gutschrift, allgemeine Tipps passen überall. */
+  const fact = useMemo(() => {
+    const pool = FUN_FACTS.filter((f) => !f.topic || f.topic === clip);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }, [open, clip]);
   const headline = duplicate ? 'Heute schon eingetragen' : earned > 0 ? 'Stark gemacht!' : 'Eingetragen';
 
   useEffect(() => {
@@ -176,7 +188,7 @@ export function CelebrationOverlay({
     <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable onPress={onClose} style={{ flex: 1, backgroundColor: 'rgba(15,20,15,0.72)', alignItems: 'center', justifyContent: 'center', padding: S.lg }}>
         <Animated.View entering={ZoomIn.springify().damping(15)} style={[{ width: boxWidth, backgroundColor: '#fff', borderRadius: R.xl, overflow: 'hidden' }, shadow(3)]}>
-          <VideoView player={player} style={{ width: boxWidth, height: boxWidth / CLIP_RATIO }} contentFit="cover" nativeControls={false} />
+          <VideoView player={player} style={{ width: boxWidth, height: boxWidth / c.ratio }} contentFit="cover" nativeControls={false} />
 
           <View style={{ padding: S.lg, alignItems: 'center' }}>
             <Animated.Text entering={FadeIn.delay(120)} style={{ fontSize: 24, fontWeight: '900', color: C.ink, letterSpacing: -0.4, textAlign: 'center' }}>

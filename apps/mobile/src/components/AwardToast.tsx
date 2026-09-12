@@ -6,6 +6,7 @@ import { C, R, S, shadow } from '@/theme';
 import { StatusBadge, T, haptic, Counter, Button } from './ui';
 import { fmtCo2 } from '@/engine/impact';
 import Chameleon from './Chameleon';
+import { CelebrationOverlay } from './ChamiMascot';
 
 /**
  * Bestätigung nach jeder Aktion.
@@ -21,6 +22,12 @@ export default function AwardToast({ award, onWhy, onDone, color = C.success }: 
   }, [a]);
   if (!a) return null;
   const close = () => { setA(null); onDone(); };
+
+  /** Foodsharing und Vytal haben einen eigenen Clip, der wie im FES-Bereich als Belohnung läuft. */
+  const clip = a.partner === 'foodsharing' ? 'food' : a.partner === 'vytal' ? 'cup' : null;
+  if (clip && a.points > 0) {
+    return <CelebrationOverlay open points={a.points} clip={clip} onClose={close} />;
+  }
 
   if (a.points === 0) {
     return (

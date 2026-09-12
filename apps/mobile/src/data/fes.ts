@@ -80,18 +80,30 @@ export function timeOptions() {
   return out;
 }
 
-/** Kurze Fakten und Alltagstipps, die nach einer Gutschrift eingeblendet werden. */
-export const FUN_FACTS: { icon: string; label: string; text: string; source?: string }[] = [
-  { icon: '🚬', label: 'Wusstest du?', text: 'Eine Kippe belastet bis zu 40 Liter Wasser.', source: 'Umweltbundesamt' },
-  { icon: '🌱', label: 'Tipp', text: 'Bioabfall in Papier wickeln, nie in Plastik.' },
-  { icon: '🍕', label: 'Trenn-Tipp', text: 'Pizzakarton: Deckel ins Altpapier, fettiger Boden in den Restmüll.' },
-  { icon: '🧾', label: 'Wusstest du?', text: 'Kassenbons sind Thermopapier und gehören in den Restmüll.' },
-  { icon: '🔋', label: 'Tipp', text: 'Batterien nimmt jeder Laden zurück, der welche verkauft.' },
-  { icon: '☕', label: 'Tipp', text: 'Eigener Becher statt To-go. Viele Cafés füllen ihn direkt.' },
-  { icon: '🍾', label: 'Trenn-Tipp', text: 'Blaues Glas kommt zum Grünglas.' },
-  { icon: '🛋️', label: 'Wusstest du?', text: 'Sperrmüll nur nach Anmeldung rausstellen, sonst ist es illegal.' },
-  { icon: '🕖', label: 'Tipp', text: 'Altglas erst ab 7 Uhr einwerfen.' },
-  { icon: '🗑️', label: 'Wusstest du?', text: 'Viele Frankfurter Mülleimer haben oben einen Ascher.' },
-  { icon: '🍂', label: 'Tipp', text: 'Laub vom Gully kehren hilft bei Starkregen.' },
+/**
+ * Kurze Fakten und Alltagstipps nach einer Gutschrift.
+ * `topic` passt den Tipp zum Bereich: clean (FES), food (Foodsharing), cup (Mehrweg).
+ * Ohne topic passt der Tipp überall.
+ */
+export const FUN_FACTS: { icon: string; label: string; text: string; source?: string; topic?: 'clean' | 'food' | 'cup' }[] = [
+  { icon: '🚬', label: 'Wusstest du?', text: 'Eine Kippe belastet bis zu 40 Liter Wasser.', source: 'Umweltbundesamt', topic: 'clean' },
+  { icon: '🌱', label: 'Tipp', text: 'Bioabfall in Papier wickeln, nie in Plastik.', topic: 'clean' },
+  { icon: '🍕', label: 'Trenn-Tipp', text: 'Pizzakarton: Deckel ins Altpapier, fettiger Boden in den Restmüll.', topic: 'clean' },
+  { icon: '🧾', label: 'Wusstest du?', text: 'Kassenbons sind Thermopapier und gehören in den Restmüll.', topic: 'clean' },
+  { icon: '🔋', label: 'Tipp', text: 'Batterien nimmt jeder Laden zurück, der welche verkauft.', topic: 'clean' },
+  { icon: '🍾', label: 'Trenn-Tipp', text: 'Blaues Glas kommt zum Grünglas.', topic: 'clean' },
+  { icon: '🛋️', label: 'Wusstest du?', text: 'Sperrmüll nur nach Anmeldung rausstellen, sonst ist es illegal.', topic: 'clean' },
+  { icon: '🕖', label: 'Tipp', text: 'Altglas erst ab 7 Uhr einwerfen.', topic: 'clean' },
+  { icon: '🗑️', label: 'Wusstest du?', text: 'Viele Frankfurter Mülleimer haben oben einen Ascher.', topic: 'clean' },
+  { icon: '🍂', label: 'Tipp', text: 'Laub vom Gully kehren hilft bei Starkregen.', topic: 'clean' },
   { icon: '📦', label: 'Tipp', text: 'Kartons flach falten, dann passt dreimal so viel rein.' },
+  { icon: '🍞', label: 'Tipp', text: 'Brot hält in Papier oder Stoff länger frisch als in Plastik.', topic: 'food' },
+  { icon: '📅', label: 'Wusstest du?', text: 'Mindesthaltbarkeit ist kein Wegwerfdatum: schauen, riechen, probieren.', topic: 'food' },
+  { icon: '🍎', label: 'Tipp', text: 'Äpfel getrennt lagern, sie lassen anderes Obst schneller reifen.', topic: 'food' },
+  { icon: '🥡', label: 'Tipp', text: 'Ein Fach im Kühlschrank für „muss weg“ spart die meisten Reste.', topic: 'food' },
+  { icon: '🥬', label: 'Wusstest du?', text: 'Kräuter halten länger, wenn sie im Wasserglas stehen.', topic: 'food' },
+  { icon: '☕', label: 'Tipp', text: 'Eigener Becher statt To-go. Viele Cafés füllen ihn direkt.', topic: 'cup' },
+  { icon: '🍽️', label: 'Wusstest du?', text: 'Größere Gastrobetriebe müssen Mehrweg zur Wahl anbieten.', source: 'Verpackungsgesetz', topic: 'cup' },
+  { icon: '⏱️', label: 'Tipp', text: 'Schale früh zurückbringen, dann ist sie schneller wieder im Umlauf.', topic: 'cup' },
+  { icon: '🎒', label: 'Tipp', text: 'Falt-Box in der Tasche: Reste vom Essen gehen nicht in Einweg.', topic: 'cup' },
 ];
