@@ -6,7 +6,7 @@ export const BINGO: BingoChallenge[] = [
   { icon: '🥫', title: 'Dose entsorgen', short: 'Dose' },
   { icon: '🛍️', title: 'Plastiktüte aufheben', short: 'Tüte' },
   { icon: '🥡', title: 'Fast-Food-Verpackung wegräumen', short: 'Verpackung' },
-  { icon: '📦', title: 'Karton vom Gehweg räumen', short: 'Karton' },
+  { icon: '🍺', title: 'Kronkorken aufheben', short: 'Kronkorken' },
   { icon: '📰', title: 'Zeitung oder Werbung aufheben', short: 'Papier' },
   { icon: '🥤', title: 'Trinkbecher aufheben', short: 'Becher' },
   { icon: '🧃', title: 'Saftpäckchen entsorgen', short: 'Saft' },
