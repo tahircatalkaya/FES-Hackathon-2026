@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Screen, Header } from '@/components/Screen';
-import { Button, Card, Pill, Row, T, Tag } from '@/components/ui';
+import { Card, Pill, Row, T } from '@/components/ui';
 import PartnerLogo from '@/components/PartnerLogo';
 import { C } from '@/theme';
 import { useT, useLocale } from '@/i18n/useT';

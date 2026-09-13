@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
-import { Appear, Button, Card, Divider, Pill, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Divider, Pill, Row, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { SAVER_DISTRIBUTIONS } from '@/data/mock';
 import { useStore } from '@/store';
@@ -31,8 +31,8 @@ export default function Verteilung() {
   const d = SAVER_DISTRIBUTIONS.find((x) => x.id === id) ?? SAVER_DISTRIBUTIONS[0];
   const [slot, setSlot] = useState<number | null>(null);
   const [qty, setQty] = useState<Record<string, number>>({});
-  const { addAward, itemReservations, reserveItem, releaseItem } = useStore();
-  const { setCtx, showToast } = useUI();
+  const { itemReservations, reserveItem, releaseItem } = useStore();
+  const { setCtx } = useUI();
   useEffect(() => { setCtx('food'); }, []);
 
   const dist = hav(loc.lat, loc.lon, d.lat, d.lon);

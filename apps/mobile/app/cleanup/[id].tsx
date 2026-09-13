@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useStore } from '@/store';
 import { CLEANUPS } from '@/data/mock';
 import { Screen, Header } from '@/components/Screen';
-import { Button, Card, T, Tag } from '@/components/ui';
+import { Button, Card, T } from '@/components/ui';
 import CleanupProof from '@/components/CleanupProof';
 import { C } from '@/theme';
 import { useLocation } from '@/hooks/useLocation';

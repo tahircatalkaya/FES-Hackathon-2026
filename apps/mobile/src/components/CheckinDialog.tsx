@@ -1,20 +1,17 @@
-import { useT, useLocalize } from '@/i18n/useT';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useT } from '@/i18n/useT';
+import React, { useEffect, useState } from 'react';
 import { Image, Modal, Pressable, Text, View } from 'react-native';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { C, CONTEXT, RIDE, shadow } from '@/theme';
-import { T, haptic } from './ui';
+import { haptic } from './ui';
 import { nfcAvailable, readTag, demoTag, type TagInfo } from '@/api/nfc';
 import type { Award } from '@/engine/types';
 import { CelebrationOverlay } from './ChamiMascot';
 import { useUI } from '@/store/ui';
-import { BASE } from '@/engine/reward';
 
 const TERMINAL = require('../../assets/checkin/terminal.png');
 const PHONE = require('../../assets/checkin/phone.png');
 const ACCENT = CONTEXT.mobility.color;
-/** Fester Betrag fuer den Check-in. Quelle bleibt die Engine, damit UI und Buchung nie auseinanderlaufen. */
-const CHECKIN_POINTS = BASE['ride.checkin'];
 
 /**
  * Terminal-Check-in als Pop-up (portiert aus dem Web-Prototyp).
@@ -38,14 +35,12 @@ export default function CheckinDialog({
 }) {
   const t = useT();
   const [stage, setStage] = useState<'terminal' | 'success'>('terminal');
-  const [tag, setTag] = useState<TagInfo | null>(null);
   const [award, setAward] = useState<Award | null>(null);
   const [real, setReal] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     setStage('terminal');
-    setTag(null);
     setAward(null);
     let alive = true;
     (async () => {
@@ -59,7 +54,7 @@ export default function CheckinDialog({
     return () => { alive = false; };
   }, [open]);
 
-  function succeed(t: TagInfo) { setTag(t); setAward(onCheckin(t)); setStage('success'); haptic('success'); }
+  function succeed(t: TagInfo) { setAward(onCheckin(t)); setStage('success'); haptic('success'); }
 
   if (!open) return null;
   if(stage==='success')return <CelebrationOverlay open clip="ride" points={award?.points??0} duplicate={award?.duplicate} headline={t('components.checkin.success')} note={award?.formula} onClose={onClose} onWhy={award?()=>{onClose();useUI.getState().showWhy(award);}:undefined} continueLabel={continueLabel??t('act.ride')} onContinue={()=>{onClose();onContinue();}}/>;

@@ -16,7 +16,7 @@ import { statusFromConfidence } from '@/engine/reward';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
 import traces from '@/data/traces.json';
-import { nfcAvailable, demoTag, type TagInfo } from '@/api/nfc';
+import { demoTag, type TagInfo } from '@/api/nfc';
 import NfcSheet from '@/components/NfcSheet';
 import CheckinDialog from '@/components/CheckinDialog';
 import { CelebrationOverlay } from '@/components/ChamiMascot';
@@ -44,7 +44,6 @@ export default function Ride() {
   const [phase, setPhase] = useState<Phase>('pick');
   const [stationId, setStationId] = useState<number | null>(params.station ? Number(params.station) : null);
   const [tag, setTag] = useState<TagInfo | null>(null);
-  const [nfcOk, setNfcOk] = useState(false);
   const [nfcOpen, setNfcOpen] = useState(false);
   const [checkinOpen, setCheckinOpen] = useState(false);
   const [sim, setSim] = useState<string | null>(null);
@@ -58,7 +57,7 @@ export default function Ride() {
   const simRef = useRef<any>(null);
   const simPts = useRef<TracePoint[]>([]);
 
-  useEffect(() => { setCtx('mobility'); nfcAvailable().then(setNfcOk); }, []);
+  useEffect(() => { setCtx('mobility'); }, []);
   useEffect(() => { if (params.nfc) setTimeout(() => setCheckinOpen(true), 350); }, [params.nfc]);
   useEffect(() => { if (params.tag) { const t = demoTag(String(params.tag)); t.source = 'qr'; setTag(t); } }, [params.tag]);
   useEffect(() => { if (phase === 'track') { const i = setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000); return () => clearInterval(i); } }, [phase, startedAt]);

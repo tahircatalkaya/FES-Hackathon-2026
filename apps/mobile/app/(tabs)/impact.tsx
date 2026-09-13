@@ -3,7 +3,6 @@ import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Rect, Text as SText } from 'react-native-svg';
 import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import Globe, { CIRCUMFERENCE } from '@/components/Globe';
@@ -36,7 +35,7 @@ export default function Impact() {
   const t = useT();
   const l = useLocalize();
   const locale = useLocale();
-  const { ledger, name, chameleonName } = useStore();
+  const { ledger, chameleonName } = useStore();
   const { setCtx } = useUI();
   useEffect(() => { setCtx('community'); }, []);
   const total = totalImpact(ledger);

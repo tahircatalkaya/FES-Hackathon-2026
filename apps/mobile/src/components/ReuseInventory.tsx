@@ -1,7 +1,8 @@
 import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useCallback, useRef, useState } from 'react';
-import { AppState, Linking, Text, TextInput, View } from 'react-native';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { Linking, Text, TextInput, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusRefresh } from '@/hooks/useFocusRefresh';
 import { reuseTrust, trust, type ReuseLoan } from '@/api/trust';
 import { useStore } from '@/store';
 import { cancelReturnReminder } from '@/api/notify';
@@ -27,10 +28,10 @@ export default function ReuseInventory() {
   const router=useRouter();
   const params=useLocalSearchParams<{store?:string}>();
   const location=stores.find(s=>s.id===params.store);
-  const [loans,setLoans]=useState<ReuseLoan[]>([]),[ready,setReady]=useState(false),[signed,setSigned]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[merchant,setMerchant]=useState(false);
+  const [loans,setLoans]=useState<ReuseLoan[]>([]),[ready,setReady]=useState(false),[signed,setSigned]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false);
   const running=useRef(false);
-  const load=useCallback(async()=>{if(running.current)return;running.current=true;try{const has=await trust.hasSession();setSigned(has);if(!has)return;const r=await syncReuse();setLoans(r.loans);setMerchant(!!r.profile.merchantStores.length);setError('');}catch(e:any){setError(e.message);if(e.status===401)setSigned(false);}finally{setReady(true);running.current=false;}},[]);
-  useFocusEffect(useCallback(()=>{void load();const timer=setInterval(()=>{if(AppState.currentState==='active')void load();},10000);return()=>clearInterval(timer);},[load]));
+  const load=useCallback(async()=>{if(running.current)return;running.current=true;try{const has=await trust.hasSession();setSigned(has);if(!has)return;const r=await syncReuse();setLoans(r.loans);setError('');}catch(e:any){setError(e.message);if(e.status===401)setSigned(false);}finally{setReady(true);running.current=false;}},[]);
+  useFocusRefresh(load);
   const open=loans.filter(l=>!l.returnedAt&&!l.settlement),returned=loans.filter(l=>l.returnedAt&&!l.settlement),settled=loans.filter(l=>l.settlement);
   const overdue=open.filter(l=>loanStatus(l.borrowedAt).state==='ueberfaellig');
   const fees=overdue.reduce((sum,l)=>sum+loanStatus(l.borrowedAt).fee,0);

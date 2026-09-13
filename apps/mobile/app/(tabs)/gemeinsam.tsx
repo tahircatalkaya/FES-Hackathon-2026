@@ -8,7 +8,6 @@ import { C, CONTEXT, S } from '@/theme';
 import { useStore, weekStats } from '@/store';
 import { useUI } from '@/store/ui';
 import { DISTRICTS, FRANKFURT_GOAL } from '@/data/mock';
-import { useLocation } from '@/hooks/useLocation';
 import { useT, useLocale } from '@/i18n/useT';
 import type { TKey } from '@/i18n';
 import { addImpact, emptyImpact, fmtCo2 } from '@/engine/impact';
@@ -24,7 +23,6 @@ export default function Together() {
   const router = useRouter();
   const t = useT();
   const locale = useLocale();
-  const { loc } = useLocation();
   const { friends, ledger, name, district, lose } = useStore();
   const { setCtx } = useUI();
   const [drawInfo, setDrawInfo] = useState(false);

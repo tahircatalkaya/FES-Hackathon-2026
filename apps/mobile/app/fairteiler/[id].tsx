@@ -10,7 +10,7 @@ import PlaceCode from '@/components/PlaceCode';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
 import { Appear, Button, Card, Row, T, Tag, haptic } from '@/components/ui';
 import { FoodActionSheet, type ActionResult } from '@/components/FoodActionSheet';
-import { C, CONTEXT, S } from '@/theme';
+import { C, CONTEXT } from '@/theme';
 import { fs, hav, type FoodSharePoint } from '@/api/foodsharing';
 import fairteilerSnapshot from '@/data/fairteiler.json';
 import { useStore } from '@/store';
@@ -30,15 +30,15 @@ export default function Fairteiler() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { loc } = useLocation();
-  const [shared,setShared]=useState<SharedShelfUpdate[]>([]),[syncError,setSyncError]=useState(''),[receiptId,setReceiptId]=useState('');
+  const [shared,setShared]=useState<SharedShelfUpdate[]>([]),[syncError,setSyncError]=useState('');
   const refresh=useCallback(async()=>{try{setShared(await trust.shelf(Number(id)));setSyncError('');}catch{setSyncError('Gemeinsamer Regalstand gerade nicht erreichbar. Lokale Meldungen bleiben erhalten.');}},[id]);
   useFocusEffect(useCallback(()=>{void refresh();const t=setInterval(()=>void refresh(),15000);return()=>clearInterval(t);},[refresh]));
   async function publish(kind:'shelf'|'stock'|'pickup',r:ActionResult){
-    try{if(!await trust.hasSession())return;const result=await trust.updateShelf(Number(id),{kind,fill:r.fill,items:r.items,requestKey:`shelf-${Date.now()}-${Math.random().toString(36).slice(2)}`});setReceiptId(result.id);await refresh();}catch(e:any){setSyncError(`Lokal gespeichert. Teilen fehlgeschlagen: ${e.message}`);}
+    try{if(!await trust.hasSession())return;await trust.updateShelf(Number(id),{kind,fill:r.fill,items:r.items,requestKey:`shelf-${Date.now()}-${Math.random().toString(36).slice(2)}`});await refresh();}catch(e:any){setSyncError(`Lokal gespeichert. Teilen fehlgeschlagen: ${e.message}`);}
   }
   const [pt, setPt] = useState<FoodSharePoint | null>(null);
   const [sheet, setSheet] = useState<null | 'shelf' | 'stock' | 'pickup'>(null);
-  const { shelfReports, addShelfReport, addAward, itemReservations, reserveItem, releaseItem, name } = useStore();
+  const { shelfReports, addShelfReport, addAward, itemReservations, reserveItem, releaseItem } = useStore();
   const { setCtx, showToast } = useUI();
 
   useEffect(() => {

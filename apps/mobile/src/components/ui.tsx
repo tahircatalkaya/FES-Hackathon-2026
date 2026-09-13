@@ -41,15 +41,23 @@ export function FeeText({ text, style, color }: { text: string; style?: TextStyl
   );
 }
 
+function usePressScale() {
+  const value = useSharedValue(1);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: value.value }] }));
+  const scale = (next: number) => {
+    value.value = withTiming(next, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System });
+  };
+  return { style, scale };
+}
+
 export function Card({ children, style, onPress, tint }: { children: React.ReactNode; style?: ViewStyle | ViewStyle[]; onPress?: () => void; tint?: string }) {
-  const sc = useSharedValue(1);
-  const st = useAnimatedStyle(() => ({ transform: [{ scale: sc.value }] }));
+  const { style: pressStyle, scale } = usePressScale();
   const inner = (
-    <Animated.View style={[styles.card, shadow(1), tint ? { backgroundColor: tint } : null, st, style]}>{children}</Animated.View>
+    <Animated.View style={[styles.card, shadow(1), tint ? { backgroundColor: tint } : null, pressStyle, style]}>{children}</Animated.View>
   );
   if (!onPress) return inner;
   return (
-    <Pressable onPressIn={() => (sc.value = withTiming(0.975, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPressOut={() => (sc.value = withTiming(1, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }))} onPress={() => { haptic(); onPress(); }}>
+    <Pressable onPressIn={() => scale(0.975)} onPressOut={() => scale(1)} onPress={() => { haptic(); onPress(); }}>
       {inner}
     </Pressable>
   );
@@ -67,13 +75,11 @@ export function Pill({ label, color = C.ink, active, onPress, icon }: { label: s
 
 export function Button({ label, onPress, color = C.ink, variant = 'solid', disabled, icon, style }: { label: string; onPress?: () => void; color?: string; variant?: 'solid' | 'ghost' | 'soft'; disabled?: boolean; icon?: string; style?: ViewStyle }) {
   const localize = useLocalize();
-  const sc = useSharedValue(1);
-  const st = useAnimatedStyle(() => ({ transform: [{ scale: sc.value }] }));
+  const { style: pressStyle, scale } = usePressScale();
   const bg = variant === 'solid' ? color : variant === 'soft' ? color + '1A' : 'transparent';
   const fg = variant === 'solid' ? '#fff' : color;
-  const scale = (value: number) => { sc.value = withTiming(value, { duration: 120, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System }); };
   const press = () => { if (!disabled) { haptic(); onPress?.(); } };
-  const content = <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, st, style]}>
+  const content = <Animated.View style={[styles.btn, { backgroundColor: bg, borderColor: variant === 'ghost' ? color : 'transparent', opacity: disabled ? 0.45 : 1 }, pressStyle, style]}>
         {icon ? ((Ionicons as any).glyphMap?.[icon] ? <Ionicons name={icon as any} size={18} color={fg} style={{ marginRight: 8 }} /> : <Text style={{ fontSize: 16, marginRight: 8 }}>{icon}</Text>) : null}
         <Text style={{ color: fg, fontWeight: '800', fontSize: 16, flexShrink: 1, textAlign: 'center' }}>{localize(label)}</Text>
       </Animated.View>;

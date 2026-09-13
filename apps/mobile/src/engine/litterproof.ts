@@ -1,4 +1,5 @@
 import type { VerificationStatus } from './types';
+import { haversine } from './geo.ts';
 
 /**
  * Vorher/Nachher-Nachweis fuer aufgehobenen Muell.
@@ -53,13 +54,6 @@ export function hamming(a: string, b: string): number {
   return d;
 }
 
-function meters(aLat: number, aLon: number, bLat: number, bLon: number) {
-  const R = 6371000, r = (d: number) => (d * Math.PI) / 180;
-  const dp = r(bLat - aLat), dl = r(bLon - aLon);
-  const x = Math.sin(dp / 2) ** 2 + Math.cos(r(aLat)) * Math.cos(r(bLat)) * Math.sin(dl / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(x));
-}
-
 /**
  * Prueft das Nachher-Foto gegen das Vorher-Foto und gegen alle frueher eingereichten Bilder.
  * `used` enthaelt die Fingerabdruecke abgeschlossener Nachweise.
@@ -75,7 +69,7 @@ export function checkLitterProof(before: LitterShot, after: LitterShot, used: st
     reasons: ['Kein gültiger Foto- und Standortnachweis. Bitte mit frischem Standort neu beginnen.'],
   };
   const minutes = (after.at - before.at) / 60000;
-  const dist = meters(before.lat, before.lon, after.lat, after.lon);
+  const dist = haversine(before.lat, before.lon, after.lat, after.lon);
   const reasons: string[] = [];
   let ok = true;
 

@@ -7,11 +7,10 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import Map from '@/components/Map';
 import ReuseInventory from '@/components/ReuseInventory';
 import { Screen, Header } from '@/components/Screen';
-import { Button, Card, Divider, Pill, Row, T, Tag, haptic } from '@/components/ui';
-import { C, CONTEXT, S } from '@/theme';
+import { Button, Card, Divider, Pill, Row, T, haptic } from '@/components/ui';
+import { CONTEXT, S } from '@/theme';
 import { useLocation } from '@/hooks/useLocation';
 import { vytalStores, type VytalStore } from '@/api/vytal';
-import { reuseTrust } from '@/api/trust';
 import { useUI } from '@/store/ui';
 import { fmtDist } from '@/api/opportunities';
 
@@ -24,12 +23,11 @@ export default function Reuse() {
   const p = useLocalSearchParams<{ store?: string }>();
   const { loc } = useLocation();
   const [stores, setStores] = useState<VytalStore[]>([]);
-  const [source, setSource] = useState<'api' | 'snapshot'>('snapshot');
   const [sel, setSel] = useState<string | null>(p.store ?? null);
   const [filter, setFilter] = useState<'alle' | 'RESTAURANT' | 'NATIONAL_CHAIN' | 'SELF_OPERATED_CANTEEN'>('alle');
   const { setCtx } = useUI();
 
-  useEffect(() => { setCtx('reuse'); vytalStores(loc.lat, loc.lon).then((r) => { setStores(r.items); setSource(r.source); }); }, [loc.lat, loc.lon]);
+  useEffect(() => { setCtx('reuse'); vytalStores(loc.lat, loc.lon).then((r) => { setStores(r.items); }); }, [loc.lat, loc.lon]);
   const shown = useMemo(() => stores.filter((s) => filter === 'alle' || s.type === filter).slice(0, 25), [stores, filter]);
   const store = stores.find((s) => s.id === sel) ?? null;
 

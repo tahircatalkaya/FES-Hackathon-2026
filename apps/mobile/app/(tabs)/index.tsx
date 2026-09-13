@@ -10,7 +10,7 @@ import Map from '@/components/Map';
 import FoodsharingLogo from '@/components/FoodsharingLogo';
 import Chameleon from '@/components/Chameleon';
 import RadiusControl, { fmtRadius } from '@/components/RadiusControl';
-import { Pill, T, haptic } from '@/components/ui';
+import { T, haptic } from '@/components/ui';
 import { C, CONTEXT, S, shadow, type ContextKey } from '@/theme';
 import { shade } from '@/components/Chameleon';
 import { useLocation } from '@/hooks/useLocation';
@@ -50,7 +50,7 @@ export default function Discover() {
   const [ring, setRing] = useState(radiusKm);
   useEffect(() => setRing(radiusKm), [radiusKm]);
   const ledger = useStore((s) => s.ledger);
-  const { setCtx, mood } = useUI();
+  const { setCtx } = useUI();
   const listRef = useRef<FlatList<Opportunity>>(null);
   const wk = weekStats(ledger);
 

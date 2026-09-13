@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { AppState, Platform, Text, TextInput, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Text, TextInput, View } from 'react-native';
+import { useCameraPermissions } from 'expo-camera';
 import * as Location from 'expo-location';
 import { trust } from '@/api/trust';
 import { CLEANUPS } from '@/data/mock';
@@ -10,12 +9,14 @@ import { useUI } from '@/store/ui';
 import { Button, Card, T, Tag } from './ui';
 import { Screen, Header } from './Screen';
 import ProofCode from './ProofCode';
+import QrCamera from './QrCamera';
+import { useFocusRefresh } from '@/hooks/useFocusRefresh';
 import { C } from '@/theme';
 import { useT, useLocalize } from '@/i18n/useT';
 export default function CleanupProof({id,embedded=false,initialProof=''}:{id:string;embedded?:boolean;initialProof?:string}) {
   const t=useT(),l=useLocalize(),own=useStore(s=>s.ownCleanups),activity=[...own,...CLEANUPS].find(c=>c.id===id);
   const [eventId,setEventId]=useState(''),[ticket,setTicket]=useState<{proof:string;expiresAt:number}|null>(null),[confirmed,setConfirmed]=useState(false),[scanning,setScanning]=useState(!id),[raw,setRaw]=useState(initialProof),[error,setError]=useState(''),[busy,setBusy]=useState(false);
-  const [permission,request]=useCameraPermissions();
+  const camera=useCameraPermissions();
   const currentId=useRef(''),lastConfirmed=useRef<boolean|null>(null),loading=useRef(false);
   const [title,setTitle]=useState('');
   function applyState(state:{id:string;event:any;confirmed:boolean}){currentId.current=state.id;setEventId(state.id);setConfirmed(state.confirmed);setTitle(state.event.title);}
@@ -28,7 +29,7 @@ export default function CleanupProof({id,embedded=false,initialProof=''}:{id:str
       applyState(state);await syncAward(lastConfirmed.current===false&&state.confirmed);lastConfirmed.current=state.confirmed;setError('');
     }catch(e:any){setError(e.message);}finally{loading.current=false;}
   },[id,initialProof]);
-  useFocusEffect(useCallback(()=>{void load();const interval=setInterval(()=>{if(AppState.currentState==='active')void load();},10000);return()=>clearInterval(interval);},[load]));
+  useFocusRefresh(load);
   async function position(){const p=await Location.requestForegroundPermissionsAsync();if(p.status!=='granted')throw new Error(t('updates.locationNeeded'));const at=await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});return {lat:at.coords.latitude,lon:at.coords.longitude,accuracy:at.coords.accuracy??999,at:at.timestamp};}
   async function run(scan=false){
     if(busy)return;setBusy(true);setError('');
@@ -46,7 +47,7 @@ export default function CleanupProof({id,embedded=false,initialProof=''}:{id:str
       {eventId&&<Button label={t('updates.showMyQr')} color={C.clean} disabled={busy||!eventId} onPress={()=>void run()}/>}
       {ticket&&<ProofCode {...ticket} label={t('updates.showMyQr')}/>}
       {!!eventId&&!confirmed&&<Button label={t('updates.scanPeer')} color={C.clean} variant="soft" disabled={!eventId} onPress={()=>setScanning(!scanning)}/>}
-      {scanning&&!confirmed&&<View style={{gap:12}}>{Platform.OS!=='web'&&(permission?.granted?<View style={{height:230,borderRadius:18,overflow:'hidden'}}><CameraView style={{flex:1}} barcodeScannerSettings={{barcodeTypes:['qr']}} onBarcodeScanned={e=>{if(!raw)setRaw(e.data);}}/></View>:<Button label={t('updates.camera')} onPress={()=>void request()}/>)}<TextInput accessibilityLabel={t('components.scan.code')} value={raw} onChangeText={setRaw} placeholder="mainsam:cleanup:…" autoCapitalize="none" maxLength={200} style={{padding:12,borderRadius:12,backgroundColor:C.bg,color:C.ink}}/><Button label={eventId?t('updates.confirmHere'):t('routes.check')} color={C.clean} disabled={busy||!raw.trim()} onPress={()=>void run(true)}/></View>}
+      {scanning&&!confirmed&&<View style={{gap:12}}><QrCamera camera={camera} label={t('updates.camera')} height={230} radius={18} onScan={value=>{if(!raw)setRaw(value);}}/><TextInput accessibilityLabel={t('components.scan.code')} value={raw} onChangeText={setRaw} placeholder="mainsam:cleanup:…" autoCapitalize="none" maxLength={200} style={{padding:12,borderRadius:12,backgroundColor:C.bg,color:C.ink}}/><Button label={eventId?t('updates.confirmHere'):t('routes.check')} color={C.clean} disabled={busy||!raw.trim()} onPress={()=>void run(true)}/></View>}
       {!!error&&<><Text accessibilityRole="alert" style={[T.body,{color:C.danger}]}>{l(error)}</Text>{!eventId&&<Button label={t('components.common.reload')} onPress={()=>void load()}/>}</>}
     </Card>
   </View>;

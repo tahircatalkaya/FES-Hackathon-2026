@@ -12,7 +12,6 @@ import { Button, Card, FeeText, T, Row, haptic, StatusBadge, Divider } from '@/c
 import { C, CONTEXT } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';
-import { CLEANUPS } from '@/data/mock';
 import ProofScanner from '@/components/ProofScanner';
 import BorrowScanner from '@/components/BorrowScanner';
 import CleanupProof from '@/components/CleanupProof';
@@ -21,12 +20,9 @@ import { syncReuse } from '@/components/ReuseInventory';
 import { trust, reuseTrust } from '@/api/trust';
 import { scheduleReturnReminder } from '@/api/notify';
 import { parseContainerCode, demoContainerCode } from '@/api/vytal';
-import { fmtDue, loanStatus, LOAN_SOURCE, LOAN_TERMS } from '@/engine/loan';
+import { LOAN_SOURCE, LOAN_TERMS } from '@/engine/loan';
 import { parseTag } from '@/api/nfc';
-import { useLocation } from '@/hooks/useLocation';
-import NfcSheet from '@/components/NfcSheet';
 import VytalMark from '@/components/VytalMark';
-import { hav } from '@/api/foodsharing';
 import { photoFingerprint } from '@/api/photohash';
 import { checkLitterProof, PROOF, type LitterVerdict } from '@/engine/litterproof';
 
@@ -98,9 +94,7 @@ function ScanInner() {
   async function loadAccount(){try{setSigned(await trust.hasSession());}catch(e:any){setSigned(false);setError(e.message);}}
   useEffect(()=>{if(needsAccount)void loadAccount();},[mode,p.id]);
 
-  const { addAward } = useStore();
-  const { setCtx, showToast } = useUI();
-  const { loc } = useLocation();
+  const { setCtx } = useUI();
 
   useEffect(() => { setCtx(cfg.ctx); if (Platform.OS !== 'web' && !perm?.granted) requestPerm(); }, [mode]);
 
@@ -180,7 +174,7 @@ function LitterProofScreen() {
   const [busy, setBusy] = useState(false);
   const [verdict, setVerdict] = useState<LitterVerdict | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
 
   useEffect(() => { setCtx('clean'); }, []);
   // Die Wartezeit soll sichtbar laufen, sonst weiß niemand, wann das Nachher-Foto dran ist.

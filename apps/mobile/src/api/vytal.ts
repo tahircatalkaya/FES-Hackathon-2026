@@ -1,5 +1,5 @@
 import snapshot from '@/data/vytal-stores.json';
-import { hav } from './foodsharing';
+import { haversine as hav } from '../engine/geo.ts';
 
 /**
  * Vytal (laut Vytal x FES Technical Documentation):

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Platform, Text, TextInput, View } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Text, TextInput } from 'react-native';
+import { useCameraPermissions } from 'expo-camera';
+import QrCamera from '@/components/QrCamera';
 import { useRouter } from 'expo-router';
 import { Screen, Header } from '@/components/Screen';
 import { Button, Card, T } from '@/components/ui';
@@ -8,7 +9,7 @@ import { C } from '@/theme';
 import points from '@/data/fairteiler.json';
 import stores from '@/data/vytal-stores.json';
 export default function PlaceScanner(){
-  const router=useRouter();const [permission,request]=useCameraPermissions();const [raw,setRaw]=useState(''),[error,setError]=useState('');const lock=useRef(false);
+  const router=useRouter();const camera=useCameraPermissions();const [raw,setRaw]=useState(''),[error,setError]=useState('');const lock=useRef(false);
   function scan(value:string){if(lock.current)return;setRaw(value);setError('');
     if(/^mainsam:cleanup:[a-f0-9-]{36}:[a-f0-9]{48}$/.test(value.trim())){lock.current=true;router.replace({pathname:'/scan',params:{mode:'peer',proof:value.trim()}});return;}
     const m=value.trim().match(/^mainsam:(shelf|offer|provider|store):([a-zA-Z0-9_-]+)$/);
@@ -21,7 +22,7 @@ export default function PlaceScanner(){
     else router.replace({pathname:'/uebergaben',params:{[m[1]]:m[2]}});
   }
   return <Screen tabBar={false}><Header title="Ort scannen" subtitle="Regal · Verteiler · Restaurant"/><Text style={[T.body,{marginBottom:14}]}>Scanne den QR vor Ort und wähle, was du machen möchtest.</Text>
-    {Platform.OS!=='web'&&(permission?.granted?<View style={{height:280,borderRadius:20,overflow:'hidden'}}><CameraView style={{flex:1}} barcodeScannerSettings={{barcodeTypes:['qr']}} onBarcodeScanned={e=>scan(e.data)}/></View>:<Button label="Kamera zum Scannen freigeben" onPress={()=>void request()}/>)}
+    <QrCamera camera={camera} label="Kamera zum Scannen freigeben" radius={20} onScan={scan}/>
     <Card style={{gap:12,marginTop:14}}><Text style={T.h3}>Oder den QR-Text eingeben</Text><TextInput accessibilityLabel="Ort-Code" placeholder="mainsam:shelf:…" value={raw} onChangeText={setRaw} autoCapitalize="none" autoCorrect={false} maxLength={200} style={{padding:14,backgroundColor:C.bg,borderRadius:12}}/><Button label="Ort öffnen" disabled={!raw.trim()} onPress={()=>scan(raw)}/>{!!error&&<Text accessibilityRole="alert" style={{color:C.danger}}>{error}</Text>}<Text style={T.small}>Ein erneuter Scan öffnet denselben Ort. Er erzeugt keine Punkte.</Text></Card>
   </Screen>;
 }

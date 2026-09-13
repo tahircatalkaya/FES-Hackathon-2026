@@ -1,4 +1,6 @@
 import { isNetworkError } from './network';
+import { haversine as hav } from '../engine/geo.ts';
+export { haversine as hav } from '../engine/geo.ts';
 import fairteilerSnapshot from '@/data/fairteiler.json';
 
 /**
@@ -88,12 +90,6 @@ export const fs = {
   businesses: () => call<{ id: number; name: string; lat: number; lon: number }[]>('/businesses'),
   businessPickup: (id: number, userId?: number) => call<Pickup>(`/businesses/${id}/pickups`, { method: 'POST' }, userId),
 };
-
-export function hav(a: number, b: number, c: number, d: number) {
-  const R = 6371000, p1 = (a * Math.PI) / 180, p2 = (c * Math.PI) / 180, dp = ((c - a) * Math.PI) / 180, dl = ((d - b) * Math.PI) / 180;
-  const x = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(x));
-}
 
 export const DEMO_BASKETS: Basket[] = [
   { id: 9001, title: 'Bio-Kiste: Möhren, Lauch, Sellerie', description: 'Abokiste war zu groß. Alles einwandfrei, ungewaschen.', food_types: ['Obst & Gemüse'], lat: 50.1219, lon: 8.6612, status: 'available', expires_at: new Date(Date.now() + 5 * 3600e3).toISOString(), distance_km: 0.6 },

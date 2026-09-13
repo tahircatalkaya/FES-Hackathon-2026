@@ -1,7 +1,8 @@
 import { useT, useLocalize, useLocale } from '@/i18n/useT';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusRefresh } from '@/hooks/useFocusRefresh';
 import { Ionicons } from '@expo/vector-icons';
 import { Header, Screen } from '@/components/Screen';
 import { Button, Card, Divider, Pill, Row, T, Tag } from '@/components/ui';
@@ -52,7 +53,7 @@ export default function Handoffs() {
     } catch (e: any) { if (e.status === 401) { setProfile(null); sync([]); } setError(e.message); }
     finally { running.current = false; setReady(true); }
   }, [sync]);
-  useFocusEffect(useCallback(() => { void load(); const timer = setInterval(() => { if (AppState.currentState === 'active' && !mutation.current) void load(); }, 10_000); return () => clearInterval(timer); }, [load]));
+  useFocusRefresh(load, mutation);
   async function perform(action: () => Promise<unknown>) {
     if (mutation.current) return;
     mutation.current = true; setBusy(true); setError('');

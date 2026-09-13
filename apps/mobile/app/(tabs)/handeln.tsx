@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/components/Screen';
 import { CelebrationOverlay, ChamiMascot } from '@/components/ChamiMascot';
 import { FesLogo } from '@/components/FesLogo';
-import { Appear, Button, Card, Ring, SectionTitle, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Ring, SectionTitle, T, Tag } from '@/components/ui';
 import { BingoSheet } from '@/components/BingoSheet';
 import { BinCheckSheet } from '@/components/BinCheckSheet';
 import { NewActionSheet } from '@/components/NewActionSheet';
@@ -17,7 +17,6 @@ import { useUI } from '@/store/ui';
 import { CLEANUPS } from '@/data/mock';
 import { BINGO, bingoIndexFor, dayKey } from '@/data/fes';
 import { useT, useLocalize, useLocale } from '@/i18n/useT';
-import { translate } from '@/i18n';
 
 /** FES-Bereich: drei Tages-Challenges und die Aktionen im eigenen Viertel. */
 export default function Act() {
@@ -25,7 +24,7 @@ export default function Act() {
   const t = useT();
   const l = useLocalize();
   const locale = useLocale();
-  const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup, addAward } = useStore();
+  const { ledger, chameleonName, district, ownCleanups, joinedCleanups, joinCleanup } = useStore();
   const { setCtx } = useUI();
   const [sheet, setSheet] = useState<null | 'bingo' | 'bin' | 'new'>(null);
   const [reward, setReward] = useState<Award|null>(null);

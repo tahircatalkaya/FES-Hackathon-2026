@@ -5,7 +5,7 @@ import { Screen } from '@/components/Screen';
 import Chameleon from '@/components/Chameleon';
 import { Appear, Button, Card, Divider, Row, SectionTitle, Stat, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
-import { useStore, balance, weekStats, chameleonStage, STAGES } from '@/store';
+import { useStore, balance, chameleonStage, STAGES } from '@/store';
 import { useUI } from '@/store/ui';
 import { LANGS } from '@/i18n';
 import { useT, useLocalize } from '@/i18n/useT';
@@ -24,7 +24,7 @@ export default function Profile() {
   const [nm, setNm] = useState(s.name);
   const [showLanguages, setShowLanguages] = useState(false);
   useEffect(() => { setCtx('home'); }, []);
-  const bal = balance(s), wk = weekStats(s.ledger), st = chameleonStage(s.ledger);
+  const bal = balance(s), st = chameleonStage(s.ledger);
   const unread = s.notices.filter((n) => !n.read).length;
   const nextQuiz = CHAPTERS.find((c) => !s.quizDone.includes(c.id));
 

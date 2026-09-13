@@ -5,6 +5,7 @@ import Svg, { Circle, G, Path, Defs, RadialGradient, Stop, ClipPath } from 'reac
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import Chameleon from './Chameleon';
 import { C } from '@/theme';
+import { haversine } from '@/engine/geo';
 
 /**
  * Globus mit der eigenen Strecke. Start ist Frankfurt, von dort geht es auf einem
@@ -54,13 +55,6 @@ const PLACES: [string, number, number][] = [
   ['Lima', -12.05, -77.04], ['Rio de Janeiro', -22.91, -43.17], ['Buenos Aires', -34.6, -58.38],
 ];
 
-/** Luftlinie in km zwischen zwei Koordinaten. */
-function distKm(aLat: number, aLon: number, bLat: number, bLon: number) {
-  const dp = rad(bLat - aLat), dl = rad(bLon - aLon);
-  const x = Math.sin(dp / 2) ** 2 + Math.cos(rad(aLat)) * Math.cos(rad(bLat)) * Math.sin(dl / 2) ** 2;
-  return 2 * R_EARTH * Math.asin(Math.sqrt(x));
-}
-
 /**
  * Ortsangabe für die Nadel. Nah dran wird der Ort genannt, in mittlerer Entfernung mit Abstand,
  * und wenn nichts in der Nähe liegt (meist über dem Meer) stehen die Koordinaten da.
@@ -69,7 +63,7 @@ function distKm(aLat: number, aLon: number, bLat: number, bLon: number) {
 function placeLabel(lat: number, lon: number, t: ReturnType<typeof useT>, localize: ReturnType<typeof useLocalize>, locale: string) {
   let best = PLACES[0], bestD = Infinity;
   for (const p of PLACES) {
-    const d = distKm(lat, lon, p[1], p[2]);
+    const d = haversine(lat, lon, p[1], p[2]) / 1000;
     if (d < bestD) { bestD = d; best = p; }
   }
   if (bestD < 100) return localize(best[0]);

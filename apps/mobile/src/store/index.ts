@@ -18,7 +18,7 @@ export interface Redemption { id: string; at: number; title: string; cost: numbe
 /** Offener Vorher/Nachher-Nachweis. Ueberlebt das Schliessen der App, sonst waere das Zeitfenster nutzlos. */
 export interface LitterProof { at: number; lat: number; lon: number; accuracy?: number; hash: string; kind: 'ahash' | 'digest' }
 
-interface State {
+interface StateData {
   onboarded: boolean;
   accessMode: 'guest' | 'member';
   sessionExpired: boolean;
@@ -54,7 +54,9 @@ interface State {
   nfcSeen: string[];
   /** Suchradius auf Entdecken in km, von der Person selbst gesetzt. */
   radiusKm: number;
+}
 
+interface State extends StateData {
   setOnboarded: (v: boolean) => void;
   setProfile: (p: Partial<Pick<State, 'name' | 'lang' | 'district' | 'email' | 'phone' | 'address' | 'paymentMethod' | 'chameleonName' | 'accessMode' | 'sessionExpired'>>) => void;
   setPrivacy: (p: Partial<State['privacy']>) => void;
@@ -93,12 +95,12 @@ const DEFAULT_FRIENDS: Friend[] = [
   { id: 'f5', name: 'Laroussi', emoji: '⚡', activeDays: 0, goal: 3, district: 'Höchst' },
 ];
 
-const initial = {
+const initial: StateData = {
   onboarded: false,
-  accessMode: 'guest' as 'guest' | 'member',
+  accessMode: 'guest',
   sessionExpired: false,
   name: '',
-  lang: 'de' as Lang,
+  lang: 'de',
   district: 'Bockenheim',
   email: '',
   phone: '',
@@ -106,26 +108,26 @@ const initial = {
   paymentMethod: 'Keine',
   chameleonName: 'Leon',
   privacy: { tripOnlyLocation: true, notifications: true, quietHours: true, shareAggregates: true },
-  ledger: [] as Award[],
+  ledger: [],
   spent: 0,
   lose: 0,
-  redemptions: [] as Redemption[],
-  containers: [] as Container[],
-  reservations: [] as Reservation[],
-  itemReservations: [] as ItemReservation[],
-  shelfReports: [] as ShelfReport[],
-  cleanReports: [] as CleanReport[],
-  joinedCleanups: [] as string[],
-  ownCleanups: [] as Cleanup[],
-  attested: {} as Record<string, string[]>,
-  quizDone: [] as string[],
-  notices: [] as Notice[],
+  redemptions: [],
+  containers: [],
+  reservations: [],
+  itemReservations: [],
+  shelfReports: [],
+  cleanReports: [],
+  joinedCleanups: [],
+  ownCleanups: [],
+  attested: {},
+  quizDone: [],
+  notices: [],
   friends: DEFAULT_FRIENDS,
   litterThanks: 0,
-  litterProof: null as LitterProof | null,
-  photoHashes: [] as string[],
+  litterProof: null,
+  photoHashes: [],
   demoMode: true,
-  nfcSeen: [] as string[],
+  nfcSeen: [],
   radiusKm: 3,
 };
 
@@ -203,18 +205,23 @@ export function totalImpact(ledger: Award[]): Impact {
   return ledger.reduce((acc, l) => addImpact(acc, l.impact), emptyImpact());
 }
 
+function weekStart(d: Date) {
+  const monday = new Date(d);
+  monday.setHours(0, 0, 0, 0);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  return monday;
+}
+
 export function weekKeyOf(d = new Date()) {
-  const x = new Date(d); x.setHours(0, 0, 0, 0);
-  const day = (x.getDay() + 6) % 7; x.setDate(x.getDate() - day);
-  return x.toISOString().slice(0, 10);
+  return weekStart(d).toISOString().slice(0, 10);
 }
 
 export function weekStats(ledger: Award[]) {
-  const weekKey = weekKeyOf();
+  const now = new Date();
+  const weekKey = weekKeyOf(now);
   // Montag lokal rechnen statt aus weekKey zu parsen: "YYYY-MM-DD" gilt als UTC-Mitternacht
   // und liegt in Zeitzonen hinter UTC einen Tag zu frueh.
-  const monday = new Date(); monday.setHours(0, 0, 0, 0);
-  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const monday = weekStart(now);
   const start = monday.getTime();
   const days = new Set<string>();
   let points = 0;
@@ -226,15 +233,10 @@ export function weekStats(ledger: Award[]) {
     const d = new Date(monday); d.setDate(monday.getDate() + i);
     return days.has(d.toDateString());
   });
-  const todayIdx = (new Date().getDay() + 6) % 7;
+  const todayIdx = (now.getDay() + 6) % 7;
   return { weekKey, activeDays: days.size, goal: 3, points, week, todayIdx };
 }
 
-/**
- * Die vier Stufen mit ihrer Pose. Steht hier und nicht im Screen, damit Profil und
- * Impact-Tab dieselbe Figur zeigen: Die Figur kennt keine Wachstumsstufen mehr,
- * unterschieden wird ueber die Pose.
- */
 /** Stufen des Maskottchens, nach gesammelten Punkten. Diamant ist das Fernziel. */
 export const STAGES = [
   { name: 'Schlüpfling', pose: 'calm' as const, at: 0 },

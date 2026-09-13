@@ -1,4 +1,3 @@
-import { useT, useLocalize } from '@/i18n/useT';
 import React, { useState } from 'react';
 import { Text } from 'react-native';
 import { Button, Card, T } from './ui';

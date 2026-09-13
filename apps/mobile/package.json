@@ -1,6 +1,9 @@
 {
   "name": "mainsam",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/metro-runtime": "~57.0.15",
@@ -58,6 +61,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
+    "test": "node --test ../trust-server/server.test.mjs src/api/*.test.mjs src/engine/*.test.mjs src/i18n/*.test.mjs tools/*.test.cjs tools/check-trust.cjs tools/check-ai.cjs",
+    "check": "npm run typecheck && npm test",
     "export:web": "expo export --platform web",
     "prestart:phone": "node tools/check-tunnel.cjs",
     "start:phone": "expo start --go --tunnel --clear",

@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import Map from '@/components/Map';
 import { Screen, Header } from '@/components/Screen';
-import { Appear, Button, Card, Pill, Row, StatusBadge, T, Tag, haptic } from '@/components/ui';
+import { Appear, Button, Card, Pill, Row, T, Tag, haptic } from '@/components/ui';
 import { C, CONTEXT, S } from '@/theme';
 import { useStore } from '@/store';
 import { useUI } from '@/store/ui';

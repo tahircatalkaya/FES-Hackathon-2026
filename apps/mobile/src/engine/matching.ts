@@ -1,4 +1,6 @@
 import transit from '@/data/transit.json';
+import { haversine } from './geo.ts';
+export { haversine } from './geo.ts';
 
 export type LL = [number, number]; // lat, lon
 export type TracePoint = [number, number, number]; // lat, lon, seconds-of-day
@@ -12,14 +14,6 @@ export interface Pattern {
 export const STATIONS: Station[] = transit.stations as Station[];
 export const PATTERNS: Pattern[] = transit.patterns as Pattern[];
 export const SERVICE_DAY: string = transit.serviceDay;
-
-export function haversine(a: number, b: number, c: number, d: number) {
-  const R = 6371000;
-  const p1 = (a * Math.PI) / 180, p2 = (c * Math.PI) / 180;
-  const dp = ((c - a) * Math.PI) / 180, dl = ((d - b) * Math.PI) / 180;
-  const x = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(x));
-}
 
 function distToSegment(p: LL, a: LL, b: LL) {
   const kx = 111320 * Math.cos((a[0] * Math.PI) / 180), ky = 110540;
